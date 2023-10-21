@@ -14,7 +14,7 @@ namespace APPDATA.Models
         public int Quantity { get; set; }
         public double Price { get; set; }
 
-        public Cart Cart { get; set; }
-        public ProductDetail ProductDetails { get; set; }
+        public Cart? Cart { get; set; }
+        public ProductDetail? ProductDetails { get; set; }
     }
 }

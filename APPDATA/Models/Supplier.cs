@@ -14,6 +14,6 @@ namespace APPDATA.Models
         public string Address { get; set; }
         public string PhoneNumber { get; set; }
         public string Desciption { get; set; }
-        public List<Product> Product { get; set; }
+        public List<ProductDetail>? ProductDetails { get; set; }
     }
 }
