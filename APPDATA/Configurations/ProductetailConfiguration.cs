@@ -14,7 +14,9 @@ namespace MCV.Configurations
             builder.HasOne(c => c.Category).WithMany(c => c.ProductDetails).HasForeignKey(c => c.Id_Product);
             builder.HasOne(c => c.Material).WithMany(c => c.ProductDetails).HasForeignKey(c => c.Id_Product);
             builder.HasOne(c => c.Color).WithMany(c => c.ProductDetails).HasForeignKey(c => c.Id_Product);
+            builder.HasOne(c => c.Supplier).WithMany(c => c.ProductDetails).HasForeignKey(c => c.Id_Product);
+
         }
-    
+
     }
 }

@@ -24,11 +24,11 @@ namespace APPDATA.Models
         public DateTime PayDate { get; set; }
         public DateTime ShipDate { get; set; }
         public int Status { get; set; }
-        public List<BillDetail> BillDetails { get; set; }
-        public List<PaymentMethodDetail> PaymentMethodDetails { get; set; }
+        public List<BillDetail>? BillDetails { get; set; }
+        public List<PaymentMethodDetail>? PaymentMethodDetails { get; set; }
         public Account? Account { get; set; }
         public Voucher? Voucher { get; set; } 
-        public List<BillHistory> BillHistory { get; set; }
+        public List<BillHistory>? BillHistory { get; set; }
 
     }
 }

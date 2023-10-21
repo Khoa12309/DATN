@@ -13,7 +13,7 @@ namespace APPDATA.Models
         public bool Status { get; set; }
         public DateTime CreateDate { get; set; }
         public DateTime UpdateDate { get; set; }
-        public List<CartDetail> CartDetails { get; set; }
+        public List<CartDetail>? CartDetails { get; set; }
         public Account? Account { get; set; }
     }
 }

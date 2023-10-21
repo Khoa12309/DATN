@@ -16,6 +16,6 @@ namespace APPDATA.Models
         public DateTime UpdateDate { get; set; }
         public DateTime CreateBy { get; set; }
         public DateTime UpdateBy { get; set; }
-        public List<PaymentMethodDetail>  PaymentMethodDetails { get; set; }
+        public List<PaymentMethodDetail>?  PaymentMethodDetails { get; set; }
     }
 }
