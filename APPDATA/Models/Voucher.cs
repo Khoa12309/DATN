@@ -19,6 +19,6 @@ namespace APPDATA.Models
         public DateTime Update_date { get; set; }
         public DateTime StartDate { get; set; }
         public DateTime EndDate { get; set; }
-        public List<Bill > Bill { get; set; }
+        public List<Bill>? Bill { get; set; }
     }
 }

@@ -507,9 +507,6 @@ namespace APPDATA.Migrations
                     b.Property<DateTime>("Create_date")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid?>("Id_supplier")
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -521,8 +518,6 @@ namespace APPDATA.Migrations
                         .HasColumnType("datetime2");
 
                     b.HasKey("Id");
-
-                    b.HasIndex("Id_supplier");
 
                     b.ToTable("Products");
                 });
@@ -556,6 +551,9 @@ namespace APPDATA.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("Id_Size")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("Id_supplier")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
@@ -822,15 +820,6 @@ namespace APPDATA.Migrations
                     b.Navigation("PaymentMethods");
                 });
 
-            modelBuilder.Entity("APPDATA.Models.Product", b =>
-                {
-                    b.HasOne("APPDATA.Models.Supplier", "Supplier")
-                        .WithMany("Product")
-                        .HasForeignKey("Id_supplier");
-
-                    b.Navigation("Supplier");
-                });
-
             modelBuilder.Entity("APPDATA.Models.ProductDetail", b =>
                 {
                     b.HasOne("APPDATA.Models.Category", "Category")
@@ -853,6 +842,10 @@ namespace APPDATA.Migrations
                         .WithMany("ProductDetails")
                         .HasForeignKey("Id_Product");
 
+                    b.HasOne("APPDATA.Models.Supplier", "Supplier")
+                        .WithMany("ProductDetails")
+                        .HasForeignKey("Id_Product");
+
                     b.Navigation("Category");
 
                     b.Navigation("Color");
@@ -862,6 +855,8 @@ namespace APPDATA.Migrations
                     b.Navigation("Product");
 
                     b.Navigation("Size");
+
+                    b.Navigation("Supplier");
                 });
 
             modelBuilder.Entity("APPDATA.Models.Account", b =>
@@ -935,7 +930,7 @@ namespace APPDATA.Migrations
 
             modelBuilder.Entity("APPDATA.Models.Supplier", b =>
                 {
-                    b.Navigation("Product");
+                    b.Navigation("ProductDetails");
                 });
 
             modelBuilder.Entity("APPDATA.Models.Voucher", b =>

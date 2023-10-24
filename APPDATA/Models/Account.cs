@@ -17,9 +17,9 @@ namespace APPDATA.Models
         public DateTime Create_date { get; set; }
         public DateTime Update_date { get; set; }
         public Role? Role { get; set; }
-        public List<Address> Address { get; set; }
-        public List<Bill> Bill { get; set; }
-        public List<Notification> Notification { get; set; }
-        public List<Cart> Carts { get; set; }
+        public List<Address>? Address { get; set; }
+        public List<Bill>? Bill { get; set; }
+        public List<Notification>? Notification { get; set; }
+        public List<Cart>? Carts { get; set; }
     }
 }
