@@ -8,24 +8,21 @@ namespace _APPAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ImageController : ControllerBase
+    public class SizeController : ControllerBase
     {
         ShoppingDB _context = new ShoppingDB();
-        private readonly CRUDapi<Image> _crud;
-        public ImageController()
+        private readonly CRUDapi<Size> _crud;
+        public SizeController()
         {
-            _crud = new CRUDapi<Image>(_context, _context.Images);
+            _crud = new CRUDapi<Size>(_context, _context.Sizes);
         }
         [HttpGet]
-        public IEnumerable<Image> Getall()
+        public IEnumerable<Size> GetAll()
         {
             return _crud.GetAllItems().ToList();
         }
-        [Route("Post")]
         [HttpPost]
-
-        public bool Create(Image obj)
-
+        public bool Creat(Size obj)
         {
             return _crud.CreateItem(obj);
         }
@@ -33,22 +30,19 @@ namespace _APPAPI.Controllers
         [HttpDelete]
         public bool Delete(Guid id)
         {
-            Image item = _crud.GetAllItems().FirstOrDefault(c => c.Id == id);
+            Size item = _crud.GetAllItems().FirstOrDefault(c => c.Id == id);
             return _crud.DeleteItem(item);
         }
         [Route("Update")]
         [HttpPut]
-        public bool Update(Image obj)
+        public bool Update(Size obj)
         {
-            Image item = _crud.GetAllItems().FirstOrDefault(c => c.Id == obj.Id);
-
-
-            item.Update_date = DateTime.Now;
-            item.Status = obj.Status;
-            item.IdProductdetail = obj.IdProductdetail;
+            Size item = _crud.GetAllItems().FirstOrDefault(c => c.Id == obj.Id);
             item.Name = obj.Name;
+            item.Status = obj.Status;
+            item.Update_date = obj.Update_date;
+            item.Create_date = obj.Create_date;
             return _crud.UpdateItem(item);
         }
-
     }
 }

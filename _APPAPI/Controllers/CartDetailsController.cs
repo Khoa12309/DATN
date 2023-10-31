@@ -8,24 +8,22 @@ namespace _APPAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class ImageController : ControllerBase
+    public class CartDetailsController : ControllerBase
     {
         ShoppingDB _context = new ShoppingDB();
-        private readonly CRUDapi<Image> _crud;
-        public ImageController()
+        private readonly CRUDapi<CartDetail> _crud;
+        public CartDetailsController()
         {
-            _crud = new CRUDapi<Image>(_context, _context.Images);
+            _crud = new CRUDapi<CartDetail>(_context, _context.CartDetails);
         }
         [HttpGet]
-        public IEnumerable<Image> Getall()
+        public IEnumerable<CartDetail> Getall()
         {
             return _crud.GetAllItems().ToList();
         }
         [Route("Post")]
         [HttpPost]
-
-        public bool Create(Image obj)
-
+        public bool Create(CartDetail obj)
         {
             return _crud.CreateItem(obj);
         }
@@ -33,22 +31,21 @@ namespace _APPAPI.Controllers
         [HttpDelete]
         public bool Delete(Guid id)
         {
-            Image item = _crud.GetAllItems().FirstOrDefault(c => c.Id == id);
+            CartDetail item = _crud.GetAllItems().FirstOrDefault(c => c.id == id);
             return _crud.DeleteItem(item);
         }
         [Route("Update")]
         [HttpPut]
-        public bool Update(Image obj)
+        public bool Update(CartDetail obj)
         {
-            Image item = _crud.GetAllItems().FirstOrDefault(c => c.Id == obj.Id);
+            CartDetail item = _crud.GetAllItems().FirstOrDefault(c => c.id == obj.id);
+
+            item.ProductDetails = obj.ProductDetails;
+            item.Price = obj.Price;
+            item.Quantity = obj.Quantity;
 
 
-            item.Update_date = DateTime.Now;
-            item.Status = obj.Status;
-            item.IdProductdetail = obj.IdProductdetail;
-            item.Name = obj.Name;
             return _crud.UpdateItem(item);
         }
-
     }
 }
