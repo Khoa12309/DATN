@@ -1,0 +1,144 @@
+﻿@model IEnumerable<APPDATA.Models.ProductDetail>
+
+@{
+    ViewData["Title"] = "GetList";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<h1>GetList</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table table-light table-striped">
+    <thead>
+        <tr>
+           
+            <th scope="col">
+                Category
+            </th>
+            <th scope="col">
+                Size
+            </th>
+            <th scope="col">
+                Product
+            </th>
+            <th scope="col">
+               Material
+            </th>
+            <th scope="col">
+               Color
+            </th>
+            <th scope="col">
+               Supplier
+            </th>
+            <th scope="col">
+              Quantity
+            </th>
+            <th scope="col">
+              Desciption
+            </th>
+            <th scope="col">
+              Price
+            </th>
+            <th scope="col">
+               Status
+            </th>
+            <th scope="col">
+               Name
+            </th>
+            <th scope="col">
+              Create_date
+            </th>
+            <th>
+               Update_date
+            </th>
+            <th scope="col">
+               Create_by
+            </th>
+            <th scope ="col">
+               Update_by
+            </th>
+            <th scope="col">
+              IMG
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+           
+            <td>
+                    @Html.DisplayFor(modelItem => item.Id_Category)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id_Size)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id_Product)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id_Material)
+            </td>
+            <td>
+                    @foreach (var obj in ViewBag.Color)
+                    {
+                        if (item.Id_Color == obj.Id)
+                        {
+                            <p>
+                                @obj.Name
+                            </p>
+                        }
+                    }
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Id_supplier)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Quantity)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Desciption)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Price)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Status)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Create_date)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Update_date)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Create_by)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Update_by)
+            </td>
+
+            <td>                
+                    @foreach (var obj in ViewBag.Image)
+                    {
+                        if (item.Id == obj.IdProductdetail)
+                        {
+                            <img src="~/images/@obj.Name" alt="Fjords" width="50px" height="50px">
+                        }
+                    }
+            </td>
+
+            <td>
+                @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
+                    @Html.ActionLink("Details", "Details", new {  id=item.Id }) |
+                    @Html.ActionLink("Delete", "Delete", new {  id=item.Id })
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
