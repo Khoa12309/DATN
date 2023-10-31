@@ -4,18 +4,17 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace APPVIEW.Controllers
 {
-    public class AccountController : Controller
+    public class MaterialController : Controller
     {
-
-        private Getapi<Account> getapi;
-        public AccountController()
+        private Getapi<Material> getapi;
+        public MaterialController()
         {
-            getapi = new Getapi<Account>();
+            getapi = new Getapi<Material>();
         }
 
         public async Task<IActionResult> GetList()
         {
-            var obj = getapi.GetApi("Account");
+            var obj = getapi.GetApi("Material");
             return View(obj);
         }
 
@@ -28,11 +27,11 @@ namespace APPVIEW.Controllers
 
         // POST: SupplierController1/Create
         [HttpPost]
-        public async Task<IActionResult> Create(Account obj)
+        public async Task<IActionResult> Create(Material obj)
         {
             try
             {
-               await getapi.CreateObj(obj, "Account");
+                getapi.CreateObj(obj, "Material");
                 return RedirectToAction("GetList");
             }
             catch
@@ -46,17 +45,17 @@ namespace APPVIEW.Controllers
         public async Task<IActionResult> Edit(Guid id)
         {
 
-            var lst = getapi.GetApi("Account");
+            var lst = getapi.GetApi("Material");
             return View(lst.Find(c => c.Id == id));
         }
 
 
         [HttpPost]
-        public async Task<IActionResult> Edit(Account obj)
+        public async Task<IActionResult> Edit(Material obj)
         {
             try
             {
-                getapi.UpdateObj(obj, "Account");
+                getapi.UpdateObj(obj, "Material");
                 return RedirectToAction("GetList");
             }
             catch
@@ -68,7 +67,7 @@ namespace APPVIEW.Controllers
 
         public async Task<IActionResult> Delete(Guid id)
         {
-            getapi.DeleteObj(id, "Account");
+            getapi.DeleteObj(id, "Material");
             return RedirectToAction("GetList");
 
         }

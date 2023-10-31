@@ -1,11 +1,12 @@
 ﻿using Newtonsoft.Json;
+using System.Collections;
 using System.Text;
 
 namespace APPVIEW.Services
 {
     public class Getapi<T> where T : class
     {
-        public List<T> GetApi(string data)
+        public  List<T> GetApi(string data)
         {
             var url = $"https://localhost:7042/api/";
             var httpClient = new HttpClient();
@@ -15,7 +16,6 @@ namespace APPVIEW.Services
             var dataobj = JsonConvert.DeserializeObject<List<T>>(dataapi);
             return dataobj;
         }
-
         public async Task<T> CreateObj(T obj, string name)
         {
 
