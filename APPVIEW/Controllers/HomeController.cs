@@ -15,10 +15,19 @@ namespace APPVIEW.Controllers
 
         public IActionResult Index()
         {
+
+            return View();
+        } 
+        public IActionResult Contact()
+        {
             return View();
         }
 
-        public IActionResult Privacy()
+        public IActionResult Shop()
+        {
+            return View();
+        }
+        public IActionResult Details()
         {
             return View();
         }

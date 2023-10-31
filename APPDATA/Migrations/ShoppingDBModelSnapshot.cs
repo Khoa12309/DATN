@@ -268,7 +268,6 @@ namespace APPDATA.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<Guid?>("CartId")
-                        .IsRequired()
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<double>("Price")
@@ -348,7 +347,7 @@ namespace APPDATA.Migrations
                     b.Property<DateTime>("Create_date")
                         .HasColumnType("datetime2");
 
-                    b.Property<Guid>("IdProductdetail")
+                    b.Property<Guid?>("IdProductdetail")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
@@ -770,15 +769,11 @@ namespace APPDATA.Migrations
                 {
                     b.HasOne("APPDATA.Models.ProductDetail", "ProductDetails")
                         .WithMany("Carts")
-                        .HasForeignKey("CartId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CartId");
 
                     b.HasOne("APPDATA.Models.Cart", "Cart")
                         .WithMany("CartDetails")
-                        .HasForeignKey("CartId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("CartId");
 
                     b.Navigation("Cart");
 
@@ -789,9 +784,7 @@ namespace APPDATA.Migrations
                 {
                     b.HasOne("APPDATA.Models.ProductDetail", "ProductDetails")
                         .WithMany("images")
-                        .HasForeignKey("IdProductdetail")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                        .HasForeignKey("IdProductdetail");
 
                     b.Navigation("ProductDetails");
                 });
