@@ -25,13 +25,13 @@ namespace APPDATA.Models
         public DateTime Create_by { get; set; }
         public DateTime Update_by { get; set; }
         public Supplier? Supplier { get; set; }
-        public List<Image>? images { get; set; }
+      
         public Size? Size { get; set; }
         public Category? Category { get; set; }
         public Material? Material { get; set; }
         public Color? Color { get; set; }
         public Product? Product { get; set; }
-
+        public List<Image>? images { get; set; }
         public List<CartDetail>? Carts { get; set; }
 
         public  List<BillDetail>? BillDetails { get; set; }

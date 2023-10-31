@@ -23,7 +23,9 @@ namespace _APPAPI.Controllers
         }
         [Route("Post")]
         [HttpPost]
-        public bool Creat(Image obj)
+
+        public bool Create(Image obj)
+
         {
             return _crud.CreateItem(obj);
         }
@@ -39,11 +41,14 @@ namespace _APPAPI.Controllers
         public bool Update(Image obj)
         {
             Image item = _crud.GetAllItems().FirstOrDefault(c => c.Id == obj.Id);
-            item.Name = obj.Name;
+
+
+            item.Update_date = DateTime.Now;
             item.Status = obj.Status;
-            item.Update_date = obj.Update_date;
-            item.Create_date = obj.Create_date;
+            item.IdProductdetail = obj.IdProductdetail;
+            item.Name = obj.Name;
             return _crud.UpdateItem(item);
         }
+
     }
 }

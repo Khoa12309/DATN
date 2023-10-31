@@ -28,6 +28,7 @@ namespace APPVIEW.Services
             string apiData = await response.Content.ReadAsStringAsync();
             if (response.IsSuccessStatusCode == false)
             {
+                
                 return obj;
             }
             return obj;
@@ -42,7 +43,7 @@ namespace APPVIEW.Services
             var response = await httpClient.PutAsync(requestURL + name + "/Update", content);
 
             string apiData = await response.Content.ReadAsStringAsync();
-            return obj;
+            return obj;       
         }
 
         public async Task<bool> DeleteObj(Guid id, string name)
