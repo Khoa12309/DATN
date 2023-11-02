@@ -45,6 +45,7 @@ namespace _APPAPI.Service
         public IEnumerable<T> GetAllItems()
         {
             return _dbSet.ToList();
+            
         }
 
         public bool UpdateItem(T item)

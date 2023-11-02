@@ -16,6 +16,7 @@ builder.Services.AddNotyf(config =>
     config.Position = NotyfPosition.TopRight;
 });
 var app = builder.Build();
+// thêm AddAuthentication 
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
