@@ -58,18 +58,17 @@ namespace APPVIEW.Controllers
 
         // POST: SupplierController1/Create
         [HttpPost]
-        public async Task<IActionResult> Create( ProductDetail obj, [Bind] IFormFile imageFile ,string myList)
+        public async Task<IActionResult> Create( ProductDetail obj, [Bind] IFormFile imageFile )
         {
             try
             {
-                // truyền nhiều dữ liệu 
-                if (myList!= null)
-                {
-                    List<string> Lcolor = JsonConvert.DeserializeObject<List<string>>(myList);
-                }
-
+                //// truyền nhiều dữ liệu 
+                //if (myList!= null)
+                //{
+                //    List<string> Lcolor = JsonConvert.DeserializeObject<List<string>>(myList);
+                //}
+                obj.Id = Guid.NewGuid();
                 obj.Name = getapiProduct.GetApi("Product").FirstOrDefault(c => c.Id == obj.Id_Product).Name;
-                obj.Id = Guid.NewGuid();               
                 obj.Create_date=DateTime.Now;
                 obj.Update_date=DateTime.Now;
                 obj.Create_by= DateTime.Now;
@@ -160,6 +159,12 @@ namespace APPVIEW.Controllers
             getapi.DeleteObj(id, "ProductDetails");
             return RedirectToAction("GetList");
 
+        }
+
+        public async Task<IActionResult> Details(Guid id)
+        {
+
+            return View();
         }
     }
 }

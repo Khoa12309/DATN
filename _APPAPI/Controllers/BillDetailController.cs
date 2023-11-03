@@ -21,6 +21,7 @@ namespace _APPAPI.Controllers
         {
             return _crud.GetAllItems();
         }
+        [Route("Post")]
         [HttpPost]
         public bool Creat(BillDetail obj)
         {

@@ -4,17 +4,17 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace APPVIEW.Controllers
 {
-    public class SizeController : Controller
+    public class CartDetailController : Controller
     {
-        private Getapi<Size> getapi;
-        public SizeController()
+        private Getapi<CartDetail> getapi;
+        public CartDetailController()
         {
-            getapi = new Getapi<Size>();
+            getapi = new Getapi<CartDetail>();
         }
 
         public async Task<IActionResult> GetList()
         {
-            var obj = getapi.GetApi("Size");
+            var obj = getapi.GetApi("CartDetail");
             return View(obj);
         }
 
@@ -27,12 +27,11 @@ namespace APPVIEW.Controllers
 
         // POST: SupplierController1/Create
         [HttpPost]
-        public async Task<IActionResult> Create(Size obj)
+        public async Task<IActionResult> Create(CartDetail obj)
         {
             try
             {
-                obj.Id=Guid.NewGuid();  
-                getapi.CreateObj(obj, "Size");
+                getapi.CreateObj(obj, "CartDetail");
                 return RedirectToAction("GetList");
             }
             catch
@@ -46,17 +45,17 @@ namespace APPVIEW.Controllers
         public async Task<IActionResult> Edit(Guid id)
         {
 
-            var lst = getapi.GetApi("Size");
-            return View(lst.Find(c => c.Id == id));
+            var lst = getapi.GetApi("CartDetail");
+            return View(lst.Find(c => c.id == id));
         }
 
 
         [HttpPost]
-        public async Task<IActionResult> Edit(Size obj)
+        public async Task<IActionResult> Edit(CartDetail obj)
         {
             try
             {
-                getapi.UpdateObj(obj, "Size");
+                getapi.UpdateObj(obj, "CartDetail");
                 return RedirectToAction("GetList");
             }
             catch
@@ -68,7 +67,7 @@ namespace APPVIEW.Controllers
 
         public async Task<IActionResult> Delete(Guid id)
         {
-            getapi.DeleteObj(id, "Size");
+            getapi.DeleteObj(id, "CartDetail");
             return RedirectToAction("GetList");
 
         }
