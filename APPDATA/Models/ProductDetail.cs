@@ -14,6 +14,7 @@ namespace APPDATA.Models
         public Guid? Id_Product { get; set; }
         public Guid? Id_Material { get; set; }
         public Guid? Id_Color { get; set; }
+        public Guid? Id_supplier { get; set; }
         public int Quantity { get; set; }
         public string Desciption { get; set; }
         public double Price { get; set; }
@@ -23,16 +24,16 @@ namespace APPDATA.Models
         public DateTime Update_date { get; set; }
         public DateTime Create_by { get; set; }
         public DateTime Update_by { get; set; }
-
-        public List<Image> images { get; set; }
+        public Supplier? Supplier { get; set; }
+      
         public Size? Size { get; set; }
         public Category? Category { get; set; }
         public Material? Material { get; set; }
         public Color? Color { get; set; }
         public Product? Product { get; set; }
+        public List<Image>? images { get; set; }
+        public List<CartDetail>? Carts { get; set; }
 
-        public List<CartDetail> Carts { get; set; }
-
-        public  List<BillDetail> BillDetails { get; set; }
+        public  List<BillDetail>? BillDetails { get; set; }
     }
 }

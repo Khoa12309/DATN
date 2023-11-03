@@ -14,6 +14,6 @@ namespace APPDATA.Models
 
         public int Status { get; set; }
 
-        public List<Account> Accounts { get; set; }
+        public List<Account>? Accounts { get; set; }
     }
 }
