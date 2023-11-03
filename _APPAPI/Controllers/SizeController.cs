@@ -21,6 +21,8 @@ namespace _APPAPI.Controllers
         {
             return _crud.GetAllItems().ToList();
         }
+
+        [Route("Post")]
         [HttpPost]
         public bool Creat(Size obj)
         {

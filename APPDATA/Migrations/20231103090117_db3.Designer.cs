@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace APPDATA.Migrations
 {
     [DbContext(typeof(ShoppingDB))]
-    [Migration("20231024155549_AddDb")]
-    partial class AddDb
+    [Migration("20231103090117_db3")]
+    partial class db3
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -70,6 +70,10 @@ namespace APPDATA.Migrations
 
                     b.Property<Guid?>("AccountId")
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("DefaultAddress")
                         .IsRequired()
@@ -578,7 +582,17 @@ namespace APPDATA.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Id_Category");
+
+                    b.HasIndex("Id_Color");
+
+                    b.HasIndex("Id_Material");
+
                     b.HasIndex("Id_Product");
+
+                    b.HasIndex("Id_Size");
+
+                    b.HasIndex("Id_supplier");
 
                     b.ToTable("ProductDetails");
                 });
@@ -819,15 +833,15 @@ namespace APPDATA.Migrations
                 {
                     b.HasOne("APPDATA.Models.Category", "Category")
                         .WithMany("ProductDetails")
-                        .HasForeignKey("Id_Product");
+                        .HasForeignKey("Id_Category");
 
                     b.HasOne("APPDATA.Models.Color", "Color")
                         .WithMany("ProductDetails")
-                        .HasForeignKey("Id_Product");
+                        .HasForeignKey("Id_Color");
 
                     b.HasOne("APPDATA.Models.Material", "Material")
                         .WithMany("ProductDetails")
-                        .HasForeignKey("Id_Product");
+                        .HasForeignKey("Id_Material");
 
                     b.HasOne("APPDATA.Models.Product", "Product")
                         .WithMany("ProductDetails")
@@ -835,11 +849,11 @@ namespace APPDATA.Migrations
 
                     b.HasOne("APPDATA.Models.Size", "Size")
                         .WithMany("ProductDetails")
-                        .HasForeignKey("Id_Product");
+                        .HasForeignKey("Id_Size");
 
                     b.HasOne("APPDATA.Models.Supplier", "Supplier")
                         .WithMany("ProductDetails")
-                        .HasForeignKey("Id_Product");
+                        .HasForeignKey("Id_supplier");
 
                     b.Navigation("Category");
 

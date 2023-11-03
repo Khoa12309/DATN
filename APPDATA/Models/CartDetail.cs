@@ -10,7 +10,7 @@ namespace APPDATA.Models
     {
         public Guid id { get; set; }
         public Guid? CartId { get; set; }
-        public Guid? ProductDetail { get; set; }
+        public Guid? ProductDetail_ID { get; set; }
         public int Quantity { get; set; }
         public double Price { get; set; }
 

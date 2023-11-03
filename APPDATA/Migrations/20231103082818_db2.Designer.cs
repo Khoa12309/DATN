@@ -4,6 +4,7 @@ using APPDATA.DB;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace APPDATA.Migrations
 {
     [DbContext(typeof(ShoppingDB))]
-    partial class ShoppingDBModelSnapshot : ModelSnapshot
+    [Migration("20231103082818_db2")]
+    partial class db2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -277,7 +279,7 @@ namespace APPDATA.Migrations
                     b.Property<double>("Price")
                         .HasColumnType("float");
 
-                    b.Property<Guid?>("ProductDetail_ID")
+                    b.Property<Guid?>("ProductDetail")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Quantity")
@@ -286,8 +288,6 @@ namespace APPDATA.Migrations
                     b.HasKey("id");
 
                     b.HasIndex("CartId");
-
-                    b.HasIndex("ProductDetail_ID");
 
                     b.ToTable("CartDetails");
                 });
@@ -582,17 +582,7 @@ namespace APPDATA.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Id_Category");
-
-                    b.HasIndex("Id_Color");
-
-                    b.HasIndex("Id_Material");
-
                     b.HasIndex("Id_Product");
-
-                    b.HasIndex("Id_Size");
-
-                    b.HasIndex("Id_supplier");
 
                     b.ToTable("ProductDetails");
                 });
@@ -783,13 +773,13 @@ namespace APPDATA.Migrations
 
             modelBuilder.Entity("APPDATA.Models.CartDetail", b =>
                 {
+                    b.HasOne("APPDATA.Models.ProductDetail", "ProductDetails")
+                        .WithMany("Carts")
+                        .HasForeignKey("CartId");
+
                     b.HasOne("APPDATA.Models.Cart", "Cart")
                         .WithMany("CartDetails")
                         .HasForeignKey("CartId");
-
-                    b.HasOne("APPDATA.Models.ProductDetail", "ProductDetails")
-                        .WithMany("Carts")
-                        .HasForeignKey("ProductDetail_ID");
 
                     b.Navigation("Cart");
 
@@ -833,15 +823,15 @@ namespace APPDATA.Migrations
                 {
                     b.HasOne("APPDATA.Models.Category", "Category")
                         .WithMany("ProductDetails")
-                        .HasForeignKey("Id_Category");
+                        .HasForeignKey("Id_Product");
 
                     b.HasOne("APPDATA.Models.Color", "Color")
                         .WithMany("ProductDetails")
-                        .HasForeignKey("Id_Color");
+                        .HasForeignKey("Id_Product");
 
                     b.HasOne("APPDATA.Models.Material", "Material")
                         .WithMany("ProductDetails")
-                        .HasForeignKey("Id_Material");
+                        .HasForeignKey("Id_Product");
 
                     b.HasOne("APPDATA.Models.Product", "Product")
                         .WithMany("ProductDetails")
@@ -849,11 +839,11 @@ namespace APPDATA.Migrations
 
                     b.HasOne("APPDATA.Models.Size", "Size")
                         .WithMany("ProductDetails")
-                        .HasForeignKey("Id_Size");
+                        .HasForeignKey("Id_Product");
 
                     b.HasOne("APPDATA.Models.Supplier", "Supplier")
                         .WithMany("ProductDetails")
-                        .HasForeignKey("Id_supplier");
+                        .HasForeignKey("Id_Product");
 
                     b.Navigation("Category");
 
