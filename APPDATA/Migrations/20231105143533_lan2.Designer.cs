@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace APPDATA.Migrations
 {
     [DbContext(typeof(ShoppingDB))]
-    [Migration("20231103061904_createdb")]
-    partial class createdb
+    [Migration("20231105143533_lan2")]
+    partial class lan2
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -279,7 +279,7 @@ namespace APPDATA.Migrations
                     b.Property<double>("Price")
                         .HasColumnType("float");
 
-                    b.Property<Guid?>("ProductDetail")
+                    b.Property<Guid?>("ProductDetail_ID")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Quantity")
@@ -288,6 +288,8 @@ namespace APPDATA.Migrations
                     b.HasKey("id");
 
                     b.HasIndex("CartId");
+
+                    b.HasIndex("ProductDetail_ID");
 
                     b.ToTable("CartDetails");
                 });
@@ -582,7 +584,17 @@ namespace APPDATA.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Id_Category");
+
+                    b.HasIndex("Id_Color");
+
+                    b.HasIndex("Id_Material");
+
                     b.HasIndex("Id_Product");
+
+                    b.HasIndex("Id_Size");
+
+                    b.HasIndex("Id_supplier");
 
                     b.ToTable("ProductDetails");
                 });
@@ -809,13 +821,13 @@ namespace APPDATA.Migrations
 
             modelBuilder.Entity("APPDATA.Models.CartDetail", b =>
                 {
-                    b.HasOne("APPDATA.Models.ProductDetail", "ProductDetails")
-                        .WithMany("Carts")
-                        .HasForeignKey("CartId");
-
                     b.HasOne("APPDATA.Models.Cart", "Cart")
                         .WithMany("CartDetails")
                         .HasForeignKey("CartId");
+
+                    b.HasOne("APPDATA.Models.ProductDetail", "ProductDetails")
+                        .WithMany("Carts")
+                        .HasForeignKey("ProductDetail_ID");
 
                     b.Navigation("Cart");
 
@@ -859,15 +871,15 @@ namespace APPDATA.Migrations
                 {
                     b.HasOne("APPDATA.Models.Category", "Category")
                         .WithMany("ProductDetails")
-                        .HasForeignKey("Id_Product");
+                        .HasForeignKey("Id_Category");
 
                     b.HasOne("APPDATA.Models.Color", "Color")
                         .WithMany("ProductDetails")
-                        .HasForeignKey("Id_Product");
+                        .HasForeignKey("Id_Color");
 
                     b.HasOne("APPDATA.Models.Material", "Material")
                         .WithMany("ProductDetails")
-                        .HasForeignKey("Id_Product");
+                        .HasForeignKey("Id_Material");
 
                     b.HasOne("APPDATA.Models.Product", "Product")
                         .WithMany("ProductDetails")
@@ -875,11 +887,11 @@ namespace APPDATA.Migrations
 
                     b.HasOne("APPDATA.Models.Size", "Size")
                         .WithMany("ProductDetails")
-                        .HasForeignKey("Id_Product");
+                        .HasForeignKey("Id_Size");
 
                     b.HasOne("APPDATA.Models.Supplier", "Supplier")
                         .WithMany("ProductDetails")
-                        .HasForeignKey("Id_Product");
+                        .HasForeignKey("Id_supplier");
 
                     b.Navigation("Category");
 

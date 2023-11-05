@@ -17,7 +17,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
                   options.LoginPath = "/Account/Login";
                   options.LogoutPath = "/Account/Logout";
                   options.AccessDeniedPath = "/AccessDenied";
-                  options.SlidingExpiration = true;
+                  options.SlidingExpiration = true;            
               });
 builder.Services.AddSession(options =>
 {

@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace APPDATA.Migrations
 {
-    public partial class addRefreshTokenn : Migration
+    public partial class lan2 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -202,18 +202,18 @@ namespace APPDATA.Migrations
                 {
                     table.PrimaryKey("PK_ProductDetails", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ProductDetails_Categories_Id_Product",
-                        column: x => x.Id_Product,
+                        name: "FK_ProductDetails_Categories_Id_Category",
+                        column: x => x.Id_Category,
                         principalTable: "Categories",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_ProductDetails_Colors_Id_Product",
-                        column: x => x.Id_Product,
+                        name: "FK_ProductDetails_Colors_Id_Color",
+                        column: x => x.Id_Color,
                         principalTable: "Colors",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_ProductDetails_Materials_Id_Product",
-                        column: x => x.Id_Product,
+                        name: "FK_ProductDetails_Materials_Id_Material",
+                        column: x => x.Id_Material,
                         principalTable: "Materials",
                         principalColumn: "Id");
                     table.ForeignKey(
@@ -222,13 +222,13 @@ namespace APPDATA.Migrations
                         principalTable: "Products",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_ProductDetails_Sizes_Id_Product",
-                        column: x => x.Id_Product,
+                        name: "FK_ProductDetails_Sizes_Id_Size",
+                        column: x => x.Id_Size,
                         principalTable: "Sizes",
                         principalColumn: "Id");
                     table.ForeignKey(
-                        name: "FK_ProductDetails_Suppliers_Id_Product",
-                        column: x => x.Id_Product,
+                        name: "FK_ProductDetails_Suppliers_Id_supplier",
+                        column: x => x.Id_supplier,
                         principalTable: "Suppliers",
                         principalColumn: "Id");
                 });
@@ -463,7 +463,7 @@ namespace APPDATA.Migrations
                 {
                     id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     CartId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    ProductDetail = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    ProductDetail_ID = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     Quantity = table.Column<int>(type: "int", nullable: false),
                     Price = table.Column<double>(type: "float", nullable: false)
                 },
@@ -476,8 +476,8 @@ namespace APPDATA.Migrations
                         principalTable: "Carts",
                         principalColumn: "id");
                     table.ForeignKey(
-                        name: "FK_CartDetails_ProductDetails_CartId",
-                        column: x => x.CartId,
+                        name: "FK_CartDetails_ProductDetails_ProductDetail_ID",
+                        column: x => x.ProductDetail_ID,
                         principalTable: "ProductDetails",
                         principalColumn: "Id");
                 });
@@ -523,6 +523,11 @@ namespace APPDATA.Migrations
                 column: "CartId");
 
             migrationBuilder.CreateIndex(
+                name: "IX_CartDetails_ProductDetail_ID",
+                table: "CartDetails",
+                column: "ProductDetail_ID");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_Carts_AccountId",
                 table: "Carts",
                 column: "AccountId");
@@ -548,9 +553,34 @@ namespace APPDATA.Migrations
                 column: "PaymentMethodID");
 
             migrationBuilder.CreateIndex(
+                name: "IX_ProductDetails_Id_Category",
+                table: "ProductDetails",
+                column: "Id_Category");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProductDetails_Id_Color",
+                table: "ProductDetails",
+                column: "Id_Color");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProductDetails_Id_Material",
+                table: "ProductDetails",
+                column: "Id_Material");
+
+            migrationBuilder.CreateIndex(
                 name: "IX_ProductDetails_Id_Product",
                 table: "ProductDetails",
                 column: "Id_Product");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProductDetails_Id_Size",
+                table: "ProductDetails",
+                column: "Id_Size");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProductDetails_Id_supplier",
+                table: "ProductDetails",
+                column: "Id_supplier");
 
             migrationBuilder.CreateIndex(
                 name: "IX_RefreshTokens_UserId",
