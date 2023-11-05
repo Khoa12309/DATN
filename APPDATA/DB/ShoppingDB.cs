@@ -19,8 +19,8 @@ namespace APPDATA.DB
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
 
-            optionsBuilder.UseSqlServer(@"Data Source = DUNGNGUYEN\SQLEXPRESS; Initial Catalog =DATN_SD49; Integrated Security = True");
-         //   
+            optionsBuilder.UseSqlServer(@"Data Source = DUNGNGUYEN\SQLEXPRESS; Initial Catalog =DATN_SD499; Integrated Security = True");
+         
 
         }
 

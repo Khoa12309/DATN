@@ -22,7 +22,7 @@ namespace _APPAPI.Service
                 _context.SaveChanges();
                 return true;
             }
-            catch (Exception)
+            catch (Exception )
             {
 
                 return false;

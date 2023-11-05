@@ -19,6 +19,7 @@ namespace _APPAPI.Controllers
     {
         ShoppingDB _context = new ShoppingDB();
         private readonly CRUDapi<Account> _crud;
+        
         private readonly IConfiguration _Configuration;
         public AccountController(IConfiguration configuration)
         {
@@ -30,11 +31,14 @@ namespace _APPAPI.Controllers
         {
             return _crud.GetAllItems().ToList();
         }
-        [Route("Post")]
+        [Route("Register")]
         [HttpPost]
         public bool Create(Account obj)
         {
-            
+            obj.Create_date=DateTime.Now;
+            obj.IdRole = _context.Roles.SingleOrDefault(c=>c.name=="Customer").id;
+            obj.Avatar = "none";
+
             return _crud.CreateItem(obj);
         }
         [Route("Delete")]
@@ -88,7 +92,7 @@ namespace _APPAPI.Controllers
 
             var secretKeyBytes = Encoding.UTF8.GetBytes(_Configuration["JWT:SecretKey"]);
 
-            var user = _context.Roles.SingleOrDefault(p => p.id == item.IdRole);
+            var role = _context.Roles.SingleOrDefault(p => p.id == item.IdRole);
 
 
             var tokenDescription = new SecurityTokenDescriptor
@@ -103,7 +107,8 @@ namespace _APPAPI.Controllers
                 new Claim("Id", item.Id.ToString()),
                 new Claim("Id_Role", item.IdRole.ToString()),
                 new Claim("Avatar", item.Avatar.ToString()),
-                new Claim(ClaimTypes.Role,user.name)
+                new Claim(ClaimTypes.Role,role.name),
+              
 
 
                 //roles
