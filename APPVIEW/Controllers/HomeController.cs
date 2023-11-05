@@ -1,13 +1,19 @@
-﻿using APPDATA.Models;
+
+﻿using APPVIEW.Models;
+using Microsoft.AspNetCore.Authorization;
+
 using APPVIEW.Models;
 using APPVIEW.Services;
+
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
 namespace APPVIEW.Controllers
 {
+    [AllowAnonymous]
     public class HomeController : Controller
     {
+       
         private readonly ILogger<HomeController> _logger;
         private Getapi<ProductDetail> getapi;
         private Getapi<Category> getapiCategory;

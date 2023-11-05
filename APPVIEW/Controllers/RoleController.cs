@@ -5,18 +5,18 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace APPVIEW.Controllers
 {
-    [Authorize(Roles ="Admin")]
-    public class AddressController : Controller
+    [Authorize(Roles = "Admin")]
+    public class RoleController : Controller
     {
-        private Getapi<Address> getapi;
-        public AddressController()
+        private Getapi<Role> getapi;
+        public RoleController()
         {
-            getapi = new Getapi<Address>();
+            getapi = new Getapi<Role>();
         }
 
         public async Task<IActionResult> GetList()
         {
-            var obj = getapi.GetApi("Address");
+            var obj = getapi.GetApi("Role");
             return View(obj);
         }
 
@@ -29,11 +29,11 @@ namespace APPVIEW.Controllers
 
         // POST: SupplierController1/Create
         [HttpPost]
-        public async Task<IActionResult> Create(Address obj)
+        public async Task<IActionResult> Create(Role obj)
         {
             try
             {
-                getapi.CreateObj(obj, "Address");
+                getapi.CreateObj(obj, "Role");
                 return RedirectToAction("GetList");
             }
             catch
@@ -47,17 +47,17 @@ namespace APPVIEW.Controllers
         public async Task<IActionResult> Edit(Guid id)
         {
 
-            var lst = getapi.GetApi("Address");
+            var lst = getapi.GetApi("Role");
             return View(lst.Find(c => c.id == id));
         }
 
 
         [HttpPost]
-        public async Task<IActionResult> Edit(Address obj)
+        public async Task<IActionResult> Edit(Role obj)
         {
             try
             {
-                getapi.UpdateObj(obj, "Address");
+                getapi.UpdateObj(obj, "Role");
                 return RedirectToAction("GetList");
             }
             catch
@@ -69,7 +69,7 @@ namespace APPVIEW.Controllers
 
         public async Task<IActionResult> Delete(Guid id)
         {
-            getapi.DeleteObj(id, "Address");
+            getapi.DeleteObj(id, "Role");
             return RedirectToAction("GetList");
 
         }

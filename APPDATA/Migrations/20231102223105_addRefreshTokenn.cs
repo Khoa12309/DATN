@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace APPDATA.Migrations
 {
-    public partial class createdb06102023 : Migration
+    public partial class addRefreshTokenn : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -71,6 +71,22 @@ namespace APPDATA.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_PaymentMethods", x => x.id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Products",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Code = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    Create_date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Update_date = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Products", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -162,23 +178,57 @@ namespace APPDATA.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Products",
+                name: "ProductDetails",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Id_Category = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    Id_Size = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    Id_Product = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    Id_Material = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    Id_Color = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     Id_supplier = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Code = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Quantity = table.Column<int>(type: "int", nullable: false),
+                    Desciption = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Price = table.Column<double>(type: "float", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Create_date = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Update_date = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    Update_date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Create_by = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Update_by = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Products", x => x.Id);
+                    table.PrimaryKey("PK_ProductDetails", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Products_Suppliers_Id_supplier",
-                        column: x => x.Id_supplier,
+                        name: "FK_ProductDetails_Categories_Id_Product",
+                        column: x => x.Id_Product,
+                        principalTable: "Categories",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_ProductDetails_Colors_Id_Product",
+                        column: x => x.Id_Product,
+                        principalTable: "Colors",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_ProductDetails_Materials_Id_Product",
+                        column: x => x.Id_Product,
+                        principalTable: "Materials",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_ProductDetails_Products_Id_Product",
+                        column: x => x.Id_Product,
+                        principalTable: "Products",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_ProductDetails_Sizes_Id_Product",
+                        column: x => x.Id_Product,
+                        principalTable: "Sizes",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_ProductDetails_Suppliers_Id_Product",
+                        column: x => x.Id_Product,
                         principalTable: "Suppliers",
                         principalColumn: "Id");
                 });
@@ -193,6 +243,7 @@ namespace APPDATA.Migrations
                     PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     SpecificAddress = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Ward = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    City = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     District = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Province = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -287,52 +338,74 @@ namespace APPDATA.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ProductDetails",
+                name: "RefreshTokens",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Id_Category = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    Id_Size = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    Id_Product = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    Id_Material = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    Id_Color = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    Quantity = table.Column<int>(type: "int", nullable: false),
-                    Desciption = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Price = table.Column<double>(type: "float", nullable: false),
-                    Status = table.Column<int>(type: "int", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Create_date = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Update_date = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Create_by = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Update_by = table.Column<DateTime>(type: "datetime2", nullable: false)
+                    UserId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Token = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    JwtId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    IsUsed = table.Column<bool>(type: "bit", nullable: false),
+                    IsRevoked = table.Column<bool>(type: "bit", nullable: false),
+                    IssuedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    ExpiredAt = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ProductDetails", x => x.Id);
+                    table.PrimaryKey("PK_RefreshTokens", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_ProductDetails_Categories_Id_Product",
-                        column: x => x.Id_Product,
-                        principalTable: "Categories",
+                        name: "FK_RefreshTokens_Accounts_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Accounts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Images",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    IdProductdetail = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    Create_date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Update_date = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Images", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Images_ProductDetails_IdProductdetail",
+                        column: x => x.IdProductdetail,
+                        principalTable: "ProductDetails",
                         principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "BillDetails",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    ProductDetailID = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    BIllId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    Amount = table.Column<int>(type: "int", nullable: false),
+                    Price = table.Column<float>(type: "real", nullable: false),
+                    Discount = table.Column<float>(type: "real", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_BillDetails", x => x.id);
                     table.ForeignKey(
-                        name: "FK_ProductDetails_Colors_Id_Product",
-                        column: x => x.Id_Product,
-                        principalTable: "Colors",
-                        principalColumn: "Id");
+                        name: "FK_BillDetails_Bills_BIllId",
+                        column: x => x.BIllId,
+                        principalTable: "Bills",
+                        principalColumn: "id");
                     table.ForeignKey(
-                        name: "FK_ProductDetails_Materials_Id_Product",
-                        column: x => x.Id_Product,
-                        principalTable: "Materials",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_ProductDetails_Products_Id_Product",
-                        column: x => x.Id_Product,
-                        principalTable: "Products",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_ProductDetails_Sizes_Id_Product",
-                        column: x => x.Id_Product,
-                        principalTable: "Sizes",
+                        name: "FK_BillDetails_ProductDetails_ProductDetailID",
+                        column: x => x.ProductDetailID,
+                        principalTable: "ProductDetails",
                         principalColumn: "Id");
                 });
 
@@ -385,38 +458,11 @@ namespace APPDATA.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "BillDetails",
-                columns: table => new
-                {
-                    id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    ProductDetailID = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    BIllId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    Amount = table.Column<int>(type: "int", nullable: false),
-                    Price = table.Column<float>(type: "real", nullable: false),
-                    Discount = table.Column<float>(type: "real", nullable: false),
-                    Status = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_BillDetails", x => x.id);
-                    table.ForeignKey(
-                        name: "FK_BillDetails_Bills_BIllId",
-                        column: x => x.BIllId,
-                        principalTable: "Bills",
-                        principalColumn: "id");
-                    table.ForeignKey(
-                        name: "FK_BillDetails_ProductDetails_ProductDetailID",
-                        column: x => x.ProductDetailID,
-                        principalTable: "ProductDetails",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
                 name: "CartDetails",
                 columns: table => new
                 {
                     id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CartId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CartId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     ProductDetail = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     Quantity = table.Column<int>(type: "int", nullable: false),
                     Price = table.Column<double>(type: "float", nullable: false)
@@ -428,36 +474,12 @@ namespace APPDATA.Migrations
                         name: "FK_CartDetails_Carts_CartId",
                         column: x => x.CartId,
                         principalTable: "Carts",
-                        principalColumn: "id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "id");
                     table.ForeignKey(
                         name: "FK_CartDetails_ProductDetails_CartId",
                         column: x => x.CartId,
                         principalTable: "ProductDetails",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Images",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    IdProductdetail = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Status = table.Column<int>(type: "int", nullable: false),
-                    Create_date = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Update_date = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Images", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Images_ProductDetails_IdProductdetail",
-                        column: x => x.IdProductdetail,
-                        principalTable: "ProductDetails",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateIndex(
@@ -531,9 +553,9 @@ namespace APPDATA.Migrations
                 column: "Id_Product");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Products_Id_supplier",
-                table: "Products",
-                column: "Id_supplier");
+                name: "IX_RefreshTokens_UserId",
+                table: "RefreshTokens",
+                column: "UserId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -558,6 +580,9 @@ namespace APPDATA.Migrations
 
             migrationBuilder.DropTable(
                 name: "PaymentMethodDetails");
+
+            migrationBuilder.DropTable(
+                name: "RefreshTokens");
 
             migrationBuilder.DropTable(
                 name: "Carts");
@@ -587,13 +612,13 @@ namespace APPDATA.Migrations
                 name: "Sizes");
 
             migrationBuilder.DropTable(
+                name: "Suppliers");
+
+            migrationBuilder.DropTable(
                 name: "Accounts");
 
             migrationBuilder.DropTable(
                 name: "Vouchers");
-
-            migrationBuilder.DropTable(
-                name: "Suppliers");
 
             migrationBuilder.DropTable(
                 name: "Roles");

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,5 +22,6 @@ namespace APPDATA.Models
         public List<Bill>? Bill { get; set; }
         public List<Notification>? Notification { get; set; }
         public List<Cart>? Carts { get; set; }
+        public List<RefreshToken>?  refreshTokens { get; set; }
     }
 }

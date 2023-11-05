@@ -4,7 +4,7 @@
 
 namespace APPDATA.Migrations
 {
-    public partial class lan1 : Migration
+    public partial class createdb : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {

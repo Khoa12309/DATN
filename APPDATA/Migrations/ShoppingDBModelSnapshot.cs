@@ -597,6 +597,42 @@ namespace APPDATA.Migrations
                     b.ToTable("ProductDetails");
                 });
 
+            modelBuilder.Entity("APPDATA.Models.RefreshToken", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("ExpiredAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsRevoked")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsUsed")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("IssuedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("JwtId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("RefreshTokens");
+                });
+
             modelBuilder.Entity("APPDATA.Models.Role", b =>
                 {
                     b.Property<Guid>("id")
@@ -868,6 +904,17 @@ namespace APPDATA.Migrations
                     b.Navigation("Supplier");
                 });
 
+            modelBuilder.Entity("APPDATA.Models.RefreshToken", b =>
+                {
+                    b.HasOne("APPDATA.Models.Account", "Account")
+                        .WithMany("refreshTokens")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Account");
+                });
+
             modelBuilder.Entity("APPDATA.Models.Account", b =>
                 {
                     b.Navigation("Address");
@@ -877,6 +924,8 @@ namespace APPDATA.Migrations
                     b.Navigation("Carts");
 
                     b.Navigation("Notification");
+
+                    b.Navigation("refreshTokens");
                 });
 
             modelBuilder.Entity("APPDATA.Models.Bill", b =>
