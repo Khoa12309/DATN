@@ -4,6 +4,8 @@ using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using NuGet.Packaging.Signing;
 using System.Runtime.CompilerServices;
+using System.Text;
+using System.Xml.Linq;
 
 namespace APPVIEW.Controllers
 {
@@ -143,7 +145,9 @@ namespace APPVIEW.Controllers
             {
                 obj.Update_date = DateTime.Now;
                 obj.Update_by = DateTime.Now;
-                getapi.UpdateObj(obj, "ProductDetails");
+                obj.Name = getapiProduct.GetApi("Product").FirstOrDefault(c => c.Id == obj.Id_Product).Name;
+                
+               getapi.UpdateObj(obj, "ProductDetails");
                 addimg(imageFile, obj.Id);
                 return RedirectToAction("GetList");
             }
