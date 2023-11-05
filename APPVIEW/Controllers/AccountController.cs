@@ -42,7 +42,9 @@ namespace APPVIEW.Controllers
         {
             if (string.IsNullOrEmpty(obj.Email) || string.IsNullOrEmpty(obj.Name) || string.IsNullOrEmpty(obj.ConfirmPassword))
             {
+
                 return RedirectToAction("Register", "Account");
+
             }
             if (obj.Password != obj.ConfirmPassword)
             {

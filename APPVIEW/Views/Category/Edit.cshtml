@@ -1,4 +1,4 @@
-﻿@model APPDATA.Models.Color
+﻿@model APPDATA.Models.Category
 
 @{
     ViewData["Title"] = "Edit";
@@ -7,18 +7,13 @@
 
 <h1>Edit</h1>
 
-<h4>Color</h4>
+<h4>Category</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
          
-            <div class="form-group">
-                <label asp-for="Colorcode" class="control-label"></label>
-                <input asp-for="Colorcode" class="form-control" />
-                <span asp-validation-for="Colorcode" class="text-danger"></span>
-            </div>
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
                 <input asp-for="Name" class="form-control" />
@@ -49,4 +44,5 @@
 <div>
     <a asp-action="Index">Back to List</a>
 </div>
+
 

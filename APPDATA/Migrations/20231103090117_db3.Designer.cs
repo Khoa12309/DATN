@@ -4,6 +4,7 @@ using APPDATA.DB;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace APPDATA.Migrations
 {
     [DbContext(typeof(ShoppingDB))]
-    partial class ShoppingDBModelSnapshot : ModelSnapshot
+    [Migration("20231103090117_db3")]
+    partial class db3
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -277,7 +279,7 @@ namespace APPDATA.Migrations
                     b.Property<double>("Price")
                         .HasColumnType("float");
 
-                    b.Property<Guid?>("ProductDetail_ID")
+                    b.Property<Guid?>("ProductDetail")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Quantity")
@@ -286,8 +288,6 @@ namespace APPDATA.Migrations
                     b.HasKey("id");
 
                     b.HasIndex("CartId");
-
-                    b.HasIndex("ProductDetail_ID");
 
                     b.ToTable("CartDetails");
                 });
@@ -597,42 +597,6 @@ namespace APPDATA.Migrations
                     b.ToTable("ProductDetails");
                 });
 
-            modelBuilder.Entity("APPDATA.Models.RefreshToken", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<DateTime>("ExpiredAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<bool>("IsRevoked")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("IsUsed")
-                        .HasColumnType("bit");
-
-                    b.Property<DateTime>("IssuedAt")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("JwtId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Token")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("RefreshTokens");
-                });
-
             modelBuilder.Entity("APPDATA.Models.Role", b =>
                 {
                     b.Property<Guid>("id")
@@ -819,13 +783,13 @@ namespace APPDATA.Migrations
 
             modelBuilder.Entity("APPDATA.Models.CartDetail", b =>
                 {
+                    b.HasOne("APPDATA.Models.ProductDetail", "ProductDetails")
+                        .WithMany("Carts")
+                        .HasForeignKey("CartId");
+
                     b.HasOne("APPDATA.Models.Cart", "Cart")
                         .WithMany("CartDetails")
                         .HasForeignKey("CartId");
-
-                    b.HasOne("APPDATA.Models.ProductDetail", "ProductDetails")
-                        .WithMany("Carts")
-                        .HasForeignKey("ProductDetail_ID");
 
                     b.Navigation("Cart");
 
@@ -904,17 +868,6 @@ namespace APPDATA.Migrations
                     b.Navigation("Supplier");
                 });
 
-            modelBuilder.Entity("APPDATA.Models.RefreshToken", b =>
-                {
-                    b.HasOne("APPDATA.Models.Account", "Account")
-                        .WithMany("refreshTokens")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Account");
-                });
-
             modelBuilder.Entity("APPDATA.Models.Account", b =>
                 {
                     b.Navigation("Address");
@@ -924,8 +877,6 @@ namespace APPDATA.Migrations
                     b.Navigation("Carts");
 
                     b.Navigation("Notification");
-
-                    b.Navigation("refreshTokens");
                 });
 
             modelBuilder.Entity("APPDATA.Models.Bill", b =>

@@ -7,6 +7,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
 builder.Services.AddHttpClient();
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
               .AddCookie(options =>
@@ -33,6 +34,7 @@ builder.Services.AddNotyf(config =>
     config.IsDismissable = true;
     config.Position = NotyfPosition.TopRight;
 });
+
 var app = builder.Build();
 // thêm AddAuthentication 
 
@@ -49,6 +51,9 @@ app.UseStaticFiles();
 
 app.UseRouting();
 app.UseAuthentication();
+
+app.UseSession();
+
 app.UseAuthorization();
 app.UseEndpoints(endpoints =>
 {

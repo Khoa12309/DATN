@@ -1,11 +1,13 @@
-﻿using Newtonsoft.Json;
+﻿using APPDATA.Models;
+using Newtonsoft.Json;
+using System.Collections;
 using System.Text;
 
 namespace APPVIEW.Services
 {
     public class Getapi<T> where T : class
     {
-        public List<T> GetApi(string data)
+        public  List<T> GetApi(string data)
         {
             var url = $"https://localhost:7042/api/";
             var httpClient = new HttpClient();
@@ -15,10 +17,10 @@ namespace APPVIEW.Services
             var dataobj = JsonConvert.DeserializeObject<List<T>>(dataapi);
             return dataobj;
         }
-
         public async Task<T> CreateObj(T obj, string name)
         {
-
+         
+          
             string data = JsonConvert.SerializeObject(obj);
             StringContent content = new StringContent(data, Encoding.UTF8, "application/json");
             string requestURL =
@@ -28,7 +30,7 @@ namespace APPVIEW.Services
             string apiData = await response.Content.ReadAsStringAsync();
             if (response.IsSuccessStatusCode == false)
             {
-                return obj;
+                return null;
             }
             return obj;
         }
@@ -40,9 +42,8 @@ namespace APPVIEW.Services
             $"https://localhost:7042/api/";
             var httpClient = new HttpClient(); // Tại 1 httpClient để call API
             var response = await httpClient.PutAsync(requestURL + name + "/Update", content);
-
             string apiData = await response.Content.ReadAsStringAsync();
-            return obj;
+            return obj;       
         }
 
         public async Task<bool> DeleteObj(Guid id, string name)
