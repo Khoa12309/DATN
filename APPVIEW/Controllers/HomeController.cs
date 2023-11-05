@@ -56,7 +56,7 @@ namespace APPVIEW.Controllers
             ViewBag.Color = getapiColor.GetApi("Color"); 
             return View(pro);
         }
-
+      
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
