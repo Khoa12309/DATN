@@ -10,6 +10,7 @@ using System.Security.Claims;
 using System.Text;
 using System.Data;
 using Microsoft.AspNetCore.Authorization;
+using _APPAPI.Service;
 
 namespace APPVIEW.Controllers
 {
@@ -114,6 +115,13 @@ namespace APPVIEW.Controllers
 
                 // Trích xuất thông tin quyền từ mã thông báo JWT
                 var roles = jwt.Claims.ToList();
+
+
+                //Lưu User vào session
+                
+
+               
+
                 bool checkRoleAdmin = false;
                 // Trích xuất thông tin quyền từ mã thông báo JWT
 
@@ -123,12 +131,16 @@ namespace APPVIEW.Controllers
                 {
                     foreach (var role in roles)
                     {
+                       
                         if (role.Type.ToString() == "role")
                         {
                             claims.Add(new Claim(ClaimTypes.Role, role.Value));
-                            checkRoleAdmin = true;
-
-                            break;
+                            checkRoleAdmin = true;                         
+                        }
+                        if (role.Type.ToString() == "Id")
+                        {
+                            var acc = getapi.GetApi("Account").FirstOrDefault(c => c.Id.ToString() == role.Value);
+                            SessionService.SetObjToJson(HttpContext.Session, "Account",acc);
                         }
 
                     }

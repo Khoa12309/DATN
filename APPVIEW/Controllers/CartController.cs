@@ -89,6 +89,9 @@ namespace APPVIEW.Controllers
 
         public async Task<IActionResult> AddToCart(Guid id,int Soluong,Guid color,Guid size)
         {
+          
+                var account= SessionService.GetUserFromSession(HttpContext.Session, "Account");
+
             var product = getapiPD.GetApi("ProductDetails").Find(c => c.Id == id);
             if (color!=Guid.Empty&&size!=Guid.Empty)
             {
@@ -96,13 +99,14 @@ namespace APPVIEW.Controllers
 
             }
             product.Quantity = Soluong;
+           
             var cart = new Cart()
             {
                 id = Guid.NewGuid(),
                 CreateDate = DateTime.Now,
                 UpdateDate = DateTime.Now,
                 Status = true,
-                AccountId = Guid.Empty,
+                AccountId = account.Id,
             };
             getapi.CreateObj(cart, "Cart");
           

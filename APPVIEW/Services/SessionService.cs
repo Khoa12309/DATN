@@ -24,16 +24,16 @@ namespace _APPAPI.Service
             }
             else return new List<ProductDetail>();
         }
-        //public static User GetUserFromSession(ISession session, string key)
-        //{
-        //    var data = session.GetString(key);
-        //    if (data != null)
-        //    {
-        //        var listObj = JsonConvert.DeserializeObject<User>(data);
-        //        return listObj;
-        //    }
-        //    else return new User();
-        //}
+        public static Account GetUserFromSession(ISession session, string key)
+        {
+            var data = session.GetString(key);
+            if (data != null)
+            {
+                var listObj = JsonConvert.DeserializeObject<Account>(data);
+                return listObj;
+            }
+            else return new Account();
+        }
         public static bool CheckProductInCart(Guid id, List<ProductDetail> cartProducts)
         {
             return cartProducts.Any(p => p.Id == id);
