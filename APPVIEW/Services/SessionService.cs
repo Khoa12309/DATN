@@ -12,6 +12,10 @@ namespace _APPAPI.Service
 
             session.SetString(key, jsonString);
 
+        } 
+        public static void Clearobj(ISession session, string key)
+        {
+            session.Clear();
         }
         public static List<ProductDetail> GetObjFromSession(ISession session, string key)
         {

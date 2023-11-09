@@ -8,6 +8,7 @@ using APPVIEW.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using APPDATA.Models;
+using System.Xml.Linq;
 
 namespace APPVIEW.Controllers
 {
@@ -61,6 +62,17 @@ namespace APPVIEW.Controllers
             ViewBag.Img = getapiImg.GetApi("Image");
             ViewBag.Size = getapiSize.GetApi("Size");
             ViewBag.Color = getapiColor.GetApi("Color"); 
+            var a = getapi.GetApi("ProductDetails").GroupBy(c => c.Id_Color).ToList();
+            var b = getapi.GetApi("ProductDetails").GroupBy(c => c.Id_Size).ToList();
+            foreach (var group in a)
+            {
+             
+                foreach (var product in b)
+                {
+                    var lis = group.Intersect(product).ToList();
+                }
+            }
+            var intersect = a.IntersectBy(b, x => x);
             return View(pro);
         }
       

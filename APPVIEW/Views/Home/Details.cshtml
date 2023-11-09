@@ -85,7 +85,6 @@
 
                         @{
                             var lstS = new List<Guid>();
-
                         }
                         @foreach (var pd in ViewBag.lspd)
                         {
@@ -305,32 +304,32 @@
 
                     @{
                         var lstP = new List<Guid>();
-                        @foreach (var ProD in ViewBag.PD)
+                                    @foreach (var ProD in ViewBag.PD)
                         {
                             if (lstP.Any(c => c == ProD.Id_Product))
                             {
                                 continue;
                             }
-                            @foreach (var img in ViewBag.Img)
+                                        @foreach (var img in ViewBag.Img)
                             {
                                 if (img.IdProductdetail ==ProD.Id )
                                 {
                                     lstP.Add(ProD.Id_Product);
-                                    <div class="card product-item border-0">
-                                    <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
-                                        <img class="img-fluid w-100" src="~/images/@img.Name" alt="">
-                                    </div>
-                                    <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
-                                        <h6 class="text-truncate mb-3">@ProD.Name</h6>
-                                        <div class="d-flex justify-content-center">
-                                            <h6>@ProD.Price</h6><h6 class="text-muted ml-2"><del>$123.00</del></h6>
-                                        </div>
-                                    </div>
-                                        <div class="card-footer d-flex justify-content-between bg-light border">
-                                        <a href="@Url.Action("Details","Home",new{id=ProD.Id })" class="btn btn-sm text-dark p-0"><i class="fas fa-eye text-primary mr-1"></i>View Detail</a>
-                                        <a href="@Url.Action("AddToCart","Cart",new {id=ProD.Id,Soluong=1})" class="btn btn-sm text-dark p-0"><i class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart</a>
-                                        </div>
-                                    </div>
+                                                <div class="card product-item border-0">
+                                                <div class="card-header product-img position-relative overflow-hidden bg-transparent border p-0">
+                                                    <img class="img-fluid w-100" src="~/images/@img.Name" alt="">
+                                                </div>
+                                                <div class="card-body border-left border-right text-center p-0 pt-4 pb-3">
+                                                    <h6 class="text-truncate mb-3">@ProD.Name</h6>
+                                                    <div class="d-flex justify-content-center">
+                                                        <h6>@ProD.Price</h6><h6 class="text-muted ml-2"><del>$123.00</del></h6>
+                                                    </div>
+                                                </div>
+                                                    <div class="card-footer d-flex justify-content-between bg-light border">
+                                                    <a href="@Url.Action("Details","Home",new{id=ProD.Id })" class="btn btn-sm text-dark p-0"><i class="fas fa-eye text-primary mr-1"></i>View Detail</a>
+                                                    <a href="@Url.Action("AddToCart","Cart",new {id=ProD.Id,Soluong=1})" class="btn btn-sm text-dark p-0"><i class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart</a>
+                                                    </div>
+                                                </div>
                                 }
                             }
                                 
