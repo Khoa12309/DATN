@@ -69,13 +69,10 @@
                                     <td class="align-middle">
                                     <select asp-for="@item.Id_Size">
                                        
-                                            if (lstS.Any(c => c == item.Id_Size))
-                                            {
-                                            continue;
-                                            }
+                                           
                                             @foreach (var Size in ViewBag.Size)
                                             {
-                                           
+                                                
                                                     //lstS.Add(pd.Id_Size);
                                                 <option  value="@Size.Id">@Size.Name</option>
                                                 
@@ -87,10 +84,7 @@
                                         <select asp-for="@item.Id_Color">
                                     
                        
-                                        if (lstC.Any(c => c == pd.Id_Color))
-                                        {
-                                            continue;
-                                        }
+                                       
                                         @foreach (var Color in ViewBag.Color)
                                         {
                                             

@@ -33,7 +33,12 @@ namespace _APPAPI.Controllers
         public bool Delete(Guid id)
         {
             ProductDetail item = _crud.GetAllItems().FirstOrDefault(c => c.Id == id);
-            return _crud.DeleteItem(item);
+            if (!_crud.DeleteItem(item))
+            {
+                item.Status = 0 ;
+                _crud.UpdateItem(item);
+            } 
+            return true;
         }
         [Route("Update")]
         [HttpPut]

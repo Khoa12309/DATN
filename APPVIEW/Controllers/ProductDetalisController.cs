@@ -91,7 +91,7 @@ namespace APPVIEW.Controllers
             var img = new Image()
             {
                 Id = Guid.NewGuid(),
-                 IdProductdetail = id,
+                IdProductdetail = id,
                 Status = 1,
                 Create_date = DateTime.Now,
                 Update_date = DateTime.Now,
@@ -160,6 +160,12 @@ namespace APPVIEW.Controllers
 
         public async Task<IActionResult> Delete(Guid id)
         {
+            var img = getapiImg.GetApi("Image").FirstOrDefault(c=>c.IdProductdetail==id);
+            if (img!=null)
+            {
+                getapiImg.DeleteObj(img.Id, "Image");
+
+            }
             getapi.DeleteObj(id, "ProductDetails");
             return RedirectToAction("GetList");
 
