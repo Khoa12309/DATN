@@ -1,4 +1,4 @@
-﻿@model IEnumerable<APPDATA.Models.ProductDetail>
+﻿@model List<APPDATA.Models.ProductDetail>
 
 @{
     ViewData["Title"] = "ViewCart";
@@ -9,7 +9,7 @@
 
 <!-- Page Header Start -->
 <div class="container-fluid bg-secondary mb-5">
-    <div class="d-flex flex-column align-items-center justify-content-center" style="min-height: 300px">
+    <div class="d-flex flex-column align-Model[i]s-center justify-content-center" style="min-height: 300px">
         <h1 class="font-weight-semi-bold text-uppercase mb-3">Shopping Cart</h1>
         <div class="d-inline-flex">
             <p class="m-0"><a href="">Home</a></p>
@@ -23,6 +23,8 @@
 <div class="container-fluid pt-5">
     <div class="row px-xl-5">
         <div class="col-lg-8 table-responsive mb-5">
+            <form asp-action="Updatecart" asp-controller="Cart" method="post">
+               
             <table class="table table-bordered text-center mb-0">
                 <thead class="bg-secondary text-dark">
                     <tr>
@@ -37,29 +39,31 @@
                 </thead>
                 <tbody class="align-middle">
                   @{
-                       
-                      foreach (var item in Model)
+
+                        @for (int i = 0; i < Model.Count; i++)
                         {
-                         <tr>
+                                <input hidden asp-for="@Model[i].Id" value="@Model[i].Id" />
+                                var tt = @Model[i].Price * @Model[i].Quantity;
+                                <tr>
                             
                             @foreach (var img in ViewBag.Img)
-                            {                          
-                                if (img.IdProductdetail == item.Id)
+                            {
+                                        if (img.IdProductdetail == @Model[i].Id)
                                 {
-                                <td class="align-middle"><img src="~/images/@img.Name" alt="" style="width: 50px;"> @item.Name</td>
+                                <td class="align-middle"><img src="~/images/@img.Name" alt="" style="width: 50px;"> @Model[i].Name</td>
                                 }
                             }
-                                <td class="align-middle">@item.Price</td>
+                                <td class="align-middle">@Model[i].Price</td>
                                     <td class="align-middle">
                                         <div class="input-group quantity mx-auto" style="width: 100px;">
                                             <div class="input-group-btn">
-                                                <button class="btn btn-sm btn-primary btn-minus">
+                                                <button type="button" class="btn btn-sm btn-primary btn-minus">
                                                     <i class="fa fa-minus"></i>
                                                 </button>
                                             </div>
-                                            <input type="text" class="form-control form-control-sm bg-secondary text-center" min="0" value="@item.Quantity">
+                                            <input type="text" class="form-control form-control-sm bg-secondary text-center" min="0" value="@Model[i].Quantity" asp-for="@Model[i].Quantity" >
                                             <div class="input-group-btn">
-                                                <button class="btn btn-sm btn-primary btn-plus">
+                                                <button type="button" class="btn btn-sm btn-primary btn-plus">
                                                     <i class="fa fa-plus"></i>
                                                 </button>
                                             </div>
@@ -67,21 +71,16 @@
                                     </td>
                                   
                                     <td class="align-middle">
-                                    <select asp-for="@item.Id_Size">
-                                       
-                                           
+                                    <select asp-for="@Model[i].Id_Size">                                                                                  
                                             @foreach (var Size in ViewBag.Size)
-                                            {
-                                                
-                                                    //lstS.Add(pd.Id_Size);
-                                                <option  value="@Size.Id">@Size.Name</option>
-                                                
-                                            }
-                                           
+                                            {                                                  
+                                                //lstS.Add(pd.Id_Size);
+                                                <option value="@Size.Id">@Size.Name</option>                                                
+                                            }                                           
                                         </select>
                                     </td>
                                     <td class="align-middle">
-                                        <select asp-for="@item.Id_Color">
+                                        <select asp-for="@Model[i].Id_Color">
                                     
                        
                                        
@@ -90,19 +89,27 @@
                                             
                                                 <option value="@Color.Id">@Color.Name</option>
                                             
-                                        }
-                                            
+                                        }                                            
                                         </select>
                                     </td>
-                                    <td class="align-middle">$150</td>
-                                    <td class="align-middle"><a href="~/cart/DeleteCartItem/@item.Id" class="btn btn-sm btn-primary"><i class="fa fa-times"></i></a></td>
+                                    <td class="align-middle" >  
+                                    @tt
+                                    </td>
+                                    <td class="align-middle"><a href="@Url.ActionLink("DeleteCartItem","Cart",new{id=Model[i].Id})" class="btn btn-sm btn-primary"><i class="fa fa-times"></i></a></td>
                          </tr>
-
                       }
                 }
                   
                 </tbody>
             </table>
+               
+             <div class="input-group">
+                    
+                    <div class="input-group-append">
+                        <input type="submit" class="btn btn-primary" value="Update Cart">
+                    </div>
+                </div>
+            </form>
         </div>
         <div class="col-lg-4">
             <form class="mb-5" action="">
@@ -120,7 +127,7 @@
                 <div class="card-body">
                     <div class="d-flex justify-content-between mb-3 pt-1">
                         <h6 class="font-weight-medium">Subtotal</h6>
-                        <h6 class="font-weight-medium">$150</h6>
+                        <h6 class="font-weight-medium">$@ViewBag.tt</h6>
                     </div>
                     <div class="d-flex justify-content-between">
                         <h6 class="font-weight-medium">Shipping</h6>
@@ -139,3 +146,12 @@
     </div>
 </div>
 <!-- Cart End -->
+<script>
+    function Tinhtien(){
+        var sp = document.getElementById("sl").value * 10;
+        document.getElementById("thanhtien").value = 10;
+        var total = document.getElementById("total").value;
+        
+    }
+  
+</script>

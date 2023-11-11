@@ -103,7 +103,6 @@ namespace APPVIEW.Controllers
                     _notyf.Warning("Màu hoặc kích thước bạn chọn không còn ");
                     return RedirectToAction("ViewCart");
                 }
-
             }
             product.Quantity = Soluong;
             var cart = getapi.GetApi("Cart").FirstOrDefault(c => c.AccountId == account.Id);
@@ -176,7 +175,11 @@ namespace APPVIEW.Controllers
             var p = products.Find(c => c.Id == id);
             products.Remove(p);
             SessionService.SetObjToJson(HttpContext.Session, "Cart", products);
-            getapiCartD.DeleteObj(productcartdetails.id, "CartDetails");
+            if (productcartdetails !=null)
+            {
+                getapiCartD.DeleteObj(productcartdetails.id, "CartDetails");
+
+            }
             return RedirectToAction("ViewCart");
         }
         public void loadcart()
@@ -201,6 +204,7 @@ namespace APPVIEW.Controllers
                             {
                                 cartdetails.Quantity += item.Quantity;
                                 getapiCartD.UpdateObj(cartdetails, "CartDetails");
+
                             }
                             else
                             {
@@ -222,11 +226,12 @@ namespace APPVIEW.Controllers
                     var prod = getapiPD.GetApi("ProductDetails");
                     foreach (var item in productcartdetails)
                     {
-
                         var PD = prod.Find(c => c.Id == item.ProductDetail_ID);
                         PD.Quantity = item.Quantity;
                         products.Add(PD);
                     }
+                 
+                   
                     SessionService.SetObjToJson(HttpContext.Session, "Cart", products);
                     SessionService.SetObjToJson(HttpContext.Session, "CartDN", products);
                    
@@ -242,8 +247,42 @@ namespace APPVIEW.Controllers
             ViewBag.Color = getapiColor.GetApi("Color");
             ViewBag.Size = getapiSize.GetApi("Size");
             var products = SessionService.GetObjFromSession(HttpContext.Session, "Cart");
+            double tiensp =0;
+            foreach (var item in products)
+            {
+
+                tiensp += (double)item.Quantity * item.Price;
+            }
+            ViewBag.tt = tiensp; 
             return View(products);
 
         }
+        [HttpPost]
+        public async Task<IActionResult> UpdateCart (List<APPDATA.Models.ProductDetail> obj)
+        {
+            foreach (var item in obj)
+            {
+                var products = SessionService.GetObjFromSession(HttpContext.Session, "Cart");
+                var productcartdetails = getapiCartD.GetApi("CartDetails").FirstOrDefault(c => c.ProductDetail_ID == item.Id);
+                var p = products.Find(c => c.Id == item.Id);
+                products.Remove(p);
+                SessionService.SetObjToJson(HttpContext.Session, "Cart", products);
+                if (productcartdetails!=null)
+                {
+                    getapiCartD.DeleteObj(productcartdetails.id, "CartDetails");
+
+                }
+
+
+                AddToCart(item.Id, item.Quantity, item.Id_Color.Value, item.Id_Size.Value);
+
+            }
+
+
+
+            return RedirectToAction("ViewCart");
+
+        }
+        
     }
 }
