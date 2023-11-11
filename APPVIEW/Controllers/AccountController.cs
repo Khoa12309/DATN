@@ -11,6 +11,7 @@ using System.Text;
 using System.Data;
 using Microsoft.AspNetCore.Authorization;
 using _APPAPI.Service;
+using AspNetCoreHero.ToastNotification.Abstractions;
 
 namespace APPVIEW.Controllers
 {
@@ -18,10 +19,12 @@ namespace APPVIEW.Controllers
     {
         private readonly HttpClient _httpClient;
         private Getapi<Account> getapi;
-        public AccountController(HttpClient httpClient)
+        private readonly INotyfService _notyf;
+        public AccountController(HttpClient httpClient,INotyfService notyf)
         {
             getapi = new Getapi<Account>();
             _httpClient = httpClient;
+            _notyf = notyf;
         }
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetList()
@@ -105,6 +108,16 @@ namespace APPVIEW.Controllers
                 var handler = new JwtSecurityTokenHandler();
                 var jwt = handler.ReadJwtToken(loginResult.AccessToken);
 
+                 bool checkRoleAdmin=false ;
+                var checkRoles = jwt.Claims.FirstOrDefault(c => c.Type == "role")?.Value;
+                if (checkRoles.StartsWith("Adm"))
+                {
+                    checkRoleAdmin = true ;
+                }
+                else
+                {
+                    checkRoleAdmin=false;
+                }
 
                 //Check Role and Get information of user
                 var claims = new List<Claim>
@@ -112,61 +125,48 @@ namespace APPVIEW.Controllers
                     new Claim(ClaimTypes.Name, obj.Email), 
                     // Thêm thông tin khác của người dùng nếu cần
                     };
-
                 // Trích xuất thông tin quyền từ mã thông báo JWT
                 var roles = jwt.Claims.ToList();
-
-
-                //Lưu User vào session
-                
-
-               
-
-                bool checkRoleAdmin = false;
-                // Trích xuất thông tin quyền từ mã thông báo JWT
-
 
                 //    Thêm các quyền từ mã thông báo JWT vào danh tính của người dùng
                 if (roles.Any())
                 {
                     foreach (var role in roles)
                     {
-                       
+
                         if (role.Type.ToString() == "role")
                         {
                             claims.Add(new Claim(ClaimTypes.Role, role.Value));
-                            checkRoleAdmin = true;                         
+
                         }
                         if (role.Type.ToString() == "Id")
                         {
                             var acc = getapi.GetApi("Account").FirstOrDefault(c => c.Id.ToString() == role.Value);
-                            SessionService.SetObjToJson(HttpContext.Session, "Account",acc);
+                            SessionService.SetObjToJson(HttpContext.Session, "Account", acc);
                         }
 
-                    }
-                    if (checkRoleAdmin == false)
-                    {
-                        // Nếu không có quyền từ mã thông báo JWT, thêm quyền mặc định "Customer"
-                        claims.Add(new Claim(ClaimTypes.Role, "Customer"));
-                    }
+                    }                 
 
                 }
                 var customData = jwt.Claims.FirstOrDefault(c => c.Type == "Avatar")?.Value;
+
                 var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
                 var principal = new ClaimsPrincipal(identity);
+
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
 
                 Response.Cookies.Append("AccessToken", loginResult.AccessToken);
                 if (checkRoleAdmin == true)
                 {
-                    return Redirect("~/Address/GetList");
-                   // return Redirect("~/Home/Index");
+                     _notyf.Success($"Login success! Welcome {obj.Email}");
+                    return Redirect("~/Admin/Admin/Index");
+                    
                 }
                 else
                 {
                     // _notyf.Success($"Login success! Welcome {obj.Email}");
                     return Redirect("~/Home/Index");
-                  //  return Redirect("~/Address/GetList");
+                    //  return Redirect("~/Address/GetList");
                 }
 
 

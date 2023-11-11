@@ -13,7 +13,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
               .AddCookie(options =>
               {
                   options.Cookie.HttpOnly = true;
-                  options.ExpireTimeSpan = TimeSpan.FromMinutes(1);
+                  options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
                   options.LoginPath = "/Account/Login";
                   options.LogoutPath = "/Account/Logout";
                   options.AccessDeniedPath = "/AccessDenied";
