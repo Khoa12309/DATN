@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace APPVIEW.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    //[Authorize(Roles = "Admin")]
     public class VoucherController : Controller
     {
         private Getapi<Voucher> getapi;
@@ -69,8 +69,9 @@ namespace APPVIEW.Controllers
 
         public async Task<IActionResult> Delete(Guid id)
         {
+            
             getapi.DeleteObj(id, "Voucher");
-            return RedirectToAction("GetList");
+           return RedirectToAction("GetList");
 
         }
     }
