@@ -15,7 +15,8 @@ namespace APPVIEW.Controllers
         public async Task<IActionResult> GetList()
         {
             var obj = getapi.GetApi("Image");
-            return View(obj);
+          
+            return View( obj);
         }
 
 
@@ -31,7 +32,7 @@ namespace APPVIEW.Controllers
         {
             try
             {
-                getapi.CreateObj(obj, "Image");
+               await getapi.CreateObj(obj, "Image");
                 return RedirectToAction("GetList");
             }
             catch
@@ -55,7 +56,7 @@ namespace APPVIEW.Controllers
         {
             try
             {
-                getapi.UpdateObj(obj, "Image");
+              await getapi.UpdateObj(obj, "Image");
                 return RedirectToAction("GetList");
             }
             catch
@@ -67,7 +68,7 @@ namespace APPVIEW.Controllers
 
         public async Task<IActionResult> Delete(Guid id)
         {
-            getapi.DeleteObj(id, "Image");
+          await  getapi.DeleteObj(id, "Image");
             return RedirectToAction("GetList");
 
         }
