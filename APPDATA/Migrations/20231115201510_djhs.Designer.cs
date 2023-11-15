@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace APPDATA.Migrations
 {
     [DbContext(typeof(ShoppingDB))]
-    [Migration("20231105145619_lan4")]
-    partial class lan4
+    [Migration("20231115201510_djhs")]
+    partial class djhs
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -124,45 +124,44 @@ namespace APPDATA.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Address")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Code")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("CreateBy")
+                    b.Property<DateTime?>("CreateBy")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("CreateDate")
+                    b.Property<DateTime?>("CreateDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<float>("MoneyReduce")
+                    b.Property<float?>("MoneyReduce")
                         .HasColumnType("real");
 
-                    b.Property<DateTime>("PayDate")
+                    b.Property<DateTime?>("PayDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("PhoneNumber")
-                        .HasColumnType("int");
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("ShipDate")
+                    b.Property<DateTime?>("ShipDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<float>("ShipFee")
+                    b.Property<float?>("ShipFee")
                         .HasColumnType("real");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
-                    b.Property<float>("TotalMoney")
+                    b.Property<float?>("TotalMoney")
                         .HasColumnType("real");
 
                     b.Property<string>("Type")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("UpdateBy")
+                    b.Property<DateTime?>("UpdateBy")
                         .HasColumnType("datetime2");
 
                     b.Property<Guid?>("Voucherid")
@@ -189,7 +188,7 @@ namespace APPDATA.Migrations
                     b.Property<Guid?>("BIllId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<float>("Discount")
+                    b.Property<float?>("Discount")
                         .HasColumnType("real");
 
                     b.Property<float>("Price")
@@ -567,8 +566,8 @@ namespace APPDATA.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<double>("Price")
-                        .HasColumnType("float");
+                    b.Property<float>("Price")
+                        .HasColumnType("real");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
