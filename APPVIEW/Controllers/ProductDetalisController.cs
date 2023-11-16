@@ -36,13 +36,13 @@ namespace APPVIEW.Controllers
 
         public async Task<IActionResult> GetList()
         {
-            ViewBag.Size = getapiSize.GetApi("Size");
-            ViewBag.Color = getapiColor.GetApi("Color");
-            ViewBag.Category = getapiCategory.GetApi("Category");
-            ViewBag.Supplier = getapiSupplier.GetApi("Supplier");
-            ViewBag.Image = getapiImg.GetApi("Image");
-            ViewBag.Material = getapiMaterial.GetApi("Material");
-            var obj = getapi.GetApi("ProductDetails");
+            ViewBag.Size =await getapiSize.GetApia("Size");
+            ViewBag.Color =await getapiColor.GetApia("Color");
+            ViewBag.Category = await getapiCategory.GetApia("Category");
+            ViewBag.Supplier = await getapiSupplier.GetApia("Supplier");
+            ViewBag.Image = await getapiImg.GetApia("Image");
+            ViewBag.Material = await getapiMaterial.GetApia("Material");
+            var obj = await getapi.GetApia("ProductDetails");
             return View(obj);
         }
         [HttpGet]
@@ -55,6 +55,7 @@ namespace APPVIEW.Controllers
             ViewBag.Supplier = getapiSupplier.GetApi("Supplier");
             ViewBag.Image = getapiImg.GetApi("Image");
             ViewBag.Material = getapiMaterial.GetApi("Material");
+           
             return View();
         }
 
@@ -64,6 +65,8 @@ namespace APPVIEW.Controllers
         {
             try
             {
+                
+             
                 //// truyền nhiều dữ liệu 
                 //if (myList!= null)
                 //{
@@ -75,7 +78,7 @@ namespace APPVIEW.Controllers
                 obj.Update_date=DateTime.Now;
                 obj.Create_by= DateTime.Now;
                 obj.Update_by= DateTime.Now;
-                getapi.CreateObj(obj, "ProductDetails");              
+                await getapi.CreateObj(obj, "ProductDetails");              
                 addimg(imageFile,obj.Id);
                 return RedirectToAction("GetList");
 
@@ -85,7 +88,7 @@ namespace APPVIEW.Controllers
                 return View();
             }
         }
-       public void addimg(IFormFile formFile,Guid id)
+       public async void addimg(IFormFile formFile,Guid id)
        {
             var anh = getapiImg.GetApi("Image").FirstOrDefault(c => c.IdProductdetail == id);
             var img = new Image()
@@ -115,11 +118,11 @@ namespace APPVIEW.Controllers
             if (anh!=null)
             {
                 anh.Name = img.Name;
-                getapiImg.UpdateObj(anh, "Image");
+              await  getapiImg.UpdateObj(anh, "Image");
             }
             else
             {               
-                getapiImg.CreateObj(img, "Image");
+               await  getapiImg.CreateObj(img, "Image");
             }
            
         }
@@ -147,7 +150,7 @@ namespace APPVIEW.Controllers
                 obj.Update_by = DateTime.Now;
                 obj.Name = getapiProduct.GetApi("Product").FirstOrDefault(c => c.Id == obj.Id_Product).Name;
                 
-               getapi.UpdateObj(obj, "ProductDetails");
+              await getapi.UpdateObj(obj, "ProductDetails");
                 addimg(imageFile, obj.Id);
                 return RedirectToAction("GetList");
             }
@@ -163,10 +166,10 @@ namespace APPVIEW.Controllers
             var img = getapiImg.GetApi("Image").FirstOrDefault(c=>c.IdProductdetail==id);
             if (img!=null)
             {
-                getapiImg.DeleteObj(img.Id, "Image");
+              await  getapiImg.DeleteObj(img.Id, "Image");
 
             }
-            getapi.DeleteObj(id, "ProductDetails");
+          await  getapi.DeleteObj(id, "ProductDetails");
             return RedirectToAction("GetList");
 
         }
