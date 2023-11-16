@@ -12,11 +12,23 @@ namespace APPVIEW.Services
             var url = $"https://localhost:7042/api/";
             var httpClient = new HttpClient();
             var respones = httpClient.GetAsync(url + data).Result;
-
             var dataapi = respones.Content.ReadAsStringAsync().Result;
             var dataobj = JsonConvert.DeserializeObject<List<T>>(dataapi);
+            return dataobj.ToList();
+
+        }  
+        public  async Task< List<T>> GetApia(string data)
+        {
+            var url = $"https://localhost:7042/api/";
+            var httpClient = new HttpClient();
+            var respones = await httpClient.GetAsync(url + data);
+            var dataapi = await respones.Content.ReadAsStringAsync();
+            var dataobj =  JsonConvert.DeserializeObject<List<T>>(dataapi);
             return dataobj;
-        }
+
+        } 
+  
+
         public async Task<T> CreateObj(T obj, string name)
         {
          

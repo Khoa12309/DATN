@@ -54,7 +54,7 @@ namespace APPVIEW.Controllers
         {
             return View();
         }
-        public IActionResult Details(Guid id)
+        public async Task<IActionResult> Details(Guid id)
         {
             ViewBag.PD= getapi.GetApi("ProductDetails");
             var pro = getapi.GetApi("ProductDetails").FirstOrDefault(c => c.Id == id);
