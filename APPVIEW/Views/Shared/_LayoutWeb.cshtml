@@ -1,4 +1,18 @@
-﻿<!DOCTYPE html>
+﻿@{
+    var IdUser = ((System.Security.Claims.ClaimsIdentity)User.Identity).FindFirst("Id");
+    string Id_userValue = IdUser?.Value;
+
+    var AvatarUser = ((System.Security.Claims.ClaimsIdentity)User.Identity).FindFirst("Avatar");
+    string AvatarUserValue = AvatarUser?.Value;
+    if (AvatarUserValue==null)
+    {
+        AvatarUserValue  = "UserDefault.jpg";
+    }
+   
+
+}
+
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -14,7 +28,7 @@
     <link rel="stylesheet" href="~/contentwebb/vendors/owl-carousel/owl.carousel.min.css">
     <link href="~/contentwebb/css/style.css" rel="stylesheet" />
     <link href="~/contentwebb/css/main.css" rel="stylesheet" />
-
+   
 </head>
 <body>
     <!--================ Start Header Menu Area =================-->
@@ -22,7 +36,7 @@
         <div class="main_menu">
             <nav class="navbar navbar-expand-lg navbar-light">
                 <div class="container">
-                    <a class="navbar-brand logo_h" href="index.html"><img src="~/contentwebb/img/logo.png" alt=""></a>
+                    <a class="navbar-brand logo_h" href="~/Home/index"><img src="~/contentwebb/img/logo.png" alt=""></a>
                     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
                             aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
                         <span class="icon-bar"></span>
@@ -31,7 +45,7 @@
                     </button>
                     <div class="collapse navbar-collapse offset" id="navbarSupportedContent">
                         <ul class="nav navbar-nav menu_nav ml-auto mr-auto">
-                            <li class="nav-item active"><a class="nav-link" asp-action="Index" asp-controller="Home" >Home</a></li>
+                            <li class="nav-item active"><a class="nav-link" asp-action="Index" asp-controller="Home">Home</a></li>
                             <li class="nav-item submenu dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
                                    aria-expanded="false">Shop</a>
@@ -57,23 +71,95 @@
                                 <ul class="dropdown-menu">
                                     <li class="nav-item"><a class="nav-link" href="login.html">Login</a></li>
                                     <li class="nav-item"><a class="nav-link" href="register.html">Register</a></li>
-                                    <li class="nav-item"><a class="nav-link" href="tracking-order.html">Tracking</a></li>
+
                                 </ul>
                             </li>
                             <li class="nav-item"><a class="nav-link" asp-action="Contact" asp-controller="Home">Contact</a></li>
                         </ul>
 
                         <ul class="nav-shop">
-                            <li class="nav-item"><button><i class="ti-search"></i></button></li>
+                         
                             <li class="nav-item">
-                                <a asp-action="Login" asp-controller="Account" >
-                                    <img src="~/contentwebb/img/home/person-circle.svg" alt="Person Icon" />
-                                </a>
+
+                                <div class="input-group">
+                                    <input type="text" class="form-control" placeholder="Search" aria-label="Recipient's username" aria-describedby="basic-addon2">
+                                    <span class="input-group-text" id="basic-addon2">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                                            <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
+                                        </svg>
+                                    </span>
+                                    
+                                </div>
+                               
                             </li>
 
-                            <li class="nav-item"><button><i class="ti-shopping-cart"></i><span class="nav-shop__circle">3</span></button> </li>
-                            <li class="nav-item"><a class="button button-header" href="#">Buy Now</a></li>
+                            <li class="nav-item">
+                                <a style="color:black" href="~/Cart/ViewCart">
+                                    <svg xmlns="~/Cart/ViewCart" width="16" height="16" fill="currentColor" class="bi bi-cart" viewBox="0 0 16 16">
+                                        <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l1.313 7h8.17l1.313-7H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z" />
+                                    </svg>
+                                </a>
+                               
+                            </li>
+
+
+                         
+                           
                         </ul>
+                        <ul class="nav navbar-nav menu_nav">
+                            <li class="nav-item submenu dropdown">
+                                @if (User.Identity.IsAuthenticated)
+                                {
+                                    <!-- Hiển thị menu cho người dùng đã đăng nhập -->
+                                    <a href="#" style="color:black" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person" viewBox="0 0 16 16">
+                                            <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0Zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4Zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10Z" />
+                                        </svg>
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li class="nav-item">
+                                            <a asp-route-id_User="@Id_userValue" class="nav-link" asp-controller="Account" asp-action="MyProfile">
+                                                <img src="~/UserImage/@AvatarUserValue" alt="Avatar" style="width: 25px; height: 25px; border-radius: 50%; object-fit: cover;">
+                                                My profile
+                                            </a>
+
+                                        </li>
+                                        <li class="nav-item">
+                                            <a id="logoutButton" class="nav-link" href="javascript:void(0);">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-arrow-in-left" viewBox="0 0 16 16" style="width: 20px; height: 20px;">
+                                                    <path fill-rule="evenodd" d="M10 3.5a.5.5 0 0 0-.5-.5h-8a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5v-2a.5.5 0 0 1 1 0v2A1.5 1.5 0 0 1 9.5 14h-8A1.5 1.5 0 0 1 0 12.5v-9A1.5 1.5 0 0 1 1.5 2h8A1.5 1.5 0 0 1 11 3.5v2a.5.5 0 0 1-1 0v-2z" />
+                                                    <path fill-rule="evenodd" d="M4.146 8.354a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H14.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3z" />
+                                                </svg>
+                                                LogOut
+                                            </a>
+                                        </li>
+                                    </ul>
+                                }
+                                else
+                                {
+                                    <!-- Hiển thị menu cho người dùng chưa đăng nhập -->
+                                    <a href="#" style="color:black" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person" viewBox="0 0 16 16">
+                                            <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6Zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0Zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4Zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10Z" />
+                                        </svg>
+                                    </a>
+                                    <ul class="dropdown-menu">
+                                        <li class="nav-item">
+                                            <a class="nav-link" href="~/account/login">
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-box-arrow-in-right" viewBox="0 0 16 16" style="width: 20px; height: 20px;">
+                                                    <path fill-rule="evenodd" d="M6 3.5a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-2a.5.5 0 0 0-1 0v2A1.5 1.5 0 0 0 6.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-8A1.5 1.5 0 0 0 5 3.5v2a.5.5 0 0 0 1 0v-2z" />
+                                                    <path fill-rule="evenodd" d="M11.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H1.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z" />
+                                                </svg>
+                                                LogIn
+                                            </a>
+
+                                        </li>
+                                    </ul>
+                                }
+                            </li>
+                        </ul>
+
+
                     </div>
                 </div>
             </nav>
@@ -83,7 +169,7 @@
     <main class="site-main">
 
         @RenderBody()
->
+        >
         <section class="subscribe-position">
             <div class="container">
                 <div class="subscribe text-center">
@@ -215,5 +301,23 @@
     <script src="~/contentwebb/vendors/jquery.ajaxchimp.min.js"></script>
     <script src="~/contentwebb/vendors/mail-script.js"></script>
     <script src="~/contentwebb/js/main.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        document.getElementById('logoutButton').addEventListener('click', function () {
+            Swal.fire({
+                title: 'Are you sure?',
+                text: 'Bạn có chắc muốn đăng xuất không!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, logout!',
+                cancelButtonText: 'No, cancel',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Redirect to the logout URL
+                    window.location.href = '/account/logout';
+                }
+            });
+        });
+    </script>
 </body>
 </html>

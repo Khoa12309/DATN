@@ -40,7 +40,6 @@ namespace _APPAPI.Controllers
         {
             Address item = _crud.GetAllItems().FirstOrDefault(c => c.id == obj.id);
 
-           item.AccountId  = obj.AccountId;
             item.Ward=  obj.Ward;
             item.PhoneNumber = obj.PhoneNumber;
             item.DefaultAddress = obj.DefaultAddress;

@@ -75,6 +75,7 @@ namespace APPVIEW.Controllers
             var intersect = a.IntersectBy(b, x => x);
             return View(pro);
         }
+
       
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
