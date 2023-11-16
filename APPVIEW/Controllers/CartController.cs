@@ -161,13 +161,17 @@ namespace APPVIEW.Controllers
                     products.Remove(productcart);
                     products.Add(productcart);
                     SessionService.SetObjToJson(HttpContext.Session, "Cart", products);
-                    getapiCartD.UpdateObj(productcartdetails, "CartDetails");
+                    if (productcartdetails!=null)
+                    {
+                        getapiCartD.UpdateObj(productcartdetails, "CartDetails");
+
+                    }
 
                 }
             }
             return RedirectToAction("ViewCart");
         }
-        public IActionResult DeleteCartItem(Guid id)
+        public async Task<IActionResult> DeleteCartItem(Guid id)
         {
             var products = SessionService.GetObjFromSession(HttpContext.Session, "Cart");
             var productcartdetails = getapiCartD.GetApi("CartDetails").FirstOrDefault(c => c.ProductDetail_ID == id);
@@ -177,12 +181,12 @@ namespace APPVIEW.Controllers
             SessionService.SetObjToJson(HttpContext.Session, "Cart", products);
             if (productcartdetails !=null)
             {
-                getapiCartD.DeleteObj(productcartdetails.id, "CartDetails");
+             await   getapiCartD.DeleteObj(productcartdetails.id, "CartDetails");
 
             }
             return RedirectToAction("ViewCart");
         }
-        public void loadcart()
+        public async void loadcart()
         {
             var prodDN = SessionService.GetObjFromSession(HttpContext.Session, "CartDN");
             var products = SessionService.GetObjFromSession(HttpContext.Session, "Cart");
@@ -203,7 +207,7 @@ namespace APPVIEW.Controllers
                             if (cartdetails != null)
                             {
                                 cartdetails.Quantity += item.Quantity;
-                                getapiCartD.UpdateObj(cartdetails, "CartDetails");
+                              await  getapiCartD.UpdateObj(cartdetails, "CartDetails");
 
                             }
                             else
@@ -216,7 +220,7 @@ namespace APPVIEW.Controllers
                                     Quantity = item.Quantity,
 
                                 };
-                                getapiCartD.CreateObj(cartdetails, "CartDetails");
+                             await   getapiCartD.CreateObj(cartdetails, "CartDetails");
                             }
                             
                         }
@@ -269,7 +273,7 @@ namespace APPVIEW.Controllers
                 SessionService.SetObjToJson(HttpContext.Session, "Cart", products);
                 if (productcartdetails!=null)
                 {
-                    getapiCartD.DeleteObj(productcartdetails.id, "CartDetails");
+                  await  getapiCartD.DeleteObj(productcartdetails.id, "CartDetails");
 
                 }
 
