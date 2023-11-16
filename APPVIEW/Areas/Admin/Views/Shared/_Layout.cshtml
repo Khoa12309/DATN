@@ -1,4 +1,17 @@
-﻿<!DOCTYPE html>
+﻿@{
+    var Name = ((System.Security.Claims.ClaimsIdentity)User.Identity).FindFirst("Name");
+    string NameValue =Name ?.Value;
+
+    var AvatarUser = ((System.Security.Claims.ClaimsIdentity)User.Identity).FindFirst("Avatar");
+    string AvatarUserValue = AvatarUser?.Value;
+    if (AvatarUserValue == null)
+    {
+        AvatarUserValue = "UserDefault.jpg";
+    }
+
+
+}
+<!DOCTYPE html>
 
 <html lang="en"
 	  class="light-style layout-menu-fixed layout-compact"
@@ -228,7 +241,7 @@
                                    href="javascript:void(0);"
                                    data-bs-toggle="dropdown">
                                     <div class="avatar avatar-online">
-                                        <img src="~/contentadmin/assets/img/avatars/1.png" alt class="w-px-40 h-auto rounded-circle" />
+                                        <img src="~/UserImage/@AvatarUserValue" alt="Avatar"  style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;" />
                                     </div>
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end mt-3 py-2">
@@ -237,11 +250,11 @@
                                             <div class="d-flex align-items-center">
                                                 <div class="flex-shrink-0 me-2 pe-1">
                                                     <div class="avatar avatar-online">
-                                                        <img src="~/contentadmin/assets/img/avatars/1.png" alt class="w-px-40 h-auto rounded-circle" />
+                                                        <img src="~/UserImage/@AvatarUserValue" alt="Avatar" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;" />
                                                     </div>
                                                 </div>
                                                 <div class="flex-grow-1">
-                                                    <h6 class="mb-0">John Doe</h6>
+                                                    <h6 class="mb-0">@NameValue</h6>
                                                     <small class="text-muted">Admin</small>
                                                 </div>
                                             </div>

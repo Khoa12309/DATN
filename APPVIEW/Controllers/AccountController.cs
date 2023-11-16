@@ -167,11 +167,13 @@ namespace APPVIEW.Controllers
 
                 }
                 var Avatar = jwt.Claims.FirstOrDefault(c => c.Type == "Avatar")?.Value;
+                var Name = jwt.Claims.FirstOrDefault(c => c.Type == "Name")?.Value;
                 var Id_User = jwt.Claims.FirstOrDefault(c => c.Type == "Id")?.Value;
                 if (Id_User != null)
                 {
                     claims.Add(new Claim("Id", Id_User.ToString()));
                     claims.Add(new Claim("Avatar", Avatar.ToString()));
+                    claims.Add(new Claim("Name",Name));
                 }
 
                 var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -323,7 +325,7 @@ namespace APPVIEW.Controllers
                 else
                 {
 
-                    user.Avatar = obj.Avatar;
+                    user.Avatar = "UserDefault.jpg";
                 }
 
                 var address = new Address()
