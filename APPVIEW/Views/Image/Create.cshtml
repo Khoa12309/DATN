@@ -11,22 +11,24 @@
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Create">
+        <form asp-action="Create" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Id" class="control-label"></label>
-                <input asp-for="Id" class="form-control" />
-                <span asp-validation-for="Id" class="text-danger"></span>
-            </div>
+          
+            
             <div class="form-group">
                 <label asp-for="IdProductdetail" class="control-label"></label>
-                <input asp-for="IdProductdetail" class="form-control" />
+                <select asp-for="IdProductdetail" class="selectpicker form-control" aria-label="size 3 select example" >
+                    @{
+                        if (ViewBag.PD != null)
+                        {
+                            foreach (var item in ViewBag.PD)
+                            {
+                                <option value="@item.Id.ToString()"> @item.Name</option>
+                            }
+                        }
+                    }
+                </select>
                 <span asp-validation-for="IdProductdetail" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Status" class="control-label"></label>
@@ -34,14 +36,10 @@
                 <span asp-validation-for="Status" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Create_date" class="control-label"></label>
-                <input asp-for="Create_date" class="form-control" />
-                <span asp-validation-for="Create_date" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Update_date" class="control-label"></label>
-                <input asp-for="Update_date" class="form-control" />
-                <span asp-validation-for="Update_date" class="text-danger"></span>
+                <div class="mb-3">
+                    <label for="formFileMultiple" class="form-label">Chọn ảnh từ Máy tính</label>
+                    <input class="form-control" type="file" id="formFileMultiple" name="imageFile" multiple>
+                </div>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-primary" />

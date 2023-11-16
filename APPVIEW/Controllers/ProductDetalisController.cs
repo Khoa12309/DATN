@@ -61,7 +61,7 @@ namespace APPVIEW.Controllers
 
         // POST: SupplierController1/Create
         [HttpPost]
-        public async Task<IActionResult> Create( ProductDetail obj, [Bind] IFormFile imageFile )
+        public async Task<IActionResult> Create( ProductDetail obj, [Bind] List<IFormFile> imageFile )
         {
             try
             {
@@ -78,8 +78,12 @@ namespace APPVIEW.Controllers
                 obj.Update_date=DateTime.Now;
                 obj.Create_by= DateTime.Now;
                 obj.Update_by= DateTime.Now;
-                await getapi.CreateObj(obj, "ProductDetails");              
-                addimg(imageFile,obj.Id);
+                await getapi.CreateObj(obj, "ProductDetails");
+                foreach (var item in imageFile)
+                {
+                    addimg(item, obj.Id);
+
+                }
                 return RedirectToAction("GetList");
 
             }
@@ -163,10 +167,14 @@ namespace APPVIEW.Controllers
 
         public async Task<IActionResult> Delete(Guid id)
         {
-            var img = getapiImg.GetApi("Image").FirstOrDefault(c=>c.IdProductdetail==id);
+            var img = getapiImg.GetApi("Image").Where(c=>c.IdProductdetail==id);
             if (img!=null)
             {
-              await  getapiImg.DeleteObj(img.Id, "Image");
+                foreach (var item in img)
+                {
+                    await getapiImg.DeleteObj(item.Id, "Image");
+                }   
+            
 
             }
           await  getapi.DeleteObj(id, "ProductDetails");
@@ -174,10 +182,7 @@ namespace APPVIEW.Controllers
 
         }
 
-        public async Task<IActionResult> Details(Guid id)
-        {
 
-            return View();
-        }
+      
     }
 }
