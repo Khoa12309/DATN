@@ -106,6 +106,7 @@ namespace _APPAPI.Controllers
                 new Claim("Id", item.Id.ToString()),
                 new Claim("Id_Role", item.IdRole.ToString()),
                 new Claim("Avatar", item.Avatar.ToString()),
+                new Claim("Name", item.Name.ToString()),
                 new Claim(ClaimTypes.Role,role.name),
               
 
