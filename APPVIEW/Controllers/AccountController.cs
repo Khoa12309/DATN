@@ -238,7 +238,8 @@ namespace APPVIEW.Controllers
         {
 
             Response.Cookies.Delete("AccessToken");
-            SessionService.Clearobj(HttpContext.Session, "Xoa");
+            
+            HttpContext.Session.Clear();
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
 
