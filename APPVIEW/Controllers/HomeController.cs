@@ -12,6 +12,7 @@ using System.Xml.Linq;
 using Microsoft.EntityFrameworkCore;
 using _APPAPI.Service;
 using Microsoft.VisualBasic;
+using APPVIEW.ViewModels;
 
 namespace APPVIEW.Controllers
 {
@@ -63,6 +64,7 @@ namespace APPVIEW.Controllers
             ViewBag.Result = productJoin;
             return View(productJoin);
         }
+
         public IActionResult ViewBill(Guid id)
         {
 
@@ -116,24 +118,35 @@ namespace APPVIEW.Controllers
             return new string(Enumerable.Repeat(chars, length)
               .Select(s => s[random.Next(s.Length)]).ToArray());
         }
+        
+        public IActionResult Nhanhang( Guid id)
+        {
+            var x = bills.GetApi("Bill").FirstOrDefault(c => c.id == id);
+            x.Status = 4;
+            bills.UpdateObj(x, "Bill");
+            return RedirectToAction("Thongtin");
+        }
 
         // Sử dụng:
         // Tạo chuỗi có độ dài 8 ký tự
 
-        public async Task< IActionResult >DatHang(Guid size, Guid color, Guid productId, int soluong, string sdt, string diachi)
+        public async Task<IActionResult> DatHang(Guid size, Guid color, Guid productId, int soluong, string sdt, string diachi)
         {
             var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
-            
+
             var x = getapi.GetApi("ProductDetails").FirstOrDefault(c => c.Id_Product == productId && c.Id_Size == size && c.Id_Color == color);
-            
-            if (account.Id == Guid.Empty) {
+
+            if (account.Id == Guid.Empty)
+            {
                 return Redirect("~/Account/Login");
             }
-            else if (x==null) { 
-            return BadRequest("Mặt hàng này tạm hết vui lòng chọn size hoặc màu khác");
-            
+            else if (x == null)
+            {
+                return BadRequest("Mặt hàng này tạm hết vui lòng chọn size hoặc màu khác");
+
             }
-            else {
+            else
+            {
 
                 var bill = new Bill();
 
@@ -165,43 +178,40 @@ namespace APPVIEW.Controllers
                 await bills.UpdateObj(bill, "Bill");
                 ViewBag.Bill = bill;
                 ViewBag.Billct = billct;
-                ViewBag.sp = getapiProduct.GetApi("Product").FirstOrDefault(c=>c.Id==x.Id_Product);
-                ViewBag.sizee = getapiSize.GetApi("Size").FirstOrDefault(c=>c.Id==x.Id_Size);
-                ViewBag.Collor= getapiColor.GetApi("Color").FirstOrDefault(c=>c.Id==x.Id_Color);
+                ViewBag.sp = getapiProduct.GetApi("Product").FirstOrDefault(c => c.Id == x.Id_Product);
+                ViewBag.sizee = getapiSize.GetApi("Size").FirstOrDefault(c => c.Id == x.Id_Size);
+                ViewBag.Collor = getapiColor.GetApi("Color").FirstOrDefault(c => c.Id == x.Id_Color);
             }
 
-      
+
 
             return View();
         }
         public IActionResult Thongtin()
         {
             var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
+            var userBills = bills.GetApi("Bill").Where(c => c.AccountId == account.Id).ToList();
+            ViewBag.viewbill = userBills;
+
             if (account.Id == Guid.Empty)
             {
                 return BadRequest("Bạn chưa đăng nhập");
             }
-            else {
-               var bill= bills.GetApi("Bill").Where(c=>c.AccountId==account.Id).ToList();
-               
-                foreach (var item in bill) {
-                    var billct = billDetails.GetApi("BillDetail");
-                  foreach (var item2 in billct)
-                    {
-                        if (item2.BIllId==item.id) {
-                            var pr = getapi.GetApi("ProductDetails").Where(c=>c.Id==item2.ProductDetailID).ToList();
-                            foreach (var item3 in pr) {
-                                if (item2.BIllId == item.id) { }
-                            
-                            }
-                        
-                        
-                        }
-                    }
-                }
-            }
+
+            var billDetailsApi = billDetails.GetApi("BillDetail");
+            var productDetailsApi = getapi.GetApi("ProductDetails");
+            var productsApi = getapiProduct.GetApi("Product");
+
+            ViewBag.viewbillct = billDetailsApi;
+            ViewBag.viewprdct = productDetailsApi;
+            ViewBag.viewprd = productsApi;
+            ViewBag.sizee = getapiSize.GetApi("Size");
+                
+            ViewBag.Collor = getapiColor.GetApi("Color");
             return View();
+
         }
+
         public IActionResult Contact()
         {
             return View();
@@ -210,8 +220,8 @@ namespace APPVIEW.Controllers
         public IActionResult Shop()
         {
             return View();
-        }    
-     
+        }
+
         public async Task<IActionResult> Details(Guid id)
         {
             ViewBag.PD = getapi.GetApi("ProductDetails");

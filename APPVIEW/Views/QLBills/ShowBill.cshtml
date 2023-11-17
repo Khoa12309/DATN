@@ -1,0 +1,143 @@
+﻿@model IEnumerable<APPDATA.Models.Bill>
+
+@{
+    ViewData["Title"] = "ShowBill";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+    @using APPDATA.Models;
+    var bill = ViewBag.viewbill;
+    List<BillDetail> billct = ViewBag.viewbillct;
+    List<ProductDetail> prdct = ViewBag.viewprdct;
+    List<Product> prd = ViewBag.viewprd;
+    List<Size> size = ViewBag.sizee;
+    List<Color> color = ViewBag.Collor;
+    List<Account> acc = ViewBag.acc;
+}
+
+<h1>ShowBill</h1>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+               Mã hóa Đơn
+            </th>
+            <th>
+                Trạng thái
+            </th>
+            <th>
+               Tên khách hàng 
+            </th>
+            <th>
+               Voucher 
+            </th>
+            <th>
+               SDT 
+            </th>
+            <th>
+               Địa chỉ
+            </th>
+            <th>
+               Sản phẩm
+            </th>
+            <th>
+               Size 
+            </th>
+            <th>
+               Màu
+            </th>
+            <th>
+               Số lượng
+            </th>
+            <th>
+               Ngày tạo
+            </th>
+         
+          
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var itembill in bill) {
+            var account = acc.FirstOrDefault(c => c.Id == itembill.AccountId);
+            var userbillct = billct.FirstOrDefault(c => c.BIllId == itembill.id);
+            var pct = prdct.FirstOrDefault(c => c.Id == userbillct.ProductDetailID);
+            var pro = prd.FirstOrDefault(c => c.Id == pct.Id_Product);
+            var siz = size.FirstOrDefault(c => c.Id == pct.Id_Size);
+            var colo = color.FirstOrDefault(c => c.Id == pct.Id_Color);
+
+        <tr>
+            <td>
+                    @itembill.Code
+            </td>
+            <td>
+                    <span>
+                  @if (itembill.Status == 1)
+                        {
+
+                            <span>Chờ xác nhận</span>
+                        }
+                        else if (itembill.Status == 2)
+                        {
+                            <span>Đã xác nhận đơn hàng </span>
+                        }
+                        else if (itembill.Status == 3)
+                        {
+                            <span> Đang giao  </span>
+                        }
+                        else if (itembill.Status == 4)
+                        {
+                            <span>Đã giao </span>
+                        }
+                        else if (itembill.Status == 5)
+                        {
+                            <span>Thanh toán thành công </span>
+                        }
+                        else if (itembill.Status == 6)
+                        {
+                            <span>Thanh toán không thành công </span>
+                        }
+
+
+
+
+
+                    </span>
+            </td>
+            <td>
+                @account.Name
+            </td>
+            <td>
+                    @itembill.Voucherid
+            </td>
+            <td>
+                    @itembill.PhoneNumber
+            </td>
+            <td>
+                    @itembill.Address
+            </td>
+            <td>
+               @pro.Name
+            </td>
+            <td>
+                @siz.Name
+            </td>
+            <td>
+                @colo.Name
+            </td>
+            <td>
+                @userbillct.Amount
+            </td>
+            <td>
+                @itembill.CreateDate
+            </td>
+            
+            <td>
+                    <button style="background-color:coral"> @Html.ActionLink("Xác nhận đơn hàng ", "Xacnhan", new { id=itembill.id  }, new{ style = "color:black;" }) </button>
+            
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
