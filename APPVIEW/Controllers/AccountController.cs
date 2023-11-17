@@ -19,6 +19,7 @@ namespace APPVIEW.Controllers
     {
         private readonly HttpClient _httpClient;
         private Getapi<Account> getapi;
+        private Getapi<Role> _getapiRole;
         private Getapi<Address> getapiAddress;
         private readonly INotyfService _notyf;
         public AccountController(HttpClient httpClient, INotyfService notyf)
@@ -26,11 +27,13 @@ namespace APPVIEW.Controllers
             getapi = new Getapi<Account>();
             _httpClient = httpClient;
             _notyf = notyf;
+            _getapiRole = new Getapi<Role>();
             getapiAddress = new Getapi<Address>();
         }
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetList()
         {
+            ViewBag.Roles = GetListRole();
             var obj = getapi.GetApi("Account");
             return View(obj);
         }
@@ -205,17 +208,19 @@ namespace APPVIEW.Controllers
         }
         public async Task<IActionResult> Edit(Guid id)
         {
-
+            ViewBag.Roles = GetListRole();
             var lst = getapi.GetApi("Account");
             return View(lst.Find(c => c.Id == id));
         }
 
 
         [HttpPost, Authorize(Roles = "Admin")]
-        public async Task<IActionResult> Edit(Account obj)
+        public async Task<IActionResult> Edit(Account obj, [Bind] IFormFile imageFile)
         {
             try
             {
+               
+                obj.Avatar= AddImg(imageFile);
                 await getapi.UpdateObj(obj, "Account");
                 return RedirectToAction("GetList");
             }
@@ -355,6 +360,10 @@ namespace APPVIEW.Controllers
                 return View();
             }
         }
-
+        public  List<Role> GetListRole()
+        {
+            var obj = _getapiRole.GetApi("Role");
+            return obj;
+        }
     }
 }

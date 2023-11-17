@@ -1,6 +1,6 @@
 ﻿@{
     var Name = ((System.Security.Claims.ClaimsIdentity)User.Identity).FindFirst("Name");
-    string NameValue =Name ?.Value;
+    string NameValue = Name?.Value;
 
     var AvatarUser = ((System.Security.Claims.ClaimsIdentity)User.Identity).FindFirst("Avatar");
     string AvatarUserValue = AvatarUser?.Value;
@@ -14,50 +14,50 @@
 <!DOCTYPE html>
 
 <html lang="en"
-	  class="light-style layout-menu-fixed layout-compact"
-	  dir="ltr"
-	  data-theme="theme-default"
-	  data-assets-path="~/contentadmin/assets/"
-	  data-template="vertical-menu-template-free">
+      class="light-style layout-menu-fixed layout-compact"
+      dir="ltr"
+      data-theme="theme-default"
+      data-assets-path="~/contentadmin/assets/"
+      data-template="vertical-menu-template-free">
 <head>
-	<meta charset="utf-8" />
+    <meta charset="utf-8" />
 
-	<meta name="viewport"
-		  content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
 
-	<meta name="viewport" content="width=device-width" />
-	<title>@ViewBag.Title</title>
-	<meta name="description" content="" />
-	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-	<!-- Favicon -->
-	<link rel="icon" type="image/x-icon" href="~/contentadmin/assets/img/favicon/favicon.ico" />
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+    <meta name="description" content="" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="~/contentadmin/assets/img/favicon/favicon.ico" />
 
-	<!-- Fonts -->
-	<link rel="preconnect" href="https://fonts.googleapis.com" />
-	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-	<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&ampdisplay=swap"
-		  rel="stylesheet" />
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&ampdisplay=swap"
+          rel="stylesheet" />
 
-	<link rel="stylesheet" href="~/contentadmin/assets/vendor/fonts/materialdesignicons.css" />
+    <link rel="stylesheet" href="~/contentadmin/assets/vendor/fonts/materialdesignicons.css" />
 
-	<!-- Menu waves for no-customizer fix -->
-	<link rel="stylesheet" href="~/contentadmin/assets/vendor/libs/node-waves/node-waves.css" />
+    <!-- Menu waves for no-customizer fix -->
+    <link rel="stylesheet" href="~/contentadmin/assets/vendor/libs/node-waves/node-waves.css" />
 
-	<!-- Core CSS -->
-	<link rel="stylesheet" href="~/contentadmin/assets/vendor/css/core.css" class="template-customizer-core-css" />
-	<link rel="stylesheet" href="~/contentadmin/assets/vendor/css/theme-default.css" class="template-customizer-theme-css" />
-	<link rel="stylesheet" href="~/contentadmin/assets/css/demo.css" />
+    <!-- Core CSS -->
+    <link rel="stylesheet" href="~/contentadmin/assets/vendor/css/core.css" class="template-customizer-core-css" />
+    <link rel="stylesheet" href="~/contentadmin/assets/vendor/css/theme-default.css" class="template-customizer-theme-css" />
+    <link rel="stylesheet" href="~/contentadmin/assets/css/demo.css" />
 
-	<!-- Vendors CSS -->
-	<link rel="stylesheet" href="~/contentadmin/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
-	<link rel="stylesheet" href="~/contentadmin/assets/vendor/libs/apex-charts/apex-charts.css" />
+    <!-- Vendors CSS -->
+    <link rel="stylesheet" href="~/contentadmin/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
+    <link rel="stylesheet" href="~/contentadmin/assets/vendor/libs/apex-charts/apex-charts.css" />
 
-	<!-- Page CSS -->
-	<!-- Helpers -->
-	<script src="~/contentadmin/assets/vendor/js/helpers.js"></script>
-	<!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
-	<!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
-	<script src="~/contentadmin/assets/js/config.js"></script>
+    <!-- Page CSS -->
+    <!-- Helpers -->
+    <script src="~/contentadmin/assets/vendor/js/helpers.js"></script>
+    <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
+    <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
+    <script src="~/contentadmin/assets/js/config.js"></script>
 </head>
 
 
@@ -70,7 +70,7 @@
 
             <aside id="layout-menu" class="layout-menu menu-vertical menu bg-menu-theme">
                 <div class="app-brand demo">
-                    <a href="index.html" class="app-brand-link">
+                    <a href="~/Admin/Admin/Index" class="app-brand-link">
                         <span class="app-brand-logo demo me-1">
                             <span style="color: var(--bs-primary)">
                                 <svg width="30" height="24" viewBox="0 0 250 196" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -123,7 +123,7 @@
                                 </svg>
                             </span>
                         </span>
-                        <span class="app-brand-text demo menu-text fw-semibold ms-2">Materio</span>
+                        <span class="app-brand-text demo menu-text fw-semibold ms-2">Admin supper-f</span>
                     </a>
 
                     <a href="javascript:void(0);" class="layout-menu-toggle menu-link text-large ms-auto">
@@ -170,7 +170,7 @@
                                 </a>
                             </li>
                             <li class="menu-item">
-                                <a  href="~/Role/getlist"  class="menu-link" >
+                                <a href="~/Role/getlist" class="menu-link">
                                     <div data-i18n="Without menu">Role</div>
                                 </a>
                             </li>
@@ -206,6 +206,12 @@
                             </li>
                         </ul>
                     </li>
+                    <li class="menu-item">
+                        <a href="~/Account/getlist" class="menu-link">
+                            <i class="mdi mdi-account-box"></i>
+                            <div data-i18n="Layouts"> Accounts </div>
+                        </a>
+                    </li>
 
                 </ul>
             </aside>
@@ -229,30 +235,20 @@
                                 <i class="mdi mdi-magnify mdi-24px lh-0"></i>
                                 <input type="text"
                                        class="form-control border-0 shadow-none bg-body"
-                                       placeholder="Search~/contentadmin."
-                                       aria-label="Search~/contentadmin." />
+                                       placeholder="Search"
+                                       aria-label="Search" />
                             </div>
                         </div>
                         <!-- /Search -->
 
                         <ul class="navbar-nav flex-row align-items-center ms-auto">
-                            <!-- Place this tag where you want the button to render. -->
-                            <li class="nav-item lh-1 me-3">
-                                <a class="github-button"
-                                   href="https://github.com/themeselection/materio-bootstrap-html-admin-template-free"
-                                   data-icon="octicon-star"
-                                   data-size="large"
-                                   data-show-count="true"
-                                   aria-label="Star themeselection/materio-bootstrap-html-admin-template-free on GitHub">Star</a>
-                            </li>
-
                             <!-- User -->
                             <li class="nav-item navbar-dropdown dropdown-user dropdown">
                                 <a class="nav-link dropdown-toggle hide-arrow p-0"
                                    href="javascript:void(0);"
                                    data-bs-toggle="dropdown">
                                     <div class="avatar avatar-online">
-                                        <img src="~/UserImage/@AvatarUserValue" alt="Avatar"  style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;" />
+                                        <img src="~/UserImage/@AvatarUserValue" alt="Avatar" style="width: 40px; height: 40px; border-radius: 50%; object-fit: cover;" />
                                     </div>
                                 </a>
                                 <ul class="dropdown-menu dropdown-menu-end mt-3 py-2">
@@ -352,9 +348,6 @@
         <div class="layout-overlay layout-menu-toggle"></div>
     </div>
     <!-- / Layout wrapper -->
-
-    
-
     <!-- Core JS -->
     <!-- build:js assets/vendor/js/core.js -->
     <script src="~/contentadmin/assets/vendor/libs/jquery/jquery.js"></script>

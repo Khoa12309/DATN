@@ -1,78 +1,95 @@
-﻿@model IEnumerable<APPDATA.Models.Account>
+﻿@using APPDATA.Models;
+@model IEnumerable<APPDATA.Models.Account>
 
 @{
-    ViewData["Title"] = "GetList";
+    ViewData["Title"] = "Admin-Account";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+    int stt = 0;
+
+}
+@functions
+{
+    private string GetRoleName(Guid? roleId)
+    {
+        var roles = ViewBag.Roles as List<Role>;
+        var role = roles.FirstOrDefault(c => c.id == roleId);
+        if (role != null)
+        {
+            return role.name;
+        }
+        return "No Data";
+    }
 }
 
-<h1>GetList</h1>
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0">Account</h5>
+    </div>
+    <div class="card-body">
+        <a class="btn btn-success mb-3" asp-controller="Account" asp-action="Create">Create New</a>
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>STT</th>
+                        <th>Name</th>
+                        <th>Email Address</th>
+                        <th>Role</th>
+                        <th>Avatar</th>
+                        <th>Create Date</th>
+                        <th>Update Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@(stt += 1)</td>
+                                <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                                <td>@Html.DisplayFor(modelItem => item.Email)</td>
+                                <td>@GetRoleName(item.IdRole)</td>
+                                <td>
+                                    <img src="~/UserImage/@item.Avatar" alt="Avatar" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover;" />
+                                </td>
+                                <td>
+                                    @{
+                                        DateTime createDate = item.Create_date;
+                                        string formattedDate = createDate != DateTime.MinValue
+                                        ? createDate.ToString("dd/MM/yyyy")
+                                        : "Not changed";
+                                    }
+                                    @formattedDate
+                                </td>
+                                <td>
+                                    @{
+                                        DateTime updatedDate = item.Update_date;
+                                        string formattedUpdateDate = updatedDate != DateTime.MinValue
+                                        ? updatedDate.ToString("dd/MM/yyyy")
+                                        : "Not changed";
+                                    }
+                                    @formattedUpdateDate
+                                </td>
+                                <td>
+                                    <a href="@Url.Action("Edit", new { id = item.Id })" class="btn btn-info">
+                                        <span class="mdi mdi-pencil-box-outline"></span>Edit
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="8" class="text-center">No Data.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Id)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IdRole)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Email)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Password)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Avatar)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Create_date)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Update_date)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IdRole)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Email)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Password)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Avatar)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Create_date)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Update_date)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { id=item.Id }) |
-                    @Html.ActionLink("Details", "Details", new {  id=item.Id }) |
-                    @Html.ActionLink("Delete", "Delete", new {  id=item.Id })
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+@* <td><span class="badge rounded-pill bg-label-primary me-1">Active</span></td> *@
