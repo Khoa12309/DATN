@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace APPVIEW.Controllers
 {
-    [AllowAnonymous]
+    [Authorize(Roles ="Customer")]
     public class AddressController : Controller
     {
         private Getapi<Address> getapi;
@@ -57,6 +57,7 @@ namespace APPVIEW.Controllers
         {
             try
             {
+               
                 getapi.UpdateObj(obj, "Address");
                 return RedirectToAction("GetList");
             }

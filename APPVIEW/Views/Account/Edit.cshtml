@@ -1,66 +1,107 @@
-﻿@model APPDATA.Models.Account
+﻿@using APPDATA.Models;
+@model APPDATA.Models.Account
 
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Account-Edit";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Edit</h1>
+<div class="container-xxl flex-grow-1 container-p-y">
+    <h4 class="py-3 mb-4"><span class="text-muted fw-light"></span> Account</h4>
+    <form asp-action="Edit" method="post" enctype="multipart/form-data">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card mb-4">
+                    <h4 class="card-header">Profile Details</h4>
+                    <div class="card-body">
+                        <div class="d-flex align-items-center gap-4">
+                            <img src="~/UserImage/@Model.Avatar"
+                                 alt="user-avatar"
+                                 class="d-block w-px-120 h-px-120 rounded"
+                                 id="uploadedAvatar" />
+                            <div class="button-wrapper">
+                                <label for="upload" class="btn btn-primary me-2 mb-3" tabindex="0">
+                                    <span class="d-none d-sm-block">Upload new photo</span>
+                                    <i class="mdi mdi-tray-arrow-up d-block d-sm-none"></i>
+                                    <input asp-for="Avatar" type="file"
+                                           id="upload"
+                                           class="account-file-input"
+                                           hidden
+                                           accept="image/png, image/jpeg" name="imageFile" />
+                                </label>
+                                <button type="button" class="btn btn-outline-danger account-image-reset mb-3">
+                                    <i class="mdi mdi-reload d-block d-sm-none"></i>
+                                    <span class="d-none d-sm-block">Reset</span>
+                                </button>
+                                <div class="text-muted small">Allowed JPG, GIF, or PNG.</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body pt-2 mt-1">
+                        <div class="row mt-2 gy-4">
+                            <div class="col-md-6">
+                                <div class="form-floating form-floating-outline">
+                                    <input asp-for="Name" class="form-control"
+                                           type="text"
+                                          name="Name"
+                                           
+                                           autofocus />
+                                    <label asp-for="Name">Name</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="form-floating form-floating-outline">
+                                    <input asp-for="Email" class="form-control"
+                                           type="text"
+                                           id="email"
+                                           name="email"
+                                           placeholder="john.doe@example.com" />
+                                    <label for="email">E-mail</label>
+                                </div>
+                            </div>                            
+                            <div hidden  class="col-md-6">
+                                <div hidden class="form-floating form-floating-outline">
+                                    <input hidden asp-for="Password" class="form-control"
+                                           type="text"
+                                           name="Password"
+                                           placeholder="john.doe@example.com" />
+                                    <label hidden for="email">Pass</label>
+                                </div>
+                            </div>
+                            <div hidden class="col-md-6">
+                                <div hidden class="form-floating form-floating-outline">
+                                    <input hidden asp-for="Create_date" class="form-control"
+                                           type="datetime"
+                                           name="Password"
+                                           placeholder="john.doe@example.com" />
+                                    <label hidden for="email">Pass</label>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="input-group">
+                                    <label class="input-group-text" for="inputGroupSelect01">Options</label>
+                                    <select asp-for="IdRole" class="form-select" id="inputGroupSelect01">
+                                        <option selected>Choose...</option>
+                                        @if (ViewBag.Roles != null)
+                                        {
+                                            @foreach (var role in ViewBag.Roles as List<Role>)
+                                            {
+                                                <option value="@role.id">@role.name</option>
+                                            }
+                                        }
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <button type="submit" class="btn btn-primary me-2">Save changes</button>
+                            <button type="reset" class="btn btn-outline-secondary">Reset</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
 
-<h4>Account</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Id" class="control-label"></label>
-                <input asp-for="Id" class="form-control" />
-                <span asp-validation-for="Id" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="IdRole" class="control-label"></label>
-                <input asp-for="IdRole" class="form-control" />
-                <span asp-validation-for="IdRole" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Email" class="control-label"></label>
-                <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Password" class="control-label"></label>
-                <input asp-for="Password" class="form-control" />
-                <span asp-validation-for="Password" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Avatar" class="control-label"></label>
-                <input asp-for="Avatar" class="form-control" />
-                <span asp-validation-for="Avatar" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Create_date" class="control-label"></label>
-                <input asp-for="Create_date" class="form-control" />
-                <span asp-validation-for="Create_date" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Update_date" class="control-label"></label>
-                <input asp-for="Update_date" class="form-control" />
-                <span asp-validation-for="Update_date" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
-            </div>
-        </form>
-    </div>
-</div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
 </div>
 
