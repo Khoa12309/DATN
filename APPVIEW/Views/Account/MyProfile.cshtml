@@ -1,0 +1,132 @@
+﻿@model APPVIEW.ViewModels.AccountVm
+
+@{
+    ViewData["Title"] = "MyProfile";
+    Layout = "~/Views/Shared/_LayoutWeb.cshtml";
+
+   
+
+}
+
+<div class="container mt-5">
+    <h1 class="text-center mb-5">My Profile</h1>
+
+    <div class="row mt-3">
+        <div class="col-md-4 border-right">
+            <div class="d-flex flex-column align-items-center text-center p-3 py-5">
+                <div class="position-relative">
+                    <img class="rounded-circle mt-3 mb-3" width="150px" src="~/UserImage/@Model.Avatar" alt="User Avatar">
+                </div>
+                <span class="font-weight-bold">@Model.Name</span>
+                <span class="text-black-50">@Model.Email</span>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <div class="p-3 py-5">
+                <h4 class="text-right mb-4">My Profile</h4>
+
+                <form asp-action="MyProfile" id="profileForm" enctype="multipart/form-data" method="post">
+                    <div class="mb-3">
+                        <label asp-for=Name class="labels">Name</label>
+                        <input asp-for=Name  type="text" class="form-control" placeholder="Enter your name" value="@Model.Name">
+                    </div>                    
+                    <div hidden class="mb-3">
+                        <label hidden asp-for=Id class="labels">Name</label>
+                        <input hidden asp-for=Id  type="text" class="form-control" placeholder="Enter your name" value="@Model.Id">
+                    </div>                    
+                    <div hidden class="mb-3">
+                        <label hidden asp-for=Id_Role class="labels">Name</label>
+                        <input hidden asp-for=Id_Role  type="text" class="form-control" placeholder="Enter your name" value="@Model.Id_Role">
+                    </div>
+                    <div hidden class="mb-3">
+                        <label hidden asp-for=AccountId class="labels">Name</label>
+                        <input hidden asp-for=AccountId type="text" class="form-control" placeholder="Enter your name" value="@Model.AccountId">
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for=Email class="labels">Email</label>
+                        <input asp-for=Email type="email" class="form-control" placeholder="Enter your email" value="@Model.Email">
+                    </div>
+                    <div hidden class="mb-3">
+                        <label asp-for=Password hidden class="labels">Password</label>
+                        <input asp-for=Password hidden type="password" class="form-control" placeholder="Enter your Password" value="@Model.Password">
+                    </div>
+                    <div class="mb-3">
+                        <label asp-for="PhoneNumber" class="labels">Phone Number</label>
+                        <input asp-for=PhoneNumber type="text" class="form-control" placeholder="Enter your phone number" value="@Model.PhoneNumber">
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label asp-for=District class="labels">District</label>
+                            <input asp-for=District type="text" class="form-control" placeholder="Enter your District" value="@Model.District">
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for=Ward class="labels">Ward</label>
+                            <input asp-for=Ward type="text" class="form-control" placeholder="Enter your Ward" value="@Model.Ward">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label asp-for=SpecificAddress class="labels">Specific Address</label>
+                            <input asp-for=SpecificAddress type="text" class="form-control" placeholder="Enter your Specific Address" value="@Model.SpecificAddress">
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for=DefaultAddress class="labels">Default Address</label>
+                            <input asp-for=DefaultAddress type="text" class="form-control" placeholder="Enter your Default Address" value="@Model.DefaultAddress">
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <label asp-for=Province class="labels">Province</label>
+                            <input asp-for=Province type="text" class="form-control" placeholder="Enter your Province" value="@Model.Province">
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for=City class="labels">City</label>
+                            <input asp-for=City type="text" class="form-control" placeholder="Enter your City" value="@Model.City">
+                        </div>                        
+                        <div class="col-md-6">
+                            <label asp-for=Avatar class="labels">Avatar</label>
+                            <input asp-for="Avatar" class="form-control" type="file" name="imageFile" />
+                        </div>                        
+                        <div class="col-md-6">
+                            <label asp-for=Description class="labels">Description</label>
+                            <input asp-for="Description" class="form-control" value="@Model.Description" />
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <button type="submit" value="submit" class="button button-register w-50">Save Profile</button>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Thêm mã JavaScript -->
+<script>
+    // Lắng nghe sự kiện submit của form
+    document.getElementById('profileForm').addEventListener('submit', function (event) {
+        // Chặn sự kiện mặc định của form
+        event.preventDefault();
+
+        // Hiển thị hộp thoại xác nhận
+        Swal.fire({
+            title: 'Are you sure?',
+            text: 'Do you want to save the changes?',
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, save it!',
+            cancelButtonText: 'No, cancel',
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Nếu người dùng chấp nhận, tiếp tục submit form
+                document.getElementById('profileForm').submit();
+            }
+        });
+    });
+</script>
+
+
+
+
+

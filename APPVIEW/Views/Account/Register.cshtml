@@ -141,12 +141,16 @@
                 <form asp-action="Register" id="formAuthentication" class="mb-3" method="POST">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                             <div class="form-floating form-floating-outline mb-3">
-                                <input asp-for="Name" type="text" class="form-control" id="email" name="Name" placeholder="Enter your email" />
-                                <label for="email">Name</label>
+                                <input asp-for="Name" type="text" class="form-control" id="name" name="Name" placeholder="Enter your email" />
+                                <label for="name">Name</label>
                             </div>
                 <div class="form-floating form-floating-outline mb-3">
                   <input asp-for="Email" type="text" class="form-control" id="email" name="email" placeholder="Enter your email" />
                   <label for="email">Email</label>
+                </div>                
+                <div class="form-floating form-floating-outline mb-3">
+                  <input asp-for="PhoneNumber" type="text" class="form-control" id="phone" name="phonenumber" placeholder="Enter your PhoneNumber" />
+                  <label for="phone">Phone Number</label>
                 </div>
                 <div class="mb-3 form-password-toggle">
                   <div class="input-group input-group-merge">

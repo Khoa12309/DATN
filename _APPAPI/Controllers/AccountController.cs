@@ -37,7 +37,7 @@ namespace _APPAPI.Controllers
         {
             obj.Create_date=DateTime.Now;
             obj.IdRole = _context.Roles.SingleOrDefault(c=>c.name=="Customer").id;
-            obj.Avatar = "none";
+            obj.Avatar = "UserDefault.jpg";
 
             return _crud.CreateItem(obj);
         }
@@ -102,11 +102,11 @@ namespace _APPAPI.Controllers
                 Subject = new ClaimsIdentity(new[] {
                 new Claim(ClaimTypes.Name, item.Name),
                 new Claim(JwtRegisteredClaimNames.Email, item.Email),
-                new Claim(JwtRegisteredClaimNames.Sub, item.Email),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),               
                 new Claim("Id", item.Id.ToString()),
                 new Claim("Id_Role", item.IdRole.ToString()),
                 new Claim("Avatar", item.Avatar.ToString()),
+                new Claim("Name", item.Name.ToString()),
                 new Claim(ClaimTypes.Role,role.name),
               
 
