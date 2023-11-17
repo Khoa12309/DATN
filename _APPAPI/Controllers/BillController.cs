@@ -40,8 +40,8 @@ namespace _APPAPI.Controllers
         {
             Bill item = _crud.GetAllItems().FirstOrDefault(c => c.id == obj.id);
 
-            item.AccountId = obj.AccountId;
-            item.Voucherid = obj.Voucherid;
+           // item.AccountId = obj.AccountId;
+          //  item.Voucherid = obj.Voucherid;
             item.Code = obj.Code;
             item.ShipFee = obj.ShipFee;
             item.PhoneNumber = obj.PhoneNumber;

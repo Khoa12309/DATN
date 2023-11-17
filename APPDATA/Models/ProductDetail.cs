@@ -17,7 +17,7 @@ namespace APPDATA.Models
         public Guid? Id_supplier { get; set; }
         public int Quantity { get; set; }
         public string Desciption { get; set; }
-        public double Price { get; set; }
+        public float Price { get; set; }
         public int Status { get; set; }
         public string Name { get; set; }
         public DateTime Create_date { get; set; }

@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace APPDATA.Migrations
 {
-    public partial class lan2 : Migration
+    public partial class djhs : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -190,7 +190,7 @@ namespace APPDATA.Migrations
                     Id_supplier = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     Quantity = table.Column<int>(type: "int", nullable: false),
                     Desciption = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Price = table.Column<double>(type: "float", nullable: false),
+                    Price = table.Column<float>(type: "real", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Create_date = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -267,17 +267,17 @@ namespace APPDATA.Migrations
                     AccountId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     Voucherid = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     Code = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ShipFee = table.Column<float>(type: "real", nullable: false),
-                    PhoneNumber = table.Column<int>(type: "int", nullable: false),
-                    Address = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TotalMoney = table.Column<float>(type: "real", nullable: false),
-                    MoneyReduce = table.Column<float>(type: "real", nullable: false),
+                    ShipFee = table.Column<float>(type: "real", nullable: true),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TotalMoney = table.Column<float>(type: "real", nullable: true),
+                    MoneyReduce = table.Column<float>(type: "real", nullable: true),
                     Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreateBy = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    UpdateBy = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    PayDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ShipDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreateDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CreateBy = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdateBy = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    PayDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ShipDate = table.Column<DateTime>(type: "datetime2", nullable: true),
                     Status = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -391,7 +391,7 @@ namespace APPDATA.Migrations
                     BIllId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     Amount = table.Column<int>(type: "int", nullable: false),
                     Price = table.Column<float>(type: "real", nullable: false),
-                    Discount = table.Column<float>(type: "real", nullable: false),
+                    Discount = table.Column<float>(type: "real", nullable: true),
                     Status = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>

@@ -13,7 +13,7 @@ namespace APPDATA.Models
         public Guid? BIllId { get; set; }
         public int Amount { get; set; }
         public float Price { get; set; }
-        public float Discount { get; set; }
+        public float ?Discount { get; set; }
         public int Status { get; set; }
         public Bill? Bill { get; set; }
         public ProductDetail? ProductDetails { get; set; }
