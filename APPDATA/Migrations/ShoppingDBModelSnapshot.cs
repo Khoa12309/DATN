@@ -69,6 +69,10 @@ namespace APPDATA.Migrations
                     b.Property<Guid?>("AccountId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<string>("City")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("DefaultAddress")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -118,45 +122,44 @@ namespace APPDATA.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Address")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Code")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("CreateBy")
+                    b.Property<DateTime?>("CreateBy")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime>("CreateDate")
+                    b.Property<DateTime?>("CreateDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<float>("MoneyReduce")
+                    b.Property<float?>("MoneyReduce")
                         .HasColumnType("real");
 
-                    b.Property<DateTime>("PayDate")
+                    b.Property<DateTime?>("PayDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("PhoneNumber")
-                        .HasColumnType("int");
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("ShipDate")
+                    b.Property<DateTime?>("ShipDate")
                         .HasColumnType("datetime2");
 
-                    b.Property<float>("ShipFee")
+                    b.Property<float?>("ShipFee")
                         .HasColumnType("real");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
-                    b.Property<float>("TotalMoney")
+                    b.Property<float?>("TotalMoney")
                         .HasColumnType("real");
 
                     b.Property<string>("Type")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("UpdateBy")
+                    b.Property<DateTime?>("UpdateBy")
                         .HasColumnType("datetime2");
 
                     b.Property<Guid?>("Voucherid")
@@ -183,7 +186,7 @@ namespace APPDATA.Migrations
                     b.Property<Guid?>("BIllId")
                         .HasColumnType("uniqueidentifier");
 
-                    b.Property<float>("Discount")
+                    b.Property<float?>("Discount")
                         .HasColumnType("real");
 
                     b.Property<float>("Price")
@@ -273,7 +276,7 @@ namespace APPDATA.Migrations
                     b.Property<double>("Price")
                         .HasColumnType("float");
 
-                    b.Property<Guid?>("ProductDetail")
+                    b.Property<Guid?>("ProductDetail_ID")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Quantity")
@@ -282,6 +285,8 @@ namespace APPDATA.Migrations
                     b.HasKey("id");
 
                     b.HasIndex("CartId");
+
+                    b.HasIndex("ProductDetail_ID");
 
                     b.ToTable("CartDetails");
                 });
@@ -559,8 +564,8 @@ namespace APPDATA.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<double>("Price")
-                        .HasColumnType("float");
+                    b.Property<float>("Price")
+                        .HasColumnType("real");
 
                     b.Property<int>("Quantity")
                         .HasColumnType("int");
@@ -576,9 +581,55 @@ namespace APPDATA.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("Id_Category");
+
+                    b.HasIndex("Id_Color");
+
+                    b.HasIndex("Id_Material");
+
                     b.HasIndex("Id_Product");
 
+                    b.HasIndex("Id_Size");
+
+                    b.HasIndex("Id_supplier");
+
                     b.ToTable("ProductDetails");
+                });
+
+            modelBuilder.Entity("APPDATA.Models.RefreshToken", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<DateTime>("ExpiredAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsRevoked")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("IsUsed")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("IssuedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("JwtId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Token")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("RefreshTokens");
                 });
 
             modelBuilder.Entity("APPDATA.Models.Role", b =>
@@ -767,13 +818,13 @@ namespace APPDATA.Migrations
 
             modelBuilder.Entity("APPDATA.Models.CartDetail", b =>
                 {
-                    b.HasOne("APPDATA.Models.ProductDetail", "ProductDetails")
-                        .WithMany("Carts")
-                        .HasForeignKey("CartId");
-
                     b.HasOne("APPDATA.Models.Cart", "Cart")
                         .WithMany("CartDetails")
                         .HasForeignKey("CartId");
+
+                    b.HasOne("APPDATA.Models.ProductDetail", "ProductDetails")
+                        .WithMany("Carts")
+                        .HasForeignKey("ProductDetail_ID");
 
                     b.Navigation("Cart");
 
@@ -817,15 +868,15 @@ namespace APPDATA.Migrations
                 {
                     b.HasOne("APPDATA.Models.Category", "Category")
                         .WithMany("ProductDetails")
-                        .HasForeignKey("Id_Product");
+                        .HasForeignKey("Id_Category");
 
                     b.HasOne("APPDATA.Models.Color", "Color")
                         .WithMany("ProductDetails")
-                        .HasForeignKey("Id_Product");
+                        .HasForeignKey("Id_Color");
 
                     b.HasOne("APPDATA.Models.Material", "Material")
                         .WithMany("ProductDetails")
-                        .HasForeignKey("Id_Product");
+                        .HasForeignKey("Id_Material");
 
                     b.HasOne("APPDATA.Models.Product", "Product")
                         .WithMany("ProductDetails")
@@ -833,11 +884,11 @@ namespace APPDATA.Migrations
 
                     b.HasOne("APPDATA.Models.Size", "Size")
                         .WithMany("ProductDetails")
-                        .HasForeignKey("Id_Product");
+                        .HasForeignKey("Id_Size");
 
                     b.HasOne("APPDATA.Models.Supplier", "Supplier")
                         .WithMany("ProductDetails")
-                        .HasForeignKey("Id_Product");
+                        .HasForeignKey("Id_supplier");
 
                     b.Navigation("Category");
 
@@ -852,6 +903,17 @@ namespace APPDATA.Migrations
                     b.Navigation("Supplier");
                 });
 
+            modelBuilder.Entity("APPDATA.Models.RefreshToken", b =>
+                {
+                    b.HasOne("APPDATA.Models.Account", "Account")
+                        .WithMany("refreshTokens")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Account");
+                });
+
             modelBuilder.Entity("APPDATA.Models.Account", b =>
                 {
                     b.Navigation("Address");
@@ -861,6 +923,8 @@ namespace APPDATA.Migrations
                     b.Navigation("Carts");
 
                     b.Navigation("Notification");
+
+                    b.Navigation("refreshTokens");
                 });
 
             modelBuilder.Entity("APPDATA.Models.Bill", b =>

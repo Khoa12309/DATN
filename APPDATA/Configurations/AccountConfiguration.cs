@@ -10,6 +10,7 @@ namespace MCV.Configurations
         {
             builder.HasKey(c => c.Id);
             builder.HasOne(c => c.Role).WithMany(c => c.Accounts).HasForeignKey(c => c.IdRole);
+
         }
     }
 }

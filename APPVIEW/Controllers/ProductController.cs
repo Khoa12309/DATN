@@ -1,9 +1,11 @@
 ﻿using APPDATA.Models;
 using APPVIEW.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace APPVIEW.Controllers
 {
+    [Authorize(Roles ="Admin")]
     public class ProductController : Controller
     {
         private Getapi<Product> getapi;
@@ -31,7 +33,7 @@ namespace APPVIEW.Controllers
         {
             try
             {
-                getapi.CreateObj(obj, "Product");
+               await getapi.CreateObj(obj, "Product");
                 return RedirectToAction("GetList");
             }
             catch
@@ -55,7 +57,7 @@ namespace APPVIEW.Controllers
         {
             try
             {
-                getapi.UpdateObj(obj, "Product");
+               await getapi.UpdateObj(obj, "Product");
                 return RedirectToAction("GetList");
             }
             catch
@@ -67,7 +69,7 @@ namespace APPVIEW.Controllers
      
         public async Task<IActionResult> Delete(Guid id)
         {
-            getapi.DeleteObj(id, "Product");
+           await getapi.DeleteObj(id, "Product");
             return RedirectToAction("GetList");
 
         }

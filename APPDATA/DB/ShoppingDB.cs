@@ -18,7 +18,10 @@ namespace APPDATA.DB
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(@"Data Source=HUYDX\SQLEXPRESS;Initial Catalog=DATN;Persist Security Info=True;User ID=Huydxph20596;Password=123456");
+
+            optionsBuilder.UseSqlServer(@"Data Source=LAPTOP-9R0SL3PF\SQLEXPRESS;Initial Catalog=DATN2;Persist Security Info=True;User ID=giangnt2;Password=123456");
+         
+
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -45,5 +48,6 @@ namespace APPDATA.DB
         public DbSet<Material> Materials { get; set; }
         public DbSet<Size> Sizes { get; set; }
         public DbSet<BillHistory> BillHistories { get; set; }
+        public DbSet<RefreshToken> RefreshTokens { get; set; }
     }
 }

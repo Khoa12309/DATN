@@ -1,0 +1,169 @@
+﻿@model List<APPDATA.Models.ProductDetail>
+
+@{
+    ViewData["Title"] = "ViewCart";
+    Layout = "~/Views/Shared/_LayoutWeb.cshtml";
+}
+
+
+
+
+<!-- ================ start banner area ================= -->
+<section class="blog-banner-area" id="category">
+    <div class="container h-100">
+        <div class="blog-banner">
+            <div class="text-center">
+                <h1>Shopping Cart</h1>
+                <nav aria-label="breadcrumb" class="banner-breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="#">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Shopping Cart</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- ================ end banner area ================= -->
+<!--================Cart Area =================-->
+<section class="cart_area">
+    <div class="container">
+        <div class="cart_inner">
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Product</th>
+                            <th scope="col">Price</th>
+                            <th scope="col">Quantity</th>
+                            <th scope="col">Size</th>
+                            <th scope="col">Color</th>
+                            <th scope="col">Total</th>
+                            <th scope="col">Remove</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                          <form asp-action="Updatecart" asp-controller="Cart" method="post">
+                             
+                        @{
+
+                            @for (int i = 0; i < Model.Count; i++)
+                            {
+                                <input hidden asp-for="@Model[i].Id" value="@Model[i].Id" />
+                                var tt = @Model[i].Price * @Model[i].Quantity;
+                                <tr>
+
+                                    @foreach (var img in ViewBag.Img)
+                                    {
+                                        if (img.IdProductdetail == @Model[i].Id)
+                                        {
+                                            <td>
+                                                <div class="media">
+                                                    <div class="d-flex">
+                                                        <img src="~/images/@img.Name" style="width: 50px;" alt="">
+                                                    </div>
+                                                    <div class="media-body">
+                                                        <p>@Model[i].Name</p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        }
+                                    }
+                                    <td >@Model[i].Price</td>
+                                    <td>
+                                     
+                                        <div class="product_count">
+                                            <input type="text"  id="sst" maxlength="12" title="Quantity:" class="input-text qty" value="@Model[i].Quantity" asp-for="@Model[i].Quantity" min="0">
+                                            <button onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst )) result.value++;return false;"
+                                                class="increase items-count" type="button">
+                                                <i class="fa fa-plus"></i>
+                                            </button>
+                                            <button onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst ) &amp;&amp; sst > 0 ) result.value--;return false;"
+                                                class="reduced items-count" type="button">
+                                                <i class="fa fa-minus"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+
+                                    <td class="align-middle">
+                                        <select asp-for="@Model[i].Id_Size">
+                                            @foreach (var Size in ViewBag.Size)
+                                            {
+                                            //lstS.Add(pd.Id_Size);
+                                                <option value="@Size.Id">@Size.Name</option>
+                                            }
+                                        </select>
+                                    </td>
+                                    <td class="align-middle">
+                                        <select asp-for="@Model[i].Id_Color">
+
+
+
+                                            @foreach (var Color in ViewBag.Color)
+                                            {
+
+                                                <option value="@Color.Id">@Color.Name</option>
+
+                                            }
+                                        </select>
+                                    </td>
+                                    <td class="align-middle">
+                                        @tt
+                                    </td>
+                                    <td>
+                                        <a class="btn btn-light" href="@Url.ActionLink("DeleteCartItem","Cart",new{id=Model[i].Id})"><i class="fa fa-trash"></i></a>
+                                    </td>
+
+                                </tr>
+                            }
+                        }
+
+          
+                        
+                        <tr class="bottom_button">
+                            <td>
+                                <button class="button" type="submit">Update Cart</button>
+                            </td>
+                        
+                        </tr>
+                        </form>
+                        <tr>
+                            <td>
+                            </td>  <td>
+                            </td>  <td>
+                            </td>  <td>
+                            </td>
+                            <td>
+                            </td>
+                            <td>
+                                <h5>Subtotal</h5>
+                            </td>
+                            <td>
+                                <h5>$@ViewBag.tt</h5>
+                            </td>
+                        </tr>
+                     
+                        <tr class="out_button_area">
+                            <td class="d-none-l">
+                            </td> <td class="d-none-l">
+                            </td> <td class="d-none-l">
+                            </td>
+                            <td class="">
+                            </td>
+                            <td>
+                            </td><td>
+                            </td>
+                            <td>
+                                <div class="checkout_btn_inner d-flex align-items-center">
+                                    <a class="gray_btn" href="~/home/index">Continue Shopping</a>
+                                    <a class="primary-btn ml-2" href="#">Proceed to checkout</a>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+<!--================End Cart Area =================-->

@@ -17,7 +17,7 @@ namespace APPDATA.Models
         public Guid? Id_supplier { get; set; }
         public int Quantity { get; set; }
         public string Desciption { get; set; }
-        public double Price { get; set; }
+        public float Price { get; set; }
         public int Status { get; set; }
         public string Name { get; set; }
         public DateTime Create_date { get; set; }
@@ -25,13 +25,13 @@ namespace APPDATA.Models
         public DateTime Create_by { get; set; }
         public DateTime Update_by { get; set; }
         public Supplier? Supplier { get; set; }
-        public List<Image>? images { get; set; }
+      
         public Size? Size { get; set; }
         public Category? Category { get; set; }
         public Material? Material { get; set; }
         public Color? Color { get; set; }
         public Product? Product { get; set; }
-
+        public List<Image>? images { get; set; }
         public List<CartDetail>? Carts { get; set; }
 
         public  List<BillDetail>? BillDetails { get; set; }

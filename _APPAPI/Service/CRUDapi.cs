@@ -16,13 +16,14 @@ namespace _APPAPI.Service
         }
         public bool CreateItem(T item)
         {
+        
             try
             {
                 _dbSet.Add(item);
                 _context.SaveChanges();
                 return true;
             }
-            catch (Exception)
+            catch (Exception )
             {
 
                 return false;
@@ -45,6 +46,7 @@ namespace _APPAPI.Service
         public IEnumerable<T> GetAllItems()
         {
             return _dbSet.ToList();
+            
         }
 
         public bool UpdateItem(T item)
