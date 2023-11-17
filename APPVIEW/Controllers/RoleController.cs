@@ -33,7 +33,7 @@ namespace APPVIEW.Controllers
         {
             try
             {
-                getapi.CreateObj(obj, "Role");
+             await   getapi.CreateObj(obj, "Role");
                 return RedirectToAction("GetList");
             }
             catch
@@ -57,7 +57,7 @@ namespace APPVIEW.Controllers
         {
             try
             {
-                getapi.UpdateObj(obj, "Role");
+              await  getapi.UpdateObj(obj, "Role");
                 return RedirectToAction("GetList");
             }
             catch
@@ -69,7 +69,7 @@ namespace APPVIEW.Controllers
 
         public async Task<IActionResult> Delete(Guid id)
         {
-            getapi.DeleteObj(id, "Role");
+          await  getapi.DeleteObj(id, "Role");
             return RedirectToAction("GetList");
 
         }

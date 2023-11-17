@@ -234,6 +234,14 @@ namespace APPVIEW.Controllers
             return View(pro);
         }
 
+
+        public async Task<IActionResult> Checkout()
+        {
+
+            return View();
+        }
+      
+
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
