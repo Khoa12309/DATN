@@ -15,7 +15,7 @@ namespace _APPAPI.Service
         } 
         public static void Clearobj(ISession session, string key)
         {
-            session.Clear();
+            session.Remove(key);
         }
         public static List<ProductDetail> GetObjFromSession(ISession session, string key)
         {

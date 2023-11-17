@@ -234,18 +234,15 @@ namespace APPVIEW.Controllers
                         PD.Quantity = item.Quantity;
                         products.Add(PD);
                     }
-                 
-                   
+                    SessionService.SetObjToJson(HttpContext.Session, "CartDN", products);                
                     SessionService.SetObjToJson(HttpContext.Session, "Cart", products);
-                    SessionService.SetObjToJson(HttpContext.Session, "CartDN", products);
+
                    
                 }
             }
         }
         public async Task<IActionResult> ViewCart()
         {
-
-
             loadcart();
             ViewBag.Img = getapiImg.GetApi("Image");
             ViewBag.Color = getapiColor.GetApi("Color");
