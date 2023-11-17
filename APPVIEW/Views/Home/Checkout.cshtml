@@ -110,12 +110,17 @@
                         <h2>Your Order</h2>
                         <ul class="list">
                             <li><a href="#"><h4>Product <span>Total</span></h4></a></li>
-                            <li><a href="#">Fresh Blackberry <span class="middle">x 02</span> <span class="last">$720.00</span></a></li>
+                            @foreach (var item in ViewBag.Product)
+                            {
+                                var tt = item.Quantity * item.Price;
+                                <li><a href="#">@item.Name<span class="middle">x @item.Quantity</span> <span class="last">$@tt</span></a></li>
+
+                            }
                             <li><a href="#">Fresh Tomatoes <span class="middle">x 02</span> <span class="last">$720.00</span></a></li>
                             <li><a href="#">Fresh Brocoli <span class="middle">x 02</span> <span class="last">$720.00</span></a></li>
                         </ul>
                         <ul class="list list_2">
-                            <li><a href="#">Subtotal <span>$2160.00</span></a></li>
+                            <li><a href="#">Subtotal <span>$@ViewBag.TT</span></a></li>
                             <li><a href="#">Shipping <span>Flat rate: $50.00</span></a></li>
                             <li><a href="#">Total <span>$2210.00</span></a></li>
                         </ul>

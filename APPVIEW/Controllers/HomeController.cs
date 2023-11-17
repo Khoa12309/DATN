@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using APPDATA.Models;
 using System.Xml.Linq;
+using _APPAPI.Service;
 
 namespace APPVIEW.Controllers
 {
@@ -77,7 +78,13 @@ namespace APPVIEW.Controllers
         }
         public async Task<IActionResult> Checkout()
         {
-
+            ViewBag.Product = SessionService.GetObjFromSession(HttpContext.Session, "Cart");
+            var tt = 0;
+            foreach (var item in ViewBag.Product)
+            {
+                 tt+= (item.Quantity * item.Price);
+            }
+            ViewBag.TT=tt;
             return View();
         }
       
