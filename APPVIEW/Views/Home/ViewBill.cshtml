@@ -1,0 +1,77 @@
+﻿@{
+    ViewData["Title"] = "ViewBill";
+    Layout = "~/Views/Shared/_LayoutWeb.cshtml";
+    Guid id;
+}
+
+
+
+<div class="col-md-6 col-lg-4 col-xl-3">
+    <div class="card text-center card-product">
+        <div class="card-product__img">
+            <img class="card-img" src="~/contentwebb/img/product/product1.png" alt="">
+
+        </div>
+
+        <p style="float:left">Tên sản phẩm : @ViewBag.pro.Name </p>
+
+        <p style="float:left">Giá : @ViewBag.pro.Price</p>
+        <form id="datHangForm" asp-controller="Home" asp-action="DatHang" method="post">
+
+
+
+
+
+            <input type="hidden" name="productId" value="@ViewBag.id" />
+
+
+            <div class="mb-3">
+
+                <select name="size" class="form-select">
+                    <option value=""> Chọn Size</option>
+                    @foreach (var item in ViewBag.prd)
+                    {
+                        @foreach (var size in ViewBag.size)
+                        {
+                            if (item.Id_Size == size.Id)
+                            {
+                                <option value="@item.Id_Size"> @size.Name</option>
+                            }
+                        }
+                    }
+                </select>
+            </div>
+            <div class="mb-3" >
+                <select name="color"  class="form-select">
+                    <option value=""> Chọn Màu </option>
+                    @foreach (var item in ViewBag.prd)
+                    {
+                        @foreach (var color in ViewBag.color)
+                        {
+                            if (item.Id_Color == color.Id)
+                            {
+                                <option value="@item.Id_Color"> @color.Name</option>
+                            }
+                        }
+                    }
+                </select>
+            </div>
+
+            <div class="mb-3" style="margin-top:20px">
+
+                <input class="form-control" type="text" name="soluong" placeholder="Số lượng" style="margin-top: 20px">
+            </div>
+            <div class="mb-3">
+
+                <input class="form-control" type="text" name="sdt" placeholder="Số điện thoại">
+            </div>
+            <div class="mb-3">
+
+                <input class="form-control" type="text" name="diachi" placeholder="Địa chỉ">
+            </div>
+            <button type="submit" style="margin-top: 30px;margin-left:10px;float:left">Đặt hàng</button>
+        </form>
+
+    </div>
+</div>
+
