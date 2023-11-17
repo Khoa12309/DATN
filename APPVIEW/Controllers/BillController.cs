@@ -39,7 +39,7 @@ namespace APPVIEW.Controllers
                 return View();
             }
         }
-        [HttpGet]
+ 
 
 
         public async Task<IActionResult> Edit(Guid id)

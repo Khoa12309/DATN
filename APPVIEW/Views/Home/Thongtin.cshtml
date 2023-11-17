@@ -1,0 +1,95 @@
+﻿@{
+    ViewData["Title"] = "Thongtin";
+    Layout = "~/Views/Shared/_LayoutWeb.cshtml";
+
+
+    @using APPDATA.Models;
+    var bill = ViewBag.viewbill;
+    List<BillDetail> billct = ViewBag.viewbillct;
+    List<ProductDetail> prdct = ViewBag.viewprdct;
+    List<Product> prd = ViewBag.viewprd;
+    List<Size> size = ViewBag.sizee;
+    List<Color> color = ViewBag.Collor;
+
+}
+
+<h3>Thông tin đơn hàng</h3>
+
+@foreach (var itembill in bill)
+{
+    
+    var userbillct = billct.FirstOrDefault(c => c.BIllId == itembill.id);
+    var pct = prdct.FirstOrDefault(c => c.Id == userbillct.ProductDetailID);
+    var pro = prd.FirstOrDefault(c => c.Id == pct.Id_Product);
+    var siz = size.FirstOrDefault(c=>c.Id ==pct.Id_Size);
+    var colo = color.FirstOrDefault(c=>c.Id==pct.Id_Color);
+
+    <div class="row" style="margin-top:100px ; margin-left:150px">
+
+
+        <div class="col-md-6 col-lg-4 col-xl-3">
+            <div class="card text-center card-product">
+                <div class="card-product__img">
+                    <img class="card-img" src="~/contentwebb/img/product/product1.png" alt="">
+
+                </div>
+                <div class="card-body" style="text-align:left ; color :black;font-size : 20px">
+                    <p>Mã hóa đơn : @itembill.Code</p>
+                    <span>
+                        Trạng thái : @if (itembill.Status == 1)
+                        {
+
+                            <span>Chờ xác nhận</span>
+                        }
+                        else if (itembill.Status ==2)
+                        {
+                            <span>Đã xác nhận đơn hàng </span>
+                        } else if (itembill.Status == 3)
+                        {
+                            <span> Đang giao  </span>
+                        } else if (itembill.Status == 4)
+                        {
+                            <span>Đã giao </span>
+                        } else if (itembill.Status == 5)
+                        {
+                            <span>Thanh toán thành công </span>
+                        }else if (itembill.Status == 6)
+                        {
+                            <span>Thanh toán không thành công </span>
+                        }
+                        
+
+
+
+
+                    </span>
+                    <p>Tên sản phẩm : @pro.Name </p>
+                    <p>Size : @siz.Name</p>
+                    <p>Màu : @colo.Name</p>
+                    <p>Số lượng : @userbillct.Amount</p>
+                    <p>Tổng tiền hàng :  @itembill.TotalMoney</p>
+                    <p>Phí ship tính riêng : @itembill.ShipFee</p>
+                    <p>Ngày tạo : @itembill.CreateDate</p>
+                    <p>Ngày ship : @itembill.ShipDate</p>
+
+                    @if (itembill.Status == 3)
+
+                    {
+
+                        <button style="background-color:coral"> @Html.ActionLink("Đã nhận hàng", "Nhanhang", new { id=itembill.id  }, new{ style = "color:black;" }) </button>
+
+
+                    } else if (itembill.Status ==4)
+                    {
+
+                        <button style="background-color:coral"> @Html.ActionLink("Thanh Toán ", "ThanhToan", new { id=itembill.id  }, new{ style = "color:black;" }) </button>
+
+                    }
+
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+}

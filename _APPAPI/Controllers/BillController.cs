@@ -49,7 +49,7 @@ namespace _APPAPI.Controllers
             item.TotalMoney = obj.TotalMoney;
             item.MoneyReduce = obj.MoneyReduce;
             item.Type = obj.Type;
-
+            item.Status = obj.Status;
 
             return _crud.UpdateItem(item);
         }
