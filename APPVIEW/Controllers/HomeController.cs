@@ -9,10 +9,14 @@ using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using APPDATA.Models;
 using System.Xml.Linq;
+
+using _APPAPI.Service;
+
 using Microsoft.EntityFrameworkCore;
 using _APPAPI.Service;
 using Microsoft.VisualBasic;
 using APPVIEW.ViewModels;
+
 
 namespace APPVIEW.Controllers
 {
@@ -49,6 +53,7 @@ namespace APPVIEW.Controllers
             getapiMaterial = new Getapi<Material>();
             bills = new Getapi<Bill>();
             billDetails = new Getapi<BillDetail>();
+
         }
 
         public IActionResult Index()
@@ -130,9 +135,52 @@ namespace APPVIEW.Controllers
         // Sử dụng:
         // Tạo chuỗi có độ dài 8 ký tự
 
-        public async Task<IActionResult> DatHang(Guid size, Guid color, Guid productId, int soluong, string sdt, string diachi)
+
+        public async Task<IActionResult> DatHangN(Address obj)
         {
             var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
+            var bill = new Bill();
+            bill.id = Guid.NewGuid();
+            bill.AccountId = account.Id;
+            bill.Code = GenerateRandomString(8);
+            bill.PhoneNumber = obj.PhoneNumber;
+            bill.Address = obj.SpecificAddress;
+            bill.Type = "Online";
+            bill.CreateBy = DateTime.Now;
+            bill.CreateDate = DateTime.Now;
+            bill.UpdateBy = DateTime.Now;
+            bill.Status = 1;
+            
+            await bills.CreateObj(bill, "Bill");
+
+            var procarrt = SessionService.GetObjFromSession(HttpContext.Session, "Cart");
+            if (procarrt != null)
+            {
+                foreach (var item in procarrt)
+                {
+                    var billct = new BillDetail();
+
+
+                    billct.ProductDetailID = item.Id;
+                    billct.BIllId = bill.id;
+                    billct.Amount = item.Quantity;
+                    billct.Price = item.Quantity * item.Price;
+                    billct.Status = 1;
+                    await billDetails.CreateObj(billct, "BillDetail");
+                    bill.TotalMoney += billct.Price;
+                    await bills.UpdateObj(bill, "Bill");
+                }
+            }
+            return View();
+        }
+
+        public async Task< IActionResult>DatHang(Guid size, Guid color, Guid productId, int soluong, string sdt, string diachi)
+        {
+
+
+            var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
+           
+         
 
             var x = getapi.GetApi("ProductDetails").FirstOrDefault(c => c.Id_Product == productId && c.Id_Size == size && c.Id_Color == color);
 
@@ -149,7 +197,6 @@ namespace APPVIEW.Controllers
             {
 
                 var bill = new Bill();
-
                 bill.id = Guid.NewGuid();
                 bill.AccountId = account.Id;
                 bill.Code = GenerateRandomString(8);
@@ -160,7 +207,6 @@ namespace APPVIEW.Controllers
                 bill.CreateDate = DateTime.Now;
                 bill.UpdateBy = DateTime.Now;
                 bill.Status = 1;
-
 
 
                 await bills.CreateObj(bill, "Bill");
@@ -178,9 +224,11 @@ namespace APPVIEW.Controllers
                 await bills.UpdateObj(bill, "Bill");
                 ViewBag.Bill = bill;
                 ViewBag.Billct = billct;
+
                 ViewBag.sp = getapiProduct.GetApi("Product").FirstOrDefault(c => c.Id == x.Id_Product);
                 ViewBag.sizee = getapiSize.GetApi("Size").FirstOrDefault(c => c.Id == x.Id_Size);
                 ViewBag.Collor = getapiColor.GetApi("Color").FirstOrDefault(c => c.Id == x.Id_Color);
+
             }
 
 
@@ -247,7 +295,13 @@ namespace APPVIEW.Controllers
 
         public async Task<IActionResult> Checkout()
         {
-
+            ViewBag.Product = SessionService.GetObjFromSession(HttpContext.Session, "Cart");
+            var tt = 0;
+            foreach (var item in ViewBag.Product)
+            {
+                 tt+= (item.Quantity * item.Price);
+            }
+            ViewBag.TT=tt;
             return View();
         }
       

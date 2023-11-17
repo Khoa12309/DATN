@@ -157,12 +157,12 @@ namespace APPVIEW.Controllers
                     var productcart = products.FirstOrDefault(c => c.Id == id);
                     var productcartdetails = getapiCartD.GetApi("CartDetails").FirstOrDefault(c => c.ProductDetail_ID == id);
                     productcart.Quantity += Soluong;
-                    productcartdetails.Quantity += Soluong;
                     products.Remove(productcart);
                     products.Add(productcart);
                     SessionService.SetObjToJson(HttpContext.Session, "Cart", products);
                     if (productcartdetails!=null)
                     {
+                        productcartdetails.Quantity += Soluong;
                         getapiCartD.UpdateObj(productcartdetails, "CartDetails");
 
                     }
@@ -234,18 +234,15 @@ namespace APPVIEW.Controllers
                         PD.Quantity = item.Quantity;
                         products.Add(PD);
                     }
-                 
-                   
+                    SessionService.SetObjToJson(HttpContext.Session, "CartDN", products);                
                     SessionService.SetObjToJson(HttpContext.Session, "Cart", products);
-                    SessionService.SetObjToJson(HttpContext.Session, "CartDN", products);
+
                    
                 }
             }
         }
         public async Task<IActionResult> ViewCart()
         {
-
-
             loadcart();
             ViewBag.Img = getapiImg.GetApi("Image");
             ViewBag.Color = getapiColor.GetApi("Color");
