@@ -117,14 +117,20 @@
                                     </svg>
                                 </span>
                             </span>
-                            <span class="app-brand-text demo text-heading fw-semibold">Materio</span>
+                            <span class="app-brand-text demo text-heading fw-semibold">Supper Fashion</span>
                         </a>
                     </div>
                     <!-- /Logo -->
 
                     <div class="card-body mt-2">
                         <h4 class="mb-2">Welcome to Supper Fashion! 👋</h4>
-                        <p class="mb-4">Please sign-in to your account and start the adventure</p>
+                        <p class="mb-4">Please sign-in to your account and start the adventure</p>                      
+                        @if (!string.IsNullOrEmpty(ViewData["ErrorMessage"] as string))
+                        {
+                            <div class="alert alert-warning alert-dismissible" role="alert">
+                                @ViewData["ErrorMessage"]
+                            </div>
+                        }
 
                         <form asp-action="Login" id="formAuthentication" class="mb-3" method="POST">
                             <div class="form-floating form-floating-outline mb-3">
@@ -191,7 +197,6 @@
     </div>
 
     <!-- / Content -->
-
     <!-- Core JS -->
     <!-- build:js assets/vendor/js/core.js -->
     <script src="~/contentadmin/assets/vendor/libs/jquery/jquery.js"></script>

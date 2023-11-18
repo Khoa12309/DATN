@@ -25,6 +25,7 @@ namespace _APPAPI.Controllers
         [HttpPost]
         public bool Create(Voucher obj)
         {
+            obj.Create_date = DateTime.Now;
             return _crud.CreateItem(obj);
         }
         [Route("Delete")]
@@ -46,8 +47,7 @@ namespace _APPAPI.Controllers
             item.ReduceForm = obj.ReduceForm;
             item.Status = obj.Status;
             item.DiscountAmount = obj.DiscountAmount;
-            item.Create_date = obj.Create_date;
-            item.Update_date = obj.Update_date;
+            item.Update_date = DateTime.Now;
             item.StartDate = obj.StartDate;
             item.EndDate = obj.EndDate;
 

@@ -52,12 +52,14 @@ namespace APPVIEW.Controllers
             if (string.IsNullOrEmpty(obj.Email) || string.IsNullOrEmpty(obj.Name) || string.IsNullOrEmpty(obj.ConfirmPassword))
             {
 
-                return RedirectToAction("Register", "Account");
+                ViewData["ErrorMessage"] = "Please enter your information.";
+                return View("Register", obj);
 
             }
             if (obj.Password != obj.ConfirmPassword)
             {
-                return RedirectToAction("Register", "Account");
+                ViewData["ErrorMessage"] = "Password and confirm password not correct,try again.";
+                return View("Register", obj);
             }
             var md5pass = MD5Pass.GetMd5Hash(obj.Password);
 
@@ -111,8 +113,8 @@ namespace APPVIEW.Controllers
         {
             if (string.IsNullOrEmpty(obj.Email) || string.IsNullOrEmpty(obj.Password))
             {
-                //  _notyf.Error("Vui lòng nhập email và mật khẩu.");
-                return RedirectToAction("Login", "Account");
+                ViewData["ErrorMessage"] = "Please enter your email and password.";
+                return View("Login", obj);
             }
 
             var md5pass = MD5Pass.GetMd5Hash(obj.Password);
@@ -176,7 +178,7 @@ namespace APPVIEW.Controllers
                 {
                     claims.Add(new Claim("Id", Id_User.ToString()));
                     claims.Add(new Claim("Avatar", Avatar.ToString()));
-                    claims.Add(new Claim("Name",Name));
+                    claims.Add(new Claim("Name", Name));
                 }
 
                 var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -202,8 +204,8 @@ namespace APPVIEW.Controllers
 
             }
 
-            //  _notyf.Error($"Error: {response.StatusCode.ToString()}!");
-            return BadRequest("Đăng nhập thất bại");
+            ViewData["ErrorMessage"] = "Email or password wrong.";
+            return View("Login", obj);
 
         }
         public async Task<IActionResult> Edit(Guid id)
@@ -219,8 +221,8 @@ namespace APPVIEW.Controllers
         {
             try
             {
-               
-                obj.Avatar= AddImg(imageFile);
+
+                obj.Avatar = AddImg(imageFile);
                 await getapi.UpdateObj(obj, "Account");
                 return RedirectToAction("GetList");
             }
@@ -243,7 +245,7 @@ namespace APPVIEW.Controllers
         {
 
             Response.Cookies.Delete("AccessToken");
-            
+
             HttpContext.Session.Clear();
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
@@ -279,8 +281,8 @@ namespace APPVIEW.Controllers
                     DefaultAddress = addressOfUser.DefaultAddress,
                     Province = addressOfUser.Province,
                     Description = addressOfUser.Description,
-                    Id_Role= user.IdRole,
-                    
+                    Id_Role = user.IdRole,
+
 
                 });
             }
@@ -320,7 +322,7 @@ namespace APPVIEW.Controllers
                     Name = obj.Name,
                     Password = obj.Password,
                     Avatar = AddImg(imageFile),
-                    IdRole=obj.Id_Role
+                    IdRole = obj.Id_Role
 
                 };
                 if (imageFile != null)
@@ -360,7 +362,7 @@ namespace APPVIEW.Controllers
                 return View();
             }
         }
-        public  List<Role> GetListRole()
+        public List<Role> GetListRole()
         {
             var obj = _getapiRole.GetApi("Role");
             return obj;

@@ -25,6 +25,7 @@ namespace _APPAPI.Controllers
         [HttpPost]
         public bool Create(PaymentMethod obj)
         {
+            obj.CreateDate = DateTime.Now;
             return _crud.CreateItem(obj);
         }
         [Route("Delete")]
@@ -45,7 +46,6 @@ namespace _APPAPI.Controllers
             item.Status = obj.Status;
             item.CreateBy = obj.CreateBy;
             item.Description = obj.Description;
-            item.CreateDate = obj.CreateDate;
             item.Method = obj.Method;
             
            

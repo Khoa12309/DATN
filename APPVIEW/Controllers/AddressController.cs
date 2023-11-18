@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace APPVIEW.Controllers
 {
-    [Authorize(Roles ="Customer")]
+    [Authorize(Roles ="Admin")]
     public class AddressController : Controller
     {
         private Getapi<Address> getapi;

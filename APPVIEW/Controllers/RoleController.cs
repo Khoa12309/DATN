@@ -1,5 +1,6 @@
 ﻿using APPDATA.Models;
 using APPVIEW.Services;
+using AspNetCoreHero.ToastNotification.Abstractions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,9 +10,12 @@ namespace APPVIEW.Controllers
     public class RoleController : Controller
     {
         private Getapi<Role> getapi;
-        public RoleController()
+        private readonly INotyfService _notyf;
+
+        public RoleController(INotyfService notyf)
         {
             getapi = new Getapi<Role>();
+            _notyf = notyf;
         }
 
         public async Task<IActionResult> GetList()
@@ -31,15 +35,21 @@ namespace APPVIEW.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(Role obj)
         {
-            try
+
+
+            var role = await getapi.CreateObj(obj, "Role");
+            if (role != null)
             {
-             await   getapi.CreateObj(obj, "Role");
+
+                _notyf.Success("Add new value sucess!");
                 return RedirectToAction("GetList");
             }
-            catch
-            {
-                return View();
-            }
+            _notyf.Error("Error,try again!");
+            return View();
+
+
+
+
         }
         [HttpGet]
 
@@ -57,7 +67,7 @@ namespace APPVIEW.Controllers
         {
             try
             {
-              await  getapi.UpdateObj(obj, "Role");
+                await getapi.UpdateObj(obj, "Role");
                 return RedirectToAction("GetList");
             }
             catch
@@ -69,7 +79,7 @@ namespace APPVIEW.Controllers
 
         public async Task<IActionResult> Delete(Guid id)
         {
-          await  getapi.DeleteObj(id, "Role");
+            await getapi.DeleteObj(id, "Role");
             return RedirectToAction("GetList");
 
         }

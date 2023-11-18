@@ -9,6 +9,70 @@ namespace APPDATA.Migrations
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+
+
+            migrationBuilder.DropTable(
+               name: "Address");
+
+            migrationBuilder.DropTable(
+                name: "BillDetails");
+
+            migrationBuilder.DropTable(
+                name: "BillHistories");
+
+            migrationBuilder.DropTable(
+                name: "CartDetails");
+
+            migrationBuilder.DropTable(
+                name: "Images");
+
+            migrationBuilder.DropTable(
+                name: "Notifications");
+
+            migrationBuilder.DropTable(
+                name: "PaymentMethodDetails");
+
+            migrationBuilder.DropTable(
+                name: "RefreshTokens");
+
+            migrationBuilder.DropTable(
+                name: "Carts");
+
+            migrationBuilder.DropTable(
+                name: "ProductDetails");
+
+            migrationBuilder.DropTable(
+                name: "Bills");
+
+            migrationBuilder.DropTable(
+                name: "PaymentMethods");
+
+            migrationBuilder.DropTable(
+                name: "Categories");
+
+            migrationBuilder.DropTable(
+                name: "Colors");
+
+            migrationBuilder.DropTable(
+                name: "Materials");
+
+            migrationBuilder.DropTable(
+                name: "Products");
+
+            migrationBuilder.DropTable(
+                name: "Sizes");
+
+            migrationBuilder.DropTable(
+                name: "Suppliers");
+
+            migrationBuilder.DropTable(
+                name: "Accounts");
+
+            migrationBuilder.DropTable(
+                name: "Vouchers");
+
+            migrationBuilder.DropTable(
+                name: "Roles");
             migrationBuilder.CreateTable(
                 name: "Categories",
                 columns: table => new

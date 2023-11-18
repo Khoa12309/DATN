@@ -19,7 +19,7 @@
       name="viewport"
       content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
 
-    <title>Register Pages </title>
+    <title>Register </title>
 
     <meta name="description" content="" />
 
@@ -136,6 +136,12 @@
             <!-- /Logo -->
             <div class="card-body mt-2">
               <h4 class="mb-2">Adventure starts here 🚀</h4>
+                        @if (!string.IsNullOrEmpty(ViewData["ErrorMessage"] as string))
+                        {
+                            <div class="alert alert-warning alert-dismissible" role="alert">
+                                @ViewData["ErrorMessage"]
+                            </div>
+                        }
               <p class="mb-4">Reghiter</p>
              
                 <form asp-action="Register" id="formAuthentication" class="mb-3" method="POST">
