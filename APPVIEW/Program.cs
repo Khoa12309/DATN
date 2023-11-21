@@ -2,6 +2,7 @@
 using AspNetCoreHero.ToastNotification.Notyf;
 using AspNetCoreHero.ToastNotification;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using APPVIEW.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,8 +18,13 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
                   options.LoginPath = "/Account/Login";
                   options.LogoutPath = "/Account/Logout";
                   options.AccessDeniedPath = "/Error/AccessDenied/";
-                  options.SlidingExpiration = true;            
+                  options.SlidingExpiration = true;
               });
+// Add SendMail
+var sendmail = builder.Configuration.GetSection("SendEmail");
+builder.Services.Configure<SendEmail>(sendmail);
+builder.Services.AddSingleton<ISendEmail, SendEmailServices>();
+
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromMinutes(100);
@@ -32,11 +38,12 @@ builder.Services.AddNotyf(config =>
 {
     config.DurationInSeconds = 5;
     config.IsDismissable = true;
-    config.Position = NotyfPosition.TopRight;
+    config.Position = NotyfPosition.TopLeft;
 });
 
 var app = builder.Build();
 // thêm AddAuthentication 
+
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

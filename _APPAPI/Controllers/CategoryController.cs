@@ -25,6 +25,7 @@ namespace _APPAPI.Controllers
         [HttpPost]
         public bool Creat(Category obj)
         {
+            obj.Create_date = DateTime.Now;
             return _crud.CreateItem(obj);
         }
         [Route("Delete")]
@@ -41,8 +42,7 @@ namespace _APPAPI.Controllers
             Category item = _crud.GetAllItems().FirstOrDefault(c => c.Id == obj.Id);
             item.Name = obj.Name;
             item.Status = obj.Status;
-            item.Update_date = obj.Update_date;
-            item.Create_date = obj.Create_date;
+            item.Update_date = DateTime.Now;
             return _crud.UpdateItem(item);
         }
     }

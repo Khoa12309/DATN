@@ -12,6 +12,8 @@ using System.Data;
 using Microsoft.AspNetCore.Authorization;
 using _APPAPI.Service;
 using AspNetCoreHero.ToastNotification.Abstractions;
+using APPDATA.DB;
+using System.Text.Encodings.Web;
 
 namespace APPVIEW.Controllers
 {
@@ -21,14 +23,17 @@ namespace APPVIEW.Controllers
         private Getapi<Account> getapi;
         private Getapi<Role> _getapiRole;
         private Getapi<Address> getapiAddress;
-        private readonly INotyfService _notyf;
-        public AccountController(HttpClient httpClient, INotyfService notyf)
+        private readonly ISendEmail _sendEmail;
+        private readonly ShoppingDB _context;
+
+        public AccountController(HttpClient httpClient, INotyfService notyf, ISendEmail sendEmail)
         {
             getapi = new Getapi<Account>();
             _httpClient = httpClient;
-            _notyf = notyf;
             _getapiRole = new Getapi<Role>();
             getapiAddress = new Getapi<Address>();
+            _sendEmail = sendEmail;
+            _context = new ShoppingDB();
         }
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetList()
@@ -52,12 +57,14 @@ namespace APPVIEW.Controllers
             if (string.IsNullOrEmpty(obj.Email) || string.IsNullOrEmpty(obj.Name) || string.IsNullOrEmpty(obj.ConfirmPassword))
             {
 
-                return RedirectToAction("Register", "Account");
+                ViewData["ErrorMessage"] = "Please enter your information.";
+                return View("Register", obj);
 
             }
             if (obj.Password != obj.ConfirmPassword)
             {
-                return RedirectToAction("Register", "Account");
+                ViewData["ErrorMessage"] = "Password and confirm password not correct,try again.";
+                return View("Register", obj);
             }
             var md5pass = MD5Pass.GetMd5Hash(obj.Password);
 
@@ -90,6 +97,7 @@ namespace APPVIEW.Controllers
             var responeseAdress = await _httpClient.PostAsync("https://localhost:7042/api/Address/Post", contentAddress);
             if (responese.IsSuccessStatusCode && responeseAdress.IsSuccessStatusCode)
             {
+
                 return Redirect("~/Account/Login");
 
             }
@@ -109,10 +117,10 @@ namespace APPVIEW.Controllers
 
         public async Task<IActionResult> Login(LoginVm obj)
         {
-            if (string.IsNullOrEmpty(obj.Email) || string.IsNullOrEmpty(obj.Password))
+            if (string.IsNullOrWhiteSpace(obj.Email) || string.IsNullOrWhiteSpace(obj.Password))
             {
-                //  _notyf.Error("Vui lòng nhập email và mật khẩu.");
-                return RedirectToAction("Login", "Account");
+                ViewData["ErrorMessage"] = "Please enter your email and password.";
+                return View("Login", obj);
             }
 
             var md5pass = MD5Pass.GetMd5Hash(obj.Password);
@@ -123,6 +131,7 @@ namespace APPVIEW.Controllers
 
             if (response.IsSuccessStatusCode)
             {
+
                 var responseData = await response.Content.ReadAsStringAsync();
                 var loginResult = JsonConvert.DeserializeObject<TokenVm>(responseData);
                 TokenVm tokenV = new TokenVm { AccessToken = loginResult.AccessToken };
@@ -176,7 +185,7 @@ namespace APPVIEW.Controllers
                 {
                     claims.Add(new Claim("Id", Id_User.ToString()));
                     claims.Add(new Claim("Avatar", Avatar.ToString()));
-                    claims.Add(new Claim("Name",Name));
+                    claims.Add(new Claim("Name", Name));
                 }
 
                 var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -187,23 +196,20 @@ namespace APPVIEW.Controllers
                 Response.Cookies.Append("AccessToken", loginResult.AccessToken);
                 if (checkRoleAdmin == true)
                 {
-                    _notyf.Success($"Login success! Welcome {obj.Email}");
                     return Redirect("~/Admin/Admin/Index");
 
                 }
                 else
                 {
-                    // _notyf.Success($"Login success! Welcome {obj.Email}");
                     return Redirect("~/Home/Index");
-                    //  return Redirect("~/Address/GetList");
                 }
 
 
 
             }
 
-            //  _notyf.Error($"Error: {response.StatusCode.ToString()}!");
-            return BadRequest("Đăng nhập thất bại");
+            ViewData["ErrorMessage"] = "Email or password wrong.";
+            return View("Login", obj);
 
         }
         public async Task<IActionResult> Edit(Guid id)
@@ -219,8 +225,8 @@ namespace APPVIEW.Controllers
         {
             try
             {
-               
-                obj.Avatar= AddImg(imageFile);
+
+                obj.Avatar = AddImg(imageFile);
                 await getapi.UpdateObj(obj, "Account");
                 return RedirectToAction("GetList");
             }
@@ -243,7 +249,7 @@ namespace APPVIEW.Controllers
         {
 
             Response.Cookies.Delete("AccessToken");
-            
+
             HttpContext.Session.Clear();
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
@@ -251,7 +257,7 @@ namespace APPVIEW.Controllers
             return Redirect("~/Account/Login");
         }
 
-        [HttpGet]
+        [HttpGet, AllowAnonymous]
         public async Task<IActionResult> MyProfile(Guid id_User)
         {
 
@@ -279,8 +285,8 @@ namespace APPVIEW.Controllers
                     DefaultAddress = addressOfUser.DefaultAddress,
                     Province = addressOfUser.Province,
                     Description = addressOfUser.Description,
-                    Id_Role= user.IdRole,
-                    
+                    Id_Role = user.IdRole,
+
 
                 });
             }
@@ -308,7 +314,7 @@ namespace APPVIEW.Controllers
 
 
         }
-        [HttpPost]
+        [HttpPost, AllowAnonymous]
         public async Task<IActionResult> MyProfile(AccountVm obj, [Bind] IFormFile imageFile)
         {
             try
@@ -320,7 +326,7 @@ namespace APPVIEW.Controllers
                     Name = obj.Name,
                     Password = obj.Password,
                     Avatar = AddImg(imageFile),
-                    IdRole=obj.Id_Role
+                    IdRole = obj.Id_Role
 
                 };
                 if (imageFile != null)
@@ -360,10 +366,104 @@ namespace APPVIEW.Controllers
                 return View();
             }
         }
-        public  List<Role> GetListRole()
+        public List<Role> GetListRole()
         {
             var obj = _getapiRole.GetApi("Role");
             return obj;
         }
+        public async Task SendLoginSuccessEmailAsync(string email)
+        {
+            var subject = "Đăng nhập thành công";
+            var message = "Bạn đã đăng nhập thành công vào hệ thống.";
+            await _sendEmail.SendEmailAsync(email, subject, message);
+        }
+        public IActionResult ForgotPassword()
+        {
+            return View();
+        }
+        [HttpPost, AllowAnonymous]
+        public async Task<IActionResult> ForgotPassword(ResetPass resetPass)
+        {
+            if (string.IsNullOrWhiteSpace(resetPass.Email))
+            {
+                ViewData["ErrorMessage"] = "Email is required!";
+                return View(resetPass);
+
+            }
+            var user = _context.Accounts.FirstOrDefault(u => u.Email == resetPass.Email);
+
+            if (user != null)
+            {
+                var resetToken = RundomCodeService.GenerateRandomCode(6);
+                user.ResetPasswordcode = resetToken;
+                await _context.SaveChangesAsync();
+
+                // Send reset link  email
+                var resetLink = Url.Action("ResetPass", "Account", new { }, Request.Scheme);
+                var emailSubject = "Password Reset Request";
+                var emailBody = $"Hi {user.Name}, <br/> You recently requested to reset your password for your account. This is your request code: <b>{resetToken}</b> Please click on the following link to reset your password: <a href='{HtmlEncoder.Default.Encode(resetLink)}'>Reset Password</a>";
+
+                await _sendEmail.SendEmailAsync(user.Email, emailSubject, emailBody);
+
+                ViewData["Sucsess"] = "Reset password code has been sent to your email , Check your email now.";
+                return View(resetPass);
+
+
+            }
+            else
+            {
+                ViewData["ErrorMessage"] = "Email not found!";
+                return View(resetPass);
+            }
+
+        }
+        public IActionResult ResetPass()
+        {
+            return View();
+        }
+        [HttpPost]
+        public async Task<IActionResult> ResetPass(ResetPasswordVm obj)
+        {
+            if (string.IsNullOrWhiteSpace(obj.ConfirmCode) || string.IsNullOrWhiteSpace(obj.ConfirmPassword) || string.IsNullOrWhiteSpace(obj.NewPassword))
+            {
+                ViewData["ErrorMessage"] = "Please enter your Confirm code and New password!";
+                return View(obj);
+
+            }
+            if (obj.NewPassword != obj.ConfirmPassword)
+            {
+                ViewData["ErrorMessage"] = "Your new password or confirm password are wrong, try again!";
+                return View(obj);
+            }
+            else
+            {
+                var user = _context.Accounts.FirstOrDefault(s => s.Email == obj.Email);
+                if (user != null)
+                {
+                    if (obj.ConfirmCode != user.ResetPasswordcode)
+                    {
+                        ViewData["ErrorMessage"] = " Confirm code is wrong,try again!";
+                        return View(obj);
+                    }
+                    else
+                    {
+                        user.Password = MD5Pass.GetMd5Hash(obj.NewPassword);
+                        user.ResetPasswordcode = null;
+                        await _context.SaveChangesAsync();
+                        ViewData["Sucsess"] = " your password is changed,return to the login page!";
+                        return View(obj);
+                    }
+
+                }               
+                else
+                {
+                    ViewData["ErrorMessage"] = "Email not found!";
+                    return View(obj);
+                }
+
+            }
+
+        }
+
     }
 }

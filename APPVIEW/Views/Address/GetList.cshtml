@@ -1,96 +1,70 @@
 ﻿@model IEnumerable<APPDATA.Models.Address>
 
 @{
-    ViewData["Title"] = "GetList";
+    ViewData["Title"] = "Address-List";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+    int stt = 0;
 }
 
-<h1>GetList</h1>
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0">Roles</h5>
+    </div>
+    <div class="card-body">
+        <a class="btn btn-success waves-effect waves-light" asp-action="Create">
+            <span class="mdi mdi-plus-thick"></span>Create new
+        </a>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.id)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.AccountId)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PhoneNumber)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.SpecificAddress)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Ward)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.City)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.District)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Province)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Description)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.DefaultAddress)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.AccountId)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PhoneNumber)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.SpecificAddress)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Ward)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.City)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.District)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Province)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Description)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.DefaultAddress)
-            </td>
-            <td>
-                @Html.ActionLink("Edit", "Edit", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+        <div class="table-responsive">
+            <table class="table table-hover table-striped">
+                <thead>
+                    <tr>
+                        <th>STT</th>
+                        <th>NamecCustomer</th>
+                        <th>Phone </th>
+                        <th>DefaultAddress</th>
+                        <th>SpecificAddress</th>
+                        <th>Province</th>
+                        <th>City</th>
+                        <th>Ward</th>
+                        <th>District</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                      
+                        foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@(stt += 1)</td>
+                                <td>@Html.DisplayFor(modelItem => item.Name)</td>
+                                <td>@Html.DisplayFor(modelItem => item.PhoneNumber)</td>
+                                <td>@Html.DisplayFor(modelItem => item.DefaultAddress)</td>
+                                <td>@Html.DisplayFor(modelItem => item.SpecificAddress)</td>
+                                <td>@Html.DisplayFor(modelItem => item.Province)</td>
+                                <td>@Html.DisplayFor(modelItem => item.City)</td>
+                                <td>@Html.DisplayFor(modelItem => item.Ward)</td>
+                                <td>@Html.DisplayFor(modelItem => item.District)</td>
+
+                                <td>
+                                    <a href="@Url.Action("Edit", new { id = item.id })" class="btn btn-info waves-effect waves-light">
+                                        <span class="mdi mdi-pencil-box-outline"></span>Edit
+                                    </a>
+                                </td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="10" class="text-center">No Data.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+

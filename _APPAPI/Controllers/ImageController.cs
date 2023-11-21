@@ -27,6 +27,7 @@ namespace _APPAPI.Controllers
         public bool Create(Image obj)
 
         {
+            obj.Create_date = DateTime.Now;
             return _crud.CreateItem(obj);
         }
         [Route("Delete")]
