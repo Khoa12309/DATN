@@ -1,5 +1,4 @@
-﻿@model APPVIEW.ViewModels.LoginVm
-
+﻿@model APPVIEW.ViewModels.ResetPasswordVm
 @{
     Layout = null;
 }
@@ -10,19 +9,19 @@
       class="light-style layout-wide customizer-hide"
       dir="ltr"
       data-theme="theme-default"
-      data-assets-path="~/contentadmin/assets/"
+      data-assets-path="../contentadmin/assets/"
       data-template="vertical-menu-template-free">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
 
-    <title>Login Pages </title>
+    <title> Reset Password </title>
 
     <meta name="description" content="" />
 
     <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="~/contentadmin/img/favicon/favicon.ico" />
+    <link rel="icon" type="image/x-icon" href="~/contentadmin/assets/img/favicon/favicon.ico" />
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -60,13 +59,13 @@
     <div class="position-relative">
         <div class="authentication-wrapper authentication-basic container-p-y">
             <div class="authentication-inner py-4">
-                <!-- Login -->
+                <!-- Register Card -->
                 <div class="card p-2">
                     <!-- Logo -->
                     <div class="app-brand justify-content-center mt-5">
                         <a href="index.html" class="app-brand-link gap-2">
                             <span class="app-brand-logo demo">
-                                <span style="color: #9055fd">
+                                <span style="color: var(--bs-primary)">
                                     <svg width="30" height="24" viewBox="0 0 250 196" fill="none" xmlns="http://www.w3.org/2000/svg">
                                         <path fill-rule="evenodd"
                                               clip-rule="evenodd"
@@ -121,76 +120,84 @@
                         </a>
                     </div>
                     <!-- /Logo -->
-
                     <div class="card-body mt-2">
-                        <h4 class="mb-2">Welcome to Supper Fashion! 👋</h4>
-                        <p class="mb-4">Please sign-in to your account and start the adventure</p>                      
+                        <h4 class="mb-2">Adventure starts here 🚀</h4>
                         @if (!string.IsNullOrEmpty(ViewData["ErrorMessage"] as string))
                         {
                             <div class="alert alert-warning alert-dismissible" role="alert">
                                 @ViewData["ErrorMessage"]
                             </div>
                         }
+                        else if (!string.IsNullOrEmpty(ViewData["Sucsess"] as string))
+                        {
+                            <div class="alert alert-success" role="alert">
+                                @ViewData["Sucsess"]
 
-                        <form asp-action="Login" id="formAuthentication" class="mb-3" method="POST">
+                            </div>
+                        }
+                        <p class="mb-4">Reghiter</p>
+
+                        <form asp-action="ResetPass" id="formAuthentication" class="mb-3" method="POST">
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                             <div class="form-floating form-floating-outline mb-3">
-                                <input asp-for="Email" type="text"
-                                       class="form-control"
-                                       id="email"
-                                       name="email"
-                                       placeholder="Enter your email"
-                                       autofocus />
-                                <label for="email">Email</label>
+                                <input asp-for="Email" type="text" class="form-control" id="Email" name="Email" placeholder="Enter your Email" />
+                                <label for="Email">Email</label>
                             </div>
-                            <div class="mb-3">
-                                <div class="form-password-toggle">
-                                    <div class="input-group input-group-merge">
-                                        <div class="form-floating form-floating-outline">
-                                            <input asp-for=Password type="password"
-                                                   id="password"
-                                                   class="form-control"
-                                                   name="password"
-                                                   placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
-                                                   aria-describedby="password" />
-                                            <label for="password">Password</label>
-                                        </div>
-                                        <span class="input-group-text cursor-pointer"><i class="mdi mdi-eye-off-outline"></i></span>
+                            <div class="form-floating form-floating-outline mb-3">
+                                <input asp-for="ConfirmCode" type="text" class="form-control" id="ConfirmCode" name="ConfirmCode" placeholder="Enter your code" />
+                                <label for="ConfirmCode">ConfirmCode</label>
+                            </div>
+
+                            <div class="mb-3 form-password-toggle">
+                                <div class="input-group input-group-merge">
+                                    <div class="form-floating form-floating-outline">
+                                        <input asp-for="NewPassword"
+                                               type="password"
+                                               id="NewPassword"
+                                               class="form-control"
+                                               name="NewPassword"
+                                               placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
+                                               aria-describedby="NewPassword" />
+                                        <label for="NewPassword">NewPassword</label>
                                     </div>
+                                    <span class="input-group-text cursor-pointer"><i class="mdi mdi-eye-off-outline"></i></span>
                                 </div>
                             </div>
-                            <div class="mb-3 d-flex justify-content-between">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" id="remember-me" />
-                                    <label class="form-check-label" for="remember-me"> Remember Me </label>
+                            <div class="mb-3 form-password-toggle">
+                                <div class="input-group input-group-merge">
+                                    <div class="form-floating form-floating-outline">
+                                        <input asp-for="ConfirmPassword"
+                                               type="password"
+                                               id="confirmpassword"
+                                               class="form-control"
+                                               name="ConfirmPassword"
+                                               placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
+                                               aria-describedby="password" />
+                                        <label for="password">ConfirmPassword</label>
+                                    </div>
+                                    <span class="input-group-text cursor-pointer"><i class="mdi mdi-eye-off-outline"></i></span>
                                 </div>
-                                <a asp-action="ForgotPassword" asp-controller="Account" class="float-end mb-1">
-                                    <span>Forgot Password?</span>
-                                </a>
                             </div>
                             <div class="mb-3">
-                                <button class="btn btn-primary d-grid w-100" type="submit">Login</button>
+                                <button class="btn btn-primary d-grid w-100" type="submit">Submit</button>
                             </div>
                         </form>
                         <div class="text-center">
-                            <a href="#" class="d-flex align-items-center justify-content-center" onclick="goBack()">
+                            <a asp-action="Login" class="d-flex align-items-center justify-content-center">
                                 <i class="mdi mdi-chevron-left scaleX-n1-rtl mdi-24px"></i>
-                                Cancel
+                                Back to login
                             </a>
-                            <script>
-                                function goBack() {
-                                    window.history.back();
-                                }
-                            </script>
                         </div>
+
                         <p class="text-center">
-                            <span>New on our platform?</span>
-                            <a href="~/Account/Register">
-                                <span>Create an account</span>
+                            <span>Already have an account?</span>
+                            <a href="~/Account/Login">
+                                <span>Sign in instead</span>
                             </a>
                         </p>
                     </div>
                 </div>
-                <!-- /Login -->
+                <!-- Register Card -->
                 <img src="~/contentadmin/assets/img/illustrations/tree-3.png"
                      alt="auth-tree"
                      class="authentication-image-object-left d-none d-lg-block" />
@@ -208,7 +215,7 @@
 
     <!-- / Content -->
     <!-- Core JS -->
-    <!-- build:js assets/vendor/js/core.js -->
+    <!-- build:js contentadmin/assets/vendor/js/core.js -->
     <script src="~/contentadmin/assets/vendor/libs/jquery/jquery.js"></script>
     <script src="~/contentadmin/assets/vendor/libs/popper/popper.js"></script>
     <script src="~/contentadmin/assets/vendor/js/bootstrap.js"></script>
@@ -226,4 +233,3 @@
     <script async defer src="https://buttons.github.io/buttons.js"></script>
 </body>
 </html>
-
