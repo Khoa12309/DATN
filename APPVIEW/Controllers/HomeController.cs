@@ -16,7 +16,7 @@ using Microsoft.EntityFrameworkCore;
 using _APPAPI.Service;
 using Microsoft.VisualBasic;
 using APPVIEW.ViewModels;
-
+using _APPAPI.ViewModels;
 
 namespace APPVIEW.Controllers
 {
@@ -35,7 +35,7 @@ namespace APPVIEW.Controllers
         private Getapi<Material> getapiMaterial;
         private Getapi<Bill> bills;
         private Getapi<BillDetail> billDetails;
-
+       
 
         private static readonly Random random = new Random();
         private string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -55,7 +55,7 @@ namespace APPVIEW.Controllers
             billDetails = new Getapi<BillDetail>();
 
         }
-
+        
         public IActionResult Index()
         {
             var productDetails = getapi.GetApi("ProductDetails");
@@ -292,9 +292,124 @@ namespace APPVIEW.Controllers
             return View(pro);
         }
 
+        public async Task<IActionResult> province()
+        {
 
+            var client = new OnlineGatewayClient($"https://online-gateway.ghn.vn/shiip/public-api/master-data/province", "bdbbde2a-fec2-11ed-8a8c-6e4795e6d902");
+
+            // Gọi API để lấy danh sách các tỉnh/thành phố
+            var response = await client.GetProvincesAsync();
+
+            //Kiểm tra kết quả trả về
+            if (response.Code == 200) // Thành công
+            {
+                // Trả về danh sách các quận/huyện dưới dạng JSON
+
+                ViewBag.province = response.Data;
+
+                return View();
+            }
+            else // Thất bại
+            {
+                // Trả về thông báo lỗi
+                return BadRequest(response.Message);
+            }
+
+
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> district([FromBody] int provinceid)
+        {
+
+            var client = new OnlineGatewayClient($"https://online-gateway.ghn.vn/shiip/public-api/master-data/district?province_id={provinceid}", "bdbbde2a-fec2-11ed-8a8c-6e4795e6d902");
+            // Gọi API để lấy danh sách các tỉnh/thành phố
+            var response = await client.GetDistricsAsync();
+            //Kiểm tra kết quả trả về
+            if (response.Code == 200) // Thành công
+            {
+                // Trả về danh sách các quận/huyện dưới dạng JSON
+                return Json(response.Data);
+            }
+            else // Thất bại
+            {
+                // Trả về thông báo lỗi
+                return Json(response.Data);
+            }
+        }
+        [HttpPost]
+        public async Task<JsonResult> ward([FromBody] int districtid)
+        {
+              getServiceShip(districtid);
+            var client = new OnlineGatewayClient($"https://online-gateway.ghn.vn/shiip/public-api/master-data/ward?district_id={districtid}", "bdbbde2a-fec2-11ed-8a8c-6e4795e6d902");
+            // Gọi API để lấy danh sách các tỉnh/thành phố
+            var response = await client.GetWardsAsync();
+            //Kiểm tra kết quả trả về
+            if (response.Code == 200) // Thành công
+            {
+                // Trả về danh sách các quận/huyện dưới dạng JSON
+                return Json(response.Data);
+            }
+            else // Thất bại
+            {
+                // Trả về thông báo lỗi
+                return Json(response.Data);
+            }
+        }
+        
+        [HttpPost]
+        public async Task<JsonResult> feeship([FromBody] diachi data)
+        {
+            int sship = await getServiceShip(data.to_district_id);       
+            var client = new OnlineGatewayClient($"https://online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/fee?service_id={sship}"+$"&insurance_value=100000&to_ward_code={data.towardcode.ToString()}"+$"&to_district_id={data.to_district_id.ToString()}"+"&from_district_id=3440&weight=500", "bdbbde2a-fec2-11ed-8a8c-6e4795e6d902");
+            // Gọi API để lấy danh sách các tỉnh/thành phố
+            var response = await client.GetFeeshipAsync();
+           // Kiểm tra kết quả trả về
+            if (response.Code == 200) // Thành công
+            {
+                // Trả về danh sách các quận/huyện dưới dạng JSON
+                return Json(response.Data);
+            }
+            else // Thất bại
+            {
+                // Trả về thông báo lỗi
+                return Json(response.Data);
+            }
+            
+        }
+        public async Task<int> getServiceShip(int data)
+        {
+            var client = new OnlineGatewayClient($"https://online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/available-services?from_district=3440&shop_id=4189096&to_district={data}","bdbbde2a-fec2-11ed-8a8c-6e4795e6d902");
+            // Gọi API để lấy danh sách các tỉnh/thành phố
+            var response = await client.GetServiceAsync();
+           // Kiểm tra kết quả trả về
+            if (response.Code == 200) // Thành công
+            {
+              //  sship= response.Data[0].service_id;
+                // Trả về danh sách các quận/huyện dưới dạng JSON
+                return response.Data[0].service_id;
+            }
+            else // Thất bại
+            {
+                // Trả về thông báo lỗi
+                return 0;
+            }
+            
+        }   
         public async Task<IActionResult> Checkout()
         {
+            var client = new OnlineGatewayClient($"https://online-gateway.ghn.vn/shiip/public-api/master-data/province", "bdbbde2a-fec2-11ed-8a8c-6e4795e6d902");
+
+            // Gọi API để lấy danh sách các tỉnh/thành phố
+            var response = await client.GetProvincesAsync();
+
+            //Kiểm tra kết quả trả về
+            if (response.Code == 200) // Thành công
+            {
+                // Trả về danh sách các quận/huyện dưới dạng JSON
+                ViewBag.province = response.Data;              
+            }
+
             ViewBag.Product = SessionService.GetObjFromSession(HttpContext.Session, "Cart");
             var tt = 0;
             foreach (var item in ViewBag.Product)

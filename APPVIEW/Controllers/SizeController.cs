@@ -1,6 +1,10 @@
-﻿using APPDATA.Models;
+﻿using _APPAPI.ViewModels;
+using APPDATA.Models;
 using APPVIEW.Services;
+using APPVIEW.ViewModels;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using System.Security.Policy;
 
 namespace APPVIEW.Controllers
 {
@@ -71,6 +75,8 @@ namespace APPVIEW.Controllers
           await  getapi.DeleteObj(id, "Size");
             return RedirectToAction("GetList");
 
-        }
+        }  
+        
+    
     }
 }
