@@ -1,0 +1,116 @@
+﻿
+@{
+    ViewData["Title"] = "province";
+    Layout = "~/Views/Shared/_LayoutWeb.cshtml";
+}
+
+@*
+
+<select id="countrySelect">
+        @foreach (var item in ViewBag.province)
+        {
+            <option value="@item.ProvinceID">@item.ProvinceName</option>
+        }
+    </select>
+    <select id="districtSelect" class="form-select form-select-sm" size="3">
+        <option>chọn</option>
+    </select>
+    <select id="wardSelect" class="form-select form-select-sm" size="3">
+        <option>chọn</option>
+    </select>
+    <script>
+
+        // Lấy tham chiếu đến thẻ select bằng id
+        var select = document.getElementById("countrySelect");
+        var selectDistrict = document.getElementById("districtSelect");
+        var selectWard = document.getElementById("wardSelect");
+        
+        // Thêm một sự kiện onchange cho thẻ select
+        select.onchange = function () {
+            // Lấy giá trị được chọn trong thẻ select
+            var selectedCountry = select.value;
+
+            $("#districtSelect").empty(); // Xóa tất cả các thẻ option trong phần tử select có id là DropList
+
+
+            // Sử dụng fetch() để gửi một request GET đến /Home/GetUsers
+        fetch("/size/district", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                }, provinceid: selectedCountry,
+                body: provinceid = selectedCountry
+            })
+                .then(response => response.json()) // Chuyển đổi response thành JSON
+                .then(data => {
+
+                    // Xử lý dữ liệu JSON
+
+                    data.forEach(function (districs) {
+                        l
+                        // Duyệt qua mảng các user
+                        var option = document.createElement("option"); // Tạo một phần tử option mới
+                        option.value = districs.districtID; // Gán giá trị cho option
+                        option.innerHTML = districs.districtName; // Gán nội dung hiển thị cho option
+
+                        selectDistrict.appendChild(option); // Thêm option vào thẻ select
+                        //selectDistrict.insertBefore(option, selectDistrict.firstChild);
+                        //document.write(districs.districtID + " - " + districs.districtName + "<br>"); // Hiển thị thông tin user
+                    });
+
+                })
+                .catch(error => {
+                    // Xử lý lỗi
+                    console.error(error); // In ra lỗi
+                });
+
+
+        };
+
+        //chọn phường
+        selectDistrict.onchange = function () {
+            // Lấy giá trị được chọn trong thẻ select
+            var district = selectDistrict.value;
+
+            $("#wardSelect").empty(); // Xóa tất cả các thẻ option trong phần tử select có id là DropList
+
+
+            // Sử dụng fetch() để gửi một request GET đến /Home/GetUsers
+            fetch("/size/ward", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                }, districtid: district,
+                body: districtid = district
+            })
+                .then(response => response.json()) // Chuyển đổi response thành JSON
+                .then(data => {
+
+                    // Xử lý dữ liệu JSON
+
+                    data.forEach(function (districs) {
+
+                        // Duyệt qua mảng các user
+                        var option = document.createElement("option"); // Tạo một phần tử option mới
+                        option.value = districs.WardCode; // Gán giá trị cho option
+                        option.innerHTML = districs.WardName; // Gán nội dung hiển thị cho option
+
+                        selectWard.appendChild(option); // Thêm option vào thẻ select
+                        //selectDistrict.insertBefore(option, selectDistrict.firstChild);
+                        //document.write(districs.districtID + " - " + districs.districtName + "<br>"); // Hiển thị thông tin user
+                    });
+                })
+                .catch(error => {
+                    // Xử lý lỗi
+                    console.error(error); // In ra lỗi
+                });
+        };
+
+    </script>
+
+*@
+
+
+
+<!-- Tạo một thẻ script để viết code JavaScript -->
+
