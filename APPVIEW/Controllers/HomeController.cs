@@ -62,10 +62,9 @@ namespace APPVIEW.Controllers
             var products = getapiProduct.GetApi("Product");
 
             var productJoin = productDetails.Join(products, ct => ct.Id_Product, s => s.Id, (ct, s) => new { ct, s })
-                                    .Select(cs => new { cs.s.Id, cs.s.Name, cs.ct.Price })
+                                    .Select(cs => new { cs.ct.Id_Product, cs.s.Name, cs.ct.Price,cs.ct.Id })
                                     .Distinct()
                                     .ToList();
-
             ViewBag.Result = productJoin;
             return View(productJoin);
         }
