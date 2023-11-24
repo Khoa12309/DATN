@@ -35,6 +35,25 @@ namespace APPVIEW.Controllers
             return View(obj);
         }
 
+        public async Task<IActionResult> Search(string searchTerm)
+        {
+            var lstAcc = getapi.GetApi("Voucher").ToList();
+
+            var searchResult = lstAcc
+                .Where(v =>
+                    v.Email.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                    v.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)
+                )
+                .ToList();
+
+            if (searchResult.Any())
+            {
+                return View("GetList", searchResult);
+            }
+
+            return NotFound("Voucher không tồn tại");
+        }
+
         [AllowAnonymous]
         public IActionResult Register()
         {
@@ -173,7 +192,7 @@ namespace APPVIEW.Controllers
                 {
                     claims.Add(new Claim("Id", Id_User.ToString()));
                     claims.Add(new Claim("Avatar", Avatar.ToString()));
-                    claims.Add(new Claim("Name",Name));
+                    claims.Add(new Claim("Name", Name));
                 }
 
                 var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
@@ -273,8 +292,8 @@ namespace APPVIEW.Controllers
                     DefaultAddress = addressOfUser.DefaultAddress,
                     Province = addressOfUser.Province,
                     Description = addressOfUser.Description,
-                    Id_Role= user.IdRole,
-                    
+                    Id_Role = user.IdRole,
+
 
                 });
             }
@@ -314,7 +333,7 @@ namespace APPVIEW.Controllers
                     Name = obj.Name,
                     Password = obj.Password,
                     Avatar = AddImg(imageFile),
-                    IdRole=obj.Id_Role
+                    IdRole = obj.Id_Role
 
                 };
                 if (imageFile != null)

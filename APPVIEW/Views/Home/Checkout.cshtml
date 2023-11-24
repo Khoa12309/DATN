@@ -1,9 +1,8 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "Checkout";
     Layout = "~/Views/Shared/_LayoutWeb.cshtml";
 }
-
+<link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 <!-- ================ start banner area ================= -->
 <section class="blog-banner-area" id="category">
     <div class="container h-100">
@@ -27,14 +26,14 @@
         <div class="returning_customer">
             <div class="check_title">
                 <h2>Returning Customer? <a href="~/Account/login">Click here to login</a></h2>
-            </div>            
+            </div>
         </div>
         <div class="cupon_area">
             <div class="check_title">
                 <h2>Have a coupon? <a href="#">Click here to enter your code</a></h2>
             </div>
-            <input type="text" placeholder="Enter coupon code">
-            <a class="button button-coupon" href="#">Apply Coupon</a>
+            @*<input type="text" placeholder="Enter coupon code">*@
+            <a class="button button-coupon" href="~/Home/ApplyDiscount">Apply Coupon</a>
         </div>
         <div class="billing_details">
             <div class="row">
@@ -109,7 +108,7 @@
                     <div class="order_box">
                         <h2>Your Order</h2>
                         <ul class="list">
-                            <li><a href="#"><h4>Product <span>Total</span></h4></a></li>
+                            <li><h6 style="font-size: 14px">Product <span style="padding-left: 214px">Total</span></h6></li>
                             @foreach (var item in ViewBag.Product)
                             {
                                 var tt = item.Quantity * item.Price;
@@ -120,9 +119,26 @@
                             <li><a href="#">Fresh Brocoli <span class="middle">x 02</span> <span class="last">$720.00</span></a></li>
                         </ul>
                         <ul class="list list_2">
-                            <li><a href="#">Subtotal <span>$@ViewBag.TT</span></a></li>
-                            <li><a href="#">Shipping <span>Flat rate: $50.00</span></a></li>
-                            <li><a href="#">Total <span>$2210.00</span></a></li>
+                            <li><a href="#">Subtotal<span>$@ViewBag.TT</span></a></li>
+                            @if (ViewBag.DiscountAmount != null)
+                            {
+                                <a href="javascript:void(0);" onclick="confirmCancelVoucher()" style="color: red; padding-left: 278px"><i class='bx bxs-x-square' type="font-size: 12px"></i></a>
+                                <li>
+                                    <h6 style="font-size: 14px">Thông tin giảm giá:</h6>
+                                    <p>Mã giảm giá: <span>@ViewBag.VoucherCode</span></p>
+                                    <p>Số tiền giảm: <span>$@ViewBag.DiscountAmount</span></p>
+                                </li>
+
+                            }
+                            <li><a href="#">Shipping<span>Flat rate: $50.00</span></a></li>
+                            @if (ViewBag.DiscountAmount != null)
+                            {
+                                <li><a href="#">Total <span>$@(ViewBag.TT - ViewBag.DiscountAmount)</span></a></li>
+                            }
+                            else
+                            {
+                                <li><a href="#">Total <span>$@ViewBag.TT</span></a></li>
+                            }
                         </ul>
                         <div class="payment_item">
                             <div class="radion_btn">
@@ -162,3 +178,12 @@
     </div>
 </section>
 <!--================End Checkout Area =================-->
+<script>
+    function confirmCancelVoucher() {
+        var result = confirm("Bạn có chắc chắn muốn hủy voucher?");
+        if (result) {
+            // Chuyển đến trang xử lý hủy voucher
+            window.location.href = "@Url.Action("Checkout", "Home")";
+        }
+    }
+</script>

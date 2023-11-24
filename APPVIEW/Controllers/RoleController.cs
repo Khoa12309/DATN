@@ -20,6 +20,24 @@ namespace APPVIEW.Controllers
             return View(obj);
         }
 
+        public async Task<IActionResult> Search(string searchTerm)
+        {
+            var lstRole = getapi.GetApi("Role").ToList();
+
+            var searchResult = lstRole
+                .Where(v =>
+                    v.name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                    v.Status.ToString().Contains(searchTerm, StringComparison.OrdinalIgnoreCase)
+                )
+                .ToList();
+
+            if (searchResult.Any())
+            {
+                return View("GetList", searchResult);
+            }
+
+            return NotFound("Voucher không tồn tại");
+        }
 
         [HttpGet]
         public async Task<IActionResult> Create()

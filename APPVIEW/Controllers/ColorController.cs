@@ -20,6 +20,25 @@ namespace APPVIEW.Controllers
             return View(obj);
         }
 
+        public async Task<IActionResult> Search(string searchTerm)
+        {
+            var lstColor = getapi.GetApi("Color").ToList();
+
+            var searchResult = lstColor
+                .Where(v =>
+                    v.Colorcode.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                    v.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                    v.Status.ToString().Contains(searchTerm, StringComparison.OrdinalIgnoreCase)
+                )
+                .ToList();
+
+            if (searchResult.Any())
+            {
+                return View("GetList", searchResult);
+            }
+
+            return NotFound("Voucher không tồn tại");
+        }
 
         [HttpGet]
         public async Task<IActionResult> Create()
@@ -33,7 +52,7 @@ namespace APPVIEW.Controllers
         {
             try
             {
-              await  getapi.CreateObj(obj, "Color");
+                await getapi.CreateObj(obj, "Color");
                 return RedirectToAction("GetList");
             }
             catch
@@ -57,7 +76,7 @@ namespace APPVIEW.Controllers
         {
             try
             {
-              await  getapi.UpdateObj(obj, "Color");
+                await getapi.UpdateObj(obj, "Color");
                 return RedirectToAction("GetList");
             }
             catch
@@ -69,7 +88,7 @@ namespace APPVIEW.Controllers
 
         public async Task<IActionResult> Delete(Guid id)
         {
-          await  getapi.DeleteObj(id, "Color");
+            await getapi.DeleteObj(id, "Color");
             return RedirectToAction("GetList");
 
         }
