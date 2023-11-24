@@ -2,8 +2,9 @@
 @{
     ViewData["Title"] = "Checkout";
     Layout = "~/Views/Shared/_LayoutWeb.cshtml";
-    
+
 }
+<link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 
 <!-- ================ start banner area ================= -->
 <section class="blog-banner-area" id="category">
@@ -28,17 +29,18 @@
         <div class="returning_customer">
             <div class="check_title">
                 <h2>Returning Customer? <a href="~/Account/login">Click here to login</a></h2>
-            </div>            
+            </div>
         </div>
         <div class="cupon_area">
             <div class="check_title">
                 <h2>Have a coupon? <a href="#">Click here to enter your code</a></h2>
             </div>
             <input type="text" placeholder="Enter coupon code">
-            <a class="button button-coupon" href="#">Apply Coupon</a>
+            <a class="button button-coupon" asp-action="ApplyDiscount">Apply Coupon</a>
         </div>
         <div class="billing_details">
             <div class="row">
+
                
                     <div class="col-lg-8">
                         <h3>Billing Details</h3>
@@ -61,6 +63,7 @@
                         </div>
                             <div class="col-md-12 form-group p_star">
                                 <div class="row">
+
                                 <div class="col-lg-4">
                                     <select class="country_select" id="countrySelect" asp-for="@Model.Province">
                                         @foreach (var item in ViewBag.province)
@@ -70,13 +73,15 @@
                                     </select>
                                 </div>
                                 <div class="col-lg-4">
+
                                     
                                     <input list="districtSelect" id="district" placeholder="chọn quận huyện" asp-for="@Model.District">
+
                                     <datalist id="districtSelect">
-                                       
                                     </datalist>
-                                </div> 
+                                </div>
                                 <div class="col-lg-4">
+
                                   
                                     <input list="wardSelect" id="ward" placeholder="chọn phường xã" asp-for="@Model.Ward">
                                     <datalist id="wardSelect">
@@ -103,10 +108,27 @@
                                 }                            
                             </ul>
                             <ul class="list list_2">
-                                <li><a href="#">Subtotal <span>$@ViewBag.TT</span></a></li>
-                            <li><a href="#">Shipping <span>$<input width="30px" style="height:30px" readonly id="feeship" ></span></a></li>
-                                <li><a href="#">Total <span>$2210.00</span></a></li>
-                            </ul>
+                            <li><a href="#">Subtotal <span>$@ViewBag.TT</span></a></li>
+                            @if (ViewBag.DiscountAmount != null)
+                            {
+                                <a href="javascript:void(0);" onclick="confirmCancelVoucher()" style="color: red; padding-left: 278px"><i class='bx bxs-x-square' type="font-size: 12px"></i></a>
+                                <li>
+                                    <h6 style="font-size: 14px">Thông tin giảm giá:</h6>
+                                    <p>Mã giảm giá: <span>@ViewBag.VoucherCode</span></p>
+                                    <p>Số tiền giảm: <span>$@ViewBag.DiscountAmount</span></p>
+                                </li>
+
+                            }
+                            <li><a href="#">Shipping <span>$<input width="30px" style="height:30px" readonly id="feeship"></span></a></li>
+                            @if (ViewBag.DiscountAmount != null)
+                            {
+                                <li><a href="#">Total <span>$@(ViewBag.TT - ViewBag.DiscountAmount)</span></a></li>
+                            }
+                            else
+                            {
+                                <li><a href="#">Total <span>$@ViewBag.TT</span></a></li>
+                            }
+                          </ul>
                             <div class="payment_item">
                                 <div class="radion_btn">
                                     <input type="radio" id="f-option5" name="selector">
@@ -133,24 +155,35 @@
                             <div class="creat_account">
                                 <input type="checkbox" id="f-option4" name="selector">
                                 <label for="f-option4">I’ve read and accept the </label>
-                            <a href="@Url.Action("Payment","Home")">Thanh toán</a>
+                          
+
                             </div>
-                           
+                            <p>
+                                Pay via PayPal; you can pay with your credit card if you don’t have a PayPal
+                                account.
+                            </p>
                         </div>
+                        <div class="creat_account">
+                            <input type="checkbox" id="f-option4" name="selector">
+                            <label for="f-option4">I’ve read and accept the </label>
+                            <a href="#">terms & conditions*</a>
+                        </div>
+
                     </div>
-                
-              
-               
+                </div>
+
+
+
             </div>
         </div>
     </div>
 </section>
 <!--================End Checkout Area =================-->
 <script>
-    
+
     // Lấy tham chiếu đến thẻ select bằng id
     var select = document.getElementById("countrySelect");
-    var selectDistrict = document.getElementById("districtSelect"); 
+    var selectDistrict = document.getElementById("districtSelect");
     var selectWard = document.getElementById("wardSelect");
     var ldistrict= new Array();
     var lward= new Array();
@@ -180,24 +213,24 @@
             .then(data => {
 
                 // Xử lý dữ liệu JSON
-               
+
                 data.forEach(function (districs) {
                     ldistrict.push(districs);
                     console.log(ldistrict);
                     // Duyệt qua mảng các user
-                    var option = document.createElement("option"); // Tạo một phần tử option mới                 
+                    var option = document.createElement("option"); // Tạo một phần tử option mới
                     option.innerHTML = districs.districtID; // Gán giá trị cho option
                     option.value = districs.districtName; // Gán nội dung hiển thị cho option
                     selectDistrict.appendChild(option); // Thêm option vào thẻ select
-                 
+
                 });
-               
+
             })
             .catch(error => {
                 // Xử lý lỗi
                 console.error(error); // In ra lỗi
             });
-        
+
 
     };
 
@@ -211,12 +244,12 @@
                 district = id.districtID;
                 iddis = id.districtID;
             }
-           
+
         });
         console.log(iddis);
         $("#wardSelect").empty(); // Xóa tất cả các thẻ option trong phần tử select có id là DropList
 
-       
+
         // Sử dụng fetch() để gửi một request GET đến /Home/GetUsers
         fetch("/Home/ward", {
             method: "POST",
@@ -231,39 +264,39 @@
                 // Xử lý dữ liệu JSON
 
                 data.forEach(function (ward) {
-                  
+
                     // Duyệt qua mảng các user
                     var option = document.createElement("option"); // Tạo một phần tử option mới
                     option.innerHTML = ward.wardCode; // Gán giá trị cho option
-                    option.value = ward.wardName; // Gán nội dung hiển thị cho option                 
-                    selectWard.appendChild(option); // Thêm option vào thẻ select            
+                    option.value = ward.wardName; // Gán nội dung hiển thị cho option
+                    selectWard.appendChild(option); // Thêm option vào thẻ select
                     lward.push(ward);
-                    
 
-                });  
+
+                });
             })
             .catch(error => {
                 // Xử lý lỗi
                 console.error(error); // In ra lỗi
-            });       
+            });
     };
-    
-   
+
+
     inputward.onchange = function () {
         // Lấy giá trị được chọn trong thẻ select
-        var district = 0; 
+        var district = 0;
         var ward= 0
         lward.forEach(function (id) {
             if (id.wardName == inputward.value) {
-                
+
                 idwar = id.wardCode;
               ward=id.wardCode;
             }
-           
-        });    
+
+        });
         var data = {
             towardcode: ward,
-            to_district_id: iddis,           
+            to_district_id: iddis,
         };
         var json = JSON.stringify(data);
         // Sử dụng fetch() để gửi một request GET đến /Home/GetUsers
@@ -271,7 +304,7 @@
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
-            },                    
+            },
             body: json
         })
             .then(response => response.json()) // Chuyển đổi response thành JSON
@@ -281,7 +314,7 @@
 
             console.log(data.total);
 
-                
+
                 document.getElementById("feeship").value = data.total;
                 
             })
@@ -289,8 +322,7 @@
                 // Xử lý lỗi
                 console.error(error); // In ra lỗi
             });
-   
-          
+
     };
     var inputon = document.getElementById("f-option6");
     var inputoff = document.getElementById("f-option5");
@@ -322,3 +354,13 @@
     //}
 
 </script>
+<script>
+    function confirmCancelVoucher() {
+        var result = confirm("Bạn có chắc chắn muốn hủy voucher?");
+        if (result) {
+            // Chuyển đến trang xử lý hủy voucher
+            window.location.href = "@Url.Action("Checkout", "Home")";
+        }
+    }
+</script>
+
