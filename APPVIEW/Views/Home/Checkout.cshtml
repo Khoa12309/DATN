@@ -44,47 +44,25 @@
                         <h3>Billing Details</h3>
                         <form class="row contact_form" action="~/home/dathangn" method="post" novalidate="novalidate">
                             <div class="col-md-6 form-group p_star">
-                                <input type="text" class="form-control" id="first"  asp-for="@Model.Name">
-                            <span class="placeholder" data-placeholder="Full name" placeholder="Fullname"></span>
+                            <input type="text" class="form-control" id="first" name="Fullname" placeholder="Fullname" asp-for="@Model.Name">
+                            <span class="placeholder" data-placeholder="Fullname" placeholder="Fullname"></span>
                             </div>
                             <div class="col-md-6 form-group p_star">
-                            <input type="text" class="form-control" id="last" asp-for="@Model.PhoneNumber" >
-                                <span class="placeholder" data-placeholder="Phone number"></span>
+                            <input type="text" class="form-control" placeholder="Phonenumber" id="last" asp-for="@Model.PhoneNumber">
+                                <span class="placeholder" data-placeholder="Phonenumber"></span>
                             </div>
-                            <div class="col-md-12 form-group">
-                                <input type="text" class="form-control" id="company" name="company" placeholder="Company name">
-                            </div>
+                           
                             <div class="col-md-6 form-group p_star">
-                            <input type="text" class="form-control" placeholder="SpecificAddress" asp-for="@Model.SpecificAddress" id="number" name="number">
+                            <input type="text" class="form-control" placeholder="SpecificAddress" asp-for="@Model.SpecificAddress" id="text">
                             <span class="placeholder" ></span>
                             </div>
-                            <div class="col-md-6 form-group p_star">
-                                <input type="text" class="form-control" id="email" name="compemailany">
-                            <span class="placeholder" placeholder="Fullname" data-placeholder="Email Address"></span>
-                            </div>
-                            <div class="col-md-12 form-group p_star">
-                                <select class="country_select">
-                                    <option value="1">Country</option>
-                                    <option value="2">Country</option>
-                                    <option value="4">Country</option>
-                                </select>
-                            </div>
-                            <div class="col-md-12 form-group p_star">
-                                <input type="text" class="form-control" id="add1" name="add1">
-                                <span class="placeholder" data-placeholder="Address line 01"></span>
-                            </div>
-                            <div class="col-md-12 form-group p_star">
-                                <input type="text" class="form-control" id="add2" name="add2">
-                                <span class="placeholder" data-placeholder="Address line 02"></span>
-                            </div>
-                            <div class="col-md-12 form-group p_star">
-                                <input type="text" class="form-control" id="city" name="city">
-                                <span class="placeholder" data-placeholder="Town/City"></span>
-                            </div>
+                        <div class="col-md-12 form-group">
+                            <input type="text" class="form-control" id="company" name="company" placeholder="Description" asp-for="Description">
+                        </div>
                             <div class="col-md-12 form-group p_star">
                                 <div class="row">
                                 <div class="col-lg-4">
-                                    <select class="country_select" id="countrySelect">
+                                    <select class="country_select" id="countrySelect" asp-for="@Model.Province">
                                         @foreach (var item in ViewBag.province)
                                         {
                                             <option value="@item.ProvinceID">@item.ProvinceName</option>
@@ -93,38 +71,21 @@
                                 </div>
                                 <div class="col-lg-4">
                                     
-                                    <input  list="districtSelect"  id="district" placeholder="chọn quận huyện" >
+                                    <input list="districtSelect" id="district" placeholder="chọn quận huyện" asp-for="@Model.District">
                                     <datalist id="districtSelect">
                                        
                                     </datalist>
                                 </div> 
                                 <div class="col-lg-4">
                                   
-                                    <input list="wardSelect" id="ward" placeholder="chọn quận huyện" >
+                                    <input list="wardSelect" id="ward" placeholder="chọn phường xã" asp-for="@Model.Ward">
                                     <datalist id="wardSelect">
                                     </datalist>
                                 </div>
-
                                 </div>
                            
-                            </div>
-                            <div class="col-md-12 form-group">
-                                <input type="text" class="form-control" id="zip" name="zip" placeholder="Postcode/ZIP">
-                            </div>
-                            <div class="col-md-12 form-group">
-                                <div class="creat_account">
-                                    <input type="checkbox" id="f-option2" name="selector">
-                                    <label for="f-option2">Create an account?</label>
-                                </div>
-                            </div>
-                            <div class="col-md-12 form-group mb-0">
-                                <div class="creat_account">
-                                    <h3>Shipping Details</h3>
-                                    <input type="checkbox" id="f-option3" name="selector">
-                                    <label for="f-option3">Ship to a different address?</label>
-                                </div>
-                                <textarea class="form-control" name="message" id="message" rows="1" placeholder="Order Notes"></textarea>
-                            </div>
+                            </div>    
+                            <input name="pay" id="pay" hidden value="shipcod" />
                         <div class="text-center  form-group">
                             <button type="submit" class="button button-paypal">Order Confirmation</button>
                         </div>
@@ -139,9 +100,7 @@
                                 {
                                     var tt = item.Quantity * item.Price;
                                     <li><a href="#">@item.Name<span class="middle">x @item.Quantity</span> <span class="last">$@tt</span></a></li>
-                                }
-                                <li><a href="#">Fresh Tomatoes <span class="middle">x 02</span> <span class="last">$720.00</span></a></li>
-                                <li><a href="#">Fresh Brocoli <span class="middle">x 02</span> <span class="last">$720.00</span></a></li>
+                                }                            
                             </ul>
                             <ul class="list list_2">
                                 <li><a href="#">Subtotal <span>$@ViewBag.TT</span></a></li>
@@ -174,7 +133,7 @@
                             <div class="creat_account">
                                 <input type="checkbox" id="f-option4" name="selector">
                                 <label for="f-option4">I’ve read and accept the </label>
-                                <a href="#">terms & conditions*</a>
+                            <a href="@Url.Action("Payment","Home")">Thanh toán</a>
                             </div>
                            
                         </div>
@@ -199,6 +158,7 @@
     var idwar=0;
     var inputdis = document.getElementById("district");
     var inputward = document.getElementById("ward");
+   
     // Thêm một sự kiện onchange cho thẻ select
     select.onchange = function () {
         // Lấy giá trị được chọn trong thẻ select
@@ -323,15 +283,25 @@
 
                 
                 document.getElementById("feeship").value = data.total;
+                
             })
             .catch(error => {
                 // Xử lý lỗi
                 console.error(error); // In ra lỗi
-            });       
+            });
+   
+          
     };
-
-
-    //function showLabel(input) {
+    var inputon = document.getElementById("f-option6");
+    var inputoff = document.getElementById("f-option5");
+    inputon.onclick= function(){
+        document.getElementById("pay").value = "Online"
+    }
+    inputoff.onclick= function(){
+        document.getElementById("pay").value = "shipCod"
+    }
+    
+        //function showLabel(input) {
     //    // Lấy giá trị của input
     //    var value = input.value;
     //    // Lấy phần tử datalist tương ứng
