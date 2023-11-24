@@ -100,8 +100,11 @@ namespace APPVIEW.Controllers
                 product = getapiPD.GetApi("ProductDetails").Find(c => c.Id == id && c.Id_Color == color && c.Id_Size == size);
                 if (product==null)
                 {
-                    _notyf.Warning("Màu hoặc kích thước bạn chọn không còn ");
-                    return RedirectToAction("ViewCart");
+
+                    _notyf.Warning("Màu hoặc kích thước bạn chọn không còn");
+                    TempData["mess"] = "Màu hoặc kích thước bạn chọn không còn";
+                    return RedirectToAction("Details", "Home",new { id=id });
+                
                 }
             }
             product.Quantity = Soluong;
