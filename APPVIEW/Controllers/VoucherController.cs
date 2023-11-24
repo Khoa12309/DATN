@@ -19,6 +19,25 @@ namespace APPVIEW.Controllers
             var obj = getapi.GetApi("Voucher");
             return View(obj);
         }
+        public async Task<IActionResult> Search(string searchTerm)
+        {
+            var lstVoucher = getapi.GetApi("Voucher").ToList();
+
+            var searchResult = lstVoucher
+                .Where(v =>
+                    v.Code.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                    v.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                    v.Status.ToString().Contains(searchTerm, StringComparison.OrdinalIgnoreCase)
+                )
+                .ToList();
+
+            if (searchResult.Any())
+            {
+                return View("GetList", searchResult);
+            }
+
+            return NotFound("Voucher không tồn tại");
+        }
 
 
         [HttpGet]
@@ -69,9 +88,9 @@ namespace APPVIEW.Controllers
 
         public async Task<IActionResult> Delete(Guid id)
         {
-            
+
             getapi.DeleteObj(id, "Voucher");
-           return RedirectToAction("GetList");
+            return RedirectToAction("GetList");
 
         }
     }

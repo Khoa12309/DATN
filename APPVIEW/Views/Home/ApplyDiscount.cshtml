@@ -1,0 +1,87 @@
+﻿@model IEnumerable<APPVIEW.ViewModels.VoucherVm>
+@{
+    ViewData["Title"] = "Apply Discount";
+    Layout = "~/Views/Shared/_LayoutWeb.cshtml";
+}
+<style>
+    .coupon .kanan {
+        border-left: 1px dashed #000000;
+        width: 40% !important;
+        position: relative;
+    }
+
+        .coupon .kanan .info::after,
+        .coupon .kanan .info::before {
+            content: "";
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #ffffff;
+            border-radius: 100%;
+        }
+
+        .coupon .kanan .info::before {
+            top: -10px;
+            left: -10px;
+        }
+
+        .coupon .kanan .info::after {
+            bottom: -10px;
+            left: -10px;
+        }
+
+    .coupon .time {
+        font-size: 1.6rem;
+    }
+</style>
+<div class="container my-5">
+    <form class="row" method="post" asp-action="ApplyDiscount">
+        @foreach (var voucher in Model)
+        {
+            <div class="col-sm-6">
+                <div class="coupon bg-white rounded mb-3 d-flex justify-content-between">
+                    <div class="tengah py-3 d-flex w-100 justify-content-start p-3"
+                     style="background: #f2f2f2; border-radius: 5px">
+                        <div>
+                            <span class="badge badge-success">@voucher.Code</span>
+                            <h4 class="text-muted mb-0">@voucher.Name</h4>
+                            <p class="text-muted mb-0">- $@voucher.DiscountAmount</p>
+                        </div>
+                    </div>
+
+                    <div class="kanan" style="background: #f2f2f2; border-radius: 5px">
+                        <div class="info m-3 d-flex align-items-center">
+                            <div class="w-100">
+                                <div class="block">
+                                    <span class="time font-weight-light">
+                                        <p style="color: red; font-size: 12px">
+                                            HSD: @voucher.EndDate.ToString("dd-MM-yyyy HH:mm")
+                                        </p>
+                                    </span>
+                                </div>
+                                <input type="submit" value="Apply" class="btn btn-sm btn-outline-danger btn-block apply-btn" data-code="@voucher.Code"/>
+                                <input type="hidden" name="selectedVoucher" value="@voucher.Code" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </form>
+</div>
+
+<script>
+    // Lấy tất cả các phần tử có class "apply-btn"
+    var applyButtons = document.querySelectorAll('.apply-btn');
+
+    // Lặp qua từng nút và thêm sự kiện click
+    applyButtons.forEach(function (button) {
+        button.addEventListener('click', function () {
+            // Lấy giá trị mã voucher từ thuộc tính data-code
+            var voucherCode = button.getAttribute('data-code');
+
+            // Gán giá trị vào trường ẩn selectedVoucher
+            document.querySelector('input[name="selectedVoucher"]').value = voucherCode;
+        });
+    });
+</script>
