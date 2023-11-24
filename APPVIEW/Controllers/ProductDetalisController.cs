@@ -34,6 +34,10 @@ namespace APPVIEW.Controllers
           
         }
 
+        public string GetFiltered()
+        {
+            return "I got the data, here is the feedback to you";
+        }
         public async Task<IActionResult> GetList()
         {
             ViewBag.Size =await getapiSize.GetApia("Size");
