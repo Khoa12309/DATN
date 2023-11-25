@@ -69,7 +69,7 @@ namespace APPVIEW.Controllers
             return View(productJoin);
         }
 
-        public IActionResult ViewBill(Guid id)
+        public async Task<IActionResult> ViewBill(Guid id)
         {
 
             var productDetails = getapi.GetApi("ProductDetails");
@@ -99,6 +99,25 @@ namespace APPVIEW.Controllers
             ViewBag.id = id;
             ViewBag.size = getapiSize.GetApi("Size");
             ViewBag.color = getapiColor.GetApi("Color");
+            var client = new OnlineGatewayClient($"https://online-gateway.ghn.vn/shiip/public-api/master-data/province", "bdbbde2a-fec2-11ed-8a8c-6e4795e6d902");
+
+            // Gọi API để lấy danh sách các tỉnh/thành phố
+            var response = await client.GetProvincesAsync();
+
+            //Kiểm tra kết quả trả về
+            if (response.Code == 200) // Thành công
+            {
+                // Trả về danh sách các quận/huyện dưới dạng JSON
+                ViewBag.province = response.Data;
+            }
+
+            ViewBag.Product = SessionService.GetObjFromSession(HttpContext.Session, "Cart");
+            var tt = 0;
+            foreach (var item in ViewBag.Product)
+            {
+                tt += (item.Quantity * item.Price);
+            }
+            ViewBag.TT = tt;
             return View();
         }
 
@@ -129,8 +148,14 @@ namespace APPVIEW.Controllers
             x.Status = 4;
             bills.UpdateObj(x, "Bill");
             return RedirectToAction("Thongtin");
+        }  public IActionResult HuyDon( Guid id)
+        {
+            var x = bills.GetApi("Bill").FirstOrDefault(c => c.id == id);
+            x.Status = 0;
+            bills.UpdateObj(x, "Bill");
+            return RedirectToAction("Thongtin");
         }
-
+        
         // Sử dụng:
         // Tạo chuỗi có độ dài 8 ký tự
 
@@ -173,12 +198,27 @@ namespace APPVIEW.Controllers
             return View();
         }
 
-        public async Task< IActionResult>DatHang(Guid size, Guid color, Guid productId, int soluong, string sdt, string diachi)
+        public async Task< IActionResult>DatHang(Guid size, Guid color, Guid productId, int soluong, string sdt, float ship ,int province , string district , string ward , string diachict)
         {
 
-
+            string province2 = "";
             var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
-           
+
+            var client = new OnlineGatewayClient($"https://online-gateway.ghn.vn/shiip/public-api/master-data/province", "bdbbde2a-fec2-11ed-8a8c-6e4795e6d902");
+         
+            // Gọi API để lấy danh sách các tỉnh/thành phố
+            var response = await client.GetProvincesAsync();
+            foreach (var item in response.Data)
+            {
+                if (item.ProvinceID == province ) { 
+                
+                   province2 = item.ProvinceName; break;
+                }
+            }
+
+            // Gọi API để lấy danh sách các tỉnh/thành phố
+
+            var diachi =diachict+"-"+ ward+"-"+district + "-Tỉnh "+province2 ;
          
 
             var x = getapi.GetApi("ProductDetails").FirstOrDefault(c => c.Id_Product == productId && c.Id_Size == size && c.Id_Color == color);
@@ -187,7 +227,7 @@ namespace APPVIEW.Controllers
             {
                 return Redirect("~/Account/Login");
             }
-            else if (x == null)
+            else if (x == null )
             {
                 return BadRequest("Mặt hàng này tạm hết vui lòng chọn size hoặc màu khác");
 
@@ -206,7 +246,7 @@ namespace APPVIEW.Controllers
                 bill.CreateDate = DateTime.Now;
                 bill.UpdateBy = DateTime.Now;
                 bill.Status = 1;
-
+                bill.ShipFee = ship;
 
                 await bills.CreateObj(bill, "Bill");
 
@@ -219,7 +259,7 @@ namespace APPVIEW.Controllers
                 billct.Price = soluong * x.Price;
                 billct.Status = 1;
                 await billDetails.CreateObj(billct, "BillDetail");
-                bill.TotalMoney = billct.Price;
+                bill.TotalMoney = billct.Price + ship;
                 await bills.UpdateObj(bill, "Bill");
                 ViewBag.Bill = bill;
                 ViewBag.Billct = billct;
@@ -237,7 +277,7 @@ namespace APPVIEW.Controllers
         public IActionResult Thongtin()
         {
             var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
-            var userBills = bills.GetApi("Bill").Where(c => c.AccountId == account.Id).ToList();
+            var userBills = bills.GetApi("Bill").Where(c => c.AccountId == account.Id&& c.Status!=4 ).OrderByDescending(d => d.CreateDate).ToList();
             ViewBag.viewbill = userBills;
 
             if (account.Id == Guid.Empty)
@@ -255,7 +295,7 @@ namespace APPVIEW.Controllers
             ViewBag.sizee = getapiSize.GetApi("Size");
                 
             ViewBag.Collor = getapiColor.GetApi("Color");
-            return View();
+            return View(userBills);
 
         }
 
