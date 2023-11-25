@@ -2,8 +2,9 @@
 @{
     ViewData["Title"] = "Checkout";
     Layout = "~/Views/Shared/_LayoutWeb.cshtml";
-    
+
 }
+<link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 
 <!-- ================ start banner area ================= -->
 <section class="blog-banner-area" id="category">
@@ -28,63 +29,43 @@
         <div class="returning_customer">
             <div class="check_title">
                 <h2>Returning Customer? <a href="~/Account/login">Click here to login</a></h2>
-            </div>            
+            </div>
         </div>
         <div class="cupon_area">
             <div class="check_title">
                 <h2>Have a coupon? <a href="#">Click here to enter your code</a></h2>
             </div>
             <input type="text" placeholder="Enter coupon code">
-            <a class="button button-coupon" href="#">Apply Coupon</a>
+            <a class="button button-coupon" asp-action="ApplyDiscount">Apply Coupon</a>
         </div>
         <div class="billing_details">
             <div class="row">
+
                
                     <div class="col-lg-8">
                         <h3>Billing Details</h3>
                         <form class="row contact_form" action="~/home/dathangn" method="post" novalidate="novalidate">
                             <div class="col-md-6 form-group p_star">
-                                <input type="text" class="form-control" id="first"  asp-for="@Model.Name">
-                            <span class="placeholder" data-placeholder="Full name" placeholder="Fullname"></span>
+                            <input type="text" class="form-control" id="first" name="Fullname" placeholder="Fullname" asp-for="@Model.Name">
+                            <span class="placeholder" data-placeholder="Fullname" placeholder="Fullname"></span>
                             </div>
                             <div class="col-md-6 form-group p_star">
-                            <input type="text" class="form-control" id="last" asp-for="@Model.PhoneNumber" >
-                                <span class="placeholder" data-placeholder="Phone number"></span>
+                            <input type="text" class="form-control" placeholder="Phonenumber" id="last" asp-for="@Model.PhoneNumber">
+                                <span class="placeholder" data-placeholder="Phonenumber"></span>
                             </div>
-                            <div class="col-md-12 form-group">
-                                <input type="text" class="form-control" id="company" name="company" placeholder="Company name">
-                            </div>
+                           
                             <div class="col-md-6 form-group p_star">
-                            <input type="text" class="form-control" placeholder="SpecificAddress" asp-for="@Model.SpecificAddress" id="number" name="number">
+                            <input type="text" class="form-control" placeholder="SpecificAddress" asp-for="@Model.SpecificAddress" id="text">
                             <span class="placeholder" ></span>
                             </div>
-                            <div class="col-md-6 form-group p_star">
-                                <input type="text" class="form-control" id="email" name="compemailany">
-                            <span class="placeholder" placeholder="Fullname" data-placeholder="Email Address"></span>
-                            </div>
-                            <div class="col-md-12 form-group p_star">
-                                <select class="country_select">
-                                    <option value="1">Country</option>
-                                    <option value="2">Country</option>
-                                    <option value="4">Country</option>
-                                </select>
-                            </div>
-                            <div class="col-md-12 form-group p_star">
-                                <input type="text" class="form-control" id="add1" name="add1">
-                                <span class="placeholder" data-placeholder="Address line 01"></span>
-                            </div>
-                            <div class="col-md-12 form-group p_star">
-                                <input type="text" class="form-control" id="add2" name="add2">
-                                <span class="placeholder" data-placeholder="Address line 02"></span>
-                            </div>
-                            <div class="col-md-12 form-group p_star">
-                                <input type="text" class="form-control" id="city" name="city">
-                                <span class="placeholder" data-placeholder="Town/City"></span>
-                            </div>
+                        <div class="col-md-12 form-group">
+                            <input type="text" class="form-control" id="company" name="company" placeholder="Description" asp-for="Description">
+                        </div>
                             <div class="col-md-12 form-group p_star">
                                 <div class="row">
+
                                 <div class="col-lg-4">
-                                    <select class="country_select" id="countrySelect">
+                                    <select class="country_select" id="countrySelect" asp-for="@Model.Province">
                                         @foreach (var item in ViewBag.province)
                                         {
                                             <option value="@item.ProvinceID">@item.ProvinceName</option>
@@ -92,39 +73,24 @@
                                     </select>
                                 </div>
                                 <div class="col-lg-4">
+
                                     
-                                    <input  list="districtSelect"  id="district" placeholder="chọn quận huyện" >
+                                    <input list="districtSelect" id="district" placeholder="chọn quận huyện" asp-for="@Model.District">
+
                                     <datalist id="districtSelect">
-                                       
                                     </datalist>
-                                </div> 
+                                </div>
                                 <div class="col-lg-4">
+
                                   
-                                    <input list="wardSelect" id="ward" placeholder="chọn quận huyện" >
+                                    <input list="wardSelect" id="ward" placeholder="chọn phường xã" asp-for="@Model.Ward">
                                     <datalist id="wardSelect">
                                     </datalist>
                                 </div>
-
                                 </div>
                            
-                            </div>
-                            <div class="col-md-12 form-group">
-                                <input type="text" class="form-control" id="zip" name="zip" placeholder="Postcode/ZIP">
-                            </div>
-                            <div class="col-md-12 form-group">
-                                <div class="creat_account">
-                                    <input type="checkbox" id="f-option2" name="selector">
-                                    <label for="f-option2">Create an account?</label>
-                                </div>
-                            </div>
-                            <div class="col-md-12 form-group mb-0">
-                                <div class="creat_account">
-                                    <h3>Shipping Details</h3>
-                                    <input type="checkbox" id="f-option3" name="selector">
-                                    <label for="f-option3">Ship to a different address?</label>
-                                </div>
-                                <textarea class="form-control" name="message" id="message" rows="1" placeholder="Order Notes"></textarea>
-                            </div>
+                            </div>    
+                            <input name="pay" id="pay" hidden value="shipcod" />
                         <div class="text-center  form-group">
                             <button type="submit" class="button button-paypal">Order Confirmation</button>
                         </div>
@@ -139,15 +105,30 @@
                                 {
                                     var tt = item.Quantity * item.Price;
                                     <li><a href="#">@item.Name<span class="middle">x @item.Quantity</span> <span class="last">$@tt</span></a></li>
-                                }
-                                <li><a href="#">Fresh Tomatoes <span class="middle">x 02</span> <span class="last">$720.00</span></a></li>
-                                <li><a href="#">Fresh Brocoli <span class="middle">x 02</span> <span class="last">$720.00</span></a></li>
+                                }                            
                             </ul>
                             <ul class="list list_2">
-                                <li><a href="#">Subtotal <span>$@ViewBag.TT</span></a></li>
-                            <li><a href="#">Shipping <span>$<input width="30px" style="height:30px" readonly id="feeship" ></span></a></li>
-                                <li><a href="#">Total <span>$2210.00</span></a></li>
-                            </ul>
+                            <li><a href="#">Subtotal <span>$@ViewBag.TT</span></a></li>
+                            @if (ViewBag.DiscountAmount != null)
+                            {
+                                <a href="javascript:void(0);" onclick="confirmCancelVoucher()" style="color: red; padding-left: 278px"><i class='bx bxs-x-square' type="font-size: 12px"></i></a>
+                                <li>
+                                    <h6 style="font-size: 14px">Thông tin giảm giá:</h6>
+                                    <p>Mã giảm giá: <span>@ViewBag.VoucherCode</span></p>
+                                    <p>Số tiền giảm: <span>$@ViewBag.DiscountAmount</span></p>
+                                </li>
+
+                            }
+                            <li><a href="#">Shipping <span>$<input width="30px" style="height:30px" readonly id="feeship"></span></a></li>
+                            @if (ViewBag.DiscountAmount != null)
+                            {
+                                <li><a href="#">Total <span>$@(ViewBag.TT - ViewBag.DiscountAmount)</span></a></li>
+                            }
+                            else
+                            {
+                                <li><a href="#">Total <span>$@ViewBag.TT</span></a></li>
+                            }
+                          </ul>
                             <div class="payment_item">
                                 <div class="radion_btn">
                                     <input type="radio" id="f-option5" name="selector">
@@ -174,24 +155,35 @@
                             <div class="creat_account">
                                 <input type="checkbox" id="f-option4" name="selector">
                                 <label for="f-option4">I’ve read and accept the </label>
-                                <a href="#">terms & conditions*</a>
+                          
+
                             </div>
-                           
+                            <p>
+                                Pay via PayPal; you can pay with your credit card if you don’t have a PayPal
+                                account.
+                            </p>
                         </div>
+                        <div class="creat_account">
+                            <input type="checkbox" id="f-option4" name="selector">
+                            <label for="f-option4">I’ve read and accept the </label>
+                            <a href="#">terms & conditions*</a>
+                        </div>
+
                     </div>
-                
-              
-               
+                </div>
+
+
+
             </div>
         </div>
     </div>
 </section>
 <!--================End Checkout Area =================-->
 <script>
-    
+
     // Lấy tham chiếu đến thẻ select bằng id
     var select = document.getElementById("countrySelect");
-    var selectDistrict = document.getElementById("districtSelect"); 
+    var selectDistrict = document.getElementById("districtSelect");
     var selectWard = document.getElementById("wardSelect");
     var ldistrict= new Array();
     var lward= new Array();
@@ -199,6 +191,7 @@
     var idwar=0;
     var inputdis = document.getElementById("district");
     var inputward = document.getElementById("ward");
+   
     // Thêm một sự kiện onchange cho thẻ select
     select.onchange = function () {
         // Lấy giá trị được chọn trong thẻ select
@@ -220,24 +213,24 @@
             .then(data => {
 
                 // Xử lý dữ liệu JSON
-               
+
                 data.forEach(function (districs) {
                     ldistrict.push(districs);
                     console.log(ldistrict);
                     // Duyệt qua mảng các user
-                    var option = document.createElement("option"); // Tạo một phần tử option mới                 
+                    var option = document.createElement("option"); // Tạo một phần tử option mới
                     option.innerHTML = districs.districtID; // Gán giá trị cho option
                     option.value = districs.districtName; // Gán nội dung hiển thị cho option
                     selectDistrict.appendChild(option); // Thêm option vào thẻ select
-                 
+
                 });
-               
+
             })
             .catch(error => {
                 // Xử lý lỗi
                 console.error(error); // In ra lỗi
             });
-        
+
 
     };
 
@@ -251,12 +244,12 @@
                 district = id.districtID;
                 iddis = id.districtID;
             }
-           
+
         });
         console.log(iddis);
         $("#wardSelect").empty(); // Xóa tất cả các thẻ option trong phần tử select có id là DropList
 
-       
+
         // Sử dụng fetch() để gửi một request GET đến /Home/GetUsers
         fetch("/Home/ward", {
             method: "POST",
@@ -271,39 +264,39 @@
                 // Xử lý dữ liệu JSON
 
                 data.forEach(function (ward) {
-                  
+
                     // Duyệt qua mảng các user
                     var option = document.createElement("option"); // Tạo một phần tử option mới
                     option.innerHTML = ward.wardCode; // Gán giá trị cho option
-                    option.value = ward.wardName; // Gán nội dung hiển thị cho option                 
-                    selectWard.appendChild(option); // Thêm option vào thẻ select            
+                    option.value = ward.wardName; // Gán nội dung hiển thị cho option
+                    selectWard.appendChild(option); // Thêm option vào thẻ select
                     lward.push(ward);
-                    
 
-                });  
+
+                });
             })
             .catch(error => {
                 // Xử lý lỗi
                 console.error(error); // In ra lỗi
-            });       
+            });
     };
-    
-   
+
+
     inputward.onchange = function () {
         // Lấy giá trị được chọn trong thẻ select
-        var district = 0; 
+        var district = 0;
         var ward= 0
         lward.forEach(function (id) {
             if (id.wardName == inputward.value) {
-                
+
                 idwar = id.wardCode;
               ward=id.wardCode;
             }
-           
-        });    
+
+        });
         var data = {
             towardcode: ward,
-            to_district_id: iddis,           
+            to_district_id: iddis,
         };
         var json = JSON.stringify(data);
         // Sử dụng fetch() để gửi một request GET đến /Home/GetUsers
@@ -311,7 +304,7 @@
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
-            },                    
+            },
             body: json
         })
             .then(response => response.json()) // Chuyển đổi response thành JSON
@@ -321,17 +314,26 @@
 
             console.log(data.total);
 
-                
+
                 document.getElementById("feeship").value = data.total;
+                
             })
             .catch(error => {
                 // Xử lý lỗi
                 console.error(error); // In ra lỗi
-            });       
+            });
+
     };
-
-
-    //function showLabel(input) {
+    var inputon = document.getElementById("f-option6");
+    var inputoff = document.getElementById("f-option5");
+    inputon.onclick= function(){
+        document.getElementById("pay").value = "Online"
+    }
+    inputoff.onclick= function(){
+        document.getElementById("pay").value = "shipCod"
+    }
+    
+        //function showLabel(input) {
     //    // Lấy giá trị của input
     //    var value = input.value;
     //    // Lấy phần tử datalist tương ứng
@@ -352,3 +354,13 @@
     //}
 
 </script>
+<script>
+    function confirmCancelVoucher() {
+        var result = confirm("Bạn có chắc chắn muốn hủy voucher?");
+        if (result) {
+            // Chuyển đến trang xử lý hủy voucher
+            window.location.href = "@Url.Action("Checkout", "Home")";
+        }
+    }
+</script>
+

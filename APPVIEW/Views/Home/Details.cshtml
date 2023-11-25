@@ -23,7 +23,12 @@
 	</section>
 	<!-- ================ end banner area ================= -->
 
-
+	@if(TempData["mess"]!= null){
+		<div class="alert alert-warning">
+			@TempData["mess"]
+			<button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>
+		</div>
+	}
   <!--================Single Product Area =================-->
 	<div class="product_image_area">
 		<div class="container">
@@ -481,33 +486,33 @@
                     @{
                         var lstP = new List<Guid>();
                         var so = 0;
-                        @foreach (var ProD in ViewBag.PD)
+										@foreach (var ProD in ViewBag.PD)
                                 {
                                     if (lstP.Any(c => c == ProD.Id_Product))
                                     {
                                         continue;
                                     }
-                            <div class="col-sm-6 col-xl-3 mb-4 mb-xl-0">
-                                    @foreach (var img in ViewBag.Img)
+											<div class="col-sm-6 col-xl-3 mb-4 mb-xl-0">
+													@foreach (var img in ViewBag.Img)
                                     {
                                         if (img.IdProductdetail == ProD.Id)
                                         {
                                     so++;
                                     lstP.Add(ProD.Id_Product);
-                                             <div class="single-search-product d-flex">
-                                            <a href="@Url.Action("Details","Home",new{id=ProD.Id })"><img src="~/images/@img.Name" alt=""></a>
-                                            <div class="desc">
-                                                <a href="@Url.Action("Details","Home",new{id=ProD.Id })" class="title">@ProD.Name</a>
-                                                <div class="price">$@ProD.Price</div>
-                                            </div>
-                                    </div>
+														 	<div class="single-search-product d-flex">
+															<a href="@Url.Action("Details","Home",new{id=ProD.Id })"><img src="~/images/@img.Name" alt=""></a>
+															<div class="desc">
+																<a href="@Url.Action("Details","Home",new{id=ProD.Id })" class="title">@ProD.Name</a>
+																<div class="price">$@ProD.Price</div>
+															</div>
+													</div>
                                     if (so==3)
                                     {
                                         break;
                                     }
                                         }
                                     }
-                            </div>
+											</div>
                                 }
                             }                               
             </div>
