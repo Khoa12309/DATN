@@ -50,7 +50,6 @@ namespace APPVIEW.Controllers
             return View(lst.Find(c => c.Id == id));
         }
 
-
         [HttpPost]
         public async Task<IActionResult> Edit(Category obj)
         {
