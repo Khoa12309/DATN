@@ -114,37 +114,21 @@
         </div>
         <!--/ Transactions -->
         <!-- Weekly Overview Chart -->
-        <div class="col-xl-4 col-md-6">
+        <div class="col-xl-6 col-md-6">
             <div class="card">
                 <div class="card-header">
                     <div class="d-flex justify-content-between">
                         <h5 class="mb-1">Weekly Overview</h5>
-                        <div class="dropdown">
-                            <button class="btn p-0"
-                                    type="button"
-                                    id="weeklyOverviewDropdown"
-                                    data-bs-toggle="dropdown"
-                                    aria-haspopup="true"
-                                    aria-expanded="false">
-                                <i class="mdi mdi-dots-vertical mdi-24px"></i>
-                            </button>
-                            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="weeklyOverviewDropdown">
-                                <a class="dropdown-item" href="javascript:void(0);">Refresh</a>
-                                <a class="dropdown-item" href="javascript:void(0);">Share</a>
-                                <a class="dropdown-item" href="javascript:void(0);">Update</a>
-                            </div>
-                        </div>
                     </div>
                 </div>
                 <div class="card-body">
-                    <div id="weeklyOverviewChart"></div>
+                    <div id="container">
+                        <canvas id="weeklyChartview"></canvas>
+                    </div>
                     <div class="mt-1 mt-md-3">
                         <div class="d-flex align-items-center gap-3">
                             <h3 class="mb-0">45%</h3>
                             <p class="mb-0">Your sales performance is 45% 😎 better compared to last month</p>
-                        </div>
-                        <div class="d-grid mt-3 mt-md-4">
-                            <button class="btn btn-primary" type="button">Details</button>
                         </div>
                     </div>
                 </div>
@@ -152,26 +136,44 @@
         </div>
         <!--/ Weekly Overview Chart -->
         <!-- Total Earnings -->
-        <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-        <div class="col-xl-4 col-md-6">
-            <div class="container">
-                <label for="revenueChart">Total Earnings Chart</label>
-                <select id="select" class="form-control" style="width: 100%">
-                    @for (int year = DateTime.Now.Year; year >= 2015; year--)
-                    {
-                        <option value="@year">@year</option>
-                    }
-                </select>
-                <div class="container">
-                    <canvas id="revenueChart"></canvas>
+        <div class="col-xl-6 col-md-6">
+            <div class="card">
+                <div class="card-header">
+                    <div class="d-flex justify-content-between">
+                        <h5 class="mb-1">Total Earnings Chart</h5>
+                        <div class="dropdown">
+                            <select id="select" class="form-control" style="width: 100%">
+                                @for (int year = DateTime.Now.Year; year >= 2015; year--)
+                                {
+                                    <option value="@year">@year</option>
+                                }
+                            </select>
+                        </div>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="container">
+                        <canvas id="revenueChart"></canvas>
+                    </div>  
+                    <div class="mt-1 mt-md-3">
+                        <div class="d-flex align-items-center gap-3">
+                            <h3 class="mb-0">45%</h3>
+                            <p class="mb-0">Your sales performance is 45% 😎 better compared to last month</p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
+        <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <script>
             $(document).ready(function () {
                 // Khởi tạo biểu đồ ban đầu
-                var myChart;
+                var weeklyChart
+                var yearlyChart;
+
+                // Gọi hàm vẽ biểu đồ khi trang web được tải
+                // DrawChartForYear(new Date().getFullYear());
 
                 // Mặc định chọn năm hiện tại
                 var currentYear = new Date().getFullYear();
@@ -179,11 +181,16 @@
 
                 // Gọi hàm vẽ biểu đồ khi trang web được tải
                 DrawChartForYear(currentYear);
+                DrawWeeklyOverviewChart();
 
                 // Gọi hàm vẽ biểu đồ khi có sự kiện thay đổi năm
                 $('#select').on('change', function () {
                     var selectedYear = $(this).val();
                     DrawChartForYear(selectedYear);
+                    // Hủy biểu đồ hiện tại nếu tồn tại
+                    if (yearlyChart) {
+                        yearlyChart.destroy();
+                    }
                 });
 
                 // Hàm vẽ biểu đồ với dữ liệu từ API
@@ -195,7 +202,8 @@
 
                     // Ánh xạ dữ liệu từ API vào mảng đầy đủ của 12 tháng
                     data.values.forEach(function (value, index) {
-                        monthsData[index + 10] = value;
+                        var monthIndex = data.labels[index] - 1;
+                        monthsData[monthIndex] = value;
                     });
 
                     myChart = new Chart(ctx, {
@@ -238,8 +246,63 @@
                         }
                     });
                 }
+                // Hàm vẽ biểu đồ theo tuần
+                function DrawWeeklyOverviewChart() {
+                    // Gửi yêu cầu Ajax để lấy dữ liệu
+                    $.ajax({
+                        url: 'https://localhost:7042/api/Chart/weekly',
+                        method: 'GET',
+                        dataType: 'json',
+                        success: function (data) {
+                            console.log(data);
+                            // Nếu có dữ liệu từ API, gọi hàm để vẽ biểu đồ
+                            if (data && data.labels && data.values && data.label) {
+                                DrawWeeklyChart(data);
+                            } else {
+                                console.error('Invalid data received from API');
+                            }
+                        },
+                        error: function (error) {
+                            console.error('Error fetching data:', error);
+                        }
+                    });
+                }
+                // Hàm vẽ biểu đồ theo tuần
+                function DrawWeeklyChart(data) {
+                    // const ctx = document.getElementById('weeklyChartview').getContext('2d');
+                    const ctx = document.getElementById('weeklyChartview');
+                    if (ctx) {
+                        // Thực hiện các thao tác với context ở đây
+                        weeklyChart = new Chart(ctx, {
+                            type: 'bar',
+                            data: {
+                                labels: data.labels,
+                                datasets: [{
+                                    label: data.label,
+                                    data: data.values,
+                                    borderWidth: 1
+                                }]
+                            },
+                            options: {
+                                scales: {
+                                    x: {
+                                        beginAtZero: true,
+                                        // Hiển thị ngày thay vì chỉ số của mảng
+                                        type: 'category',
+                                        labels: data.daysOfWeek
+                                    },
+                                    y: {
+                                        beginAtZero: true
+                                    }
+                                }
+                            }
+                        });
+                    } else {
+                        console.error('Canvas element not found');
+                    }
+                }
             });
-        </script>
+        </script>   
         <!--/ Total Earnings -->
         <!-- Four Cards -->
         <div class="col-xl-4 col-md-6">
