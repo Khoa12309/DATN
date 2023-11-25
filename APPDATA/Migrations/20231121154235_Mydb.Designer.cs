@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace APPDATA.Migrations
 {
     [DbContext(typeof(ShoppingDB))]
-    [Migration("20231117155628_updatedb")]
-    partial class updatedb
+    [Migration("20231121154235_Mydb")]
+    partial class Mydb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -50,6 +50,9 @@ namespace APPDATA.Migrations
 
                     b.Property<string>("Password")
                         .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("ResetPasswordcode")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("Update_date")
