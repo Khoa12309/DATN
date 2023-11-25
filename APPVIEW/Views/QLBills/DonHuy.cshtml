@@ -28,44 +28,45 @@
     <thead>
         <tr>
             <th>
-               Mã hóa Đơn
+                Mã hóa Đơn
             </th>
             <th>
                 Trạng thái
             </th>
             <th>
-               Tên khách hàng 
+                Tên khách hàng
             </th>
             <th>
-               Voucher 
+                Voucher
             </th>
             <th>
-               SDT 
+                SDT
             </th>
             <th>
-               Địa chỉ
+                Địa chỉ
             </th>
             <th>
-               Sản phẩm
+                Sản phẩm
             </th>
             <th>
-               Size 
+                Size
             </th>
             <th>
-               Màu
+                Màu
             </th>
             <th>
-               Số lượng
+                Số lượng
             </th>
             <th>
-               Ngày tạo
+                Ngày tạo
             </th>
-         
-          
+
+
         </tr>
     </thead>
     <tbody>
-@foreach (var itembill in bill) {
+        @foreach (var itembill in bill)
+        {
             var account = acc.FirstOrDefault(c => c.Id == itembill.AccountId);
             var userbillct = billct.FirstOrDefault(c => c.BIllId == itembill.id);
             var pct = prdct.FirstOrDefault(c => c.Id == userbillct.ProductDetailID);
@@ -73,13 +74,13 @@
             var siz = size.FirstOrDefault(c => c.Id == pct.Id_Size);
             var colo = color.FirstOrDefault(c => c.Id == pct.Id_Color);
 
-        <tr>
-            <td>
+            <tr>
+                <td>
                     @itembill.Code
-            </td>
-            <td>
+                </td>
+                <td>
                     <span>
-                  @if (itembill.Status == 1)
+                        @if (itembill.Status == 1)
                         {
 
                             <span>Chờ xác nhận</span>
@@ -104,46 +105,50 @@
                         {
                             <span>Thanh toán không thành công </span>
                         }
+                        else if (itembill.Status == 0)
+                        {
+                            <span>Đơn chờ hủy </span>
+                        }
 
 
 
 
 
                     </span>
-            </td>
-            <td>
-                @account.Name
-            </td>
-            <td>
+                </td>
+                <td>
+                    @account.Name
+                </td>
+                <td>
                     @itembill.Voucherid
-            </td>
-            <td>
+                </td>
+                <td>
                     @itembill.PhoneNumber
-            </td>
-            <td>
+                </td>
+                <td>
                     @itembill.Address
-            </td>
-            <td>
-               @pro.Name
-            </td>
-            <td>
-                @siz.Name
-            </td>
-            <td>
-                @colo.Name
-            </td>
-            <td>
-                @userbillct.Amount
-            </td>
-            <td>
-                @itembill.CreateDate
-            </td>
-            
-            <td>
-                    <button style="background-color:coral"> @Html.ActionLink("Xác nhận đơn hàng ", "Xacnhan", new { id=itembill.id  }, new{ style = "color:black;" }) </button>
-            
-            </td>
-        </tr>
-}
+                </td>
+                <td>
+                    @pro.Name
+                </td>
+                <td>
+                    @siz.Name
+                </td>
+                <td>
+                    @colo.Name
+                </td>
+                <td>
+                    @userbillct.Amount
+                </td>
+                <td>
+                    @itembill.CreateDate
+                </td>
+
+                <td>
+                    <button style="background-color:coral"> @Html.ActionLink("Xác nhận hủy đơn hàng ", "HuyDon", new { id = itembill.id }, new { style = "color:black;" }) </button>
+
+                </td>
+            </tr>
+        }
     </tbody>
 </table>
