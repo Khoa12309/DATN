@@ -2,7 +2,7 @@
     ViewData["Title"] = "Thongtin";
     Layout = "~/Views/Shared/_LayoutWeb.cshtml";
     @using APPDATA.Models;
-    var bill = ViewBag.viewbill;
+    List<Bill> bill = ViewBag.viewbill;
     List<BillDetail> billct = ViewBag.viewbillct;
     List<ProductDetail> prdct = ViewBag.viewprdct;
     List<Product> prd = ViewBag.viewprd;
@@ -53,6 +53,9 @@
                         }else if (itembill.Status == 6)
                         {
                             <span>Thanh toán không thành công </span>
+                        }else if (itembill.Status == 0)
+                        {
+                            <span>Đơn chờ hủy </span>
                         }
                         
 
@@ -64,11 +67,19 @@
                     <p>Size : @siz.Name</p>
                     <p>Màu : @colo.Name</p>
                     <p>Số lượng : @userbillct.Amount</p>
-                    <p>Tổng tiền hàng :  @itembill.TotalMoney</p>
-                    <p>Phí ship tính riêng : @itembill.ShipFee</p>
+                    <p>Tiền hàng :  @{
+                            var tienhang = itembill.TotalMoney - itembill.ShipFee;
+                            <span>@tienhang</span>
+                        }</p>
+                    <p>Phí ship  : @itembill.ShipFee</p>
+                    <p>Tổng tiền : @itembill.TotalMoney</p>
                     <p>Ngày tạo : @itembill.CreateDate</p>
                     <p>Ngày ship : @itembill.ShipDate</p>
-
+                    @if (itembill.Status==1 || itembill.Status ==2)
+                    
+                    {
+                        <button style="background-color:coral"> @Html.ActionLink("Hủy đơn", "HuyDon", new { id = itembill.id }, new { style = "color:black;" }) </button>
+                    }
                     @if (itembill.Status == 3)
 
                     {
