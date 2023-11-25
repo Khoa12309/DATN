@@ -1,11 +1,8 @@
-﻿
-
-@model IEnumerable<APPDATA.Models.Bill>
+﻿@model IEnumerable<APPDATA.Models.Bill>
 
 @{
-    ViewData["Title"] = "ShowBillXacNhan";
+    ViewData["Title"] = "ShowBill";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
-
     @using APPDATA.Models;
     var bill = ViewBag.viewbill;
     List<BillDetail> billct = ViewBag.viewbillct;
@@ -21,11 +18,11 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
-<form asp-controller="QLBills" asp-action="ShowBillXacNhan" class="row contact_form" method="post">
-<div class="col-md-5 form-group">
-    <input type="text" class="form-control" name="search" placeholder="Nhập mã hóa đơn để tìm kiếm">
-    <button type="submit" style="background-color:brown ; color:black">Search</button>
-</div>
+<form asp-controller="QLBills" asp-action="ShowBill" class="row contact_form" method="post">
+    <div class="col-md-5 form-group">
+        <input type="text" class="form-control" name="search" placeholder="Nhập mã hóa đơn để tìm kiếm">
+        <button type="submit" style="background-color:brown ; color:black">Search</button>
+    </div>
 </form>
 <table class="table">
     <thead>
@@ -108,6 +105,10 @@
                         {
                             <span>Thanh toán không thành công </span>
                         }
+                        else if (itembill.Status == 0)
+                        {
+                            <span>Đơn chờ hủy </span>
+                        }
 
 
 
@@ -144,11 +145,10 @@
                 </td>
 
                 <td>
-                    <button style="background-color:coral"> @Html.ActionLink("Giao hàng ", "GiaoHang", new { id=itembill.id  }, new{ style = "color:black;" }) </button>
+                    <button style="background-color:coral"> @Html.ActionLink("Xác nhận hủy đơn hàng ", "HuyDon", new { id = itembill.id }, new { style = "color:black;" }) </button>
 
                 </td>
             </tr>
         }
     </tbody>
 </table>
-

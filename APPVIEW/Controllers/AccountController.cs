@@ -14,7 +14,12 @@ using _APPAPI.Service;
 using AspNetCoreHero.ToastNotification.Abstractions;
 using APPDATA.DB;
 using System.Text.Encodings.Web;
+
 using Microsoft.EntityFrameworkCore;
+
+using Microsoft.AspNetCore.Rewrite;
+using System.Xml.Linq;
+
 
 namespace APPVIEW.Controllers
 {
@@ -42,6 +47,24 @@ namespace APPVIEW.Controllers
             ViewBag.Roles = GetListRole();
             var obj = getapi.GetApi("Account");
             return View(obj);
+        }
+        public async Task<IActionResult> Search(string searchTerm)
+        {
+            var lstAcc = getapi.GetApi("Voucher").ToList();
+
+            var searchResult = lstAcc
+                .Where(v =>
+                    v.Email.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                    v.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)
+                )
+                .ToList();
+
+            if (searchResult.Any())
+            {
+                return View("GetList", searchResult);
+            }
+
+            return NotFound("Voucher không tồn tại");
         }
 
         [AllowAnonymous]
@@ -320,26 +343,22 @@ namespace APPVIEW.Controllers
         {
             try
             {
-                var user = new Account()
-                {
-                    Id = obj.AccountId,
-                    Email = obj.Email,
-                    Name = obj.Name,
-                    Password = obj.Password,
-                    Avatar = AddImg(imageFile),
-                    IdRole = obj.Id_Role
 
-                };
+                var user = new Account();
+                
+                   
+           
+
                 if (imageFile != null)
                 {
-
+                    user.Id = obj.AccountId;
+                    user.Email = obj.Email;
+                    user.Name = obj.Name;
+                    user.Password = obj.Password;
+                    user.IdRole = obj.Id_Role;
                     user.Avatar = AddImg(imageFile);
                 }
-                else
-                {
-
-                    user.Avatar = "UserDefault.jpg";
-                }
+                
 
                 var address = new Address()
                 {

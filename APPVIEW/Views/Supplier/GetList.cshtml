@@ -5,6 +5,9 @@
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
     int stt = 0;
 }
+<form asp-action="Search" method="get" class="form-inline">
+    <input placeholder="Supplier Search" type="text" name="searchTerm" id="searchTerm" /><button>Tìm</button>
+</form>
 
 <div class="card">
     <div class="card-header">

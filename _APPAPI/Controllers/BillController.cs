@@ -45,12 +45,12 @@ namespace _APPAPI.Controllers
             item.Code = obj.Code;
             item.ShipFee = obj.ShipFee;
             item.PhoneNumber = obj.PhoneNumber;
-            item.PhoneNumber = obj.PhoneNumber;
+           
             item.TotalMoney = obj.TotalMoney;
             item.MoneyReduce = obj.MoneyReduce;
             item.Type = obj.Type;
             item.Status = obj.Status;
-
+            
             return _crud.UpdateItem(item);
         }
     }

@@ -73,12 +73,12 @@
                                     <td>
                                      
                                         <div class="product_count">
-                                            <input type="text"  id="sst" maxlength="12" title="Quantity:" class="input-text qty" value="@Model[i].Quantity" asp-for="@Model[i].Quantity" min="0">
-                                            <button onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst )) result.value++;return false;"
+                                            <input type="text" id=@Model[i].Id_Size maxlength="12" title="Quantity:" class="input-text qty" value="@Model[i].Quantity" asp-for="@Model[i].Quantity" min="0">
+                                            <button onclick="var result = document.getElementById('@Model[i].Id_Size'); var sst = result.value; if( !isNaN( sst )) result.value++;return false;"
                                                 class="increase items-count" type="button">
                                                 <i class="fa fa-plus"></i>
                                             </button>
-                                            <button onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst ) &amp;&amp; sst > 0 ) result.value--;return false;"
+                                            <button onclick="var result = document.getElementById('@Model[i].Id_Size'); var sst = result.value; if( !isNaN( sst ) &amp;&amp; sst > 0 ) result.value--;return false;"
                                                 class="reduced items-count" type="button">
                                                 <i class="fa fa-minus"></i>
                                             </button>
