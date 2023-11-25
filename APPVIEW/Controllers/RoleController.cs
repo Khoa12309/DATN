@@ -10,12 +10,12 @@ namespace APPVIEW.Controllers
     public class RoleController : Controller
     {
         private Getapi<Role> getapi;
-        private readonly INotyfService _notyf;
+        public  INotyfService _notyff { get; }
 
-        public RoleController(INotyfService notyf)
+        public RoleController(INotyfService notyff)
         {
             getapi = new Getapi<Role>();
-            _notyf = notyf;
+            _notyff = notyff;
         }
 
         public async Task<IActionResult> GetList()
@@ -41,10 +41,10 @@ namespace APPVIEW.Controllers
             if (role != null)
             {
 
-                _notyf.Success("Add new value sucess!");
+                _notyff.Success("Add new value sucess!");
                 return RedirectToAction("GetList");
             }
-            _notyf.Error("Error,try again!");
+            _notyff.Error("Error,try again!");
             return View();
 
 
