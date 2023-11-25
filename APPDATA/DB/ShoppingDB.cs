@@ -21,8 +21,6 @@ namespace APPDATA.DB
 
             optionsBuilder.UseSqlServer(@"Data Source=LAPTOP-N6FK027M;Initial Catalog=DATN;Persist Security Info=True;User ID=khoaph20877;Password=123456");
 
-
-
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

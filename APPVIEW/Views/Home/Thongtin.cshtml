@@ -1,8 +1,6 @@
 ﻿@{
     ViewData["Title"] = "Thongtin";
     Layout = "~/Views/Shared/_LayoutWeb.cshtml";
-
-
     @using APPDATA.Models;
     var bill = ViewBag.viewbill;
     List<BillDetail> billct = ViewBag.viewbillct;
@@ -10,7 +8,6 @@
     List<Product> prd = ViewBag.viewprd;
     List<Size> size = ViewBag.sizee;
     List<Color> color = ViewBag.Collor;
-
 }
 
 <h3>Thông tin đơn hàng</h3>
@@ -78,11 +75,6 @@
 
                         <button style="background-color:coral"> @Html.ActionLink("Đã nhận hàng", "Nhanhang", new { id=itembill.id  }, new{ style = "color:black;" }) </button>
 
-
-                    } else if (itembill.Status ==4)
-                    {
-
-                        <button style="background-color:coral"> @Html.ActionLink("Thanh Toán ", "ThanhToan", new { id=itembill.id  }, new{ style = "color:black;" }) </button>
 
                     }
 

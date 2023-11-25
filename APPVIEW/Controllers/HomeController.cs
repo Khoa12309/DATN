@@ -34,8 +34,7 @@ namespace APPVIEW.Controllers
         private Getapi<Bill> bills;
         private Getapi<BillDetail> billDetails;
         private Getapi<Voucher> getapiVoucher;
-
-
+        private Getapi<Address> getapiAddress;
         private static readonly Random random = new Random();
         private string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
@@ -53,6 +52,7 @@ namespace APPVIEW.Controllers
             bills = new Getapi<Bill>();
             billDetails = new Getapi<BillDetail>();
             getapiVoucher = new Getapi<Voucher>();
+            getapiAddress = new Getapi<Address>();
 
         }
 
@@ -390,8 +390,19 @@ namespace APPVIEW.Controllers
         [HttpPost]
         public async Task<JsonResult> feeship([FromBody] diachi data)
         {
+            var products = SessionService.GetObjFromSession(HttpContext.Session, "Cart");
+            var can=100;
+            if (products.Count!=0)
+            {
+                var sl = 0;
+                foreach (var item in products)
+                {
+                    sl += item.Quantity;
+                }
+              can = sl*100;
+            }           
             int sship = await getServiceShip(data.to_district_id);
-            var client = new OnlineGatewayClient($"https://online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/fee?service_id={sship}" + $"&insurance_value=100000&to_ward_code={data.towardcode.ToString()}" + $"&to_district_id={data.to_district_id.ToString()}" + "&from_district_id=3440&weight=500", "bdbbde2a-fec2-11ed-8a8c-6e4795e6d902");
+            var client = new OnlineGatewayClient($"https://online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/fee?service_id={sship}" + $"&insurance_value=100000&to_ward_code={data.towardcode.ToString()}" + $"&to_district_id={data.to_district_id.ToString()}" + "&from_district_id=3440"+$"&weight={can}", "bdbbde2a-fec2-11ed-8a8c-6e4795e6d902");
             // Gọi API để lấy danh sách các tỉnh/thành phố
             var response = await client.GetFeeshipAsync();
             // Kiểm tra kết quả trả về
@@ -458,6 +469,12 @@ namespace APPVIEW.Controllers
 
             }
             ViewBag.TT = tt;
+            var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
+            if (account!= null)
+            {
+                var dc = getapiAddress.GetApi("Address").FirstOrDefault(c => c.AccountId == account.Id);
+                return View(dc);
+            }
             return View();
         }
 

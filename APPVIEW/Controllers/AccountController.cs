@@ -14,6 +14,8 @@ using _APPAPI.Service;
 using AspNetCoreHero.ToastNotification.Abstractions;
 using APPDATA.DB;
 using System.Text.Encodings.Web;
+using Microsoft.AspNetCore.Rewrite;
+using System.Xml.Linq;
 
 namespace APPVIEW.Controllers
 {
@@ -337,26 +339,22 @@ namespace APPVIEW.Controllers
         {
             try
             {
-                var user = new Account()
-                {
-                    Id = obj.AccountId,
-                    Email = obj.Email,
-                    Name = obj.Name,
-                    Password = obj.Password,
-                    Avatar = AddImg(imageFile),
-                    IdRole = obj.Id_Role
 
-                };
+                var user = new Account();
+                
+                   
+           
+
                 if (imageFile != null)
                 {
-
+                    user.Id = obj.AccountId;
+                    user.Email = obj.Email;
+                    user.Name = obj.Name;
+                    user.Password = obj.Password;
+                    user.IdRole = obj.Id_Role;
                     user.Avatar = AddImg(imageFile);
                 }
-                else
-                {
-
-                    user.Avatar = "UserDefault.jpg";
-                }
+                
 
                 var address = new Address()
                 {
