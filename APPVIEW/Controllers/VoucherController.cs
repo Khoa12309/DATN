@@ -76,7 +76,7 @@ namespace APPVIEW.Controllers
         {
             try
             {
-                getapi.UpdateObj(obj, "Voucher");
+               await getapi.UpdateObj(obj, "Voucher");
                 return RedirectToAction("GetList");
             }
             catch
