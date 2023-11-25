@@ -14,8 +14,12 @@ using _APPAPI.Service;
 using AspNetCoreHero.ToastNotification.Abstractions;
 using APPDATA.DB;
 using System.Text.Encodings.Web;
+
+using Microsoft.EntityFrameworkCore;
+
 using Microsoft.AspNetCore.Rewrite;
 using System.Xml.Linq;
+
 
 namespace APPVIEW.Controllers
 {
@@ -387,12 +391,6 @@ namespace APPVIEW.Controllers
             var obj = _getapiRole.GetApi("Role");
             return obj;
         }
-        public async Task SendLoginSuccessEmailAsync(string email)
-        {
-            var subject = "Đăng nhập thành công";
-            var message = "Bạn đã đăng nhập thành công vào hệ thống.";
-            await _sendEmail.SendEmailAsync(email, subject, message);
-        }
         public IActionResult ForgotPassword()
         {
             return View();
@@ -479,6 +477,45 @@ namespace APPVIEW.Controllers
 
             }
 
+        }
+        public IActionResult ChangePassword()
+        {
+
+            return View();
+        }
+        [HttpPost, AllowAnonymous]
+        public async Task<IActionResult> ChangePassword(ChangePasswordVm obj)
+        {
+            if (ModelState.IsValid)
+            {
+                var IdUser = ((System.Security.Claims.ClaimsIdentity)User.Identity).FindFirst("Id");
+                string Id_userValue = IdUser?.Value;
+                obj.IdUser = Guid.Parse(Id_userValue);
+
+                var user = await _context.Accounts.FirstOrDefaultAsync(c => c.Id == obj.IdUser);
+                if (user != null)
+                {
+                    if (MD5Pass.GetMd5Hash(obj.OldPassword) != user.Password)
+                    {
+                        ViewData["ErrorMessage"] = "Old Password is incorrect,try agin!";
+                        return View("ChangePassword", obj);
+                    }
+                    if (obj.NewPassWord!=obj.ConfirmPassword)
+                    {
+                        ViewData["ErrorMessage"] = " New password is incorrect,try again!";
+                        return View("ChangePassword", obj);
+                    }
+
+                    user.Password = MD5Pass.GetMd5Hash(obj.NewPassWord);
+                    _context.Update(user);
+                    await _context.SaveChangesAsync();
+                    ViewData["Sucsess"] = "Changed password successfully";
+                    return Redirect("~/Home/Index");
+
+
+                }
+            }
+            return View();
         }
 
     }

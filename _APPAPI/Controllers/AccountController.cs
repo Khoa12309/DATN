@@ -19,7 +19,7 @@ namespace _APPAPI.Controllers
     {
         ShoppingDB _context = new ShoppingDB();
         private readonly CRUDapi<Account> _crud;
-        
+
         private readonly IConfiguration _Configuration;
         public AccountController(IConfiguration configuration)
         {
@@ -35,8 +35,28 @@ namespace _APPAPI.Controllers
         [HttpPost]
         public bool Create(Account obj)
         {
-            obj.Create_date=DateTime.Now;
-            obj.IdRole = _context.Roles.SingleOrDefault(c=>c.name=="Customer").id;
+            obj.Create_date = DateTime.Now;
+            var checkRole = _context.Roles.Count();
+            if (checkRole == 0)
+            {
+                var customerRole = new Role()
+                {
+                    id = Guid.NewGuid(),
+                    name = "Customer",
+                    Status = 1
+                };
+                _context.Roles.Add(customerRole);
+                _context.SaveChangesAsync();
+                var adminRole = new Role()
+                {
+                    id = Guid.NewGuid(),
+                    name = "Admin",
+                    Status = 1
+                };
+                _context.Roles.Add(adminRole);
+                _context.SaveChangesAsync();
+            }
+           obj.IdRole = _context.Roles.SingleOrDefault(c => c.name == "Customer").id;
             obj.Avatar = "UserDefault.jpg";
 
             return _crud.CreateItem(obj);
@@ -59,7 +79,7 @@ namespace _APPAPI.Controllers
             item.Email = obj.Email;
             item.Password = obj.Password;
             item.IdRole = obj.IdRole;
-            
+
             item.Name = obj.Name;
             return _crud.UpdateItem(item);
         }
@@ -102,7 +122,7 @@ namespace _APPAPI.Controllers
                 Subject = new ClaimsIdentity(new[] {
                 new Claim(ClaimTypes.Name, item.Name),
                 new Claim(JwtRegisteredClaimNames.Email, item.Email),
-                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),               
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim("Id", item.Id.ToString()),
                 new Claim("Id_Role", item.IdRole.ToString()),
                 new Claim("Avatar", item.Avatar.ToString()),

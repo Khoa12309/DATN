@@ -4,7 +4,8 @@
     ViewData["Title"] = "MyProfile";
     Layout = "~/Views/Shared/_LayoutWeb.cshtml";
 
-   
+    var IdUser = ((System.Security.Claims.ClaimsIdentity)User.Identity).FindFirst("Id");
+    string Id_userValue = IdUser?.Value;
 
 }
 
@@ -94,8 +95,12 @@
                         </div>
                     </div>
                     <div class="text-center">
-                        <button type="submit" value="submit" class="button button-register w-50">Save Profile</button>
+                        <div class="btn-group" role="group" aria-label="Profile actions">
+                            <button type="submit" value="submit" class="btn btn-information w-50">Save Profile</button>
+                            <a asp-action="ChangePassword" class="btn btn-login w-50">Change Password</a>
+                        </div>
                     </div>
+
 
                 </form>
             </div>

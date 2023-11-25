@@ -31,8 +31,7 @@ namespace APPVIEW.Controllers
         {
             try
             {
-                obj.Create_date = DateTime.Now;
-                obj.Update_date = DateTime.Now;
+                obj.Create_date = DateTime.Now;               
               await  getapi.CreateObj(obj, "Category");
                 return RedirectToAction("GetList");
             }
@@ -57,7 +56,7 @@ namespace APPVIEW.Controllers
         {
             try
             {
-             await   getapi.UpdateObj(obj, "Category");
+                getapi.UpdateObj(obj, "Category");
                 return RedirectToAction("GetList");
             }
             catch

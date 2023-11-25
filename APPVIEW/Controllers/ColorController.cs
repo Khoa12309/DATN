@@ -52,7 +52,9 @@ namespace APPVIEW.Controllers
         {
             try
             {
+
                 await getapi.CreateObj(obj, "Color");
+
                 return RedirectToAction("GetList");
             }
             catch
