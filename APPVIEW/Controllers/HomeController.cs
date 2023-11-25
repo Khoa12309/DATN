@@ -35,6 +35,7 @@ namespace APPVIEW.Controllers
         private Getapi<BillDetail> billDetails;
         private Getapi<Voucher> getapiVoucher;
         private Getapi<Address> getapiAddress;
+        private Getapi<CartDetail> getapiCD;
         private static readonly Random random = new Random();
         private string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
@@ -53,7 +54,7 @@ namespace APPVIEW.Controllers
             billDetails = new Getapi<BillDetail>();
             getapiVoucher = new Getapi<Voucher>();
             getapiAddress = new Getapi<Address>();
-
+            getapiCD=new Getapi<CartDetail>();
         }
 
         public IActionResult Index()
@@ -177,19 +178,31 @@ namespace APPVIEW.Controllers
         // Tạo chuỗi có độ dài 8 ký tự
 
 
-        public async Task<IActionResult> DatHangN(Address obj,string pay)
+        public async Task<IActionResult> DatHangN(Address obj,string pay,float phiship )
         {
             var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
+            var client = new OnlineGatewayClient($"https://online-gateway.ghn.vn/shiip/public-api/master-data/province", "bdbbde2a-fec2-11ed-8a8c-6e4795e6d902");
+
+            // Gọi API để lấy danh sách các tỉnh/thành phố
+            var response = await client.GetProvincesAsync();
+            foreach (var item in response.Data)
+            {
+                if (item.ProvinceID.ToString() ==obj.Province)
+                {
+                   obj.Province = item.ProvinceName; break;
+                }
+            }
             var bill = new Bill();
             bill.id = Guid.NewGuid();
             bill.AccountId = account.Id;
             bill.Code = GenerateRandomString(8);
             bill.PhoneNumber = obj.PhoneNumber;
-            bill.Address = obj.SpecificAddress; 
+            bill.Address = obj.Province+"-"+obj.District+"-"+obj.Ward+"-"+obj.SpecificAddress; 
             bill.CreateBy = DateTime.Now;
             bill.CreateDate = DateTime.Now;
             bill.UpdateBy = DateTime.Now;
-            bill.TotalMoney = 0;
+            bill.ShipFee = phiship;
+            bill.TotalMoney = phiship;
             bill.Status = 1;
 
             if (pay == "Online")
@@ -219,17 +232,37 @@ namespace APPVIEW.Controllers
                     await bills.UpdateObj(bill, "Bill");
                 }
             }
+            var products = SessionService.GetObjFromSession(HttpContext.Session, "Cart");
+
+            
+            foreach (var item in products)
+            {
+                var productcartdetails = getapiCD.GetApi("CartDetails").FirstOrDefault(c => c.ProductDetail_ID == item.Id);
+
+                var p = products.Find(c => c.Id == item.Id);
+
+             
+                
+                if (productcartdetails != null)
+                {
+                    await getapiCD.DeleteObj(productcartdetails.id, "CartDetails");
+
+                }
+            }
+            products.Clear();
+            SessionService.SetObjToJson(HttpContext.Session, "Cart", products);
+
 
             if (pay == "Online")
             {
-
 
                 return Payment(bill);
             }
             else
             {
-                return View();
-            }              
+                return RedirectToAction("Thongtin");
+            }    
+            
         }
 
 

@@ -193,7 +193,7 @@ namespace APPVIEW.Controllers
         {
             var prodDN = SessionService.GetObjFromSession(HttpContext.Session, "CartDN");
             var products = SessionService.GetObjFromSession(HttpContext.Session, "Cart");
-            if (prodDN.Count <=1)
+            if (products.Count <1)
             {
                 var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
                 if (account.Id != Guid.Empty)
@@ -241,7 +241,7 @@ namespace APPVIEW.Controllers
 
                    
                     SessionService.SetObjToJson(HttpContext.Session, "Cart", products);
-                    SessionService.SetObjToJson(HttpContext.Session, "CartDN", products);
+                   
 
 
                 }

@@ -108,7 +108,7 @@
                                 }                            
                             </ul>
                             <ul class="list list_2">
-                            <li><a href="#">Subtotal <span>$@ViewBag.TT</span></a></li>
+                            <li><a href="#">Subtotal <span>$@ViewBag.TT VND</span></a></li>
                             @if (ViewBag.DiscountAmount != null)
                             {
                                 <a href="javascript:void(0);" onclick="confirmCancelVoucher()" style="color: red; padding-left: 278px"><i class='bx bxs-x-square' type="font-size: 12px"></i></a>
@@ -117,16 +117,15 @@
                                     <p>Mã giảm giá: <span>@ViewBag.VoucherCode</span></p>
                                     <p>Số tiền giảm: <span>$@ViewBag.DiscountAmount</span></p>
                                 </li>
-
                             }
-                            <li><a href="#">Shipping <span>$<input width="30px" style="height:30px" readonly id="feeship"></span></a></li>
+                            <li><a href="#">Shipping <span><input style="height:30px; width:50px; border: none; outline: none; background-color:#e8f0f2;" value="0" name="phiship" readonly id="feeship">VND</span></a></li>
                             @if (ViewBag.DiscountAmount != null)
                             {
-                                <li><a href="#">Total <span>$@(ViewBag.TT - ViewBag.DiscountAmount)</span></a></li>
+                                <li><a href="#">Total <span> <input style="height:30px; width:50px; border: none; outline: none; background-color:#e8f0f2;" value="@(ViewBag.TT - ViewBag.DiscountAmount)" id="tShip" /> VND</span></a></li>
                             }
                             else
                             {
-                                <li><a href="#">Total <span>$@ViewBag.TT</span></a></li>
+                                <li><a href="#">Total <span><input style="height:30px; width:50px; border: none; outline: none; background-color:#e8f0f2;" value="@ViewBag.TT" id="tShip" /> VND</span></a></li>
                             }
                           </ul>
                             <div class="payment_item">
@@ -266,7 +265,7 @@
             });
     };
 
-
+    var t =0 ;
     inputward.onchange = function () {
         // Lấy giá trị được chọn trong thẻ select
         var district = 0;
@@ -297,10 +296,11 @@
 
                 // Xử lý dữ liệu JSON
 
-            console.log(data.total);
+                console.log(document.getElementById("tShip").value);
 
 
                 document.getElementById("feeship").value = data.total;
+                document.getElementById("tShip").value = parseFloat(data.total) + parseFloat(document.getElementById("tShip").value);
                 
             })
             .catch(error => {
@@ -309,6 +309,7 @@
             });
 
     };
+    
     var inputon = document.getElementById("f-option6");
     var inputoff = document.getElementById("f-option5");
     inputon.onclick= function(){
@@ -318,6 +319,7 @@
         document.getElementById("pay").value = "shipCod"
     }
     
+
         //function showLabel(input) {
     //    // Lấy giá trị của input
     //    var value = input.value;
