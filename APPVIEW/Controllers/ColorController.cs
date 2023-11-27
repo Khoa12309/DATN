@@ -36,7 +36,7 @@ namespace APPVIEW.Controllers
                 return View("GetList", searchResult);
             }
 
-            return NotFound("Voucher không tồn tại");
+            return NotFound("Color không tồn tại");
         }
 
 

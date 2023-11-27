@@ -3,6 +3,7 @@ using APPDATA.Models;
 using APPVIEW.Services;
 using AspNetCoreHero.ToastNotification.Abstractions;
 using Microsoft.AspNetCore.Mvc;
+
 using System.Net.WebSockets;
 
 namespace APPVIEW.Controllers
@@ -93,6 +94,7 @@ namespace APPVIEW.Controllers
 
         public async Task<IActionResult> AddToCart(Guid id, int Soluong, Guid color, Guid size)
         {
+            loadcart();
             var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
             var product = getapiPD.GetApi("ProductDetails").Find(c => c.Id == id);
             if (color != Guid.Empty && size != Guid.Empty)
@@ -177,7 +179,9 @@ namespace APPVIEW.Controllers
         public async Task<IActionResult> DeleteCartItem(Guid id)
         {
             var products = SessionService.GetObjFromSession(HttpContext.Session, "Cart");
-            var productcartdetails = getapiCartD.GetApi("CartDetails").FirstOrDefault(c => c.ProductDetail_ID == id);
+            var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
+            var cart = getapi.GetApi("Cart").FirstOrDefault(c => c.AccountId == account.Id);
+            var productcartdetails = getapiCartD.GetApi("CartDetails").FirstOrDefault(c => c.ProductDetail_ID == id&&c.CartId==cart.id);
 
             var p = products.Find(c => c.Id == id);
             products.Remove(p);
@@ -271,27 +275,69 @@ namespace APPVIEW.Controllers
         {
             foreach (var item in obj)
             {
+                var product = getapiPD.GetApi("ProductDetails").FirstOrDefault(c => c.Id_Product == item.Id_Product && c.Id_Color == item.Id_Color && c.Id_Size == item.Id_Size);
+                if (product == null)
+                {
+
+                  
+                    TempData["mess"] = item.Name + "không còn màu hoặc kích thước bạn chọn ";
+                    return RedirectToAction("viewcart");
+                }
                 var products = SessionService.GetObjFromSession(HttpContext.Session, "Cart");
-                var productcartdetails = getapiCartD.GetApi("CartDetails").FirstOrDefault(c => c.ProductDetail_ID == item.Id);
+                var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
+                var cart = getapi.GetApi("Cart").FirstOrDefault(c => c.AccountId == account.Id);
+                var productcartdetails = getapiCartD.GetApi("CartDetails").FirstOrDefault(c => c.ProductDetail_ID == item.Id&& c.CartId == cart.id);
                 var p = products.Find(c => c.Id == item.Id);
                 products.Remove(p);
                 SessionService.SetObjToJson(HttpContext.Session, "Cart", products);
                 if (productcartdetails!=null)
                 {
                   await  getapiCartD.DeleteObj(productcartdetails.id, "CartDetails");
-
                 }
+               
+                if (!SessionService.CheckProductInCart(product.Id, products)) // SP chưa nằm trong cart
+                    {
+                    product.Quantity = item.Quantity;
+                        products.Add(product);
 
+                        SessionService.SetObjToJson(HttpContext.Session, "Cart", products);
+                    if (cart != null)
+                    {
+                        var cartdetails = new CartDetail()
+                        {
+                            CartId = cart.id,
+                            ProductDetail_ID = product.Id,
+                            Price = product.Price,
+                            Quantity = product.Quantity,
 
-                AddToCart(item.Id, item.Quantity, item.Id_Color.Value, item.Id_Size.Value);
+                        };
+                        getapiCartD.CreateObj(cartdetails, "CartDetails");
+                    }                     
+                    }
+                    else
+                    {
+                        var productcart = products.FirstOrDefault(c => c.Id == product.Id);
+                        var productcds = getapiCartD.GetApi("CartDetails").FirstOrDefault(c => c.ProductDetail_ID == product.Id);
+                        productcart.Quantity += item.Quantity;
+                        products.Remove(productcart);
+                        products.Add(productcart);
+                        SessionService.SetObjToJson(HttpContext.Session, "Cart", products);
+                        if (productcds != null)
+                        {
+                         productcds.Quantity += item.Quantity;
+                            getapiCartD.UpdateObj(productcds, "CartDetails");
 
+                        }
+                   }
             }
-
-
-
             return RedirectToAction("ViewCart");
 
         }
         
+        public async Task<JsonResult> Chossesize([FromBody] ProductDetail id)
+        {
+            var color = getapiPD.GetApi("ProductDetails").Where(c=>c.Id_Size==id.Id_Size&&c.Id==id.Id);
+            return Json(color);
+        }
     }
 }

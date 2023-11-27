@@ -1,6 +1,10 @@
-﻿@{
+﻿@using APPDATA.Models
+@{
     ViewData["Title"] = "index";
     Layout = "~/Views/Shared/_LayoutWeb.cshtml";
+
+     List<Image> Img = ViewBag.Img;
+}
 }
 <section class="hero-banner">
     <div class="container">
@@ -24,21 +28,21 @@
 <section class="section-margin mt-0">
     <div class="owl-carousel owl-theme hero-carousel">
         <div class="hero-carousel__slide">
-            <img src="~/contentwebb/img/home/hero-slide1.png" alt="" class="img-fluid">
+            <img src="~/UserImage/_a7503094-9cb1-4478-85ac-cce93de06b93.jpg" alt="" class="img-fluid">
             <a href="#" class="hero-carousel__slideOverlay">
                 <h3>Wireless Headphone</h3>
                 <p>Accessories Item</p>
             </a>
         </div>
         <div class="hero-carousel__slide">
-            <img src="~/contentwebb/img/home/hero-slide2.png" alt="" class="img-fluid">
+            <img src="~/UserImage/_a7cad4a5-b8c6-412e-911d-c5cdd092c043.jpg" alt="" class="img-fluid">
             <a href="#" class="hero-carousel__slideOverlay">
                 <h3>Wireless Headphone</h3>
                 <p>Accessories Item</p>
             </a>
         </div>
         <div class="hero-carousel__slide">
-            <img src="~/contentwebb/img/home/hero-slide3.png" alt="" class="img-fluid">
+            <img src="~/UserImage/_fc39108d-a08b-466d-b27f-b8a5fd05c560.jpg" alt="" class="img-fluid">
             <a href="#" class="hero-carousel__slideOverlay">
                 <h3>Wireless Headphone</h3>
                 <p>Accessories Item</p>
@@ -53,13 +57,28 @@
             <h2>Trending <span class="section-intro__style">Product</span></h2>
         </div>
         <div class="row">
+            @{
+                var lstpr = new List<Guid>();
+            }
             @foreach (var item in ViewBag.Result)
             {
-
+                if (lstpr.Any(c => c == item.Id_Product))
+                {
+                    continue;
+                }
+                lstpr.Add(item.Id_Product);
                 <div class="col-md-6 col-lg-4 col-xl-3">
                     <div class="card text-center card-product">
                         <div class="card-product__img">
-                            <img class="card-img" src="~/contentwebb/img/product/product1.png" alt="">
+                            @foreach (var img in Img)
+                            {
+                                if (img.IdProductdetail==item.Id)
+                                {
+                                    <img class="card-img" src="~/images/@img.Name" alt="">
+                                    break;
+                                }
+                                                      
+                            }
                             <ul class="card-product__imgOverlay">
                                 <li><a href="@Url.ActionLink("details","home",new{id=item.Id})"><button><i class="ti-search"></i></button></a></li>
                                 <li><a href="@Url.ActionLink("Addtocart","cart",new{id=item.Id,Soluong=1})"><button><i class="ti-shopping-cart"></i></button></a></li>
@@ -75,6 +94,7 @@
                         </div>
                     </div>
                 </div>
+
             }
 
         </div>
