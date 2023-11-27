@@ -67,6 +67,9 @@ namespace APPVIEW.Controllers
                                     .Distinct()
                                     .ToList();
             ViewBag.Result = productJoin;
+
+            ViewBag.Img = getapiImg.GetApi("Image");
+
             return View(productJoin);
         }
         [HttpGet]
@@ -388,17 +391,13 @@ namespace APPVIEW.Controllers
             ViewBag.Img = getapiImg.GetApi("Image");
             ViewBag.Size = getapiSize.GetApi("Size");
             ViewBag.Color = getapiColor.GetApi("Color");
-            var a = getapi.GetApi("ProductDetails").GroupBy(c => c.Id_Color).ToList();
-            var b = getapi.GetApi("ProductDetails").GroupBy(c => c.Id_Size).ToList();
-            foreach (var group in a)
-            {
+            
+            
+            
+            ViewBag.Category =  getapiCategory.GetApi("Category");
+            ViewBag.Supplier = getapiSupplier.GetApi("Supplier");         
+            ViewBag.Material =  getapiMaterial.GetApi("Material");
 
-                foreach (var product in b)
-                {
-                    var lis = group.Intersect(product).ToList();
-                }
-            }
-            var intersect = a.IntersectBy(b, x => x);
             return View(pro);
         }
 
@@ -627,7 +626,9 @@ namespace APPVIEW.Controllers
 
             string paymentUrl = pay.CreateRequestUrl(url, hashSecret);
 
+
             return Redirect(paymentUrl);
+
         }
 
         public ActionResult PaymentConfirm()

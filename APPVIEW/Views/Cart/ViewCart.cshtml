@@ -25,6 +25,13 @@
     </div>
 </section>
 <!-- ================ end banner area ================= -->
+@if (TempData["mess"] != null)
+{
+    <div class="alert alert-warning">
+        @TempData["mess"]
+        <button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>
+    </div>
+}
 <!--================Cart Area =================-->
 <section class="cart_area">
     <div class="container">
@@ -47,79 +54,78 @@
                              
                         @{
 
-                            @for (int i = 0; i < Model.Count; i++)
+                                @for (int i = 0; i < Model.Count; i++)
                             {
-                                <input hidden asp-for="@Model[i].Id" value="@Model[i].Id" />
+                                    <input hidden asp-for="@Model[i].Id" value="@Model[i].Id" id="pro" />
+                                    <input hidden asp-for="@Model[i].Id_Product" value="@Model[i].Id_Product" />
+                                    <input hidden asp-for="@Model[i].Name" value="@Model[i].Name" />
                                 var tt = @Model[i].Price * @Model[i].Quantity;
-                                <tr>
+                                    <tr>
 
-                                    @foreach (var img in ViewBag.Img)
+                                        @foreach (var img in ViewBag.Img)
                                     {
                                         if (img.IdProductdetail == @Model[i].Id)
                                         {
-                                            <td>
-                                                <div class="media">
-                                                    <div class="d-flex">
-                                                        <img src="~/images/@img.Name" style="width: 50px;" alt="">
+                                                <td>
+                                                    <div class="media">
+                                                        <div class="d-flex">
+                                                            <img src="~/images/@img.Name" style="width: 50px;" alt="">
+                                                        </div>
+                                                        <div class="media-body">
+                                                            <p>@Model[i].Name</p>
+                                                        </div>
                                                     </div>
-                                                    <div class="media-body">
-                                                        <p>@Model[i].Name</p>
-                                                    </div>
-                                                </div>
-                                            </td>
+                                                </td>
                                         }
                                     }
-                                    <td >@Model[i].Price</td>
-                                    <td>
-                                     
-                                        <div class="product_count">
-                                            <input type="text" id=@Model[i].Id_Size maxlength="12" title="Quantity:" class="input-text qty" value="@Model[i].Quantity" asp-for="@Model[i].Quantity" min="0">
-                                            <button onclick="var result = document.getElementById('@Model[i].Id_Size'); var sst = result.value; if( !isNaN( sst )) result.value++;return false;"
-                                                class="increase items-count" type="button">
-                                                <i class="fa fa-plus"></i>
-                                            </button>
-                                            <button onclick="var result = document.getElementById('@Model[i].Id_Size'); var sst = result.value; if( !isNaN( sst ) &amp;&amp; sst > 0 ) result.value--;return false;"
-                                                class="reduced items-count" type="button">
-                                                <i class="fa fa-minus"></i>
-                                            </button>
-                                        </div>
-                                    </td>
+                                        <td >@Model[i].Price</td>
+                                        <td>
+                                         
+                                            <div class="product_count">
+                                                <input type="text" id=@Model[i].Id_Size maxlength="12" title="Quantity:" class="input-text qty" value="@Model[i].Quantity" asp-for="@Model[i].Quantity" min="0">
+                                                <button onclick="var result = document.getElementById('@Model[i].Id_Size'); var sst = result.value; if( !isNaN( sst )) result.value++;return false;"
+                                                    class="increase items-count" type="button">
+                                                    <i class="fa fa-plus"></i>
+                                                </button>
+                                                <button onclick="var result = document.getElementById('@Model[i].Id_Size'); var sst = result.value; if( !isNaN( sst ) &amp;&amp; sst > 0 ) result.value--;return false;"
+                                                    class="reduced items-count" type="button">
+                                                    <i class="fa fa-minus"></i>
+                                                </button>
+                                            </div>
+                                        </td>
 
-                                    <td class="align-middle">
-                                        <select asp-for="@Model[i].Id_Size">
-                                            @foreach (var Size in ViewBag.Size)
+                                        <td class="align-middle">
+                                            <select asp-for="@Model[i].Id_Size" id="size">
+                                                @foreach (var Size in ViewBag.Size)
                                             {
-                                            //lstS.Add(pd.Id_Size);
-                                                <option value="@Size.Id">@Size.Name</option>
+                                            
+                                                    <option value="@Size.Id">@Size.Name</option>
                                             }
-                                        </select>
-                                    </td>
-                                    <td class="align-middle">
-                                        <select asp-for="@Model[i].Id_Color">
-
-
-
+                                            </select>
+                                        </td>
+                                        <td class="align-middle">
+                                            <select asp-for="@Model[i].Id_Color" >
+                                          
                                             @foreach (var Color in ViewBag.Color)
                                             {
 
-                                                <option value="@Color.Id">@Color.Name</option>
+                                                    <option value="@Color.Id">@Color.Name</option>
 
                                             }
-                                        </select>
-                                    </td>
-                                    <td class="align-middle">
-                                        @tt
-                                    </td>
-                                    <td>
-                                        <a class="btn btn-light" href="@Url.ActionLink("DeleteCartItem","Cart",new{id=Model[i].Id})"><i class="fa fa-trash"></i></a>
-                                    </td>
+                                            </select>
+                                        </td>
+                                        <td class="align-middle">
+                                            @tt
+                                        </td>
+                                        <td>
+                                            <a class="btn btn-light" href="@Url.ActionLink("DeleteCartItem","Cart",new{id=Model[i].Id})"><i class="fa fa-trash"></i></a>
+                                        </td>
 
-                                </tr>
+                                    </tr>
                             }
                         }
 
-          
-                        
+                             
                         <tr class="bottom_button">
                             <td>
                                 <button class="button" type="submit">Update Cart</button>
@@ -167,3 +173,52 @@
     </div>
 </section>
 <!--================End Cart Area =================-->
+<script>
+    var Size = document.getElementById("size");
+    var pro = document.getElementById("pro");
+    var color = document.getElementById("color");
+    Size.onchange = function () {
+        // Lấy giá trị được chọn trong thẻ select
+        var selectedCountry = Size.value;
+        //ldistrict.splice(0, ldistrict.length);
+        $("#color").empty(); // Xóa tất cả các thẻ option trong phần tử select có id là DropList
+        //$("#wardSelect").empty();
+        //inputdis.value = "";
+        //inputward.value = "";
+        var data = {
+            Id_Size: Size.value,
+           Id: pro.value ,
+        };
+        var json = JSON.stringify(data);
+        // Sử dụng fetch() để gửi một request GET đến /Home/GetUsers
+        fetch("/Cart/Chossesize", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: json
+        })
+            .then(response => response.json()) // Chuyển đổi response thành JSON
+            .then(data => {
+
+                // Xử lý dữ liệu JSON
+
+                data.forEach(function (districs) {
+                   
+                    // Duyệt qua mảng các user
+                    var option = document.createElement("option"); // Tạo một phần tử option mới
+                    option.innerHTML = districs.name; // Gán giá trị cho option
+                    option.value = districs.id; // Gán nội dung hiển thị cho option
+                    color.appendChild(option); // Thêm option vào thẻ select
+                    console.log(districs.name);
+                });
+
+            })
+            .catch(error => {
+                // Xử lý lỗi
+                console.error(error); // In ra lỗi
+            });
+
+
+    };
+</script>

@@ -1,9 +1,12 @@
 ﻿using APPDATA.Models;
 using APPVIEW.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
 
 namespace APPVIEW.Controllers
 {
+   
     public class CategoryController : Controller
     {
         private Getapi<Category> getapi;
