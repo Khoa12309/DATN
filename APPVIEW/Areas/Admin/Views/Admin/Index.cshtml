@@ -164,39 +164,26 @@
                 </div>
             </div>
         </div>
-        <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
         <script>
             $(document).ready(function () {
-                // Khởi tạo biểu đồ ban đầu
-                var weeklyChart
                 var yearlyChart;
 
-                // Gọi hàm vẽ biểu đồ khi trang web được tải
-                // DrawChartForYear(new Date().getFullYear());
-
-                // Mặc định chọn năm hiện tại
                 var currentYear = new Date().getFullYear();
                 $('#select').val(currentYear);
 
-                // Gọi hàm vẽ biểu đồ khi trang web được tải
                 DrawChartForYear(currentYear);
                 DrawWeeklyOverviewChart();
 
-                // Gọi hàm vẽ biểu đồ khi có sự kiện thay đổi năm
                 $('#select').on('change', function () {
                     var selectedYear = $(this).val();
                     DrawChartForYear(selectedYear);
-                    // Hủy biểu đồ hiện tại nếu tồn tại
-                    if (yearlyChart) {
-                        yearlyChart.destroy();
-                    }
                 });
-
                 // Hàm vẽ biểu đồ với dữ liệu từ API
                 function DrawChart(data) {
                     const ctx = document.getElementById('revenueChart').getContext('2d');
-
+                    if (yearlyChart) {
+                        yearlyChart.distroy()
+                    }
                     // Mảng chứa giá trị của 12 tháng
                     var monthsData = new Array(12).fill(0);
 
@@ -225,16 +212,12 @@
                         }
                     });
                 }
-                // Hàm gọi API và vẽ biểu đồ cho năm được chọn
                 function DrawChartForYear(selectedYear) {
-                    // Gửi yêu cầu Ajax để lấy dữ liệu
                     $.ajax({
                         url: 'https://localhost:7042/api/Chart/' + selectedYear,
                         method: 'GET',
                         dataType: 'json',
                         success: function (data) {
-                            console.log(data);
-                            // Nếu có dữ liệu từ API, gọi hàm để vẽ biểu đồ
                             if (data && data.values && data.label) {
                                 DrawChart(data);
                             } else {
@@ -246,16 +229,13 @@
                         }
                     });
                 }
-                // Hàm vẽ biểu đồ theo tuần
+
                 function DrawWeeklyOverviewChart() {
-                    // Gửi yêu cầu Ajax để lấy dữ liệu
                     $.ajax({
                         url: 'https://localhost:7042/api/Chart/weekly',
                         method: 'GET',
                         dataType: 'json',
                         success: function (data) {
-                            console.log(data);
-                            // Nếu có dữ liệu từ API, gọi hàm để vẽ biểu đồ
                             if (data && data.labels && data.values && data.label) {
                                 DrawWeeklyChart(data);
                             } else {
@@ -269,10 +249,8 @@
                 }
                 // Hàm vẽ biểu đồ theo tuần
                 function DrawWeeklyChart(data) {
-                    // const ctx = document.getElementById('weeklyChartview').getContext('2d');
                     const ctx = document.getElementById('weeklyChartview');
                     if (ctx) {
-                        // Thực hiện các thao tác với context ở đây
                         weeklyChart = new Chart(ctx, {
                             type: 'bar',
                             data: {
@@ -285,21 +263,12 @@
                             },
                             options: {
                                 scales: {
-                                    x: {
-                                        beginAtZero: true,
-                                        // Hiển thị ngày thay vì chỉ số của mảng
-                                        type: 'category',
-                                        labels: data.daysOfWeek
-                                    },
                                     y: {
                                         beginAtZero: true
                                     }
                                 }
                             }
                         });
-                    } else {
-                        console.error('Canvas element not found');
-                    }
                 }
             });
         </script>   
