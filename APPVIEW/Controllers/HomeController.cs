@@ -263,7 +263,7 @@ namespace APPVIEW.Controllers
                 await bills.UpdateObj(bill, "Bill");
                 ViewBag.Bill = bill;
                 ViewBag.Billct = billct;
-
+                ViewBag.ctsp = x; 
                 ViewBag.sp = getapiProduct.GetApi("Product").FirstOrDefault(c => c.Id == x.Id_Product);
                 ViewBag.sizee = getapiSize.GetApi("Size").FirstOrDefault(c => c.Id == x.Id_Size);
                 ViewBag.Collor = getapiColor.GetApi("Color").FirstOrDefault(c => c.Id == x.Id_Color);
