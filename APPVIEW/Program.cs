@@ -3,6 +3,7 @@ using AspNetCoreHero.ToastNotification.Notyf;
 using AspNetCoreHero.ToastNotification;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using APPVIEW.Services;
+using AspNetCoreHero.ToastNotification.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -55,7 +56,7 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
+app.UseNotyf();
 app.UseRouting();
 app.UseAuthentication();
 

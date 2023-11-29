@@ -42,6 +42,24 @@ namespace APPVIEW.Controllers
             var obj = getapi.GetApi("Account");
             return View(obj);
         }
+        public async Task<IActionResult> Search(string searchTerm)
+        {
+            var lstAcc = getapi.GetApi("Voucher").ToList();
+
+            var searchResult = lstAcc
+                .Where(v =>
+                    v.Email.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                    v.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)
+                )
+                .ToList();
+
+            if (searchResult.Any())
+            {
+                return View("GetList", searchResult);
+            }
+
+            return NotFound("Voucher không tồn tại");
+        }
 
         [AllowAnonymous]
         public IActionResult Register()
@@ -454,7 +472,7 @@ namespace APPVIEW.Controllers
                         return View(obj);
                     }
 
-                }               
+                }
                 else
                 {
                     ViewData["ErrorMessage"] = "Email not found!";

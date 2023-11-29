@@ -20,7 +20,9 @@
         return "No Data";
     }
 }
-
+<form asp-action="Search" method="get" class="form-inline">
+    <input placeholder="Account Search" type="text" name="searchTerm" id="searchTerm" /><button>Tìm</button>
+</form>
 <div class="card">
     <div class="card-header">
         <h5 class="mb-0">Account</h5>

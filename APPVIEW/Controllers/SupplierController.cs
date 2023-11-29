@@ -19,6 +19,26 @@ namespace APPVIEW.Controllers
             var obj = getapi.GetApi("Supplier");
             return View(obj);
         }
+        public async Task<IActionResult> Search(string searchTerm)
+        {
+            var lstSupplier = getapi.GetApi("Supplier").ToList();
+
+            var searchResult = lstSupplier
+                .Where(v =>
+                    v.Suppliercode.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                    v.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                    v.Address.ToString().Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                    v.PhoneNumber.ToString().Contains(searchTerm, StringComparison.OrdinalIgnoreCase)
+                )
+                .ToList();
+
+            if (searchResult.Any())
+            {
+                return View("GetList", searchResult);
+            }
+
+            return NotFound("Voucher không tồn tại");
+        }
 
 
         [HttpGet]
@@ -33,7 +53,7 @@ namespace APPVIEW.Controllers
         {
             try
             {
-              await  getapi.CreateObj(obj, "Supplier");
+                await getapi.CreateObj(obj, "Supplier");
                 return RedirectToAction("GetList");
             }
             catch
@@ -57,7 +77,7 @@ namespace APPVIEW.Controllers
         {
             try
             {
-              await  getapi.UpdateObj(obj, "Supplier");
+                await getapi.UpdateObj(obj, "Supplier");
                 return RedirectToAction("GetList");
             }
             catch
@@ -69,7 +89,7 @@ namespace APPVIEW.Controllers
 
         public async Task<IActionResult> Delete(Guid id)
         {
-          await  getapi.DeleteObj(id, "Supplier");
+            await getapi.DeleteObj(id, "Supplier");
             return RedirectToAction("GetList");
 
         }
