@@ -1,0 +1,93 @@
+﻿@using APPDATA.Models;
+@model APPVIEW.ViewModels.RegisterVm
+
+@{
+    ViewData["Title"] = "Create-Account";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<h4 class="py-3 mb-4"><span class="text-muted fw-light">Forms /</span> Basic Inputs</h4>
+@if (!string.IsNullOrEmpty(ViewData["ErrorMessage"] as string))
+{
+    <div class="alert alert-warning alert-dismissible" role="alert">
+        @ViewData["ErrorMessage"]
+    </div>
+}
+<div class="row">
+    <div class="col-xxl">
+        <div class="card mb-4">
+            <div class="card-header d-flex align-items-center justify-content-between">
+                <h5 class="mb-0">Create a Color</h5>
+
+            </div>
+            <div class="card-body">
+                <form asp-action="Create" method="post">
+                    <div class="row mb-3">
+                        <label asp-for="Name" class="col-sm-2 col-form-label">Full Name</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" asp-for="Name" placeholder="Enter Name" />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label asp-for="Email" class="col-sm-2 col-form-label">Email Address</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" asp-for="Email" placeholder="Enter Email" />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label asp-for="PhoneNumber" class="col-sm-2 col-form-label">Phone number</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" asp-for="PhoneNumber" placeholder="Enter phone" />
+                            <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label asp-for="Id_Role" class="col-sm-2 col-form-label">Role</label>
+                        <div class="col-md-4 user_role">
+                            <div class="input-group">
+                                <label class="input-group-text" asp-for="Id_Role" >Options</label>
+                                <select asp-for=Id_Role class="form-select text-capitalize" id="inputGroupSelect01">
+                                    @if (ViewBag.ListRole != null)
+                                    {
+                                        <option selected>Choose...</option>
+                                        @foreach (var item in ViewBag.ListRole as List<Role>)
+                                        {
+
+                                            <option value="@item.id">@item.name</option>
+                                        }
+                                    }
+                                    else
+                                    {
+                                        <option selected>Choose...</option>
+                                    }
+
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row justify-content-end">
+                        <div class="col-sm-10">
+                            <button type="submit" class="btn btn-primary">
+                                <span class="mdi mdi-check-outline"></span> Submit
+                            </button>
+                            <div class="btn-group ms-2">
+                                <a href="#" class="btn btn-danger waves-effect waves-light" onclick="goBack()">
+                                    <span class="mdi mdi-close"></span> Cancel
+                                </a>
+                                <script>
+                                    function goBack() {
+                                        window.history.back();
+                                    }
+                                </script>
+                            </div>
+                        </div>
+                    </div>
+                  
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
