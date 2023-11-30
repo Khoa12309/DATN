@@ -1,14 +1,17 @@
 ﻿using APPDATA.Models;
 using APPVIEW.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using NuGet.Packaging.Signing;
+using System.Data;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Xml.Linq;
 
 namespace APPVIEW.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class ProductDetailController : Controller
     {
         private Getapi<ProductDetail> getapi;
@@ -43,6 +46,20 @@ namespace APPVIEW.Controllers
             ViewBag.Image = await getapiImg.GetApia("Image");
             ViewBag.Material = await getapiMaterial.GetApia("Material");
             var obj = await getapi.GetApia("ProductDetails");
+            
+            return View(obj);
+        }
+        [HttpPost]
+        public async Task<IActionResult> GetList(string tk)
+        {
+            ViewBag.Size =await getapiSize.GetApia("Size");
+            ViewBag.Color =await getapiColor.GetApia("Color");
+            ViewBag.Category = await getapiCategory.GetApia("Category");
+            ViewBag.Supplier = await getapiSupplier.GetApia("Supplier");
+            ViewBag.Image = await getapiImg.GetApia("Image");
+            ViewBag.Material = await getapiMaterial.GetApia("Material");
+            var obj =  getapi.GetApi("ProductDetails").Where(c=>c.Name==tk);
+            
             return View(obj);
         }
         [HttpGet]
@@ -65,19 +82,33 @@ namespace APPVIEW.Controllers
         {
             try
             {
-                
-             
+
+
                 //// truyền nhiều dữ liệu 
                 //if (myList!= null)
                 //{
                 //    List<string> Lcolor = JsonConvert.DeserializeObject<List<string>>(myList);
                 //}
+                var produ = getapiProduct.GetApi("Product").FirstOrDefault(c => c.Id == obj.Id_Product);
                 obj.Id = Guid.NewGuid();
-                obj.Name = getapiProduct.GetApi("Product").FirstOrDefault(c => c.Id == obj.Id_Product).Name;
+                obj.Name = produ.Name;
                 obj.Create_date=DateTime.Now;
                 obj.Update_date=DateTime.Now;
                 obj.Create_by= DateTime.Now;
                 obj.Update_by= DateTime.Now;
+                var PD = getapi.GetApi("ProductDetails").FirstOrDefault(c => c.Id_Product == produ.Id && c.Id_Color == obj.Id_Color && c.Id_Size == obj.Id_Size);
+                if (PD!= null)
+                {
+                    PD.Quantity += obj.Quantity;
+                    await getapi.UpdateObj(PD, "ProductDetails");
+                    foreach (var item in imageFile)
+                    {
+                        addimg(item, PD.Id);
+
+                    }
+                    return RedirectToAction("GetList");
+                }
+
                 await getapi.CreateObj(obj, "ProductDetails");
                 foreach (var item in imageFile)
                 {
@@ -181,8 +212,13 @@ namespace APPVIEW.Controllers
             return RedirectToAction("GetList");
 
         }
+        public async Task<IActionResult> search(string tk)
+        {
+
+            return RedirectToAction("getlist");
+        }
 
 
-      
+
     }
 }

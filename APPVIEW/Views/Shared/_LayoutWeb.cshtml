@@ -1,4 +1,5 @@
-﻿﻿@{
+﻿
+﻿@{
     var IdUser = ((System.Security.Claims.ClaimsIdentity)User.Identity).FindFirst("Id");
     string Id_userValue = IdUser?.Value;
 
@@ -31,6 +32,7 @@
 
 </head>
 <body>
+    
     <!--================ Start Header Menu Area =================-->
     <header class="header_area">
         <div class="main_menu">
@@ -51,9 +53,7 @@
                                    aria-expanded="false">Shop</a>
                                 <ul class="dropdown-menu">
                                     <li class="nav-item"><a class="nav-link" asp-action="Shop" asp-controller="Home">Shop Category</a></li>
-                                    <li class="nav-item"><a class="nav-link" href="single-product.html">Product Details</a></li>
-                                    <li class="nav-item"><a class="nav-link" href="checkout.html">Product Checkout</a></li>
-                                    <li class="nav-item"><a class="nav-link" href="confirmation.html">Confirmation</a></li>
+                            
                                     <li class="nav-item"><a class="nav-link" href="cart.html">Shopping Cart</a></li>
                                 </ul>
                             </li>
@@ -65,7 +65,7 @@
                                     <li class="nav-item"><a class="nav-link" href="single-blog.html">Blog Details</a></li>
                                 </ul>
                             </li>
-                            <li class="nav-item submenu dropdown">
+                           @* <li class="nav-item submenu dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
                                    aria-expanded="false">Pages</a>
                                 <ul class="dropdown-menu">
@@ -73,7 +73,7 @@
                                     <li class="nav-item"><a class="nav-link" href="register.html">Register</a></li>
 
                                 </ul>
-                            </li>
+                            </li>*@
                             <li class="nav-item"><a class="nav-link" asp-action="Contact" asp-controller="Home">Contact</a></li>
                         </ul>
 
@@ -290,7 +290,7 @@
     </footer>
     <!--================ End footer Area  =================-->
 
-
+    <script src="~/js/site.js"></script>
 
     <script src="~/contentwebb/vendors/jquery/jquery-3.2.1.min.js"></script>
     <script src="~/contentwebb/js/main.js"></script>

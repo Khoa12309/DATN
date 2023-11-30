@@ -63,12 +63,23 @@ namespace APPVIEW.Controllers
             x.Status = 3;
             await bills.UpdateObj(x, "Bill");
             return RedirectToAction("ShowBillXacNhan");
+        }    
+        public async Task<IActionResult> HuyDon(Guid id)
+        {
+            var x = bills.GetApi("Bill").FirstOrDefault(c => c.id == id);
+            var y = billDetails.GetApi("BillDetail").Where(c=>c.BIllId == id).ToList();
+            foreach (var item in y)
+            {
+                await billDetails.DeleteObj(item.id, "BillDetail");
+            }
+            await bills.DeleteObj(id, "Bill");
+            return RedirectToAction("DonHuy");
         }
 
-        public ActionResult ShowBill()
+        public ActionResult ShowBill(string search)
         {
             var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
-            var userBills = bills.GetApi("Bill").Where(c=>c.Status==1);
+            var userBills = bills.GetApi("Bill").Where(c=>c.Status==1).OrderByDescending(d=>d.CreateDate).ToList();
             ViewBag.viewbill = userBills;
 
             
@@ -83,13 +94,34 @@ namespace APPVIEW.Controllers
             ViewBag.sizee = getapiSize.GetApi("Size");
             ViewBag.acc = _account.GetApi("Account");
             ViewBag.Collor = getapiColor.GetApi("Color");
+            try {
+                if (search != "")
+                {
+                    var tk = bills.GetApi("Bill").Where(c => c.Status == 1 && c.Code.Contains(search)).OrderByDescending(d => d.CreateDate).ToList();
+                    ViewBag.viewbill = tk;
+                    return View(tk);
+                }
+                else
+                {
+                    ViewBag.viewbill = userBills;
+
+
+
+
+                    return View(userBills);
+                }
+
+            }
+            catch (Exception ex) {
+                return View(userBills);
+            }
             return View(userBills);
            
         }
-        public ActionResult ShowBillXacNhan()
+        public ActionResult DonHuy(string search)
         {
             var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
-            var userBills = bills.GetApi("Bill").Where(c=>c.Status==2);
+            var userBills = bills.GetApi("Bill").Where(c=>c.Status==0).OrderByDescending(d=>d.CreateDate).ToList();
             ViewBag.viewbill = userBills;
 
             
@@ -104,8 +136,74 @@ namespace APPVIEW.Controllers
             ViewBag.sizee = getapiSize.GetApi("Size");
             ViewBag.acc = _account.GetApi("Account");
             ViewBag.Collor = getapiColor.GetApi("Color");
+            try {
+                if (search != "")
+                {
+                    var tk = bills.GetApi("Bill").Where(c => c.Status == 0 && c.Code.Contains(search)).OrderByDescending(d => d.CreateDate).ToList();
+                    ViewBag.viewbill = tk;
+                    return View(tk);
+                }
+                else
+                {
+                    ViewBag.viewbill = userBills;
+
+
+
+
+                    return View(userBills);
+                }
+
+            }
+            catch (Exception ex) {
+                return View(userBills);
+            }
             return View(userBills);
            
+        }
+        public ActionResult ShowBillXacNhan(string search)
+        {
+           
+            var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
+            var userBills = bills.GetApi("Bill").Where(c=>c.Status==2).OrderByDescending(d=>d.CreateDate).ToList();
+            var billDetailsApi = billDetails.GetApi("BillDetail");
+            var productDetailsApi = getapi.GetApi("ProductDetails");
+            var productsApi = getapiProduct.GetApi("Product");
+
+
+            ViewBag.viewbillct = billDetailsApi;
+            ViewBag.viewprdct = productDetailsApi;
+            ViewBag.viewprd = productsApi;
+            ViewBag.sizee = getapiSize.GetApi("Size");
+            ViewBag.acc = _account.GetApi("Account");
+            ViewBag.Collor = getapiColor.GetApi("Color");
+            ViewBag.viewbill = userBills;
+            try
+            {
+
+                if (search != "")
+                {
+                    var tk = bills.GetApi("Bill").Where(c => c.Status == 2 && c.Code.Contains(search)).OrderByDescending(d => d.CreateDate).ToList();
+                    ViewBag.viewbill = tk;
+                    return View(tk);
+                }
+                else
+                {
+                    ViewBag.viewbill = userBills;
+
+
+
+
+                    return View(userBills);
+                }
+            }catch (Exception ex)
+            {
+
+
+                return View(userBills);
+
+            }
+
+                return View(userBills);
         }
 
        

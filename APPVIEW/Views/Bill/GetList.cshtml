@@ -10,6 +10,9 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+<form asp-action="Search" method="get" class="form-inline">
+    <input placeholder="Bill Search" type="text" name="searchTerm" id="searchTerm" /><button>Tìm</button>
+</form>
 <table class="table">
     <thead>
         <tr>

@@ -18,6 +18,26 @@ namespace APPVIEW.Controllers
             return View(obj);
         }
 
+        public async Task<IActionResult> Search(string searchTerm)
+        {
+            var lstBill = getapi.GetApi("Bill");
+
+            var searchResult = lstBill
+                .Where(v =>
+                    v.Code.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                    v.PhoneNumber.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                    v.Address.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                    v.Status.ToString().Contains(searchTerm, StringComparison.OrdinalIgnoreCase)
+                )
+                .ToList();
+
+            if (searchResult.Any())
+            {
+                return View("GetList", searchResult);
+            }
+
+            return NotFound("Voucher không tồn tại");
+        }
 
         [HttpGet]
         public async Task<IActionResult> Create()
@@ -39,7 +59,7 @@ namespace APPVIEW.Controllers
                 return View();
             }
         }
- 
+
 
 
         public async Task<IActionResult> Edit(Guid id)

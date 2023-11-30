@@ -25,6 +25,7 @@ namespace _APPAPI.Controllers
         [HttpPost]
         public bool Create(Color obj)
         {
+            obj.Create_date = DateTime.Now;
             return _crud.CreateItem(obj);
         }
         [Route("Delete")]
@@ -40,12 +41,10 @@ namespace _APPAPI.Controllers
         {
             Color item = _crud.GetAllItems().FirstOrDefault(c => c.Id == obj.Id);
 
-            item.Update_date = obj.Update_date;
-            item.Status = obj.Status;
-            item.Update_date=obj.Update_date;
-            
+            item.Update_date = DateTime.Now;
+            item.Status = obj.Status;           
             item.Name = obj.Name;
-
+            item.Colorcode = obj.Colorcode;
 
             return _crud.UpdateItem(item);
         }

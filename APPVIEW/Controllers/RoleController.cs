@@ -10,18 +10,37 @@ namespace APPVIEW.Controllers
     public class RoleController : Controller
     {
         private Getapi<Role> getapi;
-        private readonly INotyfService _notyf;
+        public  INotyfService _notyff { get; }
 
-        public RoleController(INotyfService notyf)
+        public RoleController(INotyfService notyff)
         {
             getapi = new Getapi<Role>();
-            _notyf = notyf;
+            _notyff = notyff;
         }
 
         public async Task<IActionResult> GetList()
         {
             var obj = getapi.GetApi("Role");
             return View(obj);
+        }
+
+        public async Task<IActionResult> Search(string searchTerm)
+        {
+            var lstRole = getapi.GetApi("Role").ToList();
+
+            var searchResult = lstRole
+                .Where(v =>
+                    v.name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                    v.Status.ToString().Contains(searchTerm, StringComparison.OrdinalIgnoreCase)
+                )
+                .ToList();
+
+            if (searchResult.Any())
+            {
+                return View("GetList", searchResult);
+            }
+
+            return NotFound("Voucher không tồn tại");
         }
 
 
@@ -41,10 +60,10 @@ namespace APPVIEW.Controllers
             if (role != null)
             {
 
-                _notyf.Success("Add new value sucess!");
+                _notyff.Success("Add new value sucess!");
                 return RedirectToAction("GetList");
             }
-            _notyf.Error("Error,try again!");
+            _notyff.Error("Error,try again!");
             return View();
 
 
