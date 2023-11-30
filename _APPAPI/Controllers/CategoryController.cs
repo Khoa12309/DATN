@@ -36,7 +36,7 @@ namespace _APPAPI.Controllers
             return _crud.DeleteItem(item);
         }
         [Route("Update")]
-        [HttpPost]
+        [HttpPut]
         public bool Update(Category obj)
         {
             Category item = _crud.GetAllItems().FirstOrDefault(c => c.Id == obj.Id);

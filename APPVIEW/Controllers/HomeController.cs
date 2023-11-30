@@ -34,8 +34,8 @@ namespace APPVIEW.Controllers
         private Getapi<Bill> bills;
         private Getapi<BillDetail> billDetails;
         private Getapi<Voucher> getapiVoucher;
-
-
+        private Getapi<Address> getapiAddress;
+        private Getapi<CartDetail> getapiCD;
         private static readonly Random random = new Random();
         private string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
@@ -53,7 +53,8 @@ namespace APPVIEW.Controllers
             bills = new Getapi<Bill>();
             billDetails = new Getapi<BillDetail>();
             getapiVoucher = new Getapi<Voucher>();
-
+            getapiAddress = new Getapi<Address>();
+            getapiCD=new Getapi<CartDetail>();
         }
 
         public IActionResult Index()
@@ -66,6 +67,9 @@ namespace APPVIEW.Controllers
                                     .Distinct()
                                     .ToList();
             ViewBag.Result = productJoin;
+
+            ViewBag.Img = getapiImg.GetApi("Image");
+
             return View(productJoin);
         }
         [HttpGet]
@@ -177,19 +181,31 @@ namespace APPVIEW.Controllers
         // Tạo chuỗi có độ dài 8 ký tự
 
 
-        public async Task<IActionResult> DatHangN(Address obj,string pay)
+        public async Task<IActionResult> DatHangN(Address obj,string pay,float phiship )
         {
             var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
+            var client = new OnlineGatewayClient($"https://online-gateway.ghn.vn/shiip/public-api/master-data/province", "bdbbde2a-fec2-11ed-8a8c-6e4795e6d902");
+
+            // Gọi API để lấy danh sách các tỉnh/thành phố
+            var response = await client.GetProvincesAsync();
+            foreach (var item in response.Data)
+            {
+                if (item.ProvinceID.ToString() ==obj.Province)
+                {
+                   obj.Province = item.ProvinceName; break;
+                }
+            }
             var bill = new Bill();
             bill.id = Guid.NewGuid();
             bill.AccountId = account.Id;
             bill.Code = GenerateRandomString(8);
             bill.PhoneNumber = obj.PhoneNumber;
-            bill.Address = obj.SpecificAddress; 
+            bill.Address = obj.Province+"-"+obj.District+"-"+obj.Ward+"-"+obj.SpecificAddress; 
             bill.CreateBy = DateTime.Now;
             bill.CreateDate = DateTime.Now;
             bill.UpdateBy = DateTime.Now;
-            bill.TotalMoney = 0;
+            bill.ShipFee = phiship;
+            bill.TotalMoney = phiship;
             bill.Status = 1;
 
             if (pay == "Online")
@@ -219,17 +235,37 @@ namespace APPVIEW.Controllers
                     await bills.UpdateObj(bill, "Bill");
                 }
             }
+            var products = SessionService.GetObjFromSession(HttpContext.Session, "Cart");
+
+            
+            foreach (var item in products)
+            {
+                var productcartdetails = getapiCD.GetApi("CartDetails").FirstOrDefault(c => c.ProductDetail_ID == item.Id);
+
+                var p = products.Find(c => c.Id == item.Id);
+
+             
+                
+                if (productcartdetails != null)
+                {
+                    await getapiCD.DeleteObj(productcartdetails.id, "CartDetails");
+
+                }
+            }
+            products.Clear();
+            SessionService.SetObjToJson(HttpContext.Session, "Cart", products);
+
 
             if (pay == "Online")
             {
-
 
                 return Payment(bill);
             }
             else
             {
-                return View();
-            }              
+                return RedirectToAction("Thongtin");
+            }    
+            
         }
 
 
@@ -355,17 +391,13 @@ namespace APPVIEW.Controllers
             ViewBag.Img = getapiImg.GetApi("Image");
             ViewBag.Size = getapiSize.GetApi("Size");
             ViewBag.Color = getapiColor.GetApi("Color");
-            var a = getapi.GetApi("ProductDetails").GroupBy(c => c.Id_Color).ToList();
-            var b = getapi.GetApi("ProductDetails").GroupBy(c => c.Id_Size).ToList();
-            foreach (var group in a)
-            {
+            
+            
+            
+            ViewBag.Category =  getapiCategory.GetApi("Category");
+            ViewBag.Supplier = getapiSupplier.GetApi("Supplier");         
+            ViewBag.Material =  getapiMaterial.GetApi("Material");
 
-                foreach (var product in b)
-                {
-                    var lis = group.Intersect(product).ToList();
-                }
-            }
-            var intersect = a.IntersectBy(b, x => x);
             return View(pro);
         }
 
@@ -434,8 +466,19 @@ namespace APPVIEW.Controllers
         [HttpPost]
         public async Task<JsonResult> feeship([FromBody] diachi data)
         {
+            var products = SessionService.GetObjFromSession(HttpContext.Session, "Cart");
+            var can=100;
+            if (products.Count!=0)
+            {
+                var sl = 0;
+                foreach (var item in products)
+                {
+                    sl += item.Quantity;
+                }
+              can = sl*100;
+            }           
             int sship = await getServiceShip(data.to_district_id);
-            var client = new OnlineGatewayClient($"https://online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/fee?service_id={sship}" + $"&insurance_value=100000&to_ward_code={data.towardcode.ToString()}" + $"&to_district_id={data.to_district_id.ToString()}" + "&from_district_id=3440&weight=500", "bdbbde2a-fec2-11ed-8a8c-6e4795e6d902");
+            var client = new OnlineGatewayClient($"https://online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/fee?service_id={sship}" + $"&insurance_value=100000&to_ward_code={data.towardcode.ToString()}" + $"&to_district_id={data.to_district_id.ToString()}" + "&from_district_id=3440"+$"&weight={can}", "bdbbde2a-fec2-11ed-8a8c-6e4795e6d902");
             // Gọi API để lấy danh sách các tỉnh/thành phố
             var response = await client.GetFeeshipAsync();
             // Kiểm tra kết quả trả về
@@ -502,6 +545,12 @@ namespace APPVIEW.Controllers
 
             }
             ViewBag.TT = tt;
+            var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
+            if (account!= null)
+            {
+                var dc = getapiAddress.GetApi("Address").FirstOrDefault(c => c.AccountId == account.Id);
+                return View(dc);
+            }
             return View();
         }
 
@@ -577,7 +626,9 @@ namespace APPVIEW.Controllers
 
             string paymentUrl = pay.CreateRequestUrl(url, hashSecret);
 
+
             return Redirect(paymentUrl);
+
         }
 
         public ActionResult PaymentConfirm()

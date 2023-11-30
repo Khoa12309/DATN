@@ -36,7 +36,7 @@ namespace APPVIEW.Controllers
                 return View("GetList", searchResult);
             }
 
-            return NotFound("Voucher không tồn tại");
+            return NotFound("Color không tồn tại");
         }
 
 
@@ -52,7 +52,9 @@ namespace APPVIEW.Controllers
         {
             try
             {
+
                 await getapi.CreateObj(obj, "Color");
+
                 return RedirectToAction("GetList");
             }
             catch
