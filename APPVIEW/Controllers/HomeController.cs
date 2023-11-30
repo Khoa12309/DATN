@@ -123,6 +123,9 @@ namespace APPVIEW.Controllers
             ViewBag.id = id;
             ViewBag.size = getapiSize.GetApi("Size");
             ViewBag.color = getapiColor.GetApi("Color");
+            var prdct= getapi.GetApi("ProductDetails").FirstOrDefault(c => c.Id_Product == id);
+            ViewBag.image = getapiImg.GetApi("Image").FirstOrDefault(c=>c.IdProductdetail==prdct.Id);
+        
             var client = new OnlineGatewayClient($"https://online-gateway.ghn.vn/shiip/public-api/master-data/province", "bdbbde2a-fec2-11ed-8a8c-6e4795e6d902");
 
             // Gọi API để lấy danh sách các tỉnh/thành phố
@@ -181,8 +184,9 @@ namespace APPVIEW.Controllers
         // Tạo chuỗi có độ dài 8 ký tự
 
 
-        public async Task<IActionResult> DatHangN(Address obj,string pay,float phiship )
+        public async Task<IActionResult> DatHangN(Address obj,string pay,float phiship,float voucher)
         {
+
             var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
             var client = new OnlineGatewayClient($"https://online-gateway.ghn.vn/shiip/public-api/master-data/province", "bdbbde2a-fec2-11ed-8a8c-6e4795e6d902");
 
@@ -205,7 +209,8 @@ namespace APPVIEW.Controllers
             bill.CreateDate = DateTime.Now;
             bill.UpdateBy = DateTime.Now;
             bill.ShipFee = phiship;
-            bill.TotalMoney = phiship;
+            bill.PayDate = DateTime.Now;
+            bill.TotalMoney = phiship - voucher;
             bill.Status = 1;
 
             if (pay == "Online")
@@ -321,7 +326,7 @@ namespace APPVIEW.Controllers
                 bill.UpdateBy = DateTime.Now;
                 bill.Status = 1;
                 bill.ShipFee = ship;
-
+                bill.PayDate= DateTime.Now;
                 await bills.CreateObj(bill, "Bill");
 
                 var billct = new BillDetail();
@@ -337,10 +342,11 @@ namespace APPVIEW.Controllers
                 await bills.UpdateObj(bill, "Bill");
                 ViewBag.Bill = bill;
                 ViewBag.Billct = billct;
-
+                ViewBag.ctsp = x; 
                 ViewBag.sp = getapiProduct.GetApi("Product").FirstOrDefault(c => c.Id == x.Id_Product);
                 ViewBag.sizee = getapiSize.GetApi("Size").FirstOrDefault(c => c.Id == x.Id_Size);
                 ViewBag.Collor = getapiColor.GetApi("Color").FirstOrDefault(c => c.Id == x.Id_Color);
+                ViewBag.image = getapiImg.GetApi("Image");
 
             }
 
@@ -351,7 +357,7 @@ namespace APPVIEW.Controllers
         public IActionResult Thongtin()
         {
             var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
-            var userBills = bills.GetApi("Bill").Where(c => c.AccountId == account.Id&& c.Status!=4 ).OrderByDescending(d => d.CreateDate).ToList();
+            var userBills = bills.GetApi("Bill").Where(c => c.AccountId == account.Id&& c.Status!=4 &&c.Status!=5 ).OrderByDescending(d => d.CreateDate).ToList();
             ViewBag.viewbill = userBills;
 
             if (account.Id == Guid.Empty)
@@ -367,8 +373,8 @@ namespace APPVIEW.Controllers
             ViewBag.viewprdct = productDetailsApi;
             ViewBag.viewprd = productsApi;
             ViewBag.sizee = getapiSize.GetApi("Size");
-
             ViewBag.Collor = getapiColor.GetApi("Color");
+            ViewBag.image = getapiImg.GetApi("Image");
             return View(userBills);
 
         }
@@ -391,8 +397,7 @@ namespace APPVIEW.Controllers
             ViewBag.Img = getapiImg.GetApi("Image");
             ViewBag.Size = getapiSize.GetApi("Size");
             ViewBag.Color = getapiColor.GetApi("Color");
-            
-            
+                       
             
             ViewBag.Category =  getapiCategory.GetApi("Category");
             ViewBag.Supplier = getapiSupplier.GetApi("Supplier");         
@@ -401,28 +406,7 @@ namespace APPVIEW.Controllers
             return View(pro);
         }
 
-        public async Task<IActionResult> province()
-        {
-            var client = new OnlineGatewayClient($"https://online-gateway.ghn.vn/shiip/public-api/master-data/province", "bdbbde2a-fec2-11ed-8a8c-6e4795e6d902");
-            // Gọi API để lấy danh sách các tỉnh/thành phố
-            var response = await client.GetProvincesAsync();           
-            //Kiểm tra kết quả trả về
-            if (response.Code == 200) // Thành công
-            {
-                // Trả về danh sách các quận/huyện dưới dạng JSON
-
-                ViewBag.province = response.Data;
-
-                return View();
-            }
-            else // Thất bại
-            {
-                // Trả về thông báo lỗi
-                return BadRequest(response.Message);
-            }
-
-
-        }
+      
 
         [HttpPost]
         public async Task<JsonResult> district([FromBody] int provinceid)
@@ -513,6 +497,75 @@ namespace APPVIEW.Controllers
             }
 
         }
+
+        public async Task<int> province(string ten)
+        {
+            var client = new OnlineGatewayClient($"https://online-gateway.ghn.vn/shiip/public-api/master-data/province", "bdbbde2a-fec2-11ed-8a8c-6e4795e6d902");
+            // Gọi API để lấy danh sách các tỉnh/thành phố
+            var response = await client.GetProvincesAsync();
+            //Kiểm tra kết quả trả về
+            if (response.Code == 200) // Thành công
+            {
+                // Trả về danh sách các quận/huyện dưới dạng JSON
+
+                foreach (var item in response.Data)
+                {
+                    if (ten.ToLower() == item.ProvinceName.ToLower())
+                    {
+                        return item.ProvinceID;
+                    }
+                }
+            }
+            return 0;
+
+
+        } 
+        public async Task<int> dis(string ten,int id)
+        {
+            var client = new OnlineGatewayClient($"https://online-gateway.ghn.vn/shiip/public-api/master-data/district?province_id={id}", "bdbbde2a-fec2-11ed-8a8c-6e4795e6d902");
+            // Gọi API để lấy danh sách các tỉnh/thành phố
+            var response = await client.GetDistricsAsync();
+            //Kiểm tra kết quả trả về
+            if (response.Code == 200) // Thành công
+            {
+
+                // Trả về danh sách các quận/huyện dưới dạng JSON
+
+                foreach (var item in response.Data)
+                {
+                    if (item.NameExtension.Any(c => c.Contains(ten))) 
+                    {
+                        return item.DistrictID;
+                    }
+                }
+            }
+            return 0;
+
+
+        } 
+        public async Task<int> wad(string ten,int id)
+        {
+            var client = new OnlineGatewayClient($"https://online-gateway.ghn.vn/shiip/public-api/master-data/ward?district_id={id}", "bdbbde2a-fec2-11ed-8a8c-6e4795e6d902");
+            // Gọi API để lấy danh sách các tỉnh/thành phố
+            var response = await client.GetWardsAsync();
+            //Kiểm tra kết quả trả về
+            if (response.Code == 200) // Thành công
+            {
+
+                // Trả về danh sách các quận/huyện dưới dạng JSON
+
+                foreach (var item in response.Data)
+                {
+                    if (item.NameExtension.Any(c => c.Contains(ten)))
+                    {
+                        return item.WardCode;
+                    }
+                }
+            }
+            return 0;
+
+
+        }
         public async Task<IActionResult> Checkout()
         {
             var client = new OnlineGatewayClient($"https://online-gateway.ghn.vn/shiip/public-api/master-data/province", "bdbbde2a-fec2-11ed-8a8c-6e4795e6d902");
@@ -521,16 +574,28 @@ namespace APPVIEW.Controllers
             var voucherCode = TempData["VoucherCode"] as string;
             // Gọi API để lấy danh sách các tỉnh/thành phố
             var response = await client.GetProvincesAsync();
-
-            //Kiểm tra kết quả trả về
             if (response.Code == 200) // Thành công
             {
                 // Trả về danh sách các quận/huyện dưới dạng JSON
                 ViewBag.province = response.Data;
             }
+
+            //// fee ship
+            var products = SessionService.GetObjFromSession(HttpContext.Session, "Cart");
+            var can = 100;
+            if (products.Count != 0)
+            {
+                var sl = 0;
+                foreach (var item in products)
+                {
+                    sl += item.Quantity;
+                }
+                can = sl * 100;
+            }
+
             
 
-            ViewBag.Product = SessionService.GetObjFromSession(HttpContext.Session, "Cart");
+            ViewBag.Product = products;
             var tt = 0;
             foreach (var item in ViewBag.Product)
             {
@@ -546,9 +611,35 @@ namespace APPVIEW.Controllers
             }
             ViewBag.TT = tt;
             var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
-            if (account!= null)
+            if (account!= null)                     
             {
                 var dc = getapiAddress.GetApi("Address").FirstOrDefault(c => c.AccountId == account.Id);
+                if (dc != null)
+                {
+                    var p = await province(dc.Province);
+              
+                    var d = await dis(dc.District, p);
+                    var w = await wad(dc.Ward, d);
+                    int sship = await getServiceShip(d);
+
+                    client = new OnlineGatewayClient($"https://online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/fee?service_id={sship}" + $"&insurance_value=100000&to_ward_code={w}" + $"&to_district_id={d}" + "&from_district_id=3440" + $"&weight={can}", "bdbbde2a-fec2-11ed-8a8c-6e4795e6d902");
+
+                    // Gọi API để lấy danh sách các tỉnh/thành phố
+
+                    var fee = await client.GetFeeshipAsync();
+
+                    //Kiểm tra kết quả trả về
+                    if (fee.Code == 200) // Thành công
+                    {
+                        // Trả về danh sách các quận/huyện dưới dạng JSON
+                        ViewBag.fee = fee.Data.total;
+                    }
+                }              
+                else
+                {
+                    ViewBag.fee = 0;
+                }
+
                 return View(dc);
             }
             return View();
@@ -606,7 +697,7 @@ namespace APPVIEW.Controllers
             string returnUrl = "https://localhost:7095/Home/PaymentConfirm";
             string tmnCode = "OQK7ZU4V";
             string hashSecret = "WRKKYLZIEYLLPPFRNNQXVAKXHKGRIEEA";
-            
+         
             PayLib pay = new PayLib();
         
             pay.AddRequestData("vnp_Version", "2.1.0"); //Phiên bản api mà merchant kết nối. Phiên bản hiện tại là 2.1.0
