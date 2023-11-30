@@ -15,20 +15,58 @@
         var role = roles.FirstOrDefault(c => c.id == roleId);
         if (role != null)
         {
+
             return role.name;
         }
         return "No Data";
     }
 }
-<form asp-action="Search" method="get" class="form-inline">
-    <input placeholder="Account Search" type="text" name="searchTerm" id="searchTerm" /><button>Tìm</button>
-</form>
 <div class="card">
     <div class="card-header">
-        <h5 class="mb-0">Account</h5>
+        <h5 class="card-title">Account</h5>
+    </div>
+    <div class="card-header row">
+        <div class="col-md-3">
+            <select id="FilterTransaction" class="form-select text-capitalize">
+                <option value=""> Select Status </option>
+                <option value="Blocked" class="text-capitalize">Blocked</option>
+                <option value="Active" class="text-capitalize">Active</option>
+                <option value="Inactive" class="text-capitalize">Inactive</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <select id="UserRole" class="form-select text-capitalize">
+                <option value=""> Select Role </option>
+                <option value="Admin">Admin</option>
+                <option value="Author">Author</option>
+                <option value="Editor">Editor</option>
+                <option value="Maintainer">Maintainer</option>
+                <option value="Subscriber">Subscriber</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <div id="DataTables_Table_0_filter" class="dataTables_filter">
+                <label><input type="search" class="form-control" placeholder="Search.." aria-controls="DataTables_Table_0"></label>
+            </div>
+        </div>
     </div>
     <div class="card-body">
         <a class="btn btn-success mb-3" asp-controller="Account" asp-action="Create">Create New</a>
+        @if (!string.IsNullOrEmpty(ViewData["ErrorMessage"] as string))
+        {
+            <div class="alert alert-warning alert-dismissible" role="alert">
+                @ViewData["ErrorMessage"]
+
+            </div>
+
+        }
+        else if (!string.IsNullOrEmpty(ViewData["Sucsess"] as string))
+        {
+            <div class="alert alert-success" role="alert">
+                @ViewData["Sucsess"]
+
+            </div>
+        }
         <div class="table-responsive">
             <table class="table table-hover">
                 <thead>
@@ -40,6 +78,7 @@
                         <th>Avatar</th>
                         <th>Create Date</th>
                         <th>Update Date</th>
+                        <th>Status</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
@@ -52,7 +91,28 @@
                                 <td>@(stt += 1)</td>
                                 <td>@Html.DisplayFor(modelItem => item.Name)</td>
                                 <td>@Html.DisplayFor(modelItem => item.Email)</td>
-                                <td>@GetRoleName(item.IdRole)</td>
+                                <td>
+                                    @if (item.IdRole.HasValue)
+                                    {
+                                        var roleName = GetRoleName(item.IdRole);
+                                        if (!string.IsNullOrEmpty(roleName))
+                                        {
+                                            if (roleName.Contains("Admin"))
+                                            {
+                                                <span class="mdi mdi-laptop mdi-24px text-danger me-1"></span>
+                                            }
+                                            else if (roleName.Contains("Customer"))
+                                            {
+                                                <span class="mdi mdi-account-outline mdi-24px text-primary me-1"></span>
+                                            }
+                                            else if (roleName.Contains("Staff"))
+                                            {
+                                                <span class="mdi mdi-cog-outline text-warning mdi-24px me-1"></span>
+                                            }
+                                            @roleName
+                                        }
+                                    }
+                                </td>
                                 <td>
                                     <img src="~/UserImage/@item.Avatar" alt="Avatar" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover;" />
                                 </td>
@@ -75,9 +135,39 @@
                                     @formattedUpdateDate
                                 </td>
                                 <td>
-                                    <a href="@Url.Action("Edit", new { id = item.Id })" class="btn btn-info">
-                                        <span class="mdi mdi-pencil-box-outline"></span>Edit
-                                    </a>
+                                    @if (item.Status == 1)
+                                    {
+                                        <span class="badge bg-label-success rounded-pill">Active</span>
+                                    }
+                                    else if (item.Status == 0)
+                                    {
+                                        <span class="badge bg-label-warning rounded-pill">InActive</span>
+                                    }
+                                    else if (item.Status == 2)
+                                    {
+                                        <span class="badge rounded-pill bg-label-danger">Blocked</span>
+                                    }
+                                </td>
+                                <td>                                  
+                                    <div class="d-inline-block text-nowrap">
+                                        <button class="btn btn-sm btn-icon btn-text-secondary rounded-pill btn-icon dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                                            <i class="mdi mdi-dots-vertical mdi-20px"></i>
+                                        </button>
+                                        <div class="dropdown-menu dropdown-menu-end m-0">
+                                            <a href="app-user-view-account.html" class="dropdown-item">
+                                                <i class="mdi mdi-eye-outline me-2"></i>
+                                                <span>View</span>
+                                            </a>
+                                            <a href="@Url.Action("Edit", new { id = item.Id })" class="dropdown-item">
+                                                <i class="mdi mdi-pencil-outline me-2"></i>
+                                                <span>Edit</span>
+                                            </a>
+                                            <a href="@Url.Action("Delete", new { id = item.Id })" class="dropdown-item delete-record">
+                                                <i class="mdi mdi-delete-outline me-2"></i>
+                                                <span>Delete</span>
+                                            </a>
+                                        </div>
+                                    </div>
                                 </td>
                             </tr>
                         }
@@ -85,13 +175,13 @@
                     else
                     {
                         <tr>
-                            <td colspan="8" class="text-center">No Data.</td>
+                            <td colspan="10" class="text-center">No Data.</td>
                         </tr>
                     }
                 </tbody>
+
             </table>
         </div>
     </div>
 </div>
 
-@* <td><span class="badge rounded-pill bg-label-primary me-1">Active</span></td> *@

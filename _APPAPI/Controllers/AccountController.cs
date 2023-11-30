@@ -36,7 +36,9 @@ namespace _APPAPI.Controllers
         public bool Create(Account obj)
         {
             obj.Create_date = DateTime.Now;
+            obj.Status = 1;
             var checkRole = _context.Roles.Count();
+
             if (checkRole == 0)
             {
                 var customerRole = new Role()
@@ -55,18 +57,32 @@ namespace _APPAPI.Controllers
                 };
                 _context.Roles.Add(adminRole);
                 _context.SaveChangesAsync();
+                var staffRole = new Role()
+                {
+                    id = Guid.NewGuid(),
+                    name = "Staff",
+                    Status = 1
+                };
+                _context.Roles.Add(staffRole);
+                _context.SaveChangesAsync();
             }
-           obj.IdRole = _context.Roles.SingleOrDefault(c => c.name == "Customer").id;
+            if (obj.IdRole == null)
+            {
+                obj.IdRole = _context.Roles.SingleOrDefault(c => c.name == "Customer").id;
+                obj.Status = 0;
+            }
+
             obj.Avatar = "UserDefault.jpg";
 
             return _crud.CreateItem(obj);
         }
         [Route("Delete")]
-        [HttpDelete]
+        [HttpPost]
         public bool Delete(Guid id)
         {
             Account item = _crud.GetAllItems().FirstOrDefault(c => c.Id == id);
-            return _crud.DeleteItem(item);
+            item.Status = 0;
+            return _crud.UpdateItem(item);
         }
         [Route("Update")]
         [HttpPut]
@@ -79,7 +95,7 @@ namespace _APPAPI.Controllers
             item.Email = obj.Email;
             item.Password = obj.Password;
             item.IdRole = obj.IdRole;
-
+            item.Status = obj.Status;
             item.Name = obj.Name;
             return _crud.UpdateItem(item);
         }
@@ -88,7 +104,7 @@ namespace _APPAPI.Controllers
         public async Task<IActionResult> Validate(LoginVm model)
         {
             var user = _context.Accounts.SingleOrDefault(p => p.Email == model.Email && model.Password == p.Password);
-            if (user == null) //không đúng
+            if (user == null||user.ResetPasswordcode!=null) //không đúng
             {
                 return BadRequest();
             }

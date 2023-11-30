@@ -1,4 +1,6 @@
 ﻿using APPDATA.DB;
+using APPDATA.Models;
+using MailKit.Search;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -22,7 +24,7 @@ namespace _APPAPI.Controllers
             try
             {
                 var data = _context.Bills
-                    .Where(b => b.PayDate.HasValue && b.PayDate.Value.Year == year)
+                    .Where(b => b.PayDate.HasValue && b.PayDate.Value.Year == year && b.Status == 4)
                     .GroupBy(b => b.PayDate.Value.Month)  // Nhóm hóa đơn theo tháng
                     .Select(group => new
                     {
@@ -55,10 +57,9 @@ namespace _APPAPI.Controllers
             {
                 // Lấy ngày hiện tại
                 DateTime currentDate = DateTime.Now;
-
                 // Lấy dữ liệu từ database cho doanh thu trong 1 tuần qua
                 var data = _context.Bills
-                    .Where(b => b.PayDate.HasValue && b.PayDate.Value >= currentDate.AddDays(-7))
+                    .Where(b => b.PayDate.HasValue && b.PayDate.Value >= currentDate.AddDays(-6) && b.Status == 4)
                     .GroupBy(b => b.PayDate.Value.Date)  // Nhóm theo ngày
                     .OrderBy(group => group.Key)
                     .Select(group => new
@@ -83,6 +84,32 @@ namespace _APPAPI.Controllers
                 return BadRequest(new { error = ex.Message });
             }
         }
+        [HttpGet("SoldProductsByMonth")]
+        public IActionResult GetSoldProductsByMonth()
+        {
+            try
+            {
+                DateTime currentDate = DateTime.Now;
+                int currentYear = currentDate.Year;
 
+                var soldProducts = from products in _context.Products
+                                         join details in _context.ProductDetails on products.Id equals details.Id_Product
+                                         join billdetails in _context.BillDetails on details.Id equals billdetails.ProductDetailID
+                                         join bills in _context.Bills on billdetails.BIllId equals bills.id
+                                         where bills.Status == 4
+                                         select new
+                                         {
+                                             ProductName = products.Name,
+                                             QuantitySold = details.Quantity,
+                                             TotalEarnings = bills.TotalMoney
+                                         };
+
+                return Ok(soldProducts.ToList());
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
     }
 }

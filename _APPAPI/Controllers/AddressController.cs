@@ -25,6 +25,7 @@ namespace _APPAPI.Controllers
         [HttpPost]
         public bool Create(Address obj)
         {
+            obj.Status = 1;
             return _crud.CreateItem(obj);
         }
         [Route("Delete")]
@@ -32,7 +33,8 @@ namespace _APPAPI.Controllers
         public bool Delete(Guid id)
         {
             Address item = _crud.GetAllItems().FirstOrDefault(c => c.id == id);
-            return _crud.DeleteItem(item);
+            item.Status = 2;
+            return _crud.UpdateItem(item);
         }
         [Route("Update")]
         [HttpPut]
