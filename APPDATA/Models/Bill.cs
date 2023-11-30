@@ -18,7 +18,7 @@ namespace APPDATA.Models
         public float? TotalMoney { get; set; }
         public float? MoneyReduce { get; set; }
         public string Type { get; set; }
-        public DateTime? CreateDate { get; set; }
+        public DateTime CreateDate { get; set; }
         public DateTime? CreateBy { get; set; }
         public DateTime? UpdateBy { get; set; }
         public DateTime? PayDate { get; set; }

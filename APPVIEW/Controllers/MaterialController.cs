@@ -1,9 +1,12 @@
 ﻿using APPDATA.Models;
 using APPVIEW.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
 
 namespace APPVIEW.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class MaterialController : Controller
     {
         private Getapi<Material> getapi;

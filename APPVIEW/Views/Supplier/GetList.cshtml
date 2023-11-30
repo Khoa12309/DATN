@@ -5,10 +5,13 @@
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
     int stt = 0;
 }
+<form asp-action="Search" method="get" class="form-inline">
+    <input placeholder="Supplier Search" type="text" name="searchTerm" id="searchTerm" /><button>Tìm</button>
+</form>
 
 <div class="card">
     <div class="card-header">
-        <h5 class="mb-0">Roles</h5>
+        <h5 class="mb-0">Suppliers</h5>
     </div>
     <div class="card-body">
         <a class="btn btn-success waves-effect waves-light" asp-action="Create">
@@ -22,8 +25,8 @@
                         <th>STT</th>
                         <th>Name</th>
                         <th>Code</th>
-                        <th>Code</th>
                         <th>Phone</th>
+                        <th>Address</th>
                         <th>Desciption</th>
                         <th>Actions</th>
                     </tr>
