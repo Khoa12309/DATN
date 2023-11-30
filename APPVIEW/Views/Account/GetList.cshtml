@@ -1,5 +1,8 @@
 ﻿@using APPDATA.Models;
-@model IEnumerable<APPDATA.Models.Account>
+@model X.PagedList.IPagedList<APPDATA.Models.Account>
+@using X.PagedList.Web.Common
+@using X.PagedList
+@using X.PagedList.Mvc.Core
 
 @{
     ViewData["Title"] = "Account-List";
@@ -94,4 +97,17 @@
     </div>
 </div>
 
-@* <td><span class="badge rounded-pill bg-label-primary me-1">Active</span></td> *@
+<div>
+    @Html.PagedListPager(Model, page => Url.Action("GetList", new {page = page, sort=ViewBag.sort}), new PagedListRenderOptions()
+    {
+    ActiveLiElementClass = "active",
+    PageClasses = new[]{ "page-link"},
+    LiElementClasses=new[] { "page-item"},
+    UlElementClasses = new[] { "pagination","justify-content-center", "mt-3", "size" },
+    LinkToNextPageFormat = "Next",
+    LinkToPreviousPageFormat = "Previous",
+    MaximumPageNumbersToDisplay = 8,
+    DisplayLinkToPreviousPage = PagedListDisplayMode.Always,
+    DisplayLinkToNextPage = PagedListDisplayMode.Always
+    })
+</div>

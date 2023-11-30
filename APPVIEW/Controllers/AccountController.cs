@@ -19,7 +19,7 @@ using Microsoft.EntityFrameworkCore;
 
 using Microsoft.AspNetCore.Rewrite;
 using System.Xml.Linq;
-
+using X.PagedList;
 
 namespace APPVIEW.Controllers
 {
@@ -42,11 +42,13 @@ namespace APPVIEW.Controllers
             _context = new ShoppingDB();
         }
         [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> GetList()
+        public async Task<IActionResult> GetList(int?page)
         {
             ViewBag.Roles = GetListRole();
             var obj = getapi.GetApi("Account");
-            return View(obj);
+            int pageSize = 8;
+            int pageNumber = (page ?? 1);
+            return View(obj.OrderByDescending(x => x.Id).ToPagedList(pageNumber, pageSize));
         }
         public async Task<IActionResult> Search(string searchTerm)
         {

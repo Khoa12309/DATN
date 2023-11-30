@@ -1,20 +1,16 @@
-﻿@model IEnumerable<APPDATA.Models.Product>
+﻿@model X.PagedList.IPagedList<APPDATA.Models.Product>
+@using X.PagedList.Web.Common
+@using X.PagedList
+@using X.PagedList.Mvc.Core
 
 @{
     ViewData["Title"] = "Products-List";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
     int stt = 0;
 }
-
-<h1>GetList</h1>
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-
 <div class="card">
     <div class="card-header">
-        <h5 class="mb-0">Suppliers</h5>
+        <h5 class="mb-0">Product</h5>
     </div>
     <div class="card-body">
         <a class="btn btn-success waves-effect waves-light" asp-action="Create">
@@ -88,5 +84,19 @@
             </table>
         </div>
     </div>
+</div>
+<div>
+    @Html.PagedListPager(Model, page => Url.Action("GetList", new {page = page, sort=ViewBag.sort}), new PagedListRenderOptions()
+    {
+    ActiveLiElementClass = "active",
+    PageClasses = new[]{ "page-link"},
+    LiElementClasses=new[] { "page-item"},
+    UlElementClasses = new[] { "pagination","justify-content-center", "mt-3", "size" },
+    LinkToNextPageFormat = "Next",
+    LinkToPreviousPageFormat = "Previous",
+    MaximumPageNumbersToDisplay = 8,
+    DisplayLinkToPreviousPage = PagedListDisplayMode.Always,
+    DisplayLinkToNextPage = PagedListDisplayMode.Always
+    })
 </div>
 

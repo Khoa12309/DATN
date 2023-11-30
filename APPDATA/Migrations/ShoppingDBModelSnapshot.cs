@@ -125,7 +125,7 @@ namespace APPDATA.Migrations
                     b.Property<DateTime?>("CreateBy")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("CreateDate")
+                    b.Property<DateTime>("CreateDate")
                         .HasColumnType("datetime2");
 
                     b.Property<float?>("MoneyReduce")
