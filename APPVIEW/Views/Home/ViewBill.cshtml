@@ -99,14 +99,15 @@
 </section>
 <!-- ================ end banner area ================= -->
 <!--================Checkout Area =================-->
-<section class="checkout_area section-margin--small">
-    <div class="container">
+<section class="order_details section-margin--small">
+            <div class="container">
         
-        <div class="billing_details">
+        <div>
             <div class="row">
 
                 <div class="col-lg-8">
                     <h3>Đơn hàng</h3>
+                    <img src="~/images/@ViewBag.image.Name" style="width: 250px; height:auto;margin-top : 50px;margin-bottom:50px" alt="">
                     <form class="row contact_form" action="~/home/dathang" method="post" novalidate="novalidate">
                         <input type="hidden" name="productId" value="@ViewBag.id" />
 
@@ -182,7 +183,7 @@
                                     </datalist>
                                 </div>
                                 <div class="col-md-12 form-group">
-                                    <input type="text" class="form-control" name="diachict" placeholder="Địa chỉ cụ thể">
+                                    <input type="text" style="margin-top:10px" class="form-control" name="diachict" placeholder="Địa chỉ cụ thể">
                                 </div>
                             </div>
 
@@ -195,7 +196,7 @@
                             
                                 <ul class="list list_2">
                                    
-                                    <li><a href="#" style="text-decoration:none;color:black">Phí ship :  <span><input width="30px" style="height:30px" readonly id="feeship" name="ship"></span></a></li>
+                                    <li><a href="#" style="text-decoration:none;color:black">Phí ship :  <span><input width="30px" style="height:30px;border:none" readonly id="feeship" name="ship"></span></a></li>
                                    
                                 </ul>
                        
