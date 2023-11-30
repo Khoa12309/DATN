@@ -8,6 +8,7 @@
     List<Product> prd = ViewBag.viewprd;
     List<Size> size = ViewBag.sizee;
     List<Color> color = ViewBag.Collor;
+    List<Image> image = ViewBag.image;
 }
 
 <h3 style="text-align:center">Đơn hàng của bạn </h3>
@@ -116,13 +117,11 @@
     var pro = prd.FirstOrDefault(c => c.Id == pct.Id_Product);
     var siz = size.FirstOrDefault(c => c.Id == pct.Id_Size);
     var colo = color.FirstOrDefault(c => c.Id == pct.Id_Color);
-
+    var img = image.FirstOrDefault(c => c.IdProductdetail == pct.Id);
 
 
     <body>
         <!--================ Start Header Menu Area =================-->
-
-    
         <!-- ================ end banner area ================= -->
         <!--================Order Details Area =================-->
         <section class="order_details section-margin--small">
@@ -135,6 +134,7 @@
                         <table class="table">
                             <thead>
                                 <tr>
+                                    <th scope="col"></th>
                                     <th scope="col">Tên sản phẩm</th>
                                     <th scope="col">Số lượng</th>
                                     <th scope="col">Size</th>
@@ -144,6 +144,9 @@
                             </thead>
                             <tbody>
                                 <tr>
+                                    <td>
+                                        <img src="~/images/@img.Name" style="width: 100px; height:auto" alt="">
+                                    </td>
                                     <td>
                                         <p><h5>@pro.Name<h5></p>
                                     </td>
@@ -191,7 +194,7 @@
                                     </td>
                                 </tr>
 
-                             
+
                                 <tr>
                                     <td>
                                         <h4>Trạng thái đơn hàng : </h4>
@@ -242,6 +245,28 @@
                                     </td>
                                     <td>
                                         <h5>@itembill.TotalMoney</h5>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        @if (itembill.Status == 1 || itembill.Status == 2)
+
+                                        {
+                                            <button style="background-color:royalblue ; border-radius:12px ; border:none"> @Html.ActionLink("Hủy đơn", "HuyDon", new { id = itembill.id }, new { style = "color:black;" }) </button>
+                                        }
+                                        @if (itembill.Status == 3)
+
+                                        {
+
+                                            <button style="background-color:royalblue ;border-radius:20px;border:none"> @Html.ActionLink("Đã nhận hàng", "Nhanhang", new { id = itembill.id }, new { style = "color:black;" }) </button>
+
+
+                                        }
+
+                                    </td>
+                                    <td>
+                                    </td>
+                                    <td>
                                     </td>
                                 </tr>
                             </tbody>

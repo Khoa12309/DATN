@@ -1,6 +1,10 @@
 ﻿@{
     ViewData["Title"] = "DatHang";
     Layout = "~/Views/Shared/_LayoutWeb.cshtml";
+@using APPDATA.Models;
+    List<Image> image = ViewBag.image;
+     BillDetail bill = ViewBag.Billct;
+    var img = image.FirstOrDefault(c => c.IdProductdetail == bill.ProductDetailID);
 }
 @*
 <h1 style="color:forestgreen">Đặt hàng thành công</h1>
@@ -49,6 +53,7 @@
                     <table class="table">
                         <thead>
                             <tr>
+                                <th scope="col"></th>
                                 <th scope="col">Tên sản phẩm</th>
                                 <th scope="col">Số lượng</th>
                                 <th scope="col">Size</th>
@@ -58,6 +63,10 @@
                         </thead>
                         <tbody>
                             <tr>
+
+                                <td>
+                                    <img src="~/images/@img.Name" style="width: 100px; height:auto" alt="">
+                                </td> 
                                 <td>
                                     <p>@ViewBag.sp.Name</p>
                                 </td>

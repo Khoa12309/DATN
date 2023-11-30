@@ -123,6 +123,9 @@ namespace APPVIEW.Controllers
             ViewBag.id = id;
             ViewBag.size = getapiSize.GetApi("Size");
             ViewBag.color = getapiColor.GetApi("Color");
+            var prdct= getapi.GetApi("ProductDetails").FirstOrDefault(c => c.Id_Product == id);
+            ViewBag.image = getapiImg.GetApi("Image").FirstOrDefault(c=>c.IdProductdetail==prdct.Id);
+        
             var client = new OnlineGatewayClient($"https://online-gateway.ghn.vn/shiip/public-api/master-data/province", "bdbbde2a-fec2-11ed-8a8c-6e4795e6d902");
 
             // Gọi API để lấy danh sách các tỉnh/thành phố
@@ -342,6 +345,7 @@ namespace APPVIEW.Controllers
                 ViewBag.sp = getapiProduct.GetApi("Product").FirstOrDefault(c => c.Id == x.Id_Product);
                 ViewBag.sizee = getapiSize.GetApi("Size").FirstOrDefault(c => c.Id == x.Id_Size);
                 ViewBag.Collor = getapiColor.GetApi("Color").FirstOrDefault(c => c.Id == x.Id_Color);
+                ViewBag.image = getapiImg.GetApi("Image");
 
             }
 
@@ -352,7 +356,7 @@ namespace APPVIEW.Controllers
         public IActionResult Thongtin()
         {
             var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
-            var userBills = bills.GetApi("Bill").Where(c => c.AccountId == account.Id&& c.Status!=4 ).OrderByDescending(d => d.CreateDate).ToList();
+            var userBills = bills.GetApi("Bill").Where(c => c.AccountId == account.Id&& c.Status!=4 &&c.Status!=5 ).OrderByDescending(d => d.CreateDate).ToList();
             ViewBag.viewbill = userBills;
 
             if (account.Id == Guid.Empty)
@@ -368,8 +372,8 @@ namespace APPVIEW.Controllers
             ViewBag.viewprdct = productDetailsApi;
             ViewBag.viewprd = productsApi;
             ViewBag.sizee = getapiSize.GetApi("Size");
-
             ViewBag.Collor = getapiColor.GetApi("Color");
+            ViewBag.image = getapiImg.GetApi("Image");
             return View(userBills);
 
         }
