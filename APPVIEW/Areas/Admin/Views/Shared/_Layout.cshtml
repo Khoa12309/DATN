@@ -1,4 +1,4 @@
-﻿@{
+@{
     var Name = ((System.Security.Claims.ClaimsIdentity)User.Identity).FindFirst("Name");
     string NameValue = Name?.Value;
 
