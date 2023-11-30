@@ -1,9 +1,12 @@
 ﻿using APPDATA.Models;
 using APPVIEW.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
 
 namespace APPVIEW.Controllers
 {
+   
     public class CategoryController : Controller
     {
         private Getapi<Category> getapi;
@@ -31,8 +34,7 @@ namespace APPVIEW.Controllers
         {
             try
             {
-                obj.Create_date = DateTime.Now;
-                obj.Update_date = DateTime.Now;
+                obj.Create_date = DateTime.Now;               
               await  getapi.CreateObj(obj, "Category");
                 return RedirectToAction("GetList");
             }
@@ -51,13 +53,12 @@ namespace APPVIEW.Controllers
             return View(lst.Find(c => c.Id == id));
         }
 
-
         [HttpPost]
         public async Task<IActionResult> Edit(Category obj)
         {
             try
             {
-             await   getapi.UpdateObj(obj, "Category");
+              await  getapi.UpdateObj(obj, "Category");
                 return RedirectToAction("GetList");
             }
             catch

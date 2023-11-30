@@ -1,10 +1,13 @@
 ﻿using APPDATA.Models;
 using APPVIEW.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
 
 namespace APPVIEW.Controllers
 {
+   // [Authorize(Roles = "Admin")]
     public class ImageController : Controller
     {
         private Getapi<Image> getapi;
