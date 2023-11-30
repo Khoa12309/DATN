@@ -5,10 +5,72 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace APPDATA.Migrations
 {
-    public partial class Mydb : Migration
+    public partial class lan33 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+               name: "Address");
+
+            migrationBuilder.DropTable(
+                name: "BillDetails");
+
+            migrationBuilder.DropTable(
+                name: "BillHistories");
+
+            migrationBuilder.DropTable(
+                name: "CartDetails");
+
+            migrationBuilder.DropTable(
+                name: "Images");
+
+            migrationBuilder.DropTable(
+                name: "Notifications");
+
+            migrationBuilder.DropTable(
+                name: "PaymentMethodDetails");
+
+            migrationBuilder.DropTable(
+                name: "RefreshTokens");
+
+            migrationBuilder.DropTable(
+                name: "Carts");
+
+            migrationBuilder.DropTable(
+                name: "ProductDetails");
+
+            migrationBuilder.DropTable(
+                name: "Bills");
+
+            migrationBuilder.DropTable(
+                name: "PaymentMethods");
+
+            migrationBuilder.DropTable(
+                name: "Categories");
+
+            migrationBuilder.DropTable(
+                name: "Colors");
+
+            migrationBuilder.DropTable(
+                name: "Materials");
+
+            migrationBuilder.DropTable(
+                name: "Products");
+
+            migrationBuilder.DropTable(
+                name: "Sizes");
+
+            migrationBuilder.DropTable(
+                name: "Suppliers");
+
+            migrationBuilder.DropTable(
+                name: "Accounts");
+
+            migrationBuilder.DropTable(
+                name: "Vouchers");
+
+            migrationBuilder.DropTable(
+                name: "Roles");
             migrationBuilder.CreateTable(
                 name: "Categories",
                 columns: table => new
@@ -165,6 +227,7 @@ namespace APPDATA.Migrations
                     Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Avatar = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ResetPasswordcode = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Status = table.Column<int>(type: "int", nullable: false),
                     Create_date = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Update_date = table.Column<DateTime>(type: "datetime2", nullable: false)
                 },
@@ -248,7 +311,8 @@ namespace APPDATA.Migrations
                     District = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Province = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    DefaultAddress = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    DefaultAddress = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Status = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -274,7 +338,7 @@ namespace APPDATA.Migrations
                     TotalMoney = table.Column<float>(type: "real", nullable: true),
                     MoneyReduce = table.Column<float>(type: "real", nullable: true),
                     Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreateDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreateBy = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UpdateBy = table.Column<DateTime>(type: "datetime2", nullable: true),
                     PayDate = table.Column<DateTime>(type: "datetime2", nullable: true),

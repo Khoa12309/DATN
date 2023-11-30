@@ -2,7 +2,7 @@
 @{
     ViewData["Title"] = "Checkout";
     Layout = "~/Views/Shared/_LayoutWeb.cshtml";
-
+    int fee = ViewBag.fee;
 }
 <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 
@@ -98,8 +98,9 @@
                                 </div>
                            
                             </div>    
-                            <input name="pay" id="pay" hidden value="shipcod" />
+                            <input name="pay" id="pay" hidden value="shipcod"/>
                             <input name="voucher" id="voucher" hidden value="@ViewBag.DiscountAmount" />
+                        <input  name="phiship" id="fee" hidden value="@ViewBag.fee" />
                         <div class="text-center  form-group">
                             <button type="submit" class="button button-paypal" id="btncf" >Order Confirmation</button>
                         </div>
@@ -128,7 +129,7 @@
                                 </li>
 
                             }
-                            <li><a href="#">Shipping <span><input style="height:30px; width:50px; border: none; outline: none; background-color:#e8f0f2;" value="@ViewBag.fee" name="phiship" readonly id="feeship">VND</span></a></li>
+                            <li><a href="#">Shipping <span><input style="height:30px; width:50px; border: none; outline: none; background-color:#e8f0f2;" value="@ViewBag.fee" readonly id="feeship">VND</span></a></li>
                             @if (ViewBag.DiscountAmount != null)
                             {
                                 <li><a href="#">Total <span> <input style="height:30px; width:50px; border: none; outline: none; background-color:#e8f0f2;" value="@(ViewBag.TT - ViewBag.DiscountAmount+ViewBag.fee)" id="tShip" /> VND</span></a></li>
@@ -314,10 +315,9 @@
 
 
                 document.getElementById("feeship").value = data.total;
+                document.getElementById("fee").value = data.total;
                 document.getElementById("tShip").value = parseFloat(data.total) + parseFloat(document.getElementById("tShip").value);
-                if (document.getElementById("feeship").value != null){
-                    btncf.removeAttribute("disabled");
-                };
+               
             })
             .catch(error => {
                 // Xử lý lỗi

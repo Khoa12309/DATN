@@ -209,6 +209,7 @@ namespace APPVIEW.Controllers
             bill.CreateDate = DateTime.Now;
             bill.UpdateBy = DateTime.Now;
             bill.ShipFee = phiship;
+            bill.PayDate = DateTime.Now;
             bill.TotalMoney = phiship - voucher;
             bill.Status = 1;
 
@@ -325,7 +326,7 @@ namespace APPVIEW.Controllers
                 bill.UpdateBy = DateTime.Now;
                 bill.Status = 1;
                 bill.ShipFee = ship;
-
+                bill.PayDate= DateTime.Now;
                 await bills.CreateObj(bill, "Bill");
 
                 var billct = new BillDetail();
@@ -696,7 +697,7 @@ namespace APPVIEW.Controllers
             string returnUrl = "https://localhost:7095/Home/PaymentConfirm";
             string tmnCode = "OQK7ZU4V";
             string hashSecret = "WRKKYLZIEYLLPPFRNNQXVAKXHKGRIEEA";
-            
+         
             PayLib pay = new PayLib();
         
             pay.AddRequestData("vnp_Version", "2.1.0"); //Phiên bản api mà merchant kết nối. Phiên bản hiện tại là 2.1.0

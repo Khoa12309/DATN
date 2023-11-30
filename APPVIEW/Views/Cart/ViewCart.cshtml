@@ -65,7 +65,7 @@
                                 var tt = @Model[i].Price * @Model[i].Quantity;
                                     <tr>
 
-                                        @foreach (var img in ViewBag.Img)
+                                     @foreach (var img in ViewBag.Img)
                                     {
                                         if (img.IdProductdetail == @Model[i].Id)
                                         {
@@ -79,7 +79,8 @@
                                                         </div>
                                                     </div>
                                                 </td>
-                                        }
+                                                break;
+                                            }
                                     }
                                         <td >@Model[i].Price</td>
                                         <td>
