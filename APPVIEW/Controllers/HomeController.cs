@@ -183,6 +183,7 @@ namespace APPVIEW.Controllers
 
         public async Task<IActionResult> DatHangN(Address obj,string pay,float phiship )
         {
+
             var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
             var client = new OnlineGatewayClient($"https://online-gateway.ghn.vn/shiip/public-api/master-data/province", "bdbbde2a-fec2-11ed-8a8c-6e4795e6d902");
 
@@ -513,6 +514,38 @@ namespace APPVIEW.Controllers
             }
 
         }
+
+        //public async Task<JsonResult> lodafeeship([FromBody] Address data)
+        //{
+        //    var products = SessionService.GetObjFromSession(HttpContext.Session, "Cart");
+        //    var can = 100;
+        //    if (products.Count != 0)
+        //    {
+        //        var sl = 0;
+        //        foreach (var item in products)
+        //        {
+        //            sl += item.Quantity;
+        //        }
+        //        can = sl * 100;
+        //    }
+        //    //int sship = await getServiceShip(data.to_district_id);
+        //    //var client = new OnlineGatewayClient($"https://online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/fee?service_id={sship}" + $"&insurance_value=100000&to_ward_code={data.towardcode.ToString()}" + $"&to_district_id={data.to_district_id.ToString()}" + "&from_district_id=3440" + $"&weight={can}", "bdbbde2a-fec2-11ed-8a8c-6e4795e6d902");
+        //    //// Gọi API để lấy danh sách các tỉnh/thành phố
+        //    //var response = await client.GetFeeshipAsync();
+        //    //// Kiểm tra kết quả trả về
+        //    //if (response.Code == 200) // Thành công
+        //    //{
+        //    //    // Trả về danh sách các quận/huyện dưới dạng JSON
+        //    //    return Json(response.Data);
+        //    //}
+        //    //else // Thất bại
+        //    //{
+        //    //    // Trả về thông báo lỗi
+        //    //    return Json(response.Data);
+        //    //}
+        //     return Json("a");
+
+        //}
         public async Task<IActionResult> Checkout()
         {
             var client = new OnlineGatewayClient($"https://online-gateway.ghn.vn/shiip/public-api/master-data/province", "bdbbde2a-fec2-11ed-8a8c-6e4795e6d902");

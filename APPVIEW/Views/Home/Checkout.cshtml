@@ -68,6 +68,14 @@
                                     <select class="country_select" id="countrySelect" asp-for="@Model.Province">
                                         @foreach (var item in ViewBag.province)
                                         {
+                                           if (Model!=null)
+                                           {
+                                                if (item.ProvinceName == Model.Province)
+                                                {
+                                                    <option selected value="@item.ProvinceID">@item.ProvinceName</option>
+                                                }
+                                           }
+                                           
                                             <option value="@item.ProvinceID">@item.ProvinceName</option>
                                         }
                                     </select>
@@ -75,7 +83,7 @@
                                 <div class="col-lg-4">
 
                                     
-                                    <input list="districtSelect" id="district" placeholder="chọn quận huyện" asp-for="@Model.District">
+                                    <input list="districtSelect"  class="country_select" id="district"  placeholder="chọn quận huyện" asp-for="@Model.District">
 
                                     <datalist id="districtSelect">
                                     </datalist>
@@ -83,7 +91,7 @@
                                 <div class="col-lg-4">
 
                                   
-                                    <input list="wardSelect" id="ward" placeholder="chọn phường xã" asp-for="@Model.Ward">
+                                    <input list="wardSelect" class="country_select" id="ward" placeholder="chọn phường xã" asp-for="@Model.Ward">
                                     <datalist id="wardSelect">
                                     </datalist>
                                 </div>
@@ -92,7 +100,7 @@
                             </div>    
                             <input name="pay" id="pay" hidden value="shipcod" />
                         <div class="text-center  form-group">
-                            <button type="submit" class="button button-paypal">Order Confirmation</button>
+                            <button type="submit" class="button button-paypal" id="btncf" >Order Confirmation</button>
                         </div>
                         </form>
                     </div>
@@ -117,6 +125,7 @@
                                     <p>Mã giảm giá: <span>@ViewBag.VoucherCode</span></p>
                                     <p>Số tiền giảm: <span>$@ViewBag.DiscountAmount</span></p>
                                 </li>
+
                             }
                             <li><a href="#">Shipping <span><input style="height:30px; width:50px; border: none; outline: none; background-color:#e8f0f2;" value="0" name="phiship" readonly id="feeship">VND</span></a></li>
                             @if (ViewBag.DiscountAmount != null)
@@ -175,7 +184,10 @@
     var idwar=0;
     var inputdis = document.getElementById("district");
     var inputward = document.getElementById("ward");
+    var btncf = document.getElementById("btncf");
    
+  
+
     // Thêm một sự kiện onchange cho thẻ select
     select.onchange = function () {
         // Lấy giá trị được chọn trong thẻ select
@@ -184,7 +196,9 @@
         $("#districtSelect").empty(); // Xóa tất cả các thẻ option trong phần tử select có id là DropList
         $("#wardSelect").empty();
         inputdis.value="";
-        inputward.value="";
+        inputward.value = ""; 
+        document.getElementById("tShip").value -= document.getElementById("feeship").value;
+        document.getElementById("feeship").value=0;
         // Sử dụng fetch() để gửi một request GET đến /Home/GetUsers
         fetch("/Home/district", {
             method: "POST",
@@ -214,7 +228,6 @@
                 // Xử lý lỗi
                 console.error(error); // In ra lỗi
             });
-
 
     };
 
@@ -273,7 +286,7 @@
         lward.forEach(function (id) {
             if (id.wardName == inputward.value) {
 
-                idwar = id.wardCode;
+             idwar = id.wardCode;
               ward=id.wardCode;
             }
 
@@ -301,7 +314,9 @@
 
                 document.getElementById("feeship").value = data.total;
                 document.getElementById("tShip").value = parseFloat(data.total) + parseFloat(document.getElementById("tShip").value);
-                
+                if (document.getElementById("feeship").value != null){
+                    btncf.removeAttribute("disabled");
+                };
             })
             .catch(error => {
                 // Xử lý lỗi
@@ -309,7 +324,6 @@
             });
 
     };
-    
     var inputon = document.getElementById("f-option6");
     var inputoff = document.getElementById("f-option5");
     inputon.onclick= function(){
@@ -320,25 +334,7 @@
     }
     
 
-        //function showLabel(input) {
-    //    // Lấy giá trị của input
-    //    var value = input.value;
-    //    // Lấy phần tử datalist tương ứng
-    //    var list = document.getElementById(input.getAttribute("list"));
-    //    // Duyệt qua các thẻ option trong datalist
-    //    for (var i = 0; i < list.options.length; i++) {
-    //        var option = list.options[i];
-    //        // Nếu giá trị của input trùng với giá trị của option
-    //        if (option.value === value) {
-    //            // Lấy nhãn của option
-    //            var label = option.label;
-    //            // Gán nhãn cho thuộc tính placeholder của input
-    //            input.placeholder = label;
-    //            // Thoát khỏi vòng lặp
-    //            break;
-    //        }
-    //    }
-    //}
+    
 
 </script>
 <script>
