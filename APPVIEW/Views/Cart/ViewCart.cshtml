@@ -51,10 +51,13 @@
                     </thead>
                     <tbody>
                           <form asp-action="Updatecart" asp-controller="Cart" method="post">
+                              
                              
                         @{
+                                
 
-                                @for (int i = 0; i < Model.Count; i++)
+
+                            @for (int i = 0; i < Model.Count; i++)
                             {
                                     <input hidden asp-for="@Model[i].Id" value="@Model[i].Id" id="pro" />
                                     <input hidden asp-for="@Model[i].Id_Product" value="@Model[i].Id_Product" />
@@ -82,12 +85,12 @@
                                         <td>
                                          
                                             <div class="product_count">
-                                                <input type="text" id=@Model[i].Id_Size maxlength="12" title="Quantity:" class="input-text qty" value="@Model[i].Quantity" asp-for="@Model[i].Quantity" min="0">
-                                                <button onclick="var result = document.getElementById('@Model[i].Id_Size'); var sst = result.value; if( !isNaN( sst )) result.value++;return false;"
+                                                <input type="text" id=@Model[i].Id maxlength="12" title="Quantity:" class="input-text qty" value="@Model[i].Quantity" asp-for="@Model[i].Quantity" min="0">
+                                                <button onclick="var result = document.getElementById('@Model[i].Id'); var sst = result.value; if( !isNaN( sst )) result.value++;return false;"
                                                     class="increase items-count" type="button">
                                                     <i class="fa fa-plus"></i>
                                                 </button>
-                                                <button onclick="var result = document.getElementById('@Model[i].Id_Size'); var sst = result.value; if( !isNaN( sst ) &amp;&amp; sst > 0 ) result.value--;return false;"
+                                                <button onclick="var result = document.getElementById('@Model[i].Id'); var sst = result.value; if( !isNaN( sst ) &amp;&amp; sst > 0 ) result.value--;return false;"
                                                     class="reduced items-count" type="button">
                                                     <i class="fa fa-minus"></i>
                                                 </button>
@@ -104,14 +107,23 @@
                                             </select>
                                         </td>
                                         <td class="align-middle">
-                                            <select asp-for="@Model[i].Id_Color" >
-                                          
-                                            @foreach (var Color in ViewBag.Color)
-                                            {
+                                            <select asp-for="@Model[i].Id_Color">
+                                               
+                                                
+                                                   
+                                                    @foreach (var Color in ViewBag.Color)
+                                                    {
+                                                       
+                                                        
+                                                        <option value="@Color.Id">@Color.Name</option>
 
-                                                    <option value="@Color.Id">@Color.Name</option>
 
-                                            }
+                                                        
+
+                                                    }
+                                                
+
+                                           
                                             </select>
                                         </td>
                                         <td class="align-middle">
