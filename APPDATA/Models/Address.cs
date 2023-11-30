@@ -19,7 +19,7 @@ namespace APPDATA.Models
         public string ?Province { get; set; }
         public string? Description { get; set; }
         public string ?DefaultAddress { get; set; }
-
+        public int Status { get; set; }
         public virtual Account? Account { get; set; }
     }
 }

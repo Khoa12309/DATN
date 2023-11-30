@@ -115,6 +115,7 @@
                                 @if (User.Identity.IsAuthenticated)
                                 {
                                     var isAdmin = User.IsInRole("Admin");
+                                    var IsStaff = User.IsInRole("Staff");
                                     <!-- Hiển thị menu cho người dùng đã đăng nhập -->
                                     <a href="#" style="color:black" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person" viewBox="0 0 16 16">
@@ -138,7 +139,7 @@
                                                 LogOut
                                             </a>
                                         </li>
-                                        @if (isAdmin)
+                                        @if (isAdmin|| IsStaff)
                                         {
                                             <li class="nav-item">
                                                 <a class="nav-link" href="~/Admin/Admin">

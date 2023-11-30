@@ -131,6 +131,13 @@
                                 @ViewData["ErrorMessage"]
                             </div>
                         }
+                        else if (!string.IsNullOrEmpty(ViewData["Sucsess"] as string))
+                        {
+                            <div class="alert alert-success" role="alert">
+                                @ViewData["Sucsess"]
+
+                            </div>
+                        }
 
                         <form asp-action="Login" id="formAuthentication" class="mb-3" method="POST">
                             <div class="form-floating form-floating-outline mb-3">
