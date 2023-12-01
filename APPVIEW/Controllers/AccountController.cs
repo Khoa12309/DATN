@@ -50,7 +50,7 @@ namespace APPVIEW.Controllers
         }
 
         [Authorize(Roles = "Admin,Staff")]
-        public async Task<IActionResult> GetList()
+        public async Task<IActionResult> GetList(int? page)
 
         {
             ViewBag.Roles = GetListRole();
