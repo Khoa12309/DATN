@@ -35,7 +35,7 @@
             <div class="check_title">
                 <h2>Have a coupon? <a href="#">Click here to enter your code</a></h2>
             </div>
-            @*<input type="text" placeholder="Enter coupon code">*@
+            <input type="text" placeholder="Enter coupon code">
             <a class="button button-coupon" asp-action="ApplyDiscount">Apply Coupon</a>
         </div>
         <div class="billing_details">
@@ -95,17 +95,15 @@
                                     <datalist id="wardSelect">
                                     </datalist>
                                 </div>
+                            </div>
 
-                                </div>
-                           
-                            </div>    
-                            <input name="pay" id="pay" hidden value="shipcod"/>
-                            <input name="voucher" id="voucher" hidden value="@ViewBag.DiscountAmount" />
-                         
-                            <input name="vouchercode" id="voucher" hidden value="@ViewBag.VoucherCode" />
+                        </div>
+                        <input name="pay" id="pay" hidden value="shipcod" />
+                        <input name="voucher" id="voucher" hidden value="@ViewBag.DiscountAmount" />
 
-                        <input  name="phiship" id="fee" hidden value="@ViewBag.fee" />
+                        <input name="vouchercode" id="voucher" hidden value="@ViewBag.VoucherCode" />
 
+                        <input name="phiship" id="fee" hidden value="@ViewBag.fee" />
 
                         <div class="text-center  form-group">
                             <button type="submit" class="button button-paypal" id="btncf">Order Confirmation</button>
@@ -125,36 +123,24 @@
                         </ul>
                         <ul class="list list_2">
                             <li><a href="#">Subtotal <span>$@ViewBag.TT VND</span></a></li>
-                            @if (ViewBag.Value != null)
+                            @if (ViewBag.DiscountAmount != null)
                             {
+                                <a href="javascript:void(0);" onclick="confirmCancelVoucher()" style="color: red; padding-left: 278px"><i class='bx bxs-x-square' type="font-size: 12px"></i></a>
                                 <li>
-                                    <a href="javascript:void(0);" onclick="confirmCancelVoucher()" style="color: red; padding-left: 278px">
-                                        <i class='bx bxs-x-square' style="font-size: 12px"></i>
-                                    </a>
                                     <h6 style="font-size: 14px">Thông tin giảm giá:</h6>
-                                    <p>Mã: <span>@ViewBag.VoucherCode</span></p>
-                                    <p>Giảm: <span>@ViewBag.FirstValue%</span></p>
-                                    <p>Giảm tối đa: <span>$@ViewBag.FirstDiscountAmount</span>VND</p>
+                                    <p>Mã giảm giá: <span>@ViewBag.VoucherCode</span></p>
+                                    <p>Số tiền giảm: <span>@ViewBag.DiscountAmount</span>VND</p>
                                 </li>
+
                             }
                             <li><a href="#">Shipping <span><input style="height:30px; width:50px; border: none; outline: none; background-color:#e8f0f2;" value="@ViewBag.fee" readonly id="feeship">VND</span></a></li>
-                            @if (ViewBag.Value != null)
+                            @if (ViewBag.DiscountAmount != null)
                             {
-                                var totall = @ViewBag.TT - @ViewBag.DiscountAmount;
-                                var totalll = @ViewBag.TT - @ViewBag.FirstDiscountAmount;
-
-                                if (ViewBag.DiscountAmount > ViewBag.FirstDiscountAmount)
-                                {
-                                    <li><a href="#">Total <span> <input style="height:30px; width:50px; border: none; outline: none; background-color:#e8f0f2;" value="@(totalll + ViewBag.fee)" id="tShip" /> VND</span></a></li>
-                                }
-                                else
-                                {
-                                    <li><a href="#">Total <span><input style="height:30px; width:50px; border: none; outline: none; background-color:#e8f0f2;" value="@(totall + ViewBag.fee)" id="tShip" /> VND</span></a></li>
-                                }
+                                <li><a href="#">Total <span> <input style="height:30px; width:50px; border: none; outline: none; background-color:#e8f0f2;" value="@(ViewBag.TT - ViewBag.DiscountAmount+ViewBag.fee)" id="tShip" /> VND</span></a></li>
                             }
                             else
                             {
-                                <li><a href="#">Total <span>@ViewBag.TT</span></a></li>
+                                <li><a href="#">Total <span><input style="height:30px; width:50px; border: none; outline: none; background-color:#e8f0f2;" value="@(ViewBag.TT + ViewBag.fee)" id="tShip" /> VND</span></a></li>
                             }
                         </ul>
                         <div class="payment_item">
@@ -198,10 +184,10 @@
     var select = document.getElementById("countrySelect");
     var selectDistrict = document.getElementById("districtSelect");
     var selectWard = document.getElementById("wardSelect");
-    var ldistrict= new Array();
-    var lward= new Array();
-    var iddis=0;
-    var idwar=0;
+    var ldistrict = new Array();
+    var lward = new Array();
+    var iddis = 0;
+    var idwar = 0;
     var inputdis = document.getElementById("district");
     var inputward = document.getElementById("ward");
     var btncf = document.getElementById("btncf");
@@ -215,10 +201,10 @@
         ldistrict.splice(0, ldistrict.length);
         $("#districtSelect").empty(); // Xóa tất cả các thẻ option trong phần tử select có id là DropList
         $("#wardSelect").empty();
-        inputdis.value="";
+        inputdis.value = "";
         inputward.value = "";
         document.getElementById("tShip").value -= document.getElementById("feeship").value;
-        document.getElementById("feeship").value=0;
+        document.getElementById("feeship").value = 0;
         // Sử dụng fetch() để gửi một request GET đến /Home/GetUsers
         fetch("/Home/district", {
             method: "POST",
@@ -256,8 +242,8 @@
         // Lấy giá trị được chọn trong thẻ select
         var district = 0;
         lward.splice(0, ldistrict.length);
-        ldistrict.forEach(function(id){
-            if (id.districtName==inputdis.value){
+        ldistrict.forEach(function (id) {
+            if (id.districtName == inputdis.value) {
                 district = id.districtID;
                 iddis = id.districtID;
             }
@@ -298,16 +284,16 @@
             });
     };
 
-    var t =0 ;
+    var t = 0;
     inputward.onchange = function () {
         // Lấy giá trị được chọn trong thẻ select
         var district = 0;
-        var ward= 0
+        var ward = 0
         lward.forEach(function (id) {
             if (id.wardName == inputward.value) {
 
-             idwar = id.wardCode;
-              ward=id.wardCode;
+                idwar = id.wardCode;
+                ward = id.wardCode;
             }
 
         });
@@ -345,10 +331,10 @@
     };
     var inputon = document.getElementById("f-option6");
     var inputoff = document.getElementById("f-option5");
-    inputon.onclick= function(){
+    inputon.onclick = function () {
         document.getElementById("pay").value = "Online"
     }
-    inputoff.onclick= function(){
+    inputoff.onclick = function () {
         document.getElementById("pay").value = "shipCod"
     }
 
