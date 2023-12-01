@@ -17,9 +17,9 @@ namespace APPDATA.DB
         public ShoppingDB(DbContextOptions<ShoppingDB> options) : base(options) { }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        
-            {       
+        {       
             optionsBuilder.UseSqlServer(@"Data Source=LAPTOP-N6FK027M;Initial Catalog=DATN;Persist Security Info=True;User ID=khoaph20877;Password=123456");
+
         }
 
 
