@@ -21,7 +21,7 @@ namespace APPDATA.DB
 
           
 
-            optionsBuilder.UseSqlServer(@"Data Source=LAPTOP-N6FK027M;Initial Catalog=DATN;Persist Security Info=True;User ID=khoaph20877;Password=123456");
+            optionsBuilder.UseSqlServer(@"Data Source=DESKTOP-H4H9TH9\SQLEXPRESS;Initial Catalog=DATN;Persist Security Info=True;User ID=huongpdph27798;Password=1234");
 
 
         }
