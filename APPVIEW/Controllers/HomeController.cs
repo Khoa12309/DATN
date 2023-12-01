@@ -362,11 +362,9 @@ namespace APPVIEW.Controllers
             {
                 return BadRequest("Bạn chưa đăng nhập");
             }
-
             var billDetailsApi = billDetails.GetApi("BillDetail");
             var productDetailsApi = getapi.GetApi("ProductDetails");
             var productsApi = getapiProduct.GetApi("Product");
-
             ViewBag.viewbillct = billDetailsApi;
             ViewBag.viewprdct = productDetailsApi;
             ViewBag.viewprd = productsApi;
