@@ -255,11 +255,12 @@ namespace APPVIEW.Controllers
         {
 
             loadcart();
-
+            var products = SessionService.GetObjFromSession(HttpContext.Session, "Cart");
             ViewBag.Img = getapiImg.GetApi("Image");
+          
             ViewBag.Color = getapiColor.GetApi("Color");
             ViewBag.Size = getapiSize.GetApi("Size");
-            var products = SessionService.GetObjFromSession(HttpContext.Session, "Cart");
+          
             double tiensp =0;
             foreach (var item in products)
             {
@@ -280,9 +281,16 @@ namespace APPVIEW.Controllers
                 {
 
                   
-                    TempData["mess"] = item.Name + "không còn màu hoặc kích thước bạn chọn ";
+                    TempData["mess"] = "Sản Phẩm " + item.Name + " không còn màu hoặc kích thước bạn chọn ";
                     return RedirectToAction("viewcart");
                 }
+                if (product.Quantity<item.Quantity)
+                {
+                    TempData["mess"] ="Sản Phẩm "+ item.Name + " chỉ còn  " + item.Quantity;
+                    return RedirectToAction("viewcart");
+                }
+
+
                 var products = SessionService.GetObjFromSession(HttpContext.Session, "Cart");
                 var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
                 var cart = getapi.GetApi("Cart").FirstOrDefault(c => c.AccountId == account.Id);
