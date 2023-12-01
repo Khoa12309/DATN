@@ -1,4 +1,5 @@
-﻿
+﻿@using APPDATA.Models
+@using Newtonsoft.Json
 @{
     ViewData["Title"] = "Shop";
     Layout = "~/Views/Shared/_LayoutWeb.cshtml";
@@ -25,259 +26,164 @@
     <div class="container">
         <div class="row">
             <div class="col-xl-3 col-lg-4 col-md-5">
+                <!-- Color Start -->
                 <div class="sidebar-categories">
-                    <div class="head">Browse Categories</div>
-                    <ul class="main-categories">
-                        <li class="common-filter">
-                            <form action="#">
-                                <ul>
-                                    <li class="filter-list"><input class="pixel-radio" type="radio" id="men" name="brand"><label for="men">Men<span> (3600)</span></label></li>
-                                    <li class="filter-list"><input class="pixel-radio" type="radio" id="women" name="brand"><label for="women">Women<span> (3600)</span></label></li>
-                                    <li class="filter-list"><input class="pixel-radio" type="radio" id="accessories" name="brand"><label for="accessories">Accessories<span> (3600)</span></label></li>
-                                    <li class="filter-list"><input class="pixel-radio" type="radio" id="footwear" name="brand"><label for="footwear">Footwear<span> (3600)</span></label></li>
-                                    <li class="filter-list"><input class="pixel-radio" type="radio" id="bayItem" name="brand"><label for="bayItem">Bay item<span> (3600)</span></label></li>
-                                    <li class="filter-list"><input class="pixel-radio" type="radio" id="electronics" name="brand"><label for="electronics">Electronics<span> (3600)</span></label></li>
-                                    <li class="filter-list"><input class="pixel-radio" type="radio" id="food" name="brand"><label for="food">Food<span> (3600)</span></label></li>
-                                </ul>
-                            </form>
-                        </li>
-                    </ul>
+                    <div class="head" style="background: #f1f6f7; color: #999999">Color</div>
+                    <form id="color-filter-form">
+                        <ul>
+                            <li class="filter-list">
+                                <input class="pixel-radio" type="checkbox" id="color-all" value="all" name="color" checked>
+                                <label for="color-all">All Color</label>
+                            </li>
+                            <li class="filter-list">
+                                <input class="pixel-radio" type="checkbox" id="color-red" value="Red" name="color">
+                                <label for="red">Red</label>
+                            </li>
+                            <li class="filter-list">
+                                <input class="pixel-radio" type="checkbox" id="color-black" value="Black" name="color">
+                                <label for="black">Black</label>
+                            </li>
+                            <li class="filter-list">
+                                <input class="pixel-radio" type="checkbox" id="color-blue" value="Blue" name="color">
+                                <label for="blue">Blue</label>
+                            </li>
+                            <li class="filter-list">
+                                <input class="pixel-radio" type="checkbox" id="color-white" value="White" name="color">
+                                <label for="white">White</label>
+                            </li>
+                            <li class="filter-list">
+                                <input class="pixel-radio" type="checkbox" id="color-pink" value="Pink" name="color">
+                                <label for="pink">Pink</label>
+                            </li>
+                        </ul>
+                    </form>
                 </div>
-                <div class="sidebar-filter">
-                    <div class="top-filter-head">Product Filters</div>
-                    <div class="common-filter">
-                        <div class="head">Brands</div>
-                        <form action="#">
-                            <ul>
-                                <li class="filter-list"><input class="pixel-radio" type="radio" id="apple" name="brand"><label for="apple">Apple<span>(29)</span></label></li>
-                                <li class="filter-list"><input class="pixel-radio" type="radio" id="asus" name="brand"><label for="asus">Asus<span>(29)</span></label></li>
-                                <li class="filter-list"><input class="pixel-radio" type="radio" id="gionee" name="brand"><label for="gionee">Gionee<span>(19)</span></label></li>
-                                <li class="filter-list"><input class="pixel-radio" type="radio" id="micromax" name="brand"><label for="micromax">Micromax<span>(19)</span></label></li>
-                                <li class="filter-list"><input class="pixel-radio" type="radio" id="samsung" name="brand"><label for="samsung">Samsung<span>(19)</span></label></li>
-                            </ul>
-                        </form>
-                    </div>
-                    <div class="common-filter">
-                        <div class="head">Color</div>
-                        <form action="#">
-                            <ul>
-                                <li class="filter-list"><input class="pixel-radio" type="radio" id="black" name="color"><label for="black">Black<span>(29)</span></label></li>
-                                <li class="filter-list">
-                                    <input class="pixel-radio" type="radio" id="balckleather" name="color"><label for="balckleather">
-                                        Black
-                                        Leather<span>(29)</span>
-                                    </label>
-                                </li>
-                                <li class="filter-list">
-                                    <input class="pixel-radio" type="radio" id="blackred" name="color"><label for="blackred">
-                                        Black
-                                        with red<span>(19)</span>
-                                    </label>
-                                </li>
-                                <li class="filter-list"><input class="pixel-radio" type="radio" id="gold" name="color"><label for="gold">Gold<span>(19)</span></label></li>
-                                <li class="filter-list"><input class="pixel-radio" type="radio" id="spacegrey" name="color"><label for="spacegrey">Spacegrey<span>(19)</span></label></li>
-                            </ul>
-                        </form>
-                    </div>
-                    <div class="common-filter">
-                        <div class="head">Price</div>
-                        <div class="price-range-area">
-                            <div id="price-range"></div>
-                            <div class="value-wrapper d-flex">
-                                <div class="price">Price:</div>
-                                <span>$</span>
-                                <div id="lower-value"></div>
-                                <div class="to">to</div>
-                                <span>$</span>
-                                <div id="upper-value"></div>
-                            </div>
-                        </div>
-                    </div>
+                <!-- Color End -->
+                <!-- Size Start -->
+                <div class="sidebar-categories">
+                    <div class="head" style="background: #f1f6f7; color: #999999">Size</div>
+                    <form id="size-filter-form">
+                        <ul>
+                            <li class="filter-list">
+                                <input class="pixel-radio" type="checkbox" id="size-all" value="all" name="size" checked>
+                                <label for="size-all">All Size</label>
+                            </li>
+                            <li class="filter-list">
+                                <input class="pixel-radio" type="checkbox" id="size-s" value="S" name="size">
+                                <label for="s">S</label>
+                            </li>
+                            <li class="filter-list">
+                                <input class="pixel-radio" type="checkbox" id="size-m" value="M" name="size">
+                                <label for="m">M</label>
+                            </li>
+                            <li class="filter-list">
+                                <input class="pixel-radio" type="checkbox" id="size-l" value="L" name="size">
+                                <label for="l">L</label>
+                            </li>
+                            <li class="filter-list">
+                                <input class="pixel-radio" type="checkbox" id="size-xl" value="XL" name="size">
+                                <label for="xl">XL</label>
+                            </li>
+                            <li class="filter-list">
+                                <input class="pixel-radio" type="checkbox" id="size-xxl" value="XXL" name="size">
+                                <label for="xxl">XXL</label>
+                            </li>
+                        </ul>
+                    </form>
                 </div>
+                <!-- Size End -->
+                <!-- Price Start -->
+                <div class="sidebar-categories">
+                    <div class="head" style="background: #f1f6f7; color: #999999">Price</div>
+                    <form id="price-filter-form">
+                        <ul>
+                            <li class="filter-list">
+                                <input class="pixel-radio" type="checkbox" id="price-all" value="all" name="price" checked>
+                                <label for="price-all">All Price</label>
+                            </li>
+                            <li class="filter-list">
+                                <input class="pixel-radio" type="checkbox" id="price-1" value="0-10000" name="price">
+                                <label for="price-1">$0-$10000</label>
+                            </li>
+                            <li class="filter-list">
+                                <input class="pixel-radio" type="checkbox" id="price-2" value="10000-20000" name="price">
+                                <label for="price-2">$10000-$20000</label>
+                            </li>
+                            <li class="filter-list">
+                                <input class="pixel-radio" type="checkbox" id="price-3" value="20000-30000" name="price">
+                                <label for="price-3">$20000-$30000</label>
+                            </li>
+                            <li class="filter-list">
+                                <input class="pixel-radio" type="checkbox" id="price-4" value="30000-40000" name="price">
+                                <label for="price-4">$30000-$40000</label>
+                            </li>
+                            <li class="filter-list">
+                                <input class="pixel-radio" type="checkbox" id="price-5" value="40000-50000" name="price">
+                                <label for="price-5">$40000-$50000</label>
+                            </li>
+                        </ul>
+                    </form>
+                </div>
+                <!-- Price End -->
+                <button id="btnFilter" style="margin-left: 110px; background: #f1f6f7; color: #999999" class="btn btn-close">Filter</button>
             </div>
             <div class="col-xl-9 col-lg-8 col-md-7">
                 <!-- Start Filter Bar -->
                 <div class="filter-bar d-flex flex-wrap align-items-center">
-                    <div class="sorting">
-                        <select>
-                            <option value="1">Default sorting</option>
-                            <option value="1">Default sorting</option>
-                            <option value="1">Default sorting</option>
-                        </select>
-                    </div>
                     <div class="sorting mr-auto">
-                        <select>
-                            <option value="1">Show 12</option>
-                            <option value="1">Show 12</option>
-                            <option value="1">Show 12</option>
+                        <select id="showProducts">
+                            <option value="12">Show 12</option>
+                            <option value="24">Show 24</option>
+                            <option value="36">Show 36</option>
+                            <option value="48">Show 48</option>
+                            <option value="60">Show 60</option>
                         </select>
                     </div>
                     <div>
                         <div class="input-group filter-bar-search">
-                            <input type="text" placeholder="Search">
-                            <div class="input-group-append">
-                                <button type="button"><i class="ti-search"></i></button>
-                            </div>
+                            <form id="sortForm" method="get" asp-action="Shop">
+                                <select id="sortOrder" name="sortOrder" style="font-size: 18px; border-radius: inherit">
+                                    <option value="asc">Ascending</option>
+                                    <option value="desc">Descending</option>
+                                </select>
+                                <button type="submit" class="btn btn-light" style="font-size: 18px; border-radius: inherit"><i class='bx bx-sort-alt-2'></i></button>
+                            </form>
                         </div>
                     </div>
                 </div>
                 <!-- End Filter Bar -->
                 <!-- Start Best Seller -->
                 <section class="lattest-product-area pb-40 category-list">
-                    <div class="row">
-                        <div class="col-md-6 col-lg-4">
-                            <div class="card text-center card-product">
-                                <div class="card-product__img">
-                                    <img class="card-img" src="~/contentweb/img/product/product1.png" alt="">
-                                    <ul class="card-product__imgOverlay">
-                                        <li><button><i class="ti-search"></i></button></li>
-                                        <li><button><i class="ti-shopping-cart"></i></button></li>
-                                        <li><button><i class="ti-heart"></i></button></li>
-                                    </ul>
+                    <div class="row" id="filtered-products">
+                        @if (ViewBag.Products != null && ViewBag.Products.Count > 0)
+                        {
+                            foreach (var product in ViewBag.Products)
+                            {
+                                <div class="col-md-6 col-lg-4">
+                                    <div class="card text-center card-product">
+                                        <div class="card-product__img">
+                                            @if (!string.IsNullOrEmpty(product.Image.Name))
+                                            {
+                                                <img class="card-img" src="~/images/@product.Image.Name" alt="ErrorImg" width="150px" height="250px">
+                                            }
+                                            <ul class="card-product__imgOverlay">
+                                                <li><button><i class="ti-search"></i></button></li>
+                                                <li><button><i class="ti-shopping-cart"></i></button></li>
+                                                <li><button><i class="ti-heart"></i></button></li>
+                                            </ul>
+                                        </div>
+                                        <div class="card-body">
+                                            <h4 class="card-product__title"><a href="#">@product.ProductDetail.Name</a></h4>
+                                            <p class="card-product__price">$@product.ProductDetail.Price</p>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="card-body">
-                                    <p>Accessories</p>
-                                    <h4 class="card-product__title"><a href="#">Quartz Belt Watch</a></h4>
-                                    <p class="card-product__price">$150.00</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6 col-lg-4">
-                            <div class="card text-center card-product">
-                                <div class="card-product__img">
-                                    <img class="card-img" src="~/contentweb/img/product/product2.png" alt="">
-                                    <ul class="card-product__imgOverlay">
-                                        <li><button><i class="ti-search"></i></button></li>
-                                        <li><button><i class="ti-shopping-cart"></i></button></li>
-                                        <li><button><i class="ti-heart"></i></button></li>
-                                    </ul>
-                                </div>
-                                <div class="card-body">
-                                    <p>Beauty</p>
-                                    <h4 class="card-product__title"><a href="#">Women Freshwash</a></h4>
-                                    <p class="card-product__price">$150.00</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6 col-lg-4">
-                            <div class="card text-center card-product">
-                                <div class="card-product__img">
-                                    <img class="card-img" src="~/contentweb/img/product/product3.png" alt="">
-                                    <ul class="card-product__imgOverlay">
-                                        <li><button><i class="ti-search"></i></button></li>
-                                        <li><button><i class="ti-shopping-cart"></i></button></li>
-                                        <li><button><i class="ti-heart"></i></button></li>
-                                    </ul>
-                                </div>
-                                <div class="card-body">
-                                    <p>Decor</p>
-                                    <h4 class="card-product__title"><a href="#">Room Flash Light</a></h4>
-                                    <p class="card-product__price">$150.00</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6 col-lg-4">
-                            <div class="card text-center card-product">
-                                <div class="card-product__img">
-                                    <img class="card-img" src="~/contentweb/img/product/product4.png" alt="">
-                                    <ul class="card-product__imgOverlay">
-                                        <li><button><i class="ti-search"></i></button></li>
-                                        <li><button><i class="ti-shopping-cart"></i></button></li>
-                                        <li><button><i class="ti-heart"></i></button></li>
-                                    </ul>
-                                </div>
-                                <div class="card-body">
-                                    <p>Decor</p>
-                                    <h4 class="card-product__title"><a href="#">Room Flash Light</a></h4>
-                                    <p class="card-product__price">$150.00</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6 col-lg-4">
-                            <div class="card text-center card-product">
-                                <div class="card-product__img">
-                                    <img class="card-img" src="~/contentweb/img/product/product5.png" alt="">
-                                    <ul class="card-product__imgOverlay">
-                                        <li><button><i class="ti-search"></i></button></li>
-                                        <li><button><i class="ti-shopping-cart"></i></button></li>
-                                        <li><button><i class="ti-heart"></i></button></li>
-                                    </ul>
-                                </div>
-                                <div class="card-body">
-                                    <p>Accessories</p>
-                                    <h4 class="card-product__title"><a href="#">Man Office Bag</a></h4>
-                                    <p class="card-product__price">$150.00</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6 col-lg-4">
-                            <div class="card text-center card-product">
-                                <div class="card-product__img">
-                                    <img class="card-img" src="~/contentweb/img/product/product6.png" alt="">
-                                    <ul class="card-product__imgOverlay">
-                                        <li><button><i class="ti-search"></i></button></li>
-                                        <li><button><i class="ti-shopping-cart"></i></button></li>
-                                        <li><button><i class="ti-heart"></i></button></li>
-                                    </ul>
-                                </div>
-                                <div class="card-body">
-                                    <p>Kids Toy</p>
-                                    <h4 class="card-product__title"><a href="#">Charging Car</a></h4>
-                                    <p class="card-product__price">$150.00</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6 col-lg-4">
-                            <div class="card text-center card-product">
-                                <div class="card-product__img">
-                                    <img class="card-img" src="~/contentweb/img/product/product7.png" alt="">
-                                    <ul class="card-product__imgOverlay">
-                                        <li><button><i class="ti-search"></i></button></li>
-                                        <li><button><i class="ti-shopping-cart"></i></button></li>
-                                        <li><button><i class="ti-heart"></i></button></li>
-                                    </ul>
-                                </div>
-                                <div class="card-body">
-                                    <p>Accessories</p>
-                                    <h4 class="card-product__title"><a href="#">Blutooth Speaker</a></h4>
-                                    <p class="card-product__price">$150.00</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6 col-lg-4">
-                            <div class="card text-center card-product">
-                                <div class="card-product__img">
-                                    <img class="card-img" src="~/contentweb/img/product/product8.png" alt="">
-                                    <ul class="card-product__imgOverlay">
-                                        <li><button><i class="ti-search"></i></button></li>
-                                        <li><button><i class="ti-shopping-cart"></i></button></li>
-                                        <li><button><i class="ti-heart"></i></button></li>
-                                    </ul>
-                                </div>
-                                <div class="card-body">
-                                    <p>Kids Toy</p>
-                                    <h4 class="card-product__title"><a href="#">Charging Car</a></h4>
-                                    <p class="card-product__price">$150.00</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6 col-lg-4">
-                            <div class="card text-center card-product">
-                                <div class="card-product__img">
-                                    <img class="card-img" src="~/contentweb/img/product/product1.png" alt="">
-                                    <ul class="card-product__imgOverlay">
-                                        <li><button><i class="ti-search"></i></button></li>
-                                        <li><button><i class="ti-shopping-cart"></i></button></li>
-                                        <li><button><i class="ti-heart"></i></button></li>
-                                    </ul>
-                                </div>
-                                <div class="card-body">
-                                    <p>Accessories</p>
-                                    <h4 class="card-product__title"><a href="#">Quartz Belt Watch</a></h4>
-                                    <p class="card-product__price">$150.00</p>
-                                </div>
-                            </div>
-                        </div>
+                            }
+                        }
+                        else
+                        {
+                            <h4 style="margin: auto">Không có sản phẩm nào để hiển thị</h4>
+                        }
                     </div>
                 </section>
                 <!-- End Best Seller -->
@@ -285,119 +191,60 @@
         </div>
     </div>
 </section>
-<!-- ================ category section end ================= -->
-<!-- ================ top product area start ================= -->
-<section class="related-product-area">
-    <div class="container">
-        <div class="section-intro pb-60px">
-            <p>Popular Item in the market</p>
-            <h2>Top <span class="section-intro__style">Product</span></h2>
-        </div>
-        <div class="row mt-30">
-            <div class="col-sm-6 col-xl-3 mb-4 mb-xl-0">
-                <div class="single-search-product-wrapper">
-                    <div class="single-search-product d-flex">
-                        <a href="#"><img src="~/contentweb/img/product/product-sm-1.png" alt=""></a>
-                        <div class="desc">
-                            <a href="#" class="title">Gray Coffee Cup</a>
-                            <div class="price">$170.00</div>
-                        </div>
-                    </div>
-                    <div class="single-search-product d-flex">
-                        <a href="#"><img src="~/contentweb/img/product/product-sm-2.png" alt=""></a>
-                        <div class="desc">
-                            <a href="#" class="title">Gray Coffee Cup</a>
-                            <div class="price">$170.00</div>
-                        </div>
-                    </div>
-                    <div class="single-search-product d-flex">
-                        <a href="#"><img src="~/contentweb/img/product/product-sm-3.png" alt=""></a>
-                        <div class="desc">
-                            <a href="#" class="title">Gray Coffee Cup</a>
-                            <div class="price">$170.00</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-               
-            <div class="col-sm-6 col-xl-3 mb-4 mb-xl-0">
-                <div class="single-search-product-wrapper">
-                    <div class="single-search-product d-flex">
-                        <a href="#"><img src="~/contentweb/img/product/product-sm-4.png" alt=""></a>
-                        <div class="desc">
-                            <a href="#" class="title">Gray Coffee Cup</a>
-                            <div class="price">$170.00</div>
-                        </div>
-                    </div>
-                    <div class="single-search-product d-flex">
-                        <a href="#"><img src="~/contentweb/img/product/product-sm-5.png" alt=""></a>
-                        <div class="desc">
-                            <a href="#" class="title">Gray Coffee Cup</a>
-                            <div class="price">$170.00</div>
-                        </div>
-                    </div>
-                    <div class="single-search-product d-flex">
-                        <a href="#"><img src="~/contentweb/img/product/product-sm-6.png" alt=""></a>
-                        <div class="desc">
-                            <a href="#" class="title">Gray Coffee Cup</a>
-                            <div class="price">$170.00</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+<!-- ================ category section end ================= -->	
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        // Thêm sự kiện cho nút lọc
+        document.getElementById("btnFilter").addEventListener("click", function () {
+            var colors = getSelectedCheckboxes("color-filter-form");
+            var sizes = getSelectedCheckboxes("size-filter-form");
+            var priceRange = getSelectedCheckboxes("price-filter-form");
 
-            <div class="col-sm-6 col-xl-3 mb-4 mb-xl-0">
-                <div class="single-search-product-wrapper">
-                    <div class="single-search-product d-flex">
-                        <a href="#"><img src="~/contentweb/img/product/product-sm-7.png" alt=""></a>
-                        <div class="desc">
-                            <a href="#" class="title">Gray Coffee Cup</a>
-                            <div class="price">$170.00</div>
-                        </div>
-                    </div>
-                    <div class="single-search-product d-flex">
-                        <a href="#"><img src="~/contentweb/img/product/product-sm-8.png" alt=""></a>
-                        <div class="desc">
-                            <a href="#" class="title">Gray Coffee Cup</a>
-                            <div class="price">$170.00</div>
-                        </div>
-                    </div>
-                    <div class="single-search-product d-flex">
-                        <a href="#"><img src="~/contentweb/img/product/product-sm-9.png" alt=""></a>
-                        <div class="desc">
-                            <a href="#" class="title">Gray Coffee Cup</a>
-                            <div class="price">$170.00</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            var data = {
+                Colors: colors,
+                Sizes: sizes,
+                PriceRanges: priceRange
+            };
 
-            <div class="col-sm-6 col-xl-3 mb-4 mb-xl-0">
-                <div class="single-search-product-wrapper">
-                    <div class="single-search-product d-flex">
-                        <a href="#"><img src="~/contentweb/img/product/product-sm-1.png" alt=""></a>
-                        <div class="desc">
-                            <a href="#" class="title">Gray Coffee Cup</a>
-                            <div class="price">$170.00</div>
-                        </div>
-                    </div>
-                    <div class="single-search-product d-flex">
-                        <a href="#"><img src="~/contentweb/img/product/product-sm-2.png" alt=""></a>
-                        <div class="desc">
-                            <a href="#" class="title">Gray Coffee Cup</a>
-                            <div class="price">$170.00</div>
-                        </div>
-                    </div>
-                    <div class="single-search-product d-flex">
-                        <a href="#"><img src="~/contentweb/img/product/product-sm-3.png" alt=""></a>
-                        <div class="desc">
-                            <a href="#" class="title">Gray Coffee Cup</a>
-                            <div class="price">$170.00</div>
-                        </div>
-                    </div>
-                </div>
-            </div> 
-        </div>
-    </div>
-</section>
-<!-- ================ top product area end ================= -->		
+            // Gửi yêu cầu lọc đến server
+            fetch("/Home/GetFilteredProducts", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            })
+            .then(handleResponse)
+            .then(updateFilteredProducts)
+            .catch(handleError);
+        });
+
+        // Hàm xử lý phản hồi từ fetch
+        function handleResponse(response) {
+            if (response.ok) {
+                return response.text();
+            } else {
+                throw new Error("Error sending data to the controller");
+            }
+        }
+
+        // Hàm cập nhật sản phẩm sau khi lọc
+        function updateFilteredProducts(result) {
+            $("#filtered-products").html(result);
+        }
+
+        // Hàm xử lý lỗi
+        function handleError(error) {
+            console.log("An error occurred: ", error);
+        }
+        var productsData = @Html.Raw(JsonConvert.SerializeObject(ViewBag.Products ?? new List<ProductDetail>()));
+        // Hàm lấy giá trị của các checkbox được chọn trong một biểu mẫu
+        function getSelectedCheckboxes(formId) {
+            var checkboxes = $('#' + formId + ' input[type="checkbox"]:checked');
+            return checkboxes.map(function () {
+                return $(this).val();
+            }).get();
+        }
+    });
+</script>
+<script src="~/js/asc_desc.js"></script>
