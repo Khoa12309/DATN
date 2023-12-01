@@ -56,9 +56,9 @@ namespace APPVIEW.Controllers
             ViewBag.Roles = GetListRole();
             var obj = getapi.GetApi("Account");
             int pageSize = 8;
-            //int pageNumber = (page ?? 0);
-            //return View(obj.OrderByDescending(x => x.Id).ToPagedList(pageNumber, pageSize));
-            return View();
+            int pageNumber = (page ?? 1);
+            return View(obj.OrderByDescending(x => x.Id).ToPagedList(pageNumber, pageSize));
+            
         }
         public async Task<IActionResult> Search(string searchTerm)
         {
