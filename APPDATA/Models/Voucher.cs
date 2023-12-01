@@ -9,7 +9,7 @@ namespace APPDATA.Models
     public class Voucher
     {
         public Guid Id { get; set; }
-        public string Value { get; set; }
+        public int Value { get; set; }
         public string Name { get; set; }
         public string Code { get; set; }
         public string ReduceForm { get; set; }

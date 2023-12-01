@@ -38,34 +38,35 @@
     <form class="row" method="post" asp-action="ApplyDiscount">
         @foreach (var voucher in Model)
         {
-            <div class="col-sm-6">
-                <div class="coupon bg-white rounded mb-3 d-flex justify-content-between">
-                    <div class="tengah py-3 d-flex w-100 justify-content-start p-3"
+                <div class="col-sm-6">
+                    <div class="coupon bg-white rounded mb-3 d-flex justify-content-between">
+                        <div class="tengah py-3 d-flex w-100 justify-content-start p-3"
                      style="background: #f2f2f2; border-radius: 5px">
-                        <div>
-                            <span class="badge badge-success">@voucher.Code</span>
-                            <h4 class="text-muted mb-0">@voucher.Name</h4>
-                            <p class="text-muted mb-0">- $@voucher.DiscountAmount</p>
+                            <div>
+                                <span class="badge badge-success">@voucher.Code</span>
+                                <h4 class="text-muted mb-0">@voucher.Name</h4>
+                                <p class="text-muted mb-0">Giảm: @voucher.Value%</p>
+                                <p class="text-muted mb-0">Tối đa: @voucher.DiscountAmount VND</p>
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="kanan" style="background: #f2f2f2; border-radius: 5px">
-                        <div class="info m-3 d-flex align-items-center">
-                            <div class="w-100">
-                                <div class="block">
-                                    <span class="time font-weight-light">
-                                        <p style="color: red; font-size: 12px">
-                                            HSD: @voucher.EndDate.ToString("dd-MM-yyyy HH:mm")
-                                        </p>
-                                    </span>
+                        <div class="kanan" style="background: #f2f2f2; border-radius: 5px">
+                            <div class="info m-3 d-flex align-items-center">
+                                <div class="w-100">
+                                    <div class="block">
+                                        <span class="time font-weight-light">
+                                            <p style="color: red; font-size: 12px">
+                                                HSD: @voucher.EndDate.ToString("dd-MM-yyyy HH:mm")
+                                            </p>
+                                        </span>
+                                    </div>
+                                    <input type="submit" value="Apply" class="btn btn-sm btn-outline-danger btn-block apply-btn" data-code="@voucher.Code"/>
+                                    <input type="hidden" name="selectedVoucher" value="@voucher.Code" />
                                 </div>
-                                <input type="submit" value="Apply" class="btn btn-sm btn-outline-danger btn-block apply-btn" data-code="@voucher.Code"/>
-                                <input type="hidden" name="selectedVoucher" value="@voucher.Code" />
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
         }
     </form>
 </div>
