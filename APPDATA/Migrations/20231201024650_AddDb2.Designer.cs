@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace APPDATA.Migrations
 {
     [DbContext(typeof(ShoppingDB))]
-    [Migration("20231128033628_migrations")]
-    partial class migrations
+    [Migration("20231201024650_AddDb2")]
+    partial class AddDb2
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -54,6 +54,9 @@ namespace APPDATA.Migrations
 
                     b.Property<string>("ResetPasswordcode")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("Update_date")
                         .HasColumnType("datetime2");
@@ -97,6 +100,9 @@ namespace APPDATA.Migrations
 
                     b.Property<string>("SpecificAddress")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.Property<string>("Ward")
                         .HasColumnType("nvarchar(max)");
@@ -737,9 +743,8 @@ namespace APPDATA.Migrations
                     b.Property<DateTime>("Update_date")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Value")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Value")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
