@@ -8,6 +8,7 @@ using System.Data;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Xml.Linq;
+using X.PagedList;
 
 namespace APPVIEW.Controllers
 {
@@ -36,8 +37,8 @@ namespace APPVIEW.Controllers
             getapiMaterial = new Getapi<Material>();
           
         }
-
-        public async Task<IActionResult> GetList()
+        public int PageSize = 5;
+        public async Task<IActionResult> GetList(int? page)
         {
             ViewBag.Size =await getapiSize.GetApia("Size");
             ViewBag.Color =await getapiColor.GetApia("Color");
@@ -46,8 +47,9 @@ namespace APPVIEW.Controllers
             ViewBag.Image = await getapiImg.GetApia("Image");
             ViewBag.Material = await getapiMaterial.GetApia("Material");
             var obj = await getapi.GetApia("ProductDetails");
-            
-            return View(obj);
+            int pageSize = 8;
+            int pageNumber = (page ?? 1);
+            return View(obj.OrderByDescending(x => x.Id).ToPagedList(pageNumber, pageSize));
         }
         [HttpPost]
         public async Task<IActionResult> GetList(string tk)

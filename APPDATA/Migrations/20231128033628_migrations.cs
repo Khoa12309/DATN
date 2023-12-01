@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace APPDATA.Migrations
 {
-    public partial class TestRoles : Migration
+    public partial class migrations : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -274,7 +274,7 @@ namespace APPDATA.Migrations
                     TotalMoney = table.Column<float>(type: "real", nullable: true),
                     MoneyReduce = table.Column<float>(type: "real", nullable: true),
                     Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreateDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     CreateBy = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UpdateBy = table.Column<DateTime>(type: "datetime2", nullable: true),
                     PayDate = table.Column<DateTime>(type: "datetime2", nullable: true),
