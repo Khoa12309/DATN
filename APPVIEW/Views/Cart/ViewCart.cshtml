@@ -40,7 +40,8 @@
                 <table class="table">
                     <thead>
                         <tr>
-                            <th scope="col">Product</th>
+                            <th scope="col">Name</th> 
+                            <th scope="col">Images</th>
                             <th scope="col">Price</th>
                             <th scope="col">Quantity</th>
                             <th scope="col">Size</th>
@@ -59,23 +60,22 @@
 
                             @for (int i = 0; i < Model.Count; i++)
                             {
+                              
                                     <input hidden asp-for="@Model[i].Id" value="@Model[i].Id" id="pro" />
                                     <input hidden asp-for="@Model[i].Id_Product" value="@Model[i].Id_Product" />
                                     <input hidden asp-for="@Model[i].Name" value="@Model[i].Name" />
                                 var tt = @Model[i].Price * @Model[i].Quantity;
-                                    <tr>
+                                    <tr>                               
 
-                                        @foreach (var img in ViewBag.Img)
+                                     @foreach (var img in ViewBag.Img)
                                     {
+
                                         if (img.IdProductdetail == @Model[i].Id)
                                         {
                                                 <td>
                                                     <div class="media">
                                                         <div class="d-flex">
-                                                            <img src="~/images/@img.Name" style="width: 50px;" alt="">
-                                                        </div>
-                                                        <div class="media-body">
-                                                            <p>@Model[i].Name</p>
+                                                            <img src="~/images/@img.Name" style="width: 90px;" alt="">
                                                         </div>
                                                     </div>
                                                 </td>

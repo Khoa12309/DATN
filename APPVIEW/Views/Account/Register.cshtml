@@ -140,6 +140,15 @@
                         {
                             <div class="alert alert-warning alert-dismissible" role="alert">
                                 @ViewData["ErrorMessage"]
+
+                            </div>
+
+                        }
+                        else if (!string.IsNullOrEmpty(ViewData["Sucsess"] as string))
+                        {
+                            <div class="alert alert-success" role="alert">
+                                @ViewData["Sucsess"]
+
                             </div>
                         }
               <p class="mb-4">Reghiter</p>

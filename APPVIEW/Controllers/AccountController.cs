@@ -20,6 +20,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Rewrite;
 using System.Xml.Linq;
 
+using X.PagedList;
+
+using APPVIEW.Models;
 
 namespace APPVIEW.Controllers
 {
@@ -31,6 +34,8 @@ namespace APPVIEW.Controllers
         private Getapi<Address> getapiAddress;
         private readonly ISendEmail _sendEmail;
         private readonly ShoppingDB _context;
+        private readonly SendEmailMessage _sendEmailMessage;
+        private readonly ShoppingDB _dbContext;
 
         public AccountController(HttpClient httpClient, INotyfService notyf, ISendEmail sendEmail)
         {
@@ -40,13 +45,19 @@ namespace APPVIEW.Controllers
             getapiAddress = new Getapi<Address>();
             _sendEmail = sendEmail;
             _context = new ShoppingDB();
+            _sendEmailMessage = new SendEmailMessage();
+            _dbContext = new ShoppingDB();
         }
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> GetList()
+
+        [Authorize(Roles = "Admin,Staff")]
+        public async Task<IActionResult> GetList(int? page)
+
         {
             ViewBag.Roles = GetListRole();
             var obj = getapi.GetApi("Account");
-            return View(obj);
+            int pageSize = 8;
+            int pageNumber = (page ?? 1);
+            return View(obj.OrderByDescending(x => x.Id).ToPagedList(pageNumber, pageSize));
         }
         public async Task<IActionResult> Search(string searchTerm)
         {
@@ -76,8 +87,10 @@ namespace APPVIEW.Controllers
         // POST: SupplierController1/Create
         [HttpPost, AllowAnonymous]
 
-        public async Task<IActionResult> Register(RegisterVm obj, Account item)
+        public async Task<IActionResult> Register(RegisterVm obj)
         {
+            var checkEmail = await _context.Accounts.SingleOrDefaultAsync(c => c.Email == obj.Email);
+            var checkPhone = await _context.Address.SingleOrDefaultAsync(c => c.PhoneNumber == obj.PhoneNumber);
             if (string.IsNullOrEmpty(obj.Email) || string.IsNullOrEmpty(obj.Name) || string.IsNullOrEmpty(obj.ConfirmPassword))
             {
 
@@ -87,10 +100,22 @@ namespace APPVIEW.Controllers
             }
             if (obj.Password != obj.ConfirmPassword)
             {
-                ViewData["ErrorMessage"] = "Password and confirm password not correct,try again.";
+                ViewData["ErrorMessage"] = "Mật khẩu xác nhận và mật khẩu không khớp nhau,hãy thử lại!";
                 return View("Register", obj);
             }
+            else if (checkEmail != null)
+            {
+                ViewData["ErrorMessage"] = "Email này đã được đăng kí, hãy tạo tài khoản bằng email khác để đăng kí!";
+                return View("Register", obj);
+            }
+            else if (checkPhone != null)
+            {
+                ViewData["ErrorMessage"] = "Số điện thoại này đã được đăng kí !";
+                return View("Register", obj);
+            }
+
             var md5pass = MD5Pass.GetMd5Hash(obj.Password);
+            obj.ResetPasswordcode = RundomCodeService.GenerateRandomCode(6);
 
             obj.Password = md5pass;
             var jsonData = JsonConvert.SerializeObject(obj);
@@ -104,7 +129,7 @@ namespace APPVIEW.Controllers
                 District = "N/A",
                 PhoneNumber = obj.PhoneNumber,
                 Description = "N/A",
-                Name = obj.Name,
+                Name = obj.Email,
                 Province = "N/A",
                 DefaultAddress = "N/A",
                 SpecificAddress = "N/A"
@@ -117,12 +142,17 @@ namespace APPVIEW.Controllers
             var contentAddress = new StringContent(jsonDataAddress, Encoding.UTF8, "application/json");
 
 
+
             var responese = await _httpClient.PostAsync("https://localhost:7042/api/Account/Register", content);
             var responeseAdress = await _httpClient.PostAsync("https://localhost:7042/api/Address/Post", contentAddress);
             if (responese.IsSuccessStatusCode && responeseAdress.IsSuccessStatusCode)
             {
 
-                return Redirect("~/Account/Login");
+                // Gửi email với đường link xác nhận
+                var tokenLink = Url.Action("ConfirmEmail", "Account", new { email = obj.Email, token = obj.ResetPasswordcode }, Request.Scheme);
+                _sendEmail.SendEmailAsync(obj.Email, "Confirm your email", $"Please confirm your email by clicking <a href='{tokenLink}'>here</a>.");
+                ViewData["Sucsess"] = "Chúng tôi đã gửi thư xác nhận đến email của bạn hãy xác thực để có thể đăng nhập!";
+                return View("Login");
 
             }
             else
@@ -131,6 +161,32 @@ namespace APPVIEW.Controllers
                 return View();
             }
         }
+        [AllowAnonymous]
+        public async Task<IActionResult> ConfirmEmail(string email, string token)
+        {
+            // Lấy token từ cơ sở dữ liệu hoặc cache
+            var acc = await _dbContext.Accounts.SingleOrDefaultAsync(c => c.Email == email);
+            var savedToken = acc.ResetPasswordcode;
+
+            // Kiểm tra xem token từ đường link có khớp với token đã lưu trữ hay không
+            if (token == savedToken)
+            {
+                // Xác nhận thành công, có thể đánh dấu tài khoản đã được xác nhận trong cơ sở dữ liệu
+                acc.Status = 1;
+                acc.ResetPasswordcode = null;
+                _context.Accounts.Update(acc);
+                await _context.SaveChangesAsync();
+
+                // Chuyển hướng đến trang thông báo thành công hoặc trang đăng nhập
+                return View("Login");
+            }
+            else
+            {
+                // Xử lý lỗi: Token không hợp lệ hoặc đã hết hạn
+                return Redirect("~/Error/AccessDenied");
+            }
+        }
+
         [HttpGet, AllowAnonymous]
 
         public IActionResult Login()
@@ -244,7 +300,7 @@ namespace APPVIEW.Controllers
         }
 
 
-        [HttpPost, Authorize(Roles = "Admin")]
+        [HttpPost, Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> Edit(Account obj, [Bind] IFormFile imageFile)
         {
             try
@@ -263,12 +319,23 @@ namespace APPVIEW.Controllers
         [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(Guid id)
         {
-            await getapi.DeleteObj(id, "Account");
-            return RedirectToAction("GetList");
+            var acc = await _context.Accounts.FirstOrDefaultAsync(a => a.Id == id);
+            if (acc != null)
+            {
+                var add = await _context.Address.FirstOrDefaultAsync(c => c.AccountId == id);
+                acc.Status = 2;
+                add.Status = 2;
+                _context.Update(acc);
+                _context.Update(add);
+                await _context.SaveChangesAsync();
+                _sendEmail.SendEmailAsync(acc.Email, "Khóa tài khoản", _sendEmailMessage.SendEmailBlock(acc.Name, acc.Email));
+                return RedirectToAction(nameof(GetList));
+            }
 
+            return View();
         }
-        [HttpGet]
-        [AllowAnonymous]
+        [HttpGet, Authorize(Roles = "Admin,Staff,Customer")]
+
         public async Task<IActionResult> Logout()
         {
 
@@ -281,7 +348,7 @@ namespace APPVIEW.Controllers
             return Redirect("~/Account/Login");
         }
 
-        [HttpGet, AllowAnonymous]
+        [HttpGet, Authorize(Roles = "Admin,Staff,Customer")]
         public async Task<IActionResult> MyProfile(Guid id_User)
         {
 
@@ -345,9 +412,9 @@ namespace APPVIEW.Controllers
             {
 
                 var user = new Account();
-                
-                   
-           
+
+
+
 
                 if (imageFile != null)
                 {
@@ -358,7 +425,7 @@ namespace APPVIEW.Controllers
                     user.IdRole = obj.Id_Role;
                     user.Avatar = AddImg(imageFile);
                 }
-                
+
 
                 var address = new Address()
                 {
@@ -500,7 +567,7 @@ namespace APPVIEW.Controllers
                         ViewData["ErrorMessage"] = "Old Password is incorrect,try agin!";
                         return View("ChangePassword", obj);
                     }
-                    if (obj.NewPassWord!=obj.ConfirmPassword)
+                    if (obj.NewPassWord != obj.ConfirmPassword)
                     {
                         ViewData["ErrorMessage"] = " New password is incorrect,try again!";
                         return View("ChangePassword", obj);
@@ -517,6 +584,83 @@ namespace APPVIEW.Controllers
             }
             return View();
         }
+        public IActionResult Create()
+        {
+            ViewBag.ListRole = GetListRole();
+            return View();
+        }
+        [HttpPost, Authorize(Roles = "Admin")]
+        public async Task<IActionResult> Create(RegisterVm obj)
+        {
 
+            if (string.IsNullOrEmpty(obj.Email) || string.IsNullOrEmpty(obj.Name))
+            {
+
+                ViewData["ErrorMessage"] = "Please enter your information.";
+                return View("Create", obj);
+
+            }
+            var md5pass = MD5Pass.GetMd5Hash(obj.PhoneNumber);
+
+            obj.Password = md5pass;
+
+            var acc = new Account()
+            {
+                Id = obj.Id,
+                Email = obj.Email,
+                IdRole = obj.Id_Role,
+                Name = obj.Name,
+                Password = md5pass,
+                Avatar = string.Empty
+
+            };
+            var jsonData = JsonConvert.SerializeObject(acc);
+
+            var address = new Address()
+            {
+                id = Guid.NewGuid(),
+                AccountId = obj.Id,
+                City = "N/A",
+                Ward = "N/A",
+                District = "N/A",
+                PhoneNumber = obj.PhoneNumber,
+                Description = "N/A",
+                Name = obj.Name,
+                Province = "N/A",
+                DefaultAddress = "N/A",
+                SpecificAddress = "N/A"
+
+
+            };
+            var jsonDataAddress = JsonConvert.SerializeObject(address);
+
+            var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+            var contentAddress = new StringContent(jsonDataAddress, Encoding.UTF8, "application/json");
+
+
+            var responese = await _httpClient.PostAsync("https://localhost:7042/api/Account/Register", content);
+            var responeseAdress = await _httpClient.PostAsync("https://localhost:7042/api/Address/Post", contentAddress);
+            if (responese.IsSuccessStatusCode && responeseAdress.IsSuccessStatusCode)
+            {
+
+                string Subject = "Create account successfully";
+                _sendEmail.SendEmailAsync(obj.Email, Subject, _sendEmailMessage.SendEmail(obj.Name, obj.Email, obj.PhoneNumber));
+                ViewData["Sucsess"] = $"Create account for {obj.Name} successful and send email to {obj.Email}!";
+                return Redirect("~/Account/GetList");
+
+            }
+            else
+            {
+                var errorResponse = await responese.Content.ReadAsStringAsync();
+                ViewData["ErrorMessage"] = errorResponse;
+                return View();
+            }
+
+        }
+        //public async Task<IActionResult> Delete(Guid id)
+        //{
+
+        //    return View();
+        //}
     }
 }
