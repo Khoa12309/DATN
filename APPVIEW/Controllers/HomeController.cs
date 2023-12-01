@@ -36,6 +36,9 @@ namespace APPVIEW.Controllers
         private Getapi<Voucher> getapiVoucher;
         private Getapi<Address> getapiAddress;
         private Getapi<CartDetail> getapiCD;
+        private Getapi<PaymentMethodDetail> getapiPMD;
+        private Getapi<PaymentMethod> getapiPM;
+
         private static readonly Random random = new Random();
         private string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
@@ -55,6 +58,8 @@ namespace APPVIEW.Controllers
             getapiVoucher = new Getapi<Voucher>();
             getapiAddress = new Getapi<Address>();
             getapiCD=new Getapi<CartDetail>();
+            getapiPM=new Getapi<PaymentMethod>();
+            getapiPMD = new Getapi<PaymentMethodDetail>();
         }
 
         public IActionResult Index()
@@ -184,11 +189,19 @@ namespace APPVIEW.Controllers
         // Tạo chuỗi có độ dài 8 ký tự
 
 
-        public async Task<IActionResult> DatHangN(Address obj,string pay,float phiship,float voucher)
+        public async Task<IActionResult> DatHangN(Address obj,string pay,float phiship,float voucher,string vouchercode)
         {
 
             var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
+            if (account.Id == Guid.Empty)
+            {
+                return Redirect("~/Account/Login");
+            }
+
+           
             var client = new OnlineGatewayClient($"https://online-gateway.ghn.vn/shiip/public-api/master-data/province", "bdbbde2a-fec2-11ed-8a8c-6e4795e6d902");
+          
+
 
             // Gọi API để lấy danh sách các tỉnh/thành phố
             var response = await client.GetProvincesAsync();
@@ -212,15 +225,14 @@ namespace APPVIEW.Controllers
             bill.PayDate = DateTime.Now;
             bill.TotalMoney = phiship - voucher;
             bill.Status = 1;
+            bill.PayDate = DateTime.Now;            
+            bill.Type = pay;
+            var vo = getapiVoucher.GetApi("Voucher").FirstOrDefault(c => c.Code == vouchercode);
+            if (vo != null)
+            {
+                bill.Voucherid = vo.Id;
+            }
 
-            if (pay == "Online")
-            {
-                bill.Type = "Online";
-            }
-            else
-            {
-                bill.Type = "shipCod";
-            }
 
             await bills.CreateObj(bill, "Bill");
 
@@ -262,12 +274,13 @@ namespace APPVIEW.Controllers
 
 
             if (pay == "Online")
-            {
-
-                return Payment(bill);
+            {              
+                
+                return await Payment(bill);
             }
             else
             {
+
                 return RedirectToAction("Thongtin");
             }    
             
@@ -691,8 +704,24 @@ namespace APPVIEW.Controllers
         }
 
     
-        public ActionResult Payment(Bill bill)
+        public async Task<IActionResult> Payment(Bill bill)
         {
+            ///phương thức thanh toán
+            var PM = getapiPM.GetApi("PaymentMethod").FirstOrDefault(c => c.Method == "Online").id;
+            var pmd = new PaymentMethodDetail()
+            {
+                id = Guid.NewGuid(),
+                BillId = bill.id,
+                PaymentMethodID = PM,
+                Status = 1,
+                TotalMoney = bill.TotalMoney.ToString(),
+                Description = "đã thanh toán",
+            };
+            await getapiPMD.CreateObj(pmd, "PaymentMethodDetail");
+            bill.Type = " Đã Thanh Toán";
+            await bills.UpdateObj(bill, "Bill");
+
+
             string url = "http://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
             string returnUrl = "https://localhost:7095/Home/PaymentConfirm";
             string tmnCode = "OQK7ZU4V";
@@ -716,8 +745,7 @@ namespace APPVIEW.Controllers
             pay.AddRequestData("vnp_TxnRef", DateTime.Now.Ticks.ToString()); //mã hóa đơn
 
             string paymentUrl = pay.CreateRequestUrl(url, hashSecret);
-
-
+          
             return Redirect(paymentUrl);
 
         }
@@ -745,9 +773,7 @@ namespace APPVIEW.Controllers
                 long vnpayTranId = Convert.ToInt64(pay.GetResponseData("vnp_TransactionNo")); //mã giao dịch tại hệ thống VNPAY
                 string vnp_ResponseCode = pay.GetResponseData("vnp_ResponseCode"); //response code: 00 - thành công, khác 00 - xem thêm https://sandbox.vnpayment.vn/apis/docs/bang-ma-loi/
                 string vnp_SecureHash = Request.Query["vnp_SecureHash"]; //hash của dữ liệu trả về
-
                 bool checkSignature = pay.ValidateSignature(vnp_SecureHash, hashSecret); //check chữ ký đúng hay không?
-
                 if (checkSignature)
                 {
                     if (vnp_ResponseCode == "00")
@@ -767,7 +793,7 @@ namespace APPVIEW.Controllers
                 }
             }
 
-            return View();
+            return RedirectToAction("thongtin");
         }
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
