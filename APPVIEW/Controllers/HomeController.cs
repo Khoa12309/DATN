@@ -482,7 +482,7 @@ namespace APPVIEW.Controllers
             else // Thất bại
             {
                 // Trả về thông báo lỗi
-                return Json(response.Data);
+                return Json(response.Data); 
             }
 
         }
