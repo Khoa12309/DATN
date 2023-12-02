@@ -166,17 +166,18 @@ namespace APPVIEW.Controllers
               .Select(s => s[random.Next(s.Length)]).ToArray());
         }
 
-        public IActionResult Nhanhang(Guid id)
+        public async Task<IActionResult> Nhanhang(Guid id)
         {
             var x = bills.GetApi("Bill").FirstOrDefault(c => c.id == id);
             x.Status = 4;
-            bills.UpdateObj(x, "Bill");
+           await   bills.UpdateObj(x, "Bill");
             return RedirectToAction("Thongtin");
-        }  public IActionResult HuyDon( Guid id)
+        }
+        public IActionResult HuyDon(Guid id)
         {
             var x = bills.GetApi("Bill").FirstOrDefault(c => c.id == id);
             x.Status = 0;
-            bills.UpdateObj(x, "Bill");
+           await bills.UpdateObj(x, "Bill");
             return RedirectToAction("Thongtin");
         }
         
