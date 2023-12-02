@@ -229,7 +229,7 @@ namespace APPVIEW.Controllers
             bill.TotalMoney = phiship - voucher;
             bill.Status = 1;
             bill.PayDate = DateTime.Now;            
-            bill.Type = pay;
+            bill.Type = pay+" - Chưa Thanh Toán ";
             var vo = getapiVoucher.GetApi("Voucher").FirstOrDefault(c => c.Code == vouchercode);
             if (vo != null)
             {
@@ -757,23 +757,31 @@ namespace APPVIEW.Controllers
                 if (dc != null)
                 {
                     var p = await province(dc.Province);
-
-                    var d = await dis(dc.District, p);
-                    var w = await wad(dc.Ward, d);
-                    int sship = await getServiceShip(d);
-
-                    client = new OnlineGatewayClient($"https://online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/fee?service_id={sship}" + $"&insurance_value=100000&to_ward_code={w}" + $"&to_district_id={d}" + "&from_district_id=3440" + $"&weight={can}", "bdbbde2a-fec2-11ed-8a8c-6e4795e6d902");
-
-                    // Gọi API để lấy danh sách các tỉnh/thành phố
-
-                    var fee = await client.GetFeeshipAsync();
-
-                    //Kiểm tra kết quả trả về
-                    if (fee.Code == 200) // Thành công
+                    if (p!=0)
                     {
-                        // Trả về danh sách các quận/huyện dưới dạng JSON
-                        ViewBag.fee = fee.Data.total;
+                        var d = await dis(dc.District, p);
+                        if (d!=0)
+                        {
+                            var w = await wad(dc.Ward, d);
+                            int sship = await getServiceShip(d);
+
+                            client = new OnlineGatewayClient($"https://online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/fee?service_id={sship}" + $"&insurance_value=100000&to_ward_code={w}" + $"&to_district_id={d}" + "&from_district_id=3440" + $"&weight={can}", "bdbbde2a-fec2-11ed-8a8c-6e4795e6d902");
+
+                            // Gọi API để lấy danh sách các tỉnh/thành phố
+
+                            var fee = await client.GetFeeshipAsync();
+
+                            //Kiểm tra kết quả trả về
+                            if (fee.Code == 200) // Thành công
+                            {
+                                // Trả về danh sách các quận/huyện dưới dạng JSON
+                                ViewBag.fee = fee.Data.total;
+                            }
+                        }
+                       
                     }
+                  
+                    
                 }
                 else
                 {
@@ -836,25 +844,9 @@ namespace APPVIEW.Controllers
     
         public async Task<IActionResult> Payment(Bill bill)
 
-        {
-            ///phương thức thanh toán
-            var PM = getapiPM.GetApi("PaymentMethod").FirstOrDefault(c => c.Method == "Online").id;
-            var pmd = new PaymentMethodDetail()
-            {
-                id = Guid.NewGuid(),
-                BillId = bill.id,
-                PaymentMethodID = PM,
-                Status = 1,
-                TotalMoney = bill.TotalMoney.ToString(),
-                Description = "đã thanh toán",
-            };
-            await getapiPMD.CreateObj(pmd, "PaymentMethodDetail");
-            bill.Type = " Đã Thanh Toán";
-            await bills.UpdateObj(bill, "Bill");
-
-
+        {         
             string url = "http://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-            string returnUrl = "https://localhost:7095/Home/PaymentConfirm";
+            string returnUrl = $"https://localhost:7095/Home/PaymentConfirm";
             string tmnCode = "OQK7ZU4V";
             string hashSecret = "WRKKYLZIEYLLPPFRNNQXVAKXHKGRIEEA";
 
@@ -876,7 +868,36 @@ namespace APPVIEW.Controllers
             pay.AddRequestData("vnp_TxnRef", DateTime.Now.Ticks.ToString()); //mã hóa đơn
 
             string paymentUrl = pay.CreateRequestUrl(url, hashSecret);
-          
+
+            if (paymentUrl!=null)
+            {
+                ///phương thức thanh toán
+                var PM = getapiPM.GetApi("PaymentMethod").FirstOrDefault(c => c.Method == "Online");
+                if (PM== null)
+                {
+                    PM=new PaymentMethod();
+                    PM.id = Guid.NewGuid();
+                    PM.Method = "Online";
+                    PM.Status = 1;
+                    PM.CreateDate = DateTime.Now;
+                    PM.UpdateDate = DateTime.Now;
+                    PM.Description = "Thanh toán online";
+
+                    await getapiPM.CreateObj(PM, "PaymentMethod");
+                }
+                var pmd = new PaymentMethodDetail()
+                {
+                    id = Guid.NewGuid(),
+                    BillId = bill.id,
+                    PaymentMethodID = PM.id,
+                    Status = 1,
+                    TotalMoney = bill.TotalMoney.ToString(),
+                    Description = "đã thanh toán",
+                };
+                await getapiPMD.CreateObj(pmd, "PaymentMethodDetail");
+                bill.Type = "Online - Đã Thanh Toán";
+                await bills.UpdateObj(bill, "Bill");
+            }
             return Redirect(paymentUrl);
 
         }
