@@ -55,6 +55,7 @@ namespace APPVIEW.Controllers
         {
             ViewBag.Roles = GetListRole();
             var obj = getapi.GetApi("Account");
+
             int pageSize = 8;
             int pageNumber = (page ?? 1);
             return View(obj.OrderByDescending(x => x.Id).ToPagedList(pageNumber, pageSize));
@@ -78,6 +79,7 @@ namespace APPVIEW.Controllers
 
             return NotFound("Voucher không tồn tại");
         }
+
 
         [AllowAnonymous]
         public IActionResult Register()
@@ -324,12 +326,21 @@ namespace APPVIEW.Controllers
             if (acc != null)
             {
                 var add = await _context.Address.FirstOrDefaultAsync(c => c.AccountId == id);
+                if (add.Status==2&&acc.Status==2)
+                {
+                    acc.Status = 1;
+                    add.Status = 1;
+                    _context.Update(acc);
+                    _context.Update(add);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(GetList));
+                }
                 acc.Status = 2;
                 add.Status = 2;
                 _context.Update(acc);
                 _context.Update(add);
                 await _context.SaveChangesAsync();
-                _sendEmail.SendEmailAsync(acc.Email, "Khóa tài khoản", _sendEmailMessage.SendEmailBlock(acc.Name, acc.Email));
+                //_sendEmail.SendEmailAsync(acc.Email, "Khóa tài khoản", _sendEmailMessage.SendEmailBlock(acc.Name, acc.Email));
                 return RedirectToAction(nameof(GetList));
             }
 
@@ -658,10 +669,35 @@ namespace APPVIEW.Controllers
             }
 
         }
-        //public async Task<IActionResult> Delete(Guid id)
-        //{
+        [HttpGet, Authorize(Roles = "Staff,Admin")]
+        public async Task<IActionResult> AccountBlockedCustomer()
+        {
 
-        //    return View();
-        //}
+            Guid customer = _context.Roles.FirstOrDefault(c => c.name == "Customer").id;
+            ViewBag.Roles = GetListRole();
+            var lst = getapi.GetApi("Account");
+            if (lst != null)
+            {
+                return View(lst.Where(c => c.Status == 2 && c.IdRole == customer).ToList());
+            }
+            return View();
+
+
+        }
+        [HttpGet, Authorize(Roles = "Staff,Admin")]
+        public async Task<IActionResult> AccountBlockedAll()
+        {
+
+            ViewBag.Roles = GetListRole();
+            var lst = getapi.GetApi("Account");
+            if (lst != null)
+            {
+                return View(lst.Where(c => c.Status == 2).ToList());
+            }
+            return View();
+
+
+        }
+
     }
 }
