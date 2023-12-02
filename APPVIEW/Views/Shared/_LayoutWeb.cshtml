@@ -27,6 +27,7 @@
     <link rel="stylesheet" href="~/contentwebb/vendors/nice-select/nice-select.css">
     <link rel="stylesheet" href="~/contentwebb/vendors/owl-carousel/owl.theme.default.min.css">
     <link rel="stylesheet" href="~/contentwebb/vendors/owl-carousel/owl.carousel.min.css">
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
     <link href="~/contentwebb/css/style.css" rel="stylesheet" />
     <link href="~/contentwebb/css/main.css" rel="stylesheet" />
 
@@ -53,9 +54,7 @@
                                    aria-expanded="false">Shop</a>
                                 <ul class="dropdown-menu">
                                     <li class="nav-item"><a class="nav-link" asp-action="Shop" asp-controller="Home">Shop Category</a></li>
-                                    <li class="nav-item"><a class="nav-link" href="single-product.html">Product Details</a></li>
-                                    <li class="nav-item"><a class="nav-link" href="checkout.html">Product Checkout</a></li>
-                                    <li class="nav-item"><a class="nav-link" href="confirmation.html">Confirmation</a></li>
+                            
                                     <li class="nav-item"><a class="nav-link" href="cart.html">Shopping Cart</a></li>
                                 </ul>
                             </li>
@@ -67,7 +66,7 @@
                                     <li class="nav-item"><a class="nav-link" href="single-blog.html">Blog Details</a></li>
                                 </ul>
                             </li>
-                            <li class="nav-item submenu dropdown">
+                           @* <li class="nav-item submenu dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
                                    aria-expanded="false">Pages</a>
                                 <ul class="dropdown-menu">
@@ -75,7 +74,7 @@
                                     <li class="nav-item"><a class="nav-link" href="register.html">Register</a></li>
 
                                 </ul>
-                            </li>
+                            </li>*@
                             <li class="nav-item"><a class="nav-link" asp-action="Contact" asp-controller="Home">Contact</a></li>
                         </ul>
 
@@ -322,5 +321,6 @@
             });
         });
     </script>
+    @RenderSection("scripts", false)
 </body>
 </html>

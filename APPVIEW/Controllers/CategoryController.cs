@@ -1,9 +1,12 @@
 ﻿using APPDATA.Models;
 using APPVIEW.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Data;
 
 namespace APPVIEW.Controllers
 {
+   
     public class CategoryController : Controller
     {
         private Getapi<Category> getapi;
@@ -49,7 +52,6 @@ namespace APPVIEW.Controllers
             var lst = getapi.GetApi("Category");
             return View(lst.Find(c => c.Id == id));
         }
-
 
         [HttpPost]
         public async Task<IActionResult> Edit(Category obj)

@@ -7,6 +7,7 @@
 
 <div class="container-xxl flex-grow-1 container-p-y">
     <div class="row gy-4">
+
         <!-- Congratulations card -->
         <div class="col-md-12 col-lg-4">
             <div class="card">
@@ -114,37 +115,21 @@
         </div>
         <!--/ Transactions -->
         <!-- Weekly Overview Chart -->
-        <div class="col-xl-4 col-md-6">
+        <div class="col-xl-6 col-md-6">
             <div class="card">
                 <div class="card-header">
                     <div class="d-flex justify-content-between">
                         <h5 class="mb-1">Weekly Overview</h5>
-                        <div class="dropdown">
-                            <button class="btn p-0"
-                                    type="button"
-                                    id="weeklyOverviewDropdown"
-                                    data-bs-toggle="dropdown"
-                                    aria-haspopup="true"
-                                    aria-expanded="false">
-                                <i class="mdi mdi-dots-vertical mdi-24px"></i>
-                            </button>
-                            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="weeklyOverviewDropdown">
-                                <a class="dropdown-item" href="javascript:void(0);">Refresh</a>
-                                <a class="dropdown-item" href="javascript:void(0);">Share</a>
-                                <a class="dropdown-item" href="javascript:void(0);">Update</a>
-                            </div>
-                        </div>
                     </div>
                 </div>
                 <div class="card-body">
-                    <div id="weeklyOverviewChart"></div>
+                    <div id="container">
+                        <canvas id="weeklyChartview"></canvas>
+                    </div>
                     <div class="mt-1 mt-md-3">
                         <div class="d-flex align-items-center gap-3">
                             <h3 class="mb-0">45%</h3>
                             <p class="mb-0">Your sales performance is 45% 😎 better compared to last month</p>
-                        </div>
-                        <div class="d-grid mt-3 mt-md-4">
-                            <button class="btn btn-primary" type="button">Details</button>
                         </div>
                     </div>
                 </div>
@@ -152,110 +137,38 @@
         </div>
         <!--/ Weekly Overview Chart -->
         <!-- Total Earnings -->
-        <div class="col-xl-4 col-md-6">
+
+        <div class="col-xl-6 col-md-6">
             <div class="card">
-                <div class="card-header d-flex align-items-center justify-content-between">
-                    <h5 class="card-title m-0 me-2">Total Earning</h5>
-                    <div class="dropdown">
-                        <button class="btn p-0"
-                                type="button"
-                                id="totalEarnings"
-                                data-bs-toggle="dropdown"
-                                aria-haspopup="true"
-                                aria-expanded="false">
-                            <i class="mdi mdi-dots-vertical mdi-24px"></i>
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-end" aria-labelledby="totalEarnings">
-                            <a class="dropdown-item" href="javascript:void(0);">Last 28 Days</a>
-                            <a class="dropdown-item" href="javascript:void(0);">Last Month</a>
-                            <a class="dropdown-item" href="javascript:void(0);">Last Year</a>
+                <div class="card-header">
+                    <div class="d-flex justify-content-between">
+                        <h5 class="mb-1">Total Earnings Chart</h5>
+                        <div class="dropdown">
+                            <select id="select" class="form-control" style="width: 100%">
+                                @for (int year = DateTime.Now.Year; year >= 2015; year--)
+                                {
+                                    <option value="@year">@year</option>
+                                }
+                            </select>
                         </div>
                     </div>
                 </div>
                 <div class="card-body">
-                    <div class="mb-3 mt-md-3 mb-md-5">
-                        <div class="d-flex align-items-center">
-                            <h2 class="mb-0">$24,895</h2>
-                            <span class="text-success ms-2 fw-medium">
-                                <i class="mdi mdi-menu-up mdi-24px"></i>
-                                <small>10%</small>
-                            </span>
+                    <div class="container">
+                        <canvas id="revenueChart"></canvas>
+                    </div>  
+                    <div class="mt-1 mt-md-3">
+                        <div class="d-flex align-items-center gap-3">
+                            <h3 class="mb-0">45%</h3>
+                            <p class="mb-0">Your sales performance is 45% 😎 better compared to last month</p>
                         </div>
-                        <small class="mt-1">Compared to $84,325 last year</small>
                     </div>
-                    <ul class="p-0 m-0">
-                        <li class="d-flex mb-4 pb-md-2">
-                            <div class="avatar flex-shrink-0 me-3">
-                                <img src="../assets/img/icons/misc/zipcar.png" alt="zipcar" class="rounded" />
-                            </div>
-                            <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
-                                <div class="me-2">
-                                    <h6 class="mb-0">Zipcar</h6>
-                                    <small>Vuejs, React & HTML</small>
-                                </div>
-                                <div>
-                                    <h6 class="mb-2">$24,895.65</h6>
-                                    <div class="progress bg-label-primary" style="height: 4px">
-                                        <div class="progress-bar bg-primary"
-                                             style="width: 75%"
-                                             role="progressbar"
-                                             aria-valuenow="75"
-                                             aria-valuemin="0"
-                                             aria-valuemax="100"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </li>
-                        <li class="d-flex mb-4 pb-md-2">
-                            <div class="avatar flex-shrink-0 me-3">
-                                <img src="../assets/img/icons/misc/bitbank.png" alt="bitbank" class="rounded" />
-                            </div>
-                            <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
-                                <div class="me-2">
-                                    <h6 class="mb-0">Bitbank</h6>
-                                    <small>Sketch, Figma & XD</small>
-                                </div>
-                                <div>
-                                    <h6 class="mb-2">$8,6500.20</h6>
-                                    <div class="progress bg-label-info" style="height: 4px">
-                                        <div class="progress-bar bg-info"
-                                             style="width: 75%"
-                                             role="progressbar"
-                                             aria-valuenow="75"
-                                             aria-valuemin="0"
-                                             aria-valuemax="100"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </li>
-                        <li class="d-flex mb-md-3">
-                            <div class="avatar flex-shrink-0 me-3">
-                                <img src="../assets/img/icons/misc/aviato.png" alt="aviato" class="rounded" />
-                            </div>
-                            <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
-                                <div class="me-2">
-                                    <h6 class="mb-0">Aviato</h6>
-                                    <small>HTML & Angular</small>
-                                </div>
-                                <div>
-                                    <h6 class="mb-2">$1,2450.80</h6>
-                                    <div class="progress bg-label-secondary" style="height: 4px">
-                                        <div class="progress-bar bg-secondary"
-                                             style="width: 75%"
-                                             role="progressbar"
-                                             aria-valuenow="75"
-                                             aria-valuemin="0"
-                                             aria-valuemax="100"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </li>
-                    </ul>
                 </div>
             </div>
         </div>
+
         <!--/ Total Earnings -->
-        <!-- Four Cards -->
+@*         <!-- Four Cards -->
         <div class="col-xl-4 col-md-6">
             <div class="row gy-4">
                 <!-- Total Profit line chart -->
@@ -357,7 +270,7 @@
                 </div>
                 <!--/ Sessions chart -->
             </div>
-        </div>
+        </div> *@
         <!--/ Total Earning -->
         <!-- Sales by Countries -->
         <div class="col-xl-4 col-md-6">
@@ -850,7 +763,236 @@
             </div>
         </div>
         <!--/ Data Tables -->
+
+
+
+
+
+        <!--/Script xử lí -->
+
+        <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+        <script>
+            let yearlyChart;
+            var weeklyChart;
+
+
+            $(document).ready(function () {
+                // Khởi tạo biểu đồ ban đầu
+
+                // Mặc định chọn năm hiện tại
+                var currentYear = new Date().getFullYear();
+
+                // var currentDay = new Date();
+
+
+                $('#select').val(currentYear);
+
+                if (yearlyChart) {
+                    yearlyChart.destroy();
+                }
+
+                // Gọi hàm vẽ biểu đồ khi trang web được tải
+                DrawChartForYear(currentYear);
+                DrawWeeklyOverviewChart();
+
+                // Gọi hàm vẽ biểu đồ khi có sự kiện thay đổi năm
+                $('#select').on('change', function () {
+                    var selectedYear = $(this).val();
+                    DrawChartForYear(selectedYear);
+                });
+
+
+
+                // Hàm vẽ biểu đồ với dữ liệu từ API
+                function DrawChart(data) {
+
+                    // Xoá bảng cữ  (nếu tồn tại)
+                    if (yearlyChart) {
+                        yearlyChart.destroy();
+                    }
+                    const ctx = document.getElementById('revenueChart').getContext('2d');
+                    // Mảng chứa giá trị của 12 tháng
+                    var monthsData = new Array(12).fill(0);
+
+                    // Ánh xạ dữ liệu từ API vào mảng đầy đủ của 12 tháng
+                    data.values.forEach(function (value, index) {
+                        // Tháng được trả về từ API là 1-indexed, chuyển về 0-indexed
+                        var a = data.labels[index] - 1;
+
+                        monthsData[a] = value;
+                    });
+
+
+                    yearlyChart = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                            datasets: [{
+                                label: data.label,
+                                data: monthsData,
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            }
+                        }
+                    });
+                }
+
+
+                // Hàm gọi API và vẽ biểu đồ cho năm được chọn
+                function DrawChartForYear(selectedYear) {
+                    // test case = 2023
+                    // Gửi yêu cầu Ajax để lấy dữ liệu
+                    $.ajax({
+                        url: 'https://localhost:7042/api/Chart/' + selectedYear,
+                        method: 'GET',
+                        dataType: 'json',
+                        success: function (data) {
+                            // console.log(data);
+                            // Nếu có dữ liệu từ API, gọi hàm để vẽ biểu đồ
+                            if (data && data.values && data.label) {
+                                DrawChart(data);
+                            } else {
+                                console.error('Invalid data received from API');
+                            }
+                        },
+                        error: function (error) {
+                            console.error('Error fetching data:', error);
+                        }
+                    });
+                }
+
+
+                function DrawWeeklyChart(data) {
+                    // var currentDay = new Date('12/1/2023');
+                    var currentDay = new Date();
+
+                    const ctx = document.getElementById('weeklyChartview').getContext('2d');
+                    if (weeklyChart) {
+                        weeklyChart.destroy();
+                    }
+
+                    // Mảng chứa giá trị của 7 ngày gần nhất
+                    var dayData = new Array(7).fill(0);
+
+                    // Mảng chứa nhãn của 7 ngày gần nhất với định dạng ngày/tháng
+                    var labels = [];
+                    for (var i = 7; i >= 0; i--) {
+                        var date = new Date(currentDay);
+                        date.setDate(currentDay.getDate() - i);
+
+                        var day = date.getDate();
+                        var month = date.getMonth() + 1;
+
+                        // Định dạng ngày và tháng thành "dd/mm" và thêm vào mảng labels
+                        var formattedDate = `${day < 10 ? '0' : ''}${day}/${month < 10 ? '0' : ''}${month}`;
+                        labels.push(formattedDate);
+                    }
+
+
+                    // 28/11 29/11 30/11 01/12 02/12 03/12 04/12
+                    // 00000 00001 00002 00003 00004 00005 00006
+                    //   i =2 ;
+                    //  j = i >> j = 2;
+                    var z = labels[0].slice(0, 2);
+                    console.log(z); //z =22
+                    var k = 0;
+                    var dayIndex = 0;
+                    var biengancuaIndex = 0;
+                    // Ánh xạ dữ liệu từ API vào mảng của 7 ngày gần nhất
+                    data.values.forEach(
+
+                        function (value, index) {
+                            k = index + 1;
+                            // 25/11
+                            var day = data.labels[index]; // 11/25/2023 hoặc 1/12/2023 hoặc 12/01/2023
+                            var daydate;
+
+                            // Kiểm tra định dạng dd/mm/yyyy
+                            if (day.length === 10) {
+                                daydate = day.slice(3, 5); // Lấy ngày từ vị trí 3 đến 4 trong chuỗi
+                            }
+                            // Kiểm tra định dạng d/mm/yyyy
+                            else if (day.length === 9 && day.indexOf("/") === 1) {
+                                daydate = day.slice(2, 3); // Lấy ngày từ vị trí 2 trong chuỗi
+                            }
+                            // Kiểm tra định dạng dd/m/yyyy
+                            else if (day.length === 9 && day.indexOf("/") === 2) {
+                                daydate = day.slice(3, 4); // Lấy ngày từ vị trí 3 trong chuỗi
+                            }
+                            // Kiểm tra định dạng d/m/yyyy
+                            else if (day.length === 8 && day.indexOf("/") === 1) {
+                                daydate = day.slice(2, 3); // Lấy ngày từ vị trí 2 trong chuỗi
+                            }
+                            // Kiểm tra định dạng dd/m/yyyy hoặc d/mm/yyyy
+                            else if (day.length === 8 && day.indexOf("/") === 2) {
+                                daydate = day.slice(3, 4); // Lấy ngày từ vị trí 3 trong chuỗi
+                            }
+
+                            console.log("Ngày là: " + daydate);
+
+                            dayIndex = daydate - z;
+
+                            if (dayIndex < 0) {
+                                dayData[biengancuaIndex++] = value;
+                            }
+                            else {
+                                dayData[dayIndex] = value;
+                                biengancuaIndex = dayIndex + 1;
+                            }
+                        }
+                    );
+
+                    weeklyChart = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: labels,
+                            datasets: [{
+                                label: data.label,
+                                data: dayData,
+                                borderWidth: 1
+                            }]
+                        },
+                        options: {
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            }
+                        }
+                    });
+                }
+
+                function DrawWeeklyOverviewChart() {
+                    $.ajax({
+                        url: 'https://localhost:7042/api/Chart/weekly',
+                        method: 'GET',
+                        dataType: 'json',
+                        success: function (data) {
+                            // console.log(data);
+                            if (data && data.labels && data.values && data.label) {
+                                DrawWeeklyChart(data);
+
+                            } else {
+                                console.error('Invalid data received from API');
+                            }
+                        },
+                        error: function (error) {
+                            console.error('Error fetching data:', error);
+                        }
+                    });
+                }
+            });
+        </script>
     </div>
+
 </div>
 
 
