@@ -15,9 +15,47 @@
         <h5 class="mb-0">Roles</h5>
     </div>
     <div class="card-body">
-        <a class="btn btn-success waves-effect waves-light"   asp-action="Create">
+        <a class="btn btn-success waves-effect waves-light" asp-action="Create">
             <span class="mdi mdi-plus-thick">Create new</span>
         </a>
+        <div class="col-lg-4 col-md-6">
+            <small class="text-light fw-medium mb-3">Enable backdrop (default)</small>
+            <div class="mt-3">
+                <button class="btn btn-primary"
+                        type="button"
+                        data-bs-toggle="offcanvas"
+                        data-bs-target="#offcanvasBackdrop"
+                        aria-controls="offcanvasBackdrop">
+                    Enable backdrop
+                </button>
+                <div class="offcanvas offcanvas-end"
+                     tabindex="-1"
+                     id="offcanvasBackdrop"
+                     aria-labelledby="offcanvasBackdropLabel">
+                    <div class="offcanvas-header">
+                        <h5 id="offcanvasBackdropLabel" class="offcanvas-title">Enable backdrop</h5>
+                        <button type="button"
+                                class="btn-close text-reset"
+                                data-bs-dismiss="offcanvas"
+                                aria-label="Close"></button>
+                    </div>
+                    <div class="offcanvas-body my-auto mx-0 flex-grow-0">
+                        <p class="text-center">
+                            Lorem ipsum, or lipsum as it is sometimes known, is dummy text used in laying out print,
+                            graphic or web designs. The passage is attributed to an unknown typesetter in the 15th
+                            century who is thought to have scrambled parts of Cicero's De Finibus Bonorum et Malorum
+                            for use in a type specimen book.
+                        </p>
+                        <button type="button" class="btn btn-primary mb-2 d-grid w-100">Continue</button>
+                        <button type="button"
+                                class="btn btn-outline-secondary d-grid w-100"
+                                data-bs-dismiss="offcanvas">
+                            Cancel
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <div class="table-responsive">
             <table class="table table-hover">
@@ -30,13 +68,30 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @if (Model != null && Model.Any())
+                    @if (Model.Any())
                     {
                         @foreach (var item in Model)
                         {
                             <tr>
                                 <td>@(stt += 1)</td>
-                                <td>@Html.DisplayFor(modelItem => item.name)</td>
+                                <td>
+                                    @if (item.name != null)
+                                    {
+                                        @if (item.name.Contains("Admin"))
+                                        {
+                                            <span class="mdi mdi-laptop mdi-24px text-danger me-1"></span>
+                                        }
+                                        else if (item.name.Contains("Customer"))
+                                        {
+                                            <span class="mdi mdi-account-outline mdi-24px text-primary me-1"></span>
+                                        }
+                                        else if (item.name.Contains("Staff"))
+                                        {
+                                            <span class="mdi mdi-cog-outline text-warning mdi-24px me-1"></span>
+                                        }
+                                        @Html.DisplayFor(modelItem => item.name)
+                                    }
+                                </td>
                                 <td>
                                     <span class="badge @(item.Status == 1 ? "badge rounded-pill bg-label-success" : "badge rounded-pill bg-label-danger")">
                                         @(item.Status == 1 ? "Using" : "Not use")
@@ -44,14 +99,13 @@
                                 </td>
 
                                 <td>
-                                    <a href="@Url.Action("Edit", new { id = item.id  })" class="btn btn-info waves-effect waves-light">
+                                    <a href="@Url.Action("Edit", new { id = item.id })" class="btn btn-info waves-effect waves-light">
                                         <span class="mdi mdi-pencil-box-outline"></span>Edit
                                     </a>
-                                    <a href="@Url.Action("Delete", new { id = item.id  })" class="btn btn-danger waves-effect waves-light">
+                                    <a href="@Url.Action("Delete", new { id = item.id })" class="btn btn-danger waves-effect waves-light">
                                         <span class="mdi mdi-delete"></span>Delete
                                     </a>
                                 </td>
-
                             </tr>
                         }
                     }
@@ -62,6 +116,7 @@
                         </tr>
                     }
                 </tbody>
+
             </table>
         </div>
     </div>

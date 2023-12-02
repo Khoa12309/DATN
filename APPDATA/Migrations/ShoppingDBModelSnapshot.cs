@@ -53,6 +53,9 @@ namespace APPDATA.Migrations
                     b.Property<string>("ResetPasswordcode")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
                     b.Property<DateTime>("Update_date")
                         .HasColumnType("datetime2");
 
@@ -95,6 +98,9 @@ namespace APPDATA.Migrations
 
                     b.Property<string>("SpecificAddress")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.Property<string>("Ward")
                         .HasColumnType("nvarchar(max)");
@@ -735,9 +741,8 @@ namespace APPDATA.Migrations
                     b.Property<DateTime>("Update_date")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Value")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Value")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
