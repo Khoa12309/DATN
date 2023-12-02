@@ -409,7 +409,7 @@ namespace APPVIEW.Controllers
                 var productsWithImages = productDetails
                     .Join(img, pd => pd.Id, pi => pi.IdProductdetail, (pd, pi) => new { ProductDetail = pd, Image = pi })
                     .ToList();
-
+              
                 // Sắp xếp danh sách sản phẩm tùy thuộc vào tham số sortOrder
                 switch (sortOrder)
                 {
@@ -420,6 +420,11 @@ namespace APPVIEW.Controllers
                         productsWithImages = productsWithImages.OrderByDescending(item => item.ProductDetail.Price).ToList();
                         break;
                     default:
+                        if (sortOrder!=null)
+                        {
+                            productsWithImages = productsWithImages.Where(c => c.ProductDetail.Name.ToLower().Contains(sortOrder.ToLower())).ToList();
+                        }
+                        
                         break;
                 }
 

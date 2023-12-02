@@ -139,6 +139,14 @@
                             <option value="60">Show 60</option>
                         </select>
                     </div>
+                    <div class="sorting mr-auto">
+                        <form asp-action="Shop">
+
+                            <input name="sortOrder" />
+                            <button type="submit" class="btn btn-light" style="font-size: 18px; border-radius: inherit"><i class='bx bx-sort-alt-2'></i></button>
+
+                         </form>
+                    </div>
                     <div>
                         <div class="input-group filter-bar-search">
                             <form id="sortForm" method="get" asp-action="Shop">
