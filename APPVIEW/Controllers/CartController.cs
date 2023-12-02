@@ -255,12 +255,11 @@ namespace APPVIEW.Controllers
         {
 
             loadcart();
-            var products = SessionService.GetObjFromSession(HttpContext.Session, "Cart");
             ViewBag.Img = getapiImg.GetApi("Image");
           
             ViewBag.Color = getapiColor.GetApi("Color");
             ViewBag.Size = getapiSize.GetApi("Size");
-          
+            var products = SessionService.GetObjFromSession(HttpContext.Session, "Cart");
             double tiensp =0;
             foreach (var item in products)
             {

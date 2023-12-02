@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace APPDATA.Migrations
 {
     [DbContext(typeof(ShoppingDB))]
-    [Migration("20231124145917_AddDb")]
+    [Migration("20231201023836_AddDb")]
     partial class AddDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -54,6 +54,9 @@ namespace APPDATA.Migrations
 
                     b.Property<string>("ResetPasswordcode")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("Update_date")
                         .HasColumnType("datetime2");
@@ -98,6 +101,9 @@ namespace APPDATA.Migrations
                     b.Property<string>("SpecificAddress")
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
                     b.Property<string>("Ward")
                         .HasColumnType("nvarchar(max)");
 
@@ -127,7 +133,7 @@ namespace APPDATA.Migrations
                     b.Property<DateTime?>("CreateBy")
                         .HasColumnType("datetime2");
 
-                    b.Property<DateTime?>("CreateDate")
+                    b.Property<DateTime>("CreateDate")
                         .HasColumnType("datetime2");
 
                     b.Property<float?>("MoneyReduce")
@@ -737,9 +743,8 @@ namespace APPDATA.Migrations
                     b.Property<DateTime>("Update_date")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Value")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Value")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 

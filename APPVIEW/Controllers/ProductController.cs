@@ -2,6 +2,7 @@
 using APPVIEW.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using X.PagedList;
 
 namespace APPVIEW.Controllers
 {
@@ -14,10 +15,12 @@ namespace APPVIEW.Controllers
             getapi = new Getapi<Product>();
         }
 
-        public async Task<IActionResult> GetList()
+        public async Task<IActionResult> GetList(int? page)
         {
             var obj = getapi.GetApi("Product");
-            return View(obj);
+            int pageSize = 8;
+            int pageNumber = (page ?? 1);
+            return View(obj.OrderByDescending(x => x.Id).ToPagedList(pageNumber, pageSize));
         }
 
         public async Task<IActionResult> Search(string searchTerm)

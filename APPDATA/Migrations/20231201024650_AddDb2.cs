@@ -4,7 +4,7 @@
 
 namespace APPDATA.Migrations
 {
-    public partial class lan6 : Migration
+    public partial class AddDb2 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
