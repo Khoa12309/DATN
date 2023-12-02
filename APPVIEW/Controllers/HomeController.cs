@@ -180,7 +180,7 @@ namespace APPVIEW.Controllers
            await   bills.UpdateObj(x, "Bill");
             return RedirectToAction("Thongtin");
         }
-        public IActionResult HuyDon(Guid id)
+        public async Task<IActionResult> HuyDon(Guid id)
         {
             var x = bills.GetApi("Bill").FirstOrDefault(c => c.id == id);
             x.Status = 0;
