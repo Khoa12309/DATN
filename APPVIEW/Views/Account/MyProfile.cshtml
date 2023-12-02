@@ -57,13 +57,36 @@
                         <input asp-for=PhoneNumber type="text" class="form-control" placeholder="Enter your phone number" value="@Model.PhoneNumber">
                     </div>
                     <div class="row mb-3">
-                        <div class="col-md-6">
+                        <div class="col-md-4">
+                            <label asp-for=Province class="labels">Province</label>
+                            <select class="country_select" id="countrySelect" asp-for="Province" size="8">
+                                @foreach (var item in ViewBag.province)
+                                {
+                                    if (Model != null)
+                                    {
+                                        if (item.ProvinceName == Model.Province)
+                                        {
+                                            <option selected value="@item.ProvinceID">@item.ProvinceName</option>
+                                        }
+                                    }
+
+                                    <option value="@item.ProvinceID">@item.ProvinceName</option>
+                                }
+                            </select>
+                        </div> <div class="col-md-4">
                             <label asp-for=District class="labels">District</label>
-                            <input asp-for=District type="text" class="form-control" placeholder="Enter your District" value="@Model.District">
+                         @*   <input asp-for=District type="text" class="form-control" placeholder="Enter your District" value="@Model.District">*@
+                            <input list="districtSelect" class="form-control" id="district" placeholder="chọn quận huyện" asp-for="District">
+
+                            <datalist id="districtSelect">
+                            </datalist>
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-4">
                             <label asp-for=Ward class="labels">Ward</label>
-                            <input asp-for=Ward type="text" class="form-control" placeholder="Enter your Ward" value="@Model.Ward">
+                          @* <input asp-for=Ward type="text" class="form-control" placeholder="Enter your Ward" value="@Model.Ward">*@
+                            <input list="wardSelect" class="form-control" id="ward" placeholder="chọn phường xã" asp-for="Ward">
+                            <datalist id="wardSelect">
+                            </datalist>
                         </div>
                     </div>
                     <div class="row mb-3">
@@ -77,14 +100,7 @@
                         </div>
                     </div>
                     <div class="row mb-3">
-                        <div class="col-md-6">
-                            <label asp-for=Province class="labels">Province</label>
-                            <input asp-for=Province type="text" class="form-control" placeholder="Enter your Province" value="@Model.Province">
-                        </div>
-                        <div class="col-md-6">
-                            <label asp-for=City class="labels">City</label>
-                            <input asp-for=City type="text" class="form-control" placeholder="Enter your City" value="@Model.City">
-                        </div>                        
+                                   
                         <div class="col-md-6">
                             <label asp-for=Avatar class="labels">Avatar</label>
                             <input asp-for="Avatar" class="form-control" type="file" name="imageFile" />
@@ -131,7 +147,116 @@
     });
 </script>
 
+<script>
 
+    // Lấy tham chiếu đến thẻ select bằng id
+    var select = document.getElementById("countrySelect");
+    var selectDistrict = document.getElementById("districtSelect");
+    var selectWard = document.getElementById("wardSelect");
+    var ldistrict = new Array();
+    var lward = new Array();
+    var iddis = 0;
+    var idwar = 0;
+    var inputdis = document.getElementById("district");
+    var inputward = document.getElementById("ward");
+    var btncf = document.getElementById("btncf");
+
+
+
+    // Thêm một sự kiện onchange cho thẻ select
+    select.onchange = function () {
+        // Lấy giá trị được chọn trong thẻ select
+        var selectedCountry = select.value;
+        ldistrict.splice(0, ldistrict.length);
+        $("#districtSelect").empty(); // Xóa tất cả các thẻ option trong phần tử select có id là DropList
+        $("#wardSelect").empty();
+        inputdis.value = "";
+        inputward.value = "";
+   
+        // Sử dụng fetch() để gửi một request GET đến /Home/GetUsers
+        fetch("/Home/district", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            }, provinceid: selectedCountry,
+            body: provinceid = selectedCountry
+        })
+            .then(response => response.json()) // Chuyển đổi response thành JSON
+            .then(data => {
+
+                // Xử lý dữ liệu JSON
+
+                data.forEach(function (districs) {
+                    ldistrict.push(districs);
+                    console.log(ldistrict);
+                    // Duyệt qua mảng các user
+                    var option = document.createElement("option"); // Tạo một phần tử option mới
+                    option.innerHTML = districs.districtID; // Gán giá trị cho option
+                    option.value = districs.districtName; // Gán nội dung hiển thị cho option
+                    selectDistrict.appendChild(option); // Thêm option vào thẻ select
+
+                });
+
+            })
+            .catch(error => {
+                // Xử lý lỗi
+                console.error(error); // In ra lỗi
+            });
+
+    };
+
+    //chọn phường
+    inputdis.onchange = function () {
+        // Lấy giá trị được chọn trong thẻ select
+        var district = 0;
+        lward.splice(0, ldistrict.length);
+        ldistrict.forEach(function (id) {
+            if (id.districtName == inputdis.value) {
+                district = id.districtID;
+                iddis = id.districtID;
+            }
+
+        });
+        console.log(iddis);
+        $("#wardSelect").empty(); // Xóa tất cả các thẻ option trong phần tử select có id là DropList
+
+
+        // Sử dụng fetch() để gửi một request GET đến /Home/GetUsers
+        fetch("/Home/ward", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            }, districtid: district,
+            body: districtid = district
+        })
+            .then(response => response.json()) // Chuyển đổi response thành JSON
+            .then(data => {
+
+                // Xử lý dữ liệu JSON
+
+                data.forEach(function (ward) {
+
+                    // Duyệt qua mảng các user
+                    var option = document.createElement("option"); // Tạo một phần tử option mới
+                    option.innerHTML = ward.wardCode; // Gán giá trị cho option
+                    option.value = ward.wardName; // Gán nội dung hiển thị cho option
+                    selectWard.appendChild(option); // Thêm option vào thẻ select
+                    lward.push(ward);
+
+
+                });
+            })
+            .catch(error => {
+                // Xử lý lỗi
+                console.error(error); // In ra lỗi
+            });
+    };
+
+   
+
+
+
+</script>
 
 
 

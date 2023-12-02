@@ -23,6 +23,7 @@ using System.Xml.Linq;
 using X.PagedList;
 
 using APPVIEW.Models;
+using _APPAPI.ViewModels;
 
 namespace APPVIEW.Controllers
 {
@@ -351,6 +352,17 @@ namespace APPVIEW.Controllers
         [HttpGet, Authorize(Roles = "Admin,Staff,Customer")]
         public async Task<IActionResult> MyProfile(Guid id_User)
         {
+            var client = new OnlineGatewayClient($"https://online-gateway.ghn.vn/shiip/public-api/master-data/province", "bdbbde2a-fec2-11ed-8a8c-6e4795e6d902");
+            // Lấy thông tin voucher từ TempData
+            var discountAmountString = TempData["DiscountAmount"] as string;
+            var voucherCode = TempData["VoucherCode"] as string;
+            // Gọi API để lấy danh sách các tỉnh/thành phố
+            var response = await client.GetProvincesAsync();
+            if (response.Code == 200) // Thành công
+            {
+                // Trả về danh sách các quận/huyện dưới dạng JSON
+                ViewBag.province = response.Data;
+            }
 
             var obj = getapi.GetApi("Account");
             var address = getapiAddress.GetApi("Address");
@@ -410,12 +422,17 @@ namespace APPVIEW.Controllers
         {
             try
             {
-
+                var client = new OnlineGatewayClient($"https://online-gateway.ghn.vn/shiip/public-api/master-data/province", "bdbbde2a-fec2-11ed-8a8c-6e4795e6d902");
+                // Gọi API để lấy danh sách các tỉnh/thành phố
+                var response = await client.GetProvincesAsync();
+                foreach (var item in response.Data)
+                {
+                    if (item.ProvinceID.ToString() == obj.Province)
+                    {
+                        obj.Province = item.ProvinceName; break;
+                    }
+                }
                 var user = new Account();
-
-
-
-
                 if (imageFile != null)
                 {
                     user.Id = obj.AccountId;
@@ -425,8 +442,6 @@ namespace APPVIEW.Controllers
                     user.IdRole = obj.Id_Role;
                     user.Avatar = AddImg(imageFile);
                 }
-
-
                 var address = new Address()
                 {
                     AccountId = obj.AccountId,
