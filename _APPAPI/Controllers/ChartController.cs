@@ -93,16 +93,17 @@ namespace _APPAPI.Controllers
                 int currentYear = currentDate.Year;
 
                 var soldProducts = from products in _context.Products
-                                         join details in _context.ProductDetails on products.Id equals details.Id_Product
-                                         join billdetails in _context.BillDetails on details.Id equals billdetails.ProductDetailID
-                                         join bills in _context.Bills on billdetails.BIllId equals bills.id
-                                         where bills.Status == 4
-                                         select new
-                                         {
-                                             ProductName = products.Name,
-                                             QuantitySold = details.Quantity,
-                                             TotalEarnings = bills.TotalMoney
-                                         };
+                                   join details in _context.ProductDetails on products.Id equals details.Id_Product
+                                   join billdetails in _context.BillDetails on details.Id equals billdetails.ProductDetailID
+                                   join bills in _context.Bills on billdetails.BIllId equals bills.id
+                                   where bills.Status == 4
+                                   group new { products, details, billdetails, bills } by new { products.Name } into grouped
+                                   select new
+                                   {
+                                       ProductName = grouped.Key.Name,
+                                       QuantitySold = grouped.Sum(x => x.billdetails.Amount),
+                                       TotalEarnings = grouped.Sum(x => x.bills.TotalMoney)
+                                   };
 
                 return Ok(soldProducts.ToList());
             }
@@ -111,5 +112,6 @@ namespace _APPAPI.Controllers
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
     }
 }
