@@ -4,7 +4,6 @@
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
 
-
 <div class="container-xxl flex-grow-1 container-p-y">
     <div class="row gy-4">
 
@@ -295,7 +294,20 @@
                 </div>
                 <div class="card-body">
                     <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
-                        <div class="d-flex align-items-center">
+
+
+                        <!-- HTML cho hiển thị dữ liệu -->
+                        <table class="table" id="productTable">
+                            <thead>
+                                <tr>
+                                    <th>Product Name</th>
+                                    <th>Quantity Sold</th>
+                                    <th>Total Earnings</th>
+                                </tr>
+                            </thead>
+                            <tbody></tbody>
+                        </table>
+ @*                        <div class="d-flex align-items-center">
                             <div class="avatar me-3">
                                 <div class="avatar-initial bg-label-success rounded-circle">US</div>
                             </div>
@@ -311,65 +323,9 @@
                         <div class="text-end">
                             <h6 class="mb-0">894k</h6>
                             <small>Sales</small>
-                        </div>
+                        </div> *@
                     </div>
-                    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
-                        <div class="d-flex align-items-center">
-                            <div class="avatar me-3">
-                                <span class="avatar-initial bg-label-danger rounded-circle">UK</span>
-                            </div>
-                            <div>
-                                <div class="d-flex align-items-center gap-1">
-                                    <h6 class="mb-0">$2,415k</h6>
-                                    <i class="mdi mdi-chevron-down mdi-24px text-danger"></i>
-                                    <small class="text-danger">6.2%</small>
-                                </div>
-                                <small>United Kingdom</small>
-                            </div>
-                        </div>
-                        <div class="text-end">
-                            <h6 class="mb-0">645k</h6>
-                            <small>Sales</small>
-                        </div>
-                    </div>
-                    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
-                        <div class="d-flex align-items-center">
-                            <div class="avatar me-3">
-                                <span class="avatar-initial bg-label-warning rounded-circle">IN</span>
-                            </div>
-                            <div>
-                                <div class="d-flex align-items-center gap-1">
-                                    <h6 class="mb-0">865k</h6>
-                                    <i class="mdi mdi-chevron-up mdi-24px text-success"></i>
-                                    <small class="text-success"> 12.4%</small>
-                                </div>
-                                <small>India</small>
-                            </div>
-                        </div>
-                        <div class="text-end">
-                            <h6 class="mb-0">148k</h6>
-                            <small>Sales</small>
-                        </div>
-                    </div>
-                    <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
-                        <div class="d-flex align-items-center">
-                            <div class="avatar me-3">
-                                <span class="avatar-initial bg-label-secondary rounded-circle">JA</span>
-                            </div>
-                            <div>
-                                <div class="d-flex align-items-center gap-1">
-                                    <h6 class="mb-0">$745k</h6>
-                                    <i class="mdi mdi-chevron-down mdi-24px text-danger"></i>
-                                    <small class="text-danger">11.9%</small>
-                                </div>
-                                <small>Japan</small>
-                            </div>
-                        </div>
-                        <div class="text-end">
-                            <h6 class="mb-0">86k</h6>
-                            <small>Sales</small>
-                        </div>
-                    </div>
+@* 
                     <div class="d-flex flex-wrap justify-content-between align-items-center">
                         <div class="d-flex align-items-center">
                             <div class="avatar me-3">
@@ -388,7 +344,7 @@
                             <h6 class="mb-0">42k</h6>
                             <small>Sales</small>
                         </div>
-                    </div>
+                    </div> *@
                 </div>
             </div>
         </div>
@@ -936,7 +892,7 @@
                                 daydate = day.slice(3, 4); // Lấy ngày từ vị trí 3 trong chuỗi
                             }
 
-                            console.log("Ngày là: " + daydate);
+                            // console.log("Ngày là: " + daydate);
 
                             dayIndex = daydate - z;
 
@@ -989,6 +945,33 @@
                         }
                     });
                 }
+                // Danh sách sản phẩm
+                // Gọi API khi trang được tải
+                $.ajax({
+                    url: 'https://localhost:7042/api/Chart/SoldProductsByMonth',
+                    method: 'GET',
+                    success: function (data) {
+                        console.log(data); // Kiểm tra dữ liệu trong console log
+                        // Xử lý dữ liệu và cập nhật HTML
+                        var tableBody = $('#productTable tbody');
+                        tableBody.empty();
+
+                        $.each(data, function (index, product) {
+                            console.log(product); // Kiểm tra từng sản phẩm trong console log để xem cấu trúc dữ liệu
+                            var row = '<tr>' +
+                                '<td>' + product.ProductName + '</td>' +
+                                '<td>' + product.QuantitySold + '</td>' +
+                                '<td>' + product.TotalEarnings + '</td>' +
+                                '</tr>';
+
+                            tableBody.append(row);
+                        });
+                    },
+                    error: function (error) {
+                        // Xử lý lỗi nếu có
+                        console.error('Error fetching data:', error);
+                    }
+                });
             });
         </script>
     </div>
