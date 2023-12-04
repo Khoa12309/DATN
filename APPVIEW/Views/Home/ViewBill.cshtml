@@ -3,7 +3,7 @@
     Layout = "~/Views/Shared/_LayoutWeb.cshtml";
     Guid id;
     ViewBag.Tinh = "";
-    
+
 }
 
 
@@ -100,13 +100,14 @@
 <!-- ================ end banner area ================= -->
 <!--================Checkout Area =================-->
 <section class="order_details section-margin--small">
-            <div class="container">
-        
+    <div class="container">
+
         <div>
             <div class="row">
 
                 <div class="col-lg-8">
                     <h3>Đơn hàng</h3>
+
                     <img src="~/images/@ViewBag.image.Name" style="width: 250px; height:auto;margin-top : 50px;margin-bottom:50px" alt="">
                     <form class="row contact_form" action="~/home/dathang" method="post" novalidate="novalidate">
                         <input type="hidden" name="productId" value="@ViewBag.id" />
@@ -123,14 +124,14 @@
                                         if (item.Id_Size == size.Id)
                                         {
                                             <option value="@item.Id_Size"> @size.Name</option>
-                                           
+
                                         }
                                     }
                                 }
                             </select>
                         </div>
                         <div class="col-md-12 form-group">
-                            <select name="color" class="form-select">
+                            <select id="color" name="color" class="form-select">
                                 <option value=""> Chọn Màu </option>
                                 @foreach (var item in ViewBag.prd)
                                 {
@@ -139,75 +140,93 @@
                                         if (item.Id_Color == color.Id)
                                         {
                                             <option value="@item.Id_Color"> @color.Name</option>
-                                         
+
                                         }
                                     }
                                 }
                             </select>
-                           
+
                         </div>
                         <div class="col-md-2 form-group">
-                            <input type="text" class="form-control"  name="soluong" placeholder="Số lượng">
+                            <input type="text" class="form-control" name="soluong" placeholder="Số lượng">
                         </div>
                         <div class="col-md-4 form-group">
-                            <input type="text" class="form-control"  name="sdt" placeholder="SDT">
+                            <input type="text" class="form-control" name="sdt" placeholder="SDT">
                         </div>
-                       
-                     
-                     
-                    
-                        <div class="col-md-12 form-group p_star">
+                        <div class="col-md-12 form-group">
                             <div class="row">
-                                <div class="col-lg-4">
-                                    <select class="country_select" id="countrySelect" name="province">
-                                        @foreach (var item in ViewBag.province)
-                                        {
-                                            <option value="@item.ProvinceID">@item.ProvinceName</option>
-                                            
-
-                                        }
-
-                                    </select>
-                                    <input type="hidden" name="province2" value="" />
-                                </div>
-                                <div class="col-lg-4">
-
-                                    <input list="districtSelect" id="district" name="district" placeholder="Chọn quận huyện">
-                                    <datalist id="districtSelect">
-                                    </datalist>
-                                </div>
-                                <div class="col-lg-4">
-
-                                    <input list="wardSelect" id="ward" name="ward" placeholder="Chọn xã phường">
-                                    <datalist id="wardSelect">
-                                    </datalist>
-                                </div>
-                                <div class="col-md-7 form-group">
-                                    <input type="text" style="margin-top:10px" class="form-control" name="diachict" placeholder="Địa chỉ cụ thể">
+                                <div class="col-lg-8">
+                                    <span name="error" style="color:red;margin-left:15px;font-size:revert"></span><br>
+                                    <div />
                                 </div>
                             </div>
 
-                        </div>
+
+                            <div class="col-md-12 form-group">
+                                <div class="row">
+                                    <div class="col-lg-3">
+                                        <button style="margin-bottom: 20px" type="button" id="submitOrder" class="button button-paypal">Xác nhận</button>
+                                        <div />
+                                    </div>
+                                </div>
 
 
-                        <div class="col-md-12 form-group">
-                         
-                             
-                            
-                                <ul class="list list_2">
-                                   
-                                    <li><a href="#" style="text-decoration:none;color:black">Phí ship :  <span><input width="30px" style="height:30px;border:none" readonly id="feeship" name="ship"></span></a></li>
-                                   
-                                </ul>
-                       
-                        </div>
-                        <div class="text-center  form-group">
-                            <button type="submit" class="button button-paypal">Order Confirmation</button>
-                        </div>
+
+
+
+
+                                <div class="col-md-12 form-group p_star">
+                                    <div class="row">
+                                        <div class="col-lg-4">
+                                            <select class="country_select" id="countrySelect" name="province">
+                                                @foreach (var item in ViewBag.province)
+                                                {
+                                                    <option value="@item.ProvinceID">@item.ProvinceName</option>
+
+
+                                                }
+
+                                            </select>
+                                            <input type="hidden" name="province2" value="" />
+                                        </div>
+                                        <div class="col-lg-4">
+
+                                            <input list="districtSelect" id="district" name="district" placeholder="Chọn quận huyện">
+                                            <datalist id="districtSelect">
+                                            </datalist>
+                                        </div>
+                                        <div class="col-lg-4">
+
+                                            <input list="wardSelect" id="ward" name="ward" placeholder="Chọn xã phường">
+                                            <datalist id="wardSelect">
+                                            </datalist>
+                                        </div>
+                                        <div class="col-md-7 form-group">
+                                            <input type="text" style="margin-top:10px" class="form-control" name="diachict" placeholder="Địa chỉ cụ thể">
+                                        </div>
+                                    </div>
+
+                                </div>
+
+
+                                <div class="col-md-12 form-group">
+
+
+
+                                    <ul class="list list_2">
+
+                                        <li><a href="#" style="text-decoration:none;color:black">Phí ship :  <span><input width="30px" style="height:30px;border:none" readonly id="feeship" name="ship"></span></a></li>
+
+                                    </ul>
+
+                                </div>
+                                <div class="text-center  form-group">
+                                    <button type="submit" class="button button-paypal">Order Confirmation</button>
+                                </div>
 
                     </form>
                 </div>
-               
+
 
 
 
@@ -222,10 +241,10 @@
     var select = document.getElementById("countrySelect");
     var selectDistrict = document.getElementById("districtSelect");
     var selectWard = document.getElementById("wardSelect");
-    var ldistrict= new Array();
-    var lward= new Array();
-    var iddis=0;
-    var idwar=0;
+    var ldistrict = new Array();
+    var lward = new Array();
+    var iddis = 0;
+    var idwar = 0;
     var inputdis = document.getElementById("district");
     var inputward = document.getElementById("ward");
     // Thêm một sự kiện onchange cho thẻ select
@@ -235,8 +254,8 @@
         ldistrict.splice(0, ldistrict.length);
         $("#districtSelect").empty(); // Xóa tất cả các thẻ option trong phần tử select có id là DropList
         $("#wardSelect").empty();
-        inputdis.value="";
-        inputward.value="";
+        inputdis.value = "";
+        inputward.value = "";
         // Sử dụng fetch() để gửi một request GET đến /Home/GetUsers
         fetch("/Home/district", {
             method: "POST",
@@ -275,8 +294,8 @@
         // Lấy giá trị được chọn trong thẻ select
         var district = 0;
         lward.splice(0, ldistrict.length);
-        ldistrict.forEach(function(id){
-            if (id.districtName==inputdis.value){
+        ldistrict.forEach(function (id) {
+            if (id.districtName == inputdis.value) {
                 district = id.districtID;
                 iddis = id.districtID;
             }
@@ -321,12 +340,12 @@
     inputward.onchange = function () {
         // Lấy giá trị được chọn trong thẻ select
         var district = 0;
-        var ward= 0
+        var ward = 0
         lward.forEach(function (id) {
             if (id.wardName == inputward.value) {
 
                 idwar = id.wardCode;
-              ward=id.wardCode;
+                ward = id.wardCode;
             }
 
         });
@@ -348,7 +367,7 @@
 
                 // Xử lý dữ liệu JSON
 
-            console.log(data.total);
+                console.log(data.total);
 
 
                 document.getElementById("feeship").value = data.total;
@@ -379,5 +398,56 @@
     //        }
     //    }
     //}
+</script>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $("#submitOrder").click(function () {
+            var productId = $("input[name='productId']").val();
+            var size = $("select[name='size']").val();
+            var color = $("#color").val();
+            var quantity = $("input[name='soluong']").val();
+
+            if (size && color) {
+                if (quantity === '' || isNaN(quantity)) {
+                    $("span[name='error']").html('Nhập số lượng sản phẩm cần mua hợp lệ');
+                } else {
+                    $.ajax({
+                        url: '/home/getsl',
+                        method: 'POST',
+                        data: {
+                            productId: productId,
+                            size: size,
+                            color: color
+                        },
+                        success: function (response) {
+                            if (response.success) {
+                                var idsanphamcthitiet = response.idsanphamcthitiet;
+                                if (idsanphamcthitiet === 0) {
+                                    $("span[name='error']").html('Size hoặc màu này tạm hết bạn thử chọn size hoặc màu khác nhé !');
+                                    $("input[name='soluong']").val('');
+                                } else if (quantity > idsanphamcthitiet) {
+                                    $("span[name='error']").html('Tối đa ' + idsanphamcthitiet);
+                                    $("input[name='soluong']").val('');
+                                } else {
+                                    $("span[name='error']").html('');
+                                }
+                                console.log("Đã tìm thấy idsanphamcthitiet: " + idsanphamcthitiet);
+                            } else {
+                                console.error("Không tìm thấy sản phẩm chi tiết phù hợp.");
+                            }
+                        },
+                        error: function (xhr, status, error) {
+                            console.error(error);
+                        }
+                    });
+                }
+            } else {
+                console.error("Vui lòng chọn size và color trước khi xác nhận đơn hàng.");
+                $("span[name='error']").html('Vui lòng chọn size và color trước khi xác nhận đơn hàng.');
+            }
+        });
+    });
 
 </script>

@@ -20,6 +20,7 @@ namespace APPDATA.DB
         {       
             optionsBuilder.UseSqlServer(@"Data Source=LAPTOP-9R0SL3PF\SQLEXPRESS;Initial Catalog=DATN3;Integrated Security=True;Encrypt=True;Trust Server Certificate=True");
 
+
         }
 
 

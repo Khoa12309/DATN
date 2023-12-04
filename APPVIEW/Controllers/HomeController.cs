@@ -15,6 +15,9 @@ using _APPAPI.ViewModels;
 using System;
 using System.Configuration;
 using static APPVIEW.ViewModels.FilterData;
+using Org.BouncyCastle.Tsp;
+using AspNetCore;
+using System.Reflection.Metadata;
 
 namespace APPVIEW.Controllers
 {
@@ -187,11 +190,81 @@ namespace APPVIEW.Controllers
            await bills.UpdateObj(x, "Bill");
             return RedirectToAction("Thongtin");
         }
+        public async Task<IActionResult> UpdateAddress(Guid id)
+        {
+
+   
+            var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
+
+
+            var client = new OnlineGatewayClient($"https://online-gateway.ghn.vn/shiip/public-api/master-data/province", "bdbbde2a-fec2-11ed-8a8c-6e4795e6d902");
+
+            // Gọi API để lấy danh sách các tỉnh/thành phố
+            var response = await client.GetProvincesAsync();
+
+            //Kiểm tra kết quả trả về
+            if (response.Code == 200) // Thành công
+            {
+                // Trả về danh sách các quận/huyện dưới dạng JSON
+                ViewBag.province = response.Data;
+            }
+
+            ViewBag.Product = SessionService.GetObjFromSession(HttpContext.Session, "Cart");
+            var tt = 0;
+            foreach (var item in ViewBag.Product)
+            {
+                tt += (item.Quantity * item.Price);
+            }
+            ViewBag.TT = tt;
+            var x = bills.GetApi("Bill").FirstOrDefault(c => c.id == id);
+            ViewBag.bill = x;
+            
+            return View(x);
+        }
+        [HttpPost]
+        public async Task<IActionResult> UpdateAddress(Guid id,string sdt , int province, string district, string ward, string diachict, float ship)
+        {
+            string province2 = "";
+            var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
+
+
+            var client = new OnlineGatewayClient($"https://online-gateway.ghn.vn/shiip/public-api/master-data/province", "bdbbde2a-fec2-11ed-8a8c-6e4795e6d902");
+
+            // Gọi API để lấy danh sách các tỉnh/thành phố
+            var response = await client.GetProvincesAsync();
+
+            //Kiểm tra kết quả trả về
+            if (response.Code == 200) // Thành công
+            {
+                // Trả về danh sách các quận/huyện dưới dạng JSON
+                ViewBag.province = response.Data;
+            }
+
+            foreach (var item in response.Data)
+            {
+                if (item.ProvinceID == province)
+                {
+
+                    province2 = item.ProvinceName; break;
+                }
+            }
+
+            // Gọi API để lấy danh sách các tỉnh/thành phố
+
+            var diachi = diachict + "-" + ward + "-" + district + "-Tỉnh " + province2;
+
+            var x = bills.GetApi("Bill").FirstOrDefault(c => c.id == id);
+            x.PhoneNumber = sdt ;
+            x.Address = diachi;
+            x.ShipFee  = ship;
+            await bills.UpdateObj(x, "Bill");
+            return RedirectToAction("Thongtin");
+        }
 
         // Sử dụng:
         // Tạo chuỗi có độ dài 8 ký tự
 
-
+      
         public async Task<IActionResult> DatHangN(Address obj,string pay,float phiship,float voucher,string vouchercode)
         {
 
@@ -289,6 +362,29 @@ namespace APPVIEW.Controllers
 
         }
 
+        [HttpPost]
+        [HttpPost]
+        [HttpPost]
+        [HttpPost]
+        public ActionResult getsl(string productId, string size, string color)
+        {
+            int idsanphamcthitiet = 0;
+
+            // Debug để kiểm tra dữ liệu được nhận từ AJAX request
+            Console.WriteLine($"Received: ProductId={productId}, Size={size}, Color={color}");
+
+            var foundSanPhamChiTiet = getapi.GetApi("ProductDetails")
+                .FirstOrDefault(c => c.Id_Product == Guid.Parse(productId) && c.Id_Size == Guid.Parse(size) && c.Id_Color == Guid.Parse(color));
+
+            if (foundSanPhamChiTiet != null)
+            {
+                idsanphamcthitiet = foundSanPhamChiTiet.Quantity;
+            }
+
+            // Trả về dữ liệu dưới dạng JSON
+            return Json(new { success = true, idsanphamcthitiet = idsanphamcthitiet });
+        }
+
 
         public async Task<IActionResult> DatHang(Guid size, Guid color, Guid productId, int soluong, string sdt, float ship, int province, string district, string ward, string diachict)
 
@@ -304,6 +400,7 @@ namespace APPVIEW.Controllers
             var response = await client.GetProvincesAsync();
             foreach (var item in response.Data)
             {
+
                 if (item.ProvinceID == province)
                 {
 
@@ -318,6 +415,7 @@ namespace APPVIEW.Controllers
 
 
             var x = getapi.GetApi("ProductDetails").FirstOrDefault(c => c.Id_Product == productId && c.Id_Size == size && c.Id_Color == color);
+       
 
             if (account.Id == Guid.Empty)
             {
