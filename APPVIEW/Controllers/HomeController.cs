@@ -66,7 +66,7 @@ namespace APPVIEW.Controllers
 
         public IActionResult Index()
         {
-            var productDetails = getapi.GetApi("ProductDetails");
+            var productDetails = getapi.GetApi("ProductDetails").Where(c=>c.Status==1&&c.Quantity>0);
             var products = getapiProduct.GetApi("Product");
 
             var productJoin = productDetails.Join(products, ct => ct.Id_Product, s => s.Id, (ct, s) => new { ct, s })
@@ -402,8 +402,9 @@ namespace APPVIEW.Controllers
         public IActionResult Shop(string sortOrder)
         {
             var img = getapiImg.GetApi("Image");
-            var productDetails = getapi.GetApi("ProductDetails").ToList();
-
+            var productDetails = getapi.GetApi("ProductDetails").Where(c => c.Status == 1 && c.Quantity > 0).ToList();
+            ViewBag.size = getapiSize.GetApi("Size");
+            ViewBag.color = getapiColor.GetApi("Color");
             try
             {
                 var productsWithImages = productDetails
@@ -460,22 +461,22 @@ namespace APPVIEW.Controllers
                 if (filter.Colors != null && filter.Colors.Count > 0 && !filter.Colors.Contains("all"))
                 {
                     filterProductsWithImages = filterProductsWithImages
-                        .Where(p => filter.Colors.Contains(p.ProductDetail.Color?.Name))
-                        .ToList();
+                        .Where(p => filter.Colors.Contains(p.ProductDetail.Id_Color.ToString())).ToList();
+                       
                 }
 
                 if (filter.Sizes != null && filter.Sizes.Count > 0 && !filter.Sizes.Contains("all"))
                 {
                     filterProductsWithImages = filterProductsWithImages
-                        .Where(p => filter.Sizes.Contains(p.ProductDetail.Size?.Name))
+                        .Where(p => filter.Sizes.Contains(p.ProductDetail.Id_Size.ToString()))
                         .ToList();
 
-                    Console.WriteLine("Filtered Products Count: " + filterProductsWithImages.Count);
-                    Console.WriteLine("Selected Sizes: " + string.Join(", ", filter.Sizes));
-                    foreach (var product in filterProductsWithImages)
-                    {
-                        var sizeName = product.ProductDetail.Size?.Name ?? "null";
-                    }
+                    //Console.WriteLine("Filtered Products Count: " + filterProductsWithImages.Count);
+                    //Console.WriteLine("Selected Sizes: " + string.Join(", ", filter.Sizes));
+                    //foreach (var product in filterProductsWithImages)
+                    //{
+                    //    var sizeName = product.ProductDetail.Size?.Name ?? "null";
+                    //}
                 }
 
                 if (filter.PriceRanges != null && filter.PriceRanges.Count > 0 && !filter.PriceRanges.Contains("all"))
@@ -502,10 +503,7 @@ namespace APPVIEW.Controllers
                 }
 
                 ViewBag.Products = filterProductsWithImages;
-                foreach (var product in ViewBag.Products)
-                {
-                    var sizeName = product.ProductDetail.Size?.Name ?? "null";
-                }
+            
                 return PartialView("_ReturnProducts", filterProductsWithImages);
             }
             catch (Exception ex)
@@ -851,7 +849,7 @@ namespace APPVIEW.Controllers
 
         {         
             string url = "http://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-            string returnUrl = $"https://localhost:7095/Home/PaymentConfirm";
+            string returnUrl = $"https://localhost:7095/Home/PaymentConfirm?id={bill.id}";
             string tmnCode = "OQK7ZU4V";
             string hashSecret = "WRKKYLZIEYLLPPFRNNQXVAKXHKGRIEEA";
 
@@ -874,40 +872,12 @@ namespace APPVIEW.Controllers
 
             string paymentUrl = pay.CreateRequestUrl(url, hashSecret);
 
-            if (paymentUrl!=null)
-            {
-                ///phương thức thanh toán
-                var PM = getapiPM.GetApi("PaymentMethod").FirstOrDefault(c => c.Method == "Online");
-                if (PM== null)
-                {
-                    PM=new PaymentMethod();
-                    PM.id = Guid.NewGuid();
-                    PM.Method = "Online";
-                    PM.Status = 1;
-                    PM.CreateDate = DateTime.Now;
-                    PM.UpdateDate = DateTime.Now;
-                    PM.Description = "Thanh toán online";
-
-                    await getapiPM.CreateObj(PM, "PaymentMethod");
-                }
-                var pmd = new PaymentMethodDetail()
-                {
-                    id = Guid.NewGuid(),
-                    BillId = bill.id,
-                    PaymentMethodID = PM.id,
-                    Status = 1,
-                    TotalMoney = bill.TotalMoney.ToString(),
-                    Description = "đã thanh toán",
-                };
-                await getapiPMD.CreateObj(pmd, "PaymentMethodDetail");
-                bill.Type = "Online - Đã Thanh Toán";
-                await bills.UpdateObj(bill, "Bill");
-            }
+          
             return Redirect(paymentUrl);
 
         }
 
-        public ActionResult PaymentConfirm()
+        public async Task<IActionResult> PaymentConfirm(Guid id)
         {
             if (Request.QueryString.Value != null)
             {
@@ -937,6 +907,40 @@ namespace APPVIEW.Controllers
                     {
                         //Thanh toán thành công
                         ViewBag.Message = "Thanh toán thành công hóa đơn " + orderId + " | Mã giao dịch: " + vnpayTranId;
+
+                       
+                        var Bill = bills.GetApi("Bill").FirstOrDefault(c => c.id == id);
+                        if (Bill!=null)
+                        {
+
+                        ///phương thức thanh toán
+                        var PM = getapiPM.GetApi("PaymentMethod").FirstOrDefault(c => c.Method == "Online");
+                            if (PM == null)
+                            {
+                                PM = new PaymentMethod();
+                                PM.id = Guid.NewGuid();
+                                PM.Method = "Online";
+                                PM.Status = 1;
+                                PM.CreateDate = DateTime.Now;
+                                PM.UpdateDate = DateTime.Now;
+                                PM.Description = "Thanh toán online";
+
+                                await getapiPM.CreateObj(PM, "PaymentMethod");
+                            }
+                            var pmd = new PaymentMethodDetail()
+                            {
+                                id = Guid.NewGuid(),
+                                BillId = id,
+                                PaymentMethodID = PM.id,
+                                Status = 1,
+                                TotalMoney = Bill.TotalMoney.ToString(),
+                                Description = "đã thanh toán",
+                            };
+                            await getapiPMD.CreateObj(pmd, "PaymentMethodDetail");
+                             Bill.Type = "Online - Đã Thanh Toán";
+                            await bills.UpdateObj(Bill, "Bill");
+                        }
+
                     }
                     else
                     {

@@ -35,26 +35,17 @@
                                 <input class="pixel-radio" type="checkbox" id="color-all" value="all" name="color" checked>
                                 <label for="color-all">All Color</label>
                             </li>
-                            <li class="filter-list">
-                                <input class="pixel-radio" type="checkbox" id="color-red" value="Red" name="color">
-                                <label for="red">Red</label>
-                            </li>
-                            <li class="filter-list">
-                                <input class="pixel-radio" type="checkbox" id="color-black" value="Black" name="color">
-                                <label for="black">Black</label>
-                            </li>
-                            <li class="filter-list">
-                                <input class="pixel-radio" type="checkbox" id="color-blue" value="Blue" name="color">
-                                <label for="blue">Blue</label>
-                            </li>
-                            <li class="filter-list">
-                                <input class="pixel-radio" type="checkbox" id="color-white" value="White" name="color">
-                                <label for="white">White</label>
-                            </li>
-                            <li class="filter-list">
-                                <input class="pixel-radio" type="checkbox" id="color-pink" value="Pink" name="color">
-                                <label for="pink">Pink</label>
-                            </li>
+                            @{
+                                foreach (var item in ViewBag.color)
+                                {
+                                    <li class="filter-list">
+                                        <input class="pixel-radio" type="checkbox" id="color-red" value="@item.Id" name="color">
+                                        <label for="@item.Id">@item.Name</label>
+                                    </li>
+                                }
+                            }
+                          
+                        
                         </ul>
                     </form>
                 </div>
@@ -68,26 +59,15 @@
                                 <input class="pixel-radio" type="checkbox" id="size-all" value="all" name="size" checked>
                                 <label for="size-all">All Size</label>
                             </li>
-                            <li class="filter-list">
-                                <input class="pixel-radio" type="checkbox" id="size-s" value="S" name="size">
-                                <label for="s">S</label>
-                            </li>
-                            <li class="filter-list">
-                                <input class="pixel-radio" type="checkbox" id="size-m" value="M" name="size">
-                                <label for="m">M</label>
-                            </li>
-                            <li class="filter-list">
-                                <input class="pixel-radio" type="checkbox" id="size-l" value="L" name="size">
-                                <label for="l">L</label>
-                            </li>
-                            <li class="filter-list">
-                                <input class="pixel-radio" type="checkbox" id="size-xl" value="XL" name="size">
-                                <label for="xl">XL</label>
-                            </li>
-                            <li class="filter-list">
-                                <input class="pixel-radio" type="checkbox" id="size-xxl" value="XXL" name="size">
-                                <label for="xxl">XXL</label>
-                            </li>
+                              @{
+                                foreach (var item in ViewBag.size)
+                                {
+                                    <li class="filter-list">
+                                        <input class="pixel-radio" type="checkbox" id="size-s" value="@item.Id" name="size">
+                                        <label for="@item.Id">@item.Name</label>
+                                    </li>
+                                }
+                            }                                                                             
                         </ul>
                     </form>
                 </div>
@@ -102,30 +82,30 @@
                                 <label for="price-all">All Price</label>
                             </li>
                             <li class="filter-list">
-                                <input class="pixel-radio" type="checkbox" id="price-1" value="0-10000" name="price">
-                                <label for="price-1">$0-$10000</label>
+                                <input class="pixel-radio" type="checkbox" id="price-1" value="0-100000" name="price">
+                                <label for="price-1">$0-$100000</label>
                             </li>
                             <li class="filter-list">
-                                <input class="pixel-radio" type="checkbox" id="price-2" value="10000-20000" name="price">
-                                <label for="price-2">$10000-$20000</label>
+                                <input class="pixel-radio" type="checkbox" id="price-2" value="100000-200000" name="price">
+                                <label for="price-2">$100000-$200000</label>
                             </li>
                             <li class="filter-list">
-                                <input class="pixel-radio" type="checkbox" id="price-3" value="20000-30000" name="price">
-                                <label for="price-3">$20000-$30000</label>
+                                <input class="pixel-radio" type="checkbox" id="price-3" value="200000-300000" name="price">
+                                <label for="price-3">$200000-$300000</label>
                             </li>
                             <li class="filter-list">
-                                <input class="pixel-radio" type="checkbox" id="price-4" value="30000-40000" name="price">
-                                <label for="price-4">$30000-$40000</label>
+                                <input class="pixel-radio" type="checkbox" id="price-4" value="300000-400000" name="price">
+                                <label for="price-4">$300000-$400000</label>
                             </li>
                             <li class="filter-list">
-                                <input class="pixel-radio" type="checkbox" id="price-5" value="40000-50000" name="price">
-                                <label for="price-5">$40000-$50000</label>
+                                <input class="pixel-radio" type="checkbox" id="price-5" value="400000-500000" name="price">
+                                <label for="price-5">$400000-$500000</label>
                             </li>
                         </ul>
                     </form>
                 </div>
                 <!-- Price End -->
-                <button id="btnFilter" style="margin-left: 110px; background: #f1f6f7; color: #999999" class="btn btn-close">Filter</button>
+                <button id="btnFilter" style="margin-left: 110px; background: #0066FF; color: black" class="btn btn-close">Filter</button>
             </div>
             <div class="col-xl-9 col-lg-8 col-md-7">
                 <!-- Start Filter Bar -->
