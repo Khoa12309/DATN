@@ -56,12 +56,14 @@
                               
                              
                         @{
-                                
 
+                                var ls = new List<string>();
+                                var lc = new List<string>();
 
                             @for (int i = 0; i < Model.Count; i++)
                             {
-                              
+                                    lc.Add(Model[i].Id_Color.ToString());
+                                    ls.Add(Model[i].Id_Size.ToString());
                                     <input hidden asp-for="@Model[i].Id" value="@Model[i].Id" id="pro" />
                                     <input hidden asp-for="@Model[i].Id_Product" value="@Model[i].Id_Product" />
                                     <input hidden asp-for="@Model[i].Name" value="@Model[i].Name" />
@@ -102,11 +104,16 @@
 
                                         <td class="align-middle">
                                             <select asp-for="@Model[i].Id_Size" id="size">
-                                                @foreach (var Size in ViewBag.Size)
+                                            @foreach (var Size in ViewBag.Size)
                                             {
-                                            
-                                                    <option value="@Size.Id">@Size.Name</option>
-                                            }
+                                                    @foreach (var c in ls)
+                                                    {
+                                                        if (c == @Size.Id.ToString())
+                                                        {
+                                                            <option value="@Size.Id">@Size.Name</option>
+                                                        }
+                                                    }
+                                                }
                                             </select>
                                         </td>
                                         <td class="align-middle">
@@ -117,12 +124,19 @@
                                                     @foreach (var Color in ViewBag.Color)
                                                     {
                                                        
-                                                        
+                                                    @foreach (var c in lc)
+                                                    {
+                                                        if (c == @Color.Id.ToString())
+                                                        {
                                                         <option value="@Color.Id">@Color.Name</option>
+                                                        }
+
+                                                   
+                                                    }
+                                                       
 
 
-                                                        
-
+                                                       
                                                     }
                                                 
 

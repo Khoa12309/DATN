@@ -59,7 +59,7 @@
                     <div class="row mb-3">
                         <div class="col-md-4">
                             <label asp-for=Province class="labels">Province</label>
-                            <select class="country_select" id="countrySelect" asp-for="Province" size="8">
+                            <select class="country_select" id="countrySelect" asp-for="Province">
                                 @foreach (var item in ViewBag.province)
                                 {
                                     if (Model != null)

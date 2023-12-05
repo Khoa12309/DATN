@@ -789,6 +789,13 @@ namespace APPVIEW.Controllers
         }
         public async Task<IActionResult> Checkout()
         {
+
+            var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
+            if (!User.Identity.IsAuthenticated)
+            {
+                return Redirect("~/Account/Login");
+            }
+
             var client = new OnlineGatewayClient($"https://online-gateway.ghn.vn/shiip/public-api/master-data/province", "bdbbde2a-fec2-11ed-8a8c-6e4795e6d902");
 
             // Gọi API để lấy danh sách các tỉnh/thành phố
@@ -851,7 +858,7 @@ namespace APPVIEW.Controllers
             ViewBag.TT = tt;
             ViewBag.Total = ViewBag.TT;
 
-            var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
+            
             if (account != null)
             {
                 var dc = getapiAddress.GetApi("Address").FirstOrDefault(c => c.AccountId == account.Id);
@@ -888,7 +895,6 @@ namespace APPVIEW.Controllers
                 {
                     ViewBag.fee = 0;
                 }
-
                 return View(dc);
             }
             

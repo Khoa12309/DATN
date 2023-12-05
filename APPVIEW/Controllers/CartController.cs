@@ -99,7 +99,8 @@ namespace APPVIEW.Controllers
             var product = getapiPD.GetApi("ProductDetails").Find(c => c.Id == id);
             if (color != Guid.Empty && size != Guid.Empty)
             {
-                product = getapiPD.GetApi("ProductDetails").Find(c => c.Id == id && c.Id_Color == color && c.Id_Size == size);
+                id = getapiProduct.GetApi("Product").Find(c => c.Id == product.Id_Product).Id;
+                product = getapiPD.GetApi("ProductDetails").FirstOrDefault(c => c.Id_Product == id && c.Id_Color == color && c.Id_Size == size);
                 if (product==null)
                 {
 
@@ -255,10 +256,10 @@ namespace APPVIEW.Controllers
         {
 
             loadcart();
-            ViewBag.Img = getapiImg.GetApi("Image");
-          
+            ViewBag.Img = getapiImg.GetApi("Image");         
             ViewBag.Color = getapiColor.GetApi("Color");
             ViewBag.Size = getapiSize.GetApi("Size");
+           
             var products = SessionService.GetObjFromSession(HttpContext.Session, "Cart");
             double tiensp =0;
             foreach (var item in products)

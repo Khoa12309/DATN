@@ -59,9 +59,15 @@
         <div class="row">
             @{
                 var lstpr = new List<Guid>();
+                var ht = 0;
             }
             @foreach (var item in ViewBag.Result)
             {
+                ht++;
+                if (ht==12)
+                {
+                    break;
+                }
                 if (lstpr.Any(c => c == item.Id_Product))
                 {
                     continue;
@@ -94,7 +100,7 @@
                         </div>
                     </div>
                 </div>
-
+                
             }
 
         </div>
