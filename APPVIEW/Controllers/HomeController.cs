@@ -789,10 +789,11 @@ namespace APPVIEW.Controllers
         }
         public async Task<IActionResult> Checkout()
         {
-
+            
             var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
             if (!User.Identity.IsAuthenticated)
             {
+               
                 return Redirect("~/Account/Login");
             }
 
@@ -861,7 +862,8 @@ namespace APPVIEW.Controllers
             
             if (account != null)
             {
-                var dc = getapiAddress.GetApi("Address").FirstOrDefault(c => c.AccountId == account.Id);
+                var Uid = User.Claims.FirstOrDefault(c => c.Type == "Id").Value;
+                var dc = getapiAddress.GetApi("Address").FirstOrDefault(c => c.AccountId.ToString() == Uid);
                 if (dc != null)
                 {
                     var p = await province(dc.Province);
