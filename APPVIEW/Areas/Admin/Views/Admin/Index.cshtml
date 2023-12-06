@@ -275,7 +275,7 @@
         <div class="col-xl-4 col-md-6">
             <div class="card">
                 <div class="card-header d-flex align-items-center justify-content-between">
-                    <h5 class="card-title m-0 me-2">Sales by Countries</h5>
+                    <h5 class="card-title m-0 me-2">Top Trending</h5>
                     <div class="dropdown">
                         <button class="btn p-0"
                                 type="button"
@@ -759,8 +759,6 @@
                     DrawChartForYear(selectedYear);
                 });
 
-
-
                 // Hàm vẽ biểu đồ với dữ liệu từ API
                 function DrawChart(data) {
 
@@ -779,7 +777,6 @@
 
                         monthsData[a] = value;
                     });
-
 
                     yearlyChart = new Chart(ctx, {
                         type: 'bar',
@@ -827,7 +824,7 @@
 
 
                 function DrawWeeklyChart(data) {
-                    // var currentDay = new Date('12/1/2023');
+                    // var currentDay = new Date('12/7/2023');
                     var currentDay = new Date();
 
                     const ctx = document.getElementById('weeklyChartview').getContext('2d');
@@ -840,7 +837,7 @@
 
                     // Mảng chứa nhãn của 7 ngày gần nhất với định dạng ngày/tháng
                     var labels = [];
-                    for (var i = 7; i >= 0; i--) {
+                    for (var i = 6; i >= 0; i--) {
                         var date = new Date(currentDay);
                         date.setDate(currentDay.getDate() - i);
 
@@ -852,21 +849,13 @@
                         labels.push(formattedDate);
                     }
 
-
-                    // 28/11 29/11 30/11 01/12 02/12 03/12 04/12
-                    // 00000 00001 00002 00003 00004 00005 00006
-                    //   i =2 ;
-                    //  j = i >> j = 2;
                     var z = labels[0].slice(0, 2);
-                    console.log(z); //z =22
-                    var k = 0;
+                    console.log('Begin Date:' + z);
                     var dayIndex = 0;
                     var biengancuaIndex = 0;
                     // Ánh xạ dữ liệu từ API vào mảng của 7 ngày gần nhất
                     data.values.forEach(
-
                         function (value, index) {
-                            k = index + 1;
                             // 25/11
                             var day = data.labels[index]; // 11/25/2023 hoặc 1/12/2023 hoặc 12/01/2023
                             var daydate;
@@ -892,18 +881,23 @@
                                 daydate = day.slice(3, 4); // Lấy ngày từ vị trí 3 trong chuỗi
                             }
 
-                            // console.log("Ngày là: " + daydate);
+                            console.log("Ngày là: " + daydate);
 
-                            dayIndex = daydate - z;
-
+                            dayIndex = daydate - z;               
                             if (dayIndex < 0) {
-                                dayData[biengancuaIndex++] = value;
+                                dayData[biengancuaIndex] = value;
+                                biengancuaIndex += 1;
+                                console.log("Bien: " + biengancuaIndex);
                             }
+
                             else {
                                 dayData[dayIndex] = value;
                                 biengancuaIndex = dayIndex + 1;
+                                console.log("Bien: " + dayIndex);
                             }
+                            //console.log("index: " + index);
                         }
+                        
                     );
 
                     weeklyChart = new Chart(ctx, {
@@ -932,7 +926,7 @@
                         method: 'GET',
                         dataType: 'json',
                         success: function (data) {
-                            // console.log(data);
+                            console.log(data);
                             if (data && data.labels && data.values && data.label) {
                                 DrawWeeklyChart(data);
 
@@ -951,17 +945,28 @@
                     url: 'https://localhost:7042/api/Chart/SoldProductsByMonth',
                     method: 'GET',
                     success: function (data) {
-                        console.log(data); // Kiểm tra dữ liệu trong console log
+                        // Kiểm tra dữ liệu trong console log
+                        console.log(data);
+
                         // Xử lý dữ liệu và cập nhật HTML
                         var tableBody = $('#productTable tbody');
                         tableBody.empty();
 
-                        $.each(data, function (index, product) {
-                            console.log(product); // Kiểm tra từng sản phẩm trong console log để xem cấu trúc dữ liệu
+                        // Kiểm tra cấu trúc dữ liệu để xác định tên thuộc tính
+                        var productNameKey = 'ProductName';
+                        var quantitySoldKey = 'QuantitySold';
+                        var totalEarningsKey = 'TotalEarnings';
+
+                        // Sử dụng $.each để lặp qua mảng dữ liệu
+                        $.each(data.labels, function (index, productName) {
+                            var quantitySold = data.quantities[index];
+                            var totalEarnings = data.earnings[index];
+
+                            // Hiển thị thông tin sản phẩm trong bảng
                             var row = '<tr>' +
-                                '<td>' + product.ProductName + '</td>' +
-                                '<td>' + product.QuantitySold + '</td>' +
-                                '<td>' + product.TotalEarnings + '</td>' +
+                                '<td>' + productName + '</td>' +
+                                '<td>' + quantitySold + '</td>' +
+                                '<td>' + totalEarnings + '</td>' +
                                 '</tr>';
 
                             tableBody.append(row);
@@ -972,6 +977,7 @@
                         console.error('Error fetching data:', error);
                     }
                 });
+
             });
         </script>
     </div>
