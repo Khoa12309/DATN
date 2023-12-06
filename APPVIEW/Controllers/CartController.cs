@@ -18,6 +18,7 @@ namespace APPVIEW.Controllers
         private Getapi<Image> getapiImg;
         private Getapi<Color> getapiColor;
         private Getapi<Size> getapiSize;
+        private Getapi<Account> getapiAc;
 
         public CartController(INotyfService notyf)
         {
@@ -28,6 +29,7 @@ namespace APPVIEW.Controllers
             getapiImg = new Getapi<Image>();
             getapiColor = new Getapi<Color>();
             getapiSize = new Getapi<Size>();
+            getapiAc = new Getapi<Account>();
             _notyf = notyf;
         }
 
@@ -95,6 +97,13 @@ namespace APPVIEW.Controllers
         public async Task<IActionResult> AddToCart(Guid id, int Soluong, Guid color, Guid size)
         {
             loadcart();
+            if (!User.Identity.IsAuthenticated)
+            {
+
+                var Uid = User.Claims.FirstOrDefault(c => c.Type == "Id").Value;
+                var acc = getapiAc.GetApi("Account").FirstOrDefault(c => c.Id.ToString() == Uid);
+                SessionService.SetObjToJson(HttpContext.Session, "Account", acc);
+            }
             var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
             var product = getapiPD.GetApi("ProductDetails").Find(c => c.Id == id);
             if (color != Guid.Empty && size != Guid.Empty)
@@ -179,6 +188,13 @@ namespace APPVIEW.Controllers
         }
         public async Task<IActionResult> DeleteCartItem(Guid id)
         {
+            if (User.Identity.IsAuthenticated)
+            {
+
+                var Uid = User.Claims.FirstOrDefault(c => c.Type == "Id").Value;
+                var acc = getapiAc.GetApi("Account").FirstOrDefault(c => c.Id.ToString() == Uid);
+                SessionService.SetObjToJson(HttpContext.Session, "Account", acc);
+            }
             var products = SessionService.GetObjFromSession(HttpContext.Session, "Cart");
             var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
             var cart = getapi.GetApi("Cart").FirstOrDefault(c => c.AccountId == account.Id);
@@ -276,6 +292,7 @@ namespace APPVIEW.Controllers
         {
             foreach (var item in obj)
             {
+
                 var product = getapiPD.GetApi("ProductDetails").FirstOrDefault(c => c.Id_Product == item.Id_Product && c.Id_Color == item.Id_Color && c.Id_Size == item.Id_Size);
                 if (product == null)
                 {

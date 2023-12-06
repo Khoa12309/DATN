@@ -80,7 +80,7 @@
                             {
                                 if (img.IdProductdetail==item.Id)
                                 {
-                                    <img class="card-img" src="~/images/@img.Name" alt="">
+                                    <img class="card-img" src="~/images/@img.Name" alt="" >
                                     break;
                                 }
                                                       
@@ -88,14 +88,14 @@
                             <ul class="card-product__imgOverlay">
                                 <li><a href="@Url.ActionLink("details","home",new{id=item.Id})"><button><i class="ti-search"></i></button></a></li>
                                 <li><a href="@Url.ActionLink("Addtocart","cart",new{id=item.Id,Soluong=1})"><button><i class="ti-shopping-cart"></i></button></a></li>
-                                <li><button><i class="ti-heart"></i></button></li>
+                                
                                 <li><button> @Html.ActionLink("Mua hàng", "ViewBill", new { id=item.Id_Product }, new { style = "color:black;" })</button></li>
                             </ul>
                         </div>
                         <div class="card-body">
                             <p>Accessories</p>
-                            <h4 class="card-product__title"><a href="single-product.html">Quartz Belt Watch</a></h4>
-                            <p class="card-product__price">Name : @item.Name</p>
+                            <h4 class="card-product__title"><a href="single-product.html">@item.Name</a></h4>
+                           
                             <p class="card-product__price">Price : @item.Price</p>
                         </div>
                     </div>

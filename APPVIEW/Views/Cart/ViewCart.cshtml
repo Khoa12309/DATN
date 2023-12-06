@@ -90,7 +90,7 @@
                                         <td>
                                          
                                             <div class="product_count">
-                                                <input type="text" id=@Model[i].Id maxlength="12" title="Quantity:" class="input-text qty" value="@Model[i].Quantity" asp-for="@Model[i].Quantity" min="0">
+                                                <input type="number" id=@Model[i].Id maxlength="12" title="Quantity:" class="input-text qty" value="@Model[i].Quantity" asp-for="@Model[i].Quantity" min="0">
                                                 <button onclick="var result = document.getElementById('@Model[i].Id'); var sst = result.value; if( !isNaN( sst )) result.value++;return false;"
                                                     class="increase items-count" type="button">
                                                     <i class="fa fa-plus"></i>
@@ -215,34 +215,19 @@
         //inputdis.value = "";
         //inputward.value = "";
         var data = {
-            Id_Size: Size.value,
+           Id_Size: Size.value,
            Id: pro.value ,
         };
         var json = JSON.stringify(data);
         // Sử dụng fetch() để gửi một request GET đến /Home/GetUsers
-        fetch("/Cart/Chossesize", {
+        fetch("/Cart/updatecart", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
             body: json
         })
-            .then(response => response.json()) // Chuyển đổi response thành JSON
-            .then(data => {
-
-                // Xử lý dữ liệu JSON
-
-                data.forEach(function (districs) {
-                   
-                    // Duyệt qua mảng các user
-                    var option = document.createElement("option"); // Tạo một phần tử option mới
-                    option.innerHTML = districs.name; // Gán giá trị cho option
-                    option.value = districs.id; // Gán nội dung hiển thị cho option
-                    color.appendChild(option); // Thêm option vào thẻ select
-                    console.log(districs.name);
-                });
-
-            })
+           
             .catch(error => {
                 // Xử lý lỗi
                 console.error(error); // In ra lỗi
@@ -250,4 +235,8 @@
 
 
     };
+    function updatecart(){
+
+
+    }
 </script>

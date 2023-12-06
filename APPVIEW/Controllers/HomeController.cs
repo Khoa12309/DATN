@@ -38,6 +38,7 @@ namespace APPVIEW.Controllers
         private Getapi<BillDetail> billDetails;
         private Getapi<Voucher> getapiVoucher;
         private Getapi<Address> getapiAddress;
+        private Getapi<Account> getapiAc;
         private Getapi<CartDetail> getapiCD;
         private Getapi<PaymentMethodDetail> getapiPMD;
         private Getapi<PaymentMethod> getapiPM;
@@ -60,11 +61,12 @@ namespace APPVIEW.Controllers
             billDetails = new Getapi<BillDetail>();
             getapiVoucher = new Getapi<Voucher>();
             getapiAddress = new Getapi<Address>();
+            getapiAc = new Getapi<Account>();
 
-            getapiCD=new Getapi<CartDetail>();
+              getapiCD =new Getapi<CartDetail>();
             getapiPM=new Getapi<PaymentMethod>();
             getapiPMD = new Getapi<PaymentMethodDetail>();
-
+           
         }
 
         public IActionResult Index()

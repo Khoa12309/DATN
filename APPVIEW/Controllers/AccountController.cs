@@ -24,6 +24,7 @@ using X.PagedList;
 
 using APPVIEW.Models;
 using _APPAPI.ViewModels;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace APPVIEW.Controllers
 {
@@ -62,23 +63,47 @@ namespace APPVIEW.Controllers
             return View(obj.OrderByDescending(x => x.Id).ToPagedList(pageNumber, pageSize));
             
         }
-        public async Task<IActionResult> Search(string searchTerm)
+        [HttpPost]
+        public async Task<IActionResult> GetList(int? page,string tk,string status ,Guid role)
         {
-            var lstAcc = getapi.GetApi("Voucher").ToList();
+
+            ViewBag.Roles = GetListRole();
+            var obj = getapi.GetApi("Account");
+            if (tk!=null)
+            {
+               obj= obj.Where(c => c.Name.ToLower().Contains(tk.ToLower())||c.Email==tk).ToList();
+
+            }
+            if (role!=Guid.Empty)
+            {
+                obj = obj.Where(c => c.IdRole == role).ToList();
+            }
+            if (status!=null)
+            {
+                obj = obj.Where(c => c.Status.ToString() == status).ToList();
+            }
+            int pageSize = 8;
+            int pageNumber = (page ?? 1);
+            return View(obj.OrderByDescending(x => x.Id).ToPagedList(pageNumber, pageSize));
+            
+        }
+        
+        public async Task<IActionResult> Search(string tk, int? page)
+        {
+            var lstAcc = getapi.GetApi("Account").Where(c=>c.Name.ToLower().Contains(tk.ToLower()));
 
             var searchResult = lstAcc
                 .Where(v =>
-                    v.Email.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
-                    v.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)
+                    
+                    v.Name.ToLower().Contains(tk.ToLower())
                 )
                 .ToList();
 
-            if (searchResult.Any())
-            {
-                return View("GetList", searchResult);
-            }
+           
 
-            return NotFound("Voucher không tồn tại");
+             int pageSize = 8;
+                int pageNumber = (page ?? 1);
+                return RedirectToAction("Getlist", lstAcc.OrderByDescending(x => x.Id).ToPagedList(pageNumber, pageSize));
         }
 
 
