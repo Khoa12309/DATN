@@ -112,12 +112,8 @@
 
 @foreach (var itembill in bill)
 {
-    var userbillct = billct.FirstOrDefault(c => c.BIllId == itembill.id);
-    var pct = prdct.FirstOrDefault(c => c.Id == userbillct.ProductDetailID);
-    var pro = prd.FirstOrDefault(c => c.Id == pct.Id_Product);
-    var siz = size.FirstOrDefault(c => c.Id == pct.Id_Size);
-    var colo = color.FirstOrDefault(c => c.Id == pct.Id_Color);
-    var img = image.FirstOrDefault(c => c.IdProductdetail == pct.Id);
+    var userbillct = billct.Where(c => c.BIllId == itembill.id).ToList();
+
 
 
     <body>
@@ -143,27 +139,38 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td>
-                                        <img src="~/images/@img.Name" style="width: 100px; height:auto" alt="">
-                                    </td>
-                                    <td>
-                                        <p><h5>@pro.Name<h5></p>
-                                    </td>
-                                    <td>
-                                        <h5>@userbillct.Amount</h5>
-                                    </td>
-                                    <td>
-                                        <p>@siz.Name</p>
-                                    </td>
-                                    <td>
-                                        <p>@colo.Name</p>
-                                    </td>
-                                    <td>
-                                        <h5>@userbillct.Price</h5>
-                                    </td>
+                                  @foreach (var bil in userbillct)
+                                {
 
-                                </tr>
+                                    var pct = prdct.FirstOrDefault(c => c.Id == bil.ProductDetailID);
+                                    var pro = prd.FirstOrDefault(c => c.Id == pct.Id_Product);
+                                    var siz = size.FirstOrDefault(c => c.Id == pct.Id_Size);
+                                    var colo = color.FirstOrDefault(c => c.Id == pct.Id_Color);
+                                    var img = image.FirstOrDefault(c => c.IdProductdetail == pct.Id);
+
+                                    <tr>
+                                        <td>
+                                            <img src="~/images/@img.Name" style="width: 100px; height:auto" alt="">
+                                        </td>
+                                        <td>
+                                            <p><h5>@pro.Name<h5></p>
+                                        </td>
+                                        <td>
+                                            <h5>@bil.Amount</h5>
+                                        </td>
+                                        <td>
+                                            <p>@siz.Name</p>
+                                        </td>
+                                        <td>
+                                            <p>@colo.Name</p>
+                                        </td>
+                                        <td>
+                                            <h5>@bil.Price</h5>
+                                        </td>
+
+                                    </tr>
+    
+    }
                                 <tr>
 
                                     <td><h4 style="color:black"><hr style="color:black"></h4></td>
@@ -191,6 +198,17 @@
                                     </td>
                                     <td>
                                         <h5>@itembill.PhoneNumber</h5>
+                                    </td>
+                                </tr>
+                                    <tr>
+                                    <td>
+                                        <h4>Địa chỉ</h4>
+                                    </td>
+                                    <td>
+                                        <h5></h5>
+                                    </td>
+                                    <td>
+                                        <h5>@itembill.Address</h5>
                                     </td>
                                 </tr>
 
@@ -249,6 +267,11 @@
                                 </tr>
                                 <tr>
                                     <td>
+                                        @if (itembill.Status == 1 )
+
+                                        {
+                                            <button style="background-color:royalblue ; border-radius:12px ; border:none"> @Html.ActionLink("Đổi thông tin nhận hàng", "UpdateAddress", new { id = itembill.id }, new { style = "color:black;" }) </button>
+                                        }
                                         @if (itembill.Status == 1 || itembill.Status == 2)
 
                                         {
