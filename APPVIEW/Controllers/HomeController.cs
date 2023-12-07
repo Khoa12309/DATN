@@ -960,8 +960,8 @@ namespace APPVIEW.Controllers
         {         
             string url = "http://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
             string returnUrl = $"https://localhost:7095/Home/PaymentConfirm?id={bill.id}";
-            string tmnCode = "OQK7ZU4V";
-            string hashSecret = "WRKKYLZIEYLLPPFRNNQXVAKXHKGRIEEA";
+            string tmnCode = "6AV1KO3E";
+            string hashSecret = "UGHKKYGUTTLWWTQOJBECDFAMDHZDBLWW";
 
             PayLib pay = new PayLib();
 
