@@ -2,6 +2,7 @@
 using APPVIEW.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json;
 using NuGet.Packaging.Signing;
 using System.Data;
@@ -52,7 +53,7 @@ namespace APPVIEW.Controllers
             return View(obj.OrderByDescending(x => x.Id).ToPagedList(pageNumber, pageSize));
         }
         [HttpPost]
-        public async Task<IActionResult> GetList(string tk)
+        public async Task<IActionResult> GetList(string tk, int? page)
         {
             ViewBag.Size =await getapiSize.GetApia("Size");
             ViewBag.Color =await getapiColor.GetApia("Color");
@@ -60,9 +61,15 @@ namespace APPVIEW.Controllers
             ViewBag.Supplier = await getapiSupplier.GetApia("Supplier");
             ViewBag.Image = await getapiImg.GetApia("Image");
             ViewBag.Material = await getapiMaterial.GetApia("Material");
-            var obj =  getapi.GetApi("ProductDetails").Where(c=>c.Name==tk);
-            
-            return View(obj);
+            var obj =  getapi.GetApi("ProductDetails").Where(c=>c.Name.ToLower().Contains(tk.ToLower()));
+
+            int pageSize = 8;
+            int pageNumber = (page ?? 1);
+            if (tk==null)
+            {
+                obj = await getapi.GetApia("ProductDetails");
+            }
+            return View(obj.OrderByDescending(x => x.Id).ToPagedList(pageNumber, pageSize));
         }
         [HttpGet]
         public async Task<IActionResult> Create()
@@ -91,6 +98,7 @@ namespace APPVIEW.Controllers
                 //{
                 //    List<string> Lcolor = JsonConvert.DeserializeObject<List<string>>(myList);
                 //}
+
                 var produ = getapiProduct.GetApi("Product").FirstOrDefault(c => c.Id == obj.Id_Product);
                 obj.Id = Guid.NewGuid();
                 obj.Name = produ.Name;

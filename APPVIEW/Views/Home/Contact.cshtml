@@ -1,5 +1,4 @@
-﻿
-@{
+﻿@{
     ViewData["Title"] = "Contact";
     Layout = "~/Views/Shared/_LayoutWeb.cshtml";
 }
@@ -21,48 +20,30 @@
         </div>
     </div>
 </section>
-<!-- ================ end banner area ================= -->
-<!-- ================ contact section start ================= -->
 <section class="section-margin--small">
-    <div class="container">
+    <div class="container text-center ">
         <div class="d-none d-sm-block mb-5 pb-4">
-            <div id="map" style="height: 420px;"></div>
-            <script>
-                function initMap() {
-                    var uluru = { lat: -25.363, lng: 131.044 };
-                    var grayStyles = [
-                        {
-                            featureType: "all",
-                            stylers: [
-                                { saturation: -90 },
-                                { lightness: 50 }
-                            ]
-                        },
-                        { elementType: 'labels.text.fill', stylers: [{ color: '#A3A3A3' }] }
-                    ];
-                    var map = new google.maps.Map(document.getElementById('map'), {
-                        center: { lat: -31.197, lng: 150.744 },
-                        zoom: 9,
-                        styles: grayStyles,
-                        scrollwheel: false
-                    });
-                }
+            <!-- Chọn một trong hai: bản đồ tùy chỉnh hoặc Google Maps Embed -->
+            <div id="map" style="height: 420px;">
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3723.8635435360015!2d105.74467967476943!3d21.0381452874571!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x313455e940879933%3A0xcf10b34e9f1a03df!2zVHLGsOG7nW5nIENhbyDEkeG6s25nIEZQVCBQb2x5dGVjaG5pYw!5e0!3m2!1svi!2s!4v1700367915778!5m2!1svi!2s" width="800" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
 
-            </script>
-            <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDpfS1oRGreGSBU5HHjMmQ3o5NLw7VdJ6I&callback=initMap"></script>
-
+            </div>
+            <!-- HOẶC sử dụng Google Maps Embed -->
         </div>
 
-
         <div class="row">
+            <!-- Thông tin liên hệ -->
             <div class="col-md-4 col-lg-3 mb-4 mb-md-0">
+                <!-- Cập nhật địa chỉ -->
                 <div class="media contact-info">
                     <span class="contact-info__icon"><i class="ti-home"></i></span>
                     <div class="media-body">
                         <h3>California United States</h3>
-                        <p>Santa monica bullevard</p>
+                        <p>Santa Monica Boulevard</p>
                     </div>
                 </div>
+        
+                <!-- Cập nhật số điện thoại -->
                 <div class="media contact-info">
                     <span class="contact-info__icon"><i class="ti-headphone"></i></span>
                     <div class="media-body">
@@ -70,6 +51,7 @@
                         <p>Mon to Fri 9am to 6pm</p>
                     </div>
                 </div>
+                <!-- Cập nhật địa chỉ email -->
                 <div class="media contact-info">
                     <span class="contact-info__icon"><i class="ti-email"></i></span>
                     <div class="media-body">
@@ -78,6 +60,7 @@
                     </div>
                 </div>
             </div>
+            <!-- Mẫu liên hệ -->
             <div class="col-md-8 col-lg-9">
                 <form action="#/" class="form-contact contact_form" action="contact_process.php" method="post" id="contactForm" novalidate="novalidate">
                     <div class="row">

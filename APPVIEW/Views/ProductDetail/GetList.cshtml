@@ -148,7 +148,14 @@
                                     @Html.DisplayFor(modelItem => item.Price)
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.Status)
+                                    @if (item.Status == 1)
+                                    {
+                                        <span class="badge bg-label-success rounded-pill">Hoạt động</span>
+                                    }
+                                    @if (item.Status == 0)
+                                    {
+                                        <span class="badge rounded-pill bg-label-danger">Không hoạt động</span>
+                                    }
                                 </td>
 
                                 <td>

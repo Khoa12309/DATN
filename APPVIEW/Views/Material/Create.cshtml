@@ -15,7 +15,7 @@
 
             </div>
             <div class="card-body">
-                <form asp-action="Create" method="post">
+                <form asp-action="Create" method="post" onsubmit="showAlert()">
                     <div class="row mb-3">
                         <label asp-for="Name" class="col-sm-2 col-form-label">Name Material</label>
                         <div class="col-sm-10">
@@ -58,5 +58,6 @@
             </div>
         </div>
     </div>
+
 </div>
 

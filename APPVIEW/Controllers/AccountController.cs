@@ -24,7 +24,11 @@ using X.PagedList;
 
 using APPVIEW.Models;
 using _APPAPI.ViewModels;
+
 using Microsoft.AspNetCore.Identity;
+
+using Microsoft.AspNetCore.Mvc.RazorPages;
+
 
 namespace APPVIEW.Controllers
 {
@@ -39,7 +43,7 @@ namespace APPVIEW.Controllers
         private readonly SendEmailMessage _sendEmailMessage;
         private readonly ShoppingDB _dbContext;
 
-        public AccountController(HttpClient httpClient, INotyfService notyf, ISendEmail sendEmail)
+        public AccountController(HttpClient httpClient, ISendEmail sendEmail)
         {
             getapi = new Getapi<Account>();
             _httpClient = httpClient;
@@ -61,27 +65,52 @@ namespace APPVIEW.Controllers
             int pageSize = 8;
             int pageNumber = (page ?? 1);
             return View(obj.OrderByDescending(x => x.Id).ToPagedList(pageNumber, pageSize));
+
+        }
+        [HttpPost]
+        public async Task<IActionResult> GetList(int? page,string tk,string status ,Guid role)
+        {
+
+            ViewBag.Roles = GetListRole();
+            var obj = getapi.GetApi("Account");
+            if (tk!=null)
+            {
+               obj= obj.Where(c => c.Name.ToLower().Contains(tk.ToLower())||c.Email==tk).ToList();
+
+            }
+            if (role!=Guid.Empty)
+            {
+                obj = obj.Where(c => c.IdRole == role).ToList();
+            }
+            if (status!=null)
+            {
+                obj = obj.Where(c => c.Status.ToString() == status).ToList();
+            }
+            int pageSize = 8;
+            int pageNumber = (page ?? 1);
+            return View(obj.OrderByDescending(x => x.Id).ToPagedList(pageNumber, pageSize));
             
         }
-        //public async Task<IActionResult> Search(string searchTerm)
-        //{
-        //    var lstAcc = getapi.GetApi("Account").ToList();
 
-        //    var searchResult = lstAcc
-        //        .Where(v =>
-        //            v.Email.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
-        //            v.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
-        //            v.Status.ToString().Contains(searchTerm, StringComparison.OrdinalIgnoreCase)
-        //        )
-        //        .ToList();
+        
+        public async Task<IActionResult> Search(string tk, int? page)
+        {
+            var lstAcc = getapi.GetApi("Account").Where(c=>c.Name.ToLower().Contains(tk.ToLower()));
 
-        //    if (searchResult.Any())
-        //    {
-        //        return View("GetList", searchResult);
-        //    }
+            var searchResult = lstAcc
+                .Where(v =>
+                    
+                    v.Name.ToLower().Contains(tk.ToLower())
+                )
+                .ToList();
 
-        //    return NotFound("Account không tồn tại");
-        //}
+           
+
+             int pageSize = 8;
+                int pageNumber = (page ?? 1);
+                return RedirectToAction("Getlist", lstAcc.OrderByDescending(x => x.Id).ToPagedList(pageNumber, pageSize));
+        }
+
 
 
         [AllowAnonymous]
@@ -195,14 +224,16 @@ namespace APPVIEW.Controllers
 
         [HttpGet, AllowAnonymous]
 
-        public IActionResult Login()
+        public IActionResult Login(string ReturnUrl)
         {
+            ViewData["ReturnUrl"] = ReturnUrl;
             return View();
         }
         [HttpPost, AllowAnonymous]
 
-        public async Task<IActionResult> Login(LoginVm obj)
-        {
+        public async Task<IActionResult> Login(LoginVm obj,string ReturnUrl)
+        { 
+            ViewData["ReturnUrl"] = ReturnUrl;
             if (string.IsNullOrWhiteSpace(obj.Email) || string.IsNullOrWhiteSpace(obj.Password))
             {
                 ViewData["ErrorMessage"] = "Please enter your email and password.";
@@ -283,12 +314,12 @@ namespace APPVIEW.Controllers
                 
                 if (checkRoleAdmin == true)
                 {
-                    return Redirect("~/Admin/Admin/Index");
+                    return Redirect(!string.IsNullOrEmpty(ViewData["ReturnUrl"]?.ToString()) ? ViewData["ReturnUrl"].ToString() : "~/Admin/Admin/Index");
 
                 }
                 else
                 {
-                    return Redirect("~/Home/Index");
+                    return Redirect(!string.IsNullOrEmpty(ViewData["ReturnUrl"]?.ToString()) ? ViewData["ReturnUrl"].ToString() : "~/Home/Index");
                 }
 
 
@@ -329,7 +360,7 @@ namespace APPVIEW.Controllers
             if (acc != null)
             {
                 var add = await _context.Address.FirstOrDefaultAsync(c => c.AccountId == id);
-                if (add.Status==2&&acc.Status==2)
+                if (add.Status == 2 && acc.Status == 2)
                 {
                     acc.Status = 1;
                     add.Status = 1;
@@ -475,7 +506,7 @@ namespace APPVIEW.Controllers
                 var responeseAcc = await getapi.UpdateObj(user, "Account");
                 var responeseAdd = await getapiAddress.UpdateObj(address, "Address");
 
-                return Redirect("~/Home/Index");
+                return Redirect($"~/Account/MyProfile?id_User={obj.AccountId}");
             }
             catch
             {
@@ -715,7 +746,6 @@ namespace APPVIEW.Controllers
 
 
         }
-        
 
     }
 }

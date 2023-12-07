@@ -15,8 +15,14 @@ using _APPAPI.ViewModels;
 using System;
 using System.Configuration;
 using static APPVIEW.ViewModels.FilterData;
+
 using System.Security.Claims;
 using Microsoft.AspNetCore.Identity;
+
+using Org.BouncyCastle.Tsp;
+using AspNetCore;
+using System.Reflection.Metadata;
+
 
 namespace APPVIEW.Controllers
 {
@@ -37,6 +43,7 @@ namespace APPVIEW.Controllers
         private Getapi<BillDetail> billDetails;
         private Getapi<Voucher> getapiVoucher;
         private Getapi<Address> getapiAddress;
+        private Getapi<Account> getapiAc;
         private Getapi<CartDetail> getapiCD;
         private Getapi<PaymentMethodDetail> getapiPMD;
         private Getapi<PaymentMethod> getapiPM;
@@ -61,17 +68,19 @@ namespace APPVIEW.Controllers
             billDetails = new Getapi<BillDetail>();
             getapiVoucher = new Getapi<Voucher>();
             getapiAddress = new Getapi<Address>();
+
             getapiAcc = new Getapi<Account>();
             getapiVoucherAcc = new Getapi<VoucherForAcc>();
             getapiCD = new Getapi<CartDetail>();
             getapiPM = new Getapi<PaymentMethod>();
-            getapiPMD = new Getapi<PaymentMethodDetail>();
 
+            getapiPMD = new Getapi<PaymentMethodDetail>();
+           
         }
 
         public IActionResult Index()
         {
-            var productDetails = getapi.GetApi("ProductDetails");
+            var productDetails = getapi.GetApi("ProductDetails").Where(c=>c.Status==1&&c.Quantity>0);
             var products = getapiProduct.GetApi("Product");
 
             var productJoin = productDetails.Join(products, ct => ct.Id_Product, s => s.Id, (ct, s) => new { ct, s })
@@ -157,18 +166,88 @@ namespace APPVIEW.Controllers
               .Select(s => s[random.Next(s.Length)]).ToArray());
         }
 
-        public IActionResult Nhanhang(Guid id)
+        public async Task<IActionResult> Nhanhang(Guid id)
         {
             var x = bills.GetApi("Bill").FirstOrDefault(c => c.id == id);
             x.Status = 4;
-            bills.UpdateObj(x, "Bill");
+           await   bills.UpdateObj(x, "Bill");
             return RedirectToAction("Thongtin");
         }
-        public IActionResult HuyDon(Guid id)
+        public async Task<IActionResult> HuyDon(Guid id)
         {
             var x = bills.GetApi("Bill").FirstOrDefault(c => c.id == id);
             x.Status = 0;
-            bills.UpdateObj(x, "Bill");
+           await bills.UpdateObj(x, "Bill");
+            return RedirectToAction("Thongtin");
+        }
+        public async Task<IActionResult> UpdateAddress(Guid id)
+        {
+
+   
+            var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
+
+
+            var client = new OnlineGatewayClient($"https://online-gateway.ghn.vn/shiip/public-api/master-data/province", "bdbbde2a-fec2-11ed-8a8c-6e4795e6d902");
+
+            // Gọi API để lấy danh sách các tỉnh/thành phố
+            var response = await client.GetProvincesAsync();
+
+            //Kiểm tra kết quả trả về
+            if (response.Code == 200) // Thành công
+            {
+                // Trả về danh sách các quận/huyện dưới dạng JSON
+                ViewBag.province = response.Data;
+            }
+
+            ViewBag.Product = SessionService.GetObjFromSession(HttpContext.Session, "Cart");
+            var tt = 0;
+            foreach (var item in ViewBag.Product)
+            {
+                tt += (item.Quantity * item.Price);
+            }
+            ViewBag.TT = tt;
+            var x = bills.GetApi("Bill").FirstOrDefault(c => c.id == id);
+            ViewBag.bill = x;
+            
+            return View(x);
+        }
+        [HttpPost]
+        public async Task<IActionResult> UpdateAddress(Guid id,string sdt , int province, string district, string ward, string diachict, float ship)
+        {
+            string province2 = "";
+            var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
+
+
+            var client = new OnlineGatewayClient($"https://online-gateway.ghn.vn/shiip/public-api/master-data/province", "bdbbde2a-fec2-11ed-8a8c-6e4795e6d902");
+
+            // Gọi API để lấy danh sách các tỉnh/thành phố
+            var response = await client.GetProvincesAsync();
+
+            //Kiểm tra kết quả trả về
+            if (response.Code == 200) // Thành công
+            {
+                // Trả về danh sách các quận/huyện dưới dạng JSON
+                ViewBag.province = response.Data;
+            }
+
+            foreach (var item in response.Data)
+            {
+                if (item.ProvinceID == province)
+                {
+
+                    province2 = item.ProvinceName; break;
+                }
+            }
+
+            // Gọi API để lấy danh sách các tỉnh/thành phố
+
+            var diachi = diachict + "-" + ward + "-" + district + "-Tỉnh " + province2;
+
+            var x = bills.GetApi("Bill").FirstOrDefault(c => c.id == id);
+            x.PhoneNumber = sdt ;
+            x.Address = diachi;
+            x.ShipFee  = ship;
+            await bills.UpdateObj(x, "Bill");
             return RedirectToAction("Thongtin");
         }
 
@@ -176,7 +255,9 @@ namespace APPVIEW.Controllers
         // Tạo chuỗi có độ dài 8 ký tự
 
 
-        public async Task<IActionResult> DatHangN(Address obj, string pay, float phiship, float voucher, string voucherCode)
+      
+        public async Task<IActionResult> DatHangN(Address obj,string pay,float phiship,float voucher,string vouchercode)
+
         {
 
             var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
@@ -310,7 +391,30 @@ namespace APPVIEW.Controllers
         }
 
 
+
+        [HttpPost]
+        public ActionResult getsl(string productId, string size, string color)
+        {
+            int idsanphamcthitiet = 0;
+
+            // Debug để kiểm tra dữ liệu được nhận từ AJAX request
+            Console.WriteLine($"Received: ProductId={productId}, Size={size}, Color={color}");
+
+            var foundSanPhamChiTiet = getapi.GetApi("ProductDetails")
+                .FirstOrDefault(c => c.Id_Product == Guid.Parse(productId) && c.Id_Size == Guid.Parse(size) && c.Id_Color == Guid.Parse(color));
+
+            if (foundSanPhamChiTiet != null)
+            {
+                idsanphamcthitiet = foundSanPhamChiTiet.Quantity;
+            }
+
+            // Trả về dữ liệu dưới dạng JSON
+            return Json(new { success = true, idsanphamcthitiet = idsanphamcthitiet });
+        }
+
+
         public async Task<IActionResult> DatHang(Guid size, Guid color, Guid productId, int soluong, string sdt, float ship, int province, string district, string ward, string diachict, Guid voucherId)
+
 
         {
 
@@ -324,6 +428,7 @@ namespace APPVIEW.Controllers
             var response = await client.GetProvincesAsync();
             foreach (var item in response.Data)
             {
+
                 if (item.ProvinceID == province)
                 {
 
@@ -338,6 +443,7 @@ namespace APPVIEW.Controllers
 
 
             var x = getapi.GetApi("ProductDetails").FirstOrDefault(c => c.Id_Product == productId && c.Id_Size == size && c.Id_Color == color);
+       
 
             if (account.Id == Guid.Empty)
             {
@@ -431,6 +537,7 @@ namespace APPVIEW.Controllers
 
         }
 
+        [Authorize(Roles ="Customer")]
         public IActionResult Contact()
         {
             return View();
@@ -439,14 +546,15 @@ namespace APPVIEW.Controllers
         public IActionResult Shop(string sortOrder)
         {
             var img = getapiImg.GetApi("Image");
-            var productDetails = getapi.GetApi("ProductDetails").ToList();
-
+            var productDetails = getapi.GetApi("ProductDetails").Where(c => c.Status == 1 && c.Quantity > 0).ToList();
+            ViewBag.size = getapiSize.GetApi("Size");
+            ViewBag.color = getapiColor.GetApi("Color");
             try
             {
                 var productsWithImages = productDetails
                     .Join(img, pd => pd.Id, pi => pi.IdProductdetail, (pd, pi) => new { ProductDetail = pd, Image = pi })
                     .ToList();
-
+              
                 // Sắp xếp danh sách sản phẩm tùy thuộc vào tham số sortOrder
                 switch (sortOrder)
                 {
@@ -457,6 +565,11 @@ namespace APPVIEW.Controllers
                         productsWithImages = productsWithImages.OrderByDescending(item => item.ProductDetail.Price).ToList();
                         break;
                     default:
+                        if (sortOrder!=null)
+                        {
+                            productsWithImages = productsWithImages.Where(c => c.ProductDetail.Name.ToLower().Contains(sortOrder.ToLower())).ToList();
+                        }
+                        
                         break;
                 }
 
@@ -492,22 +605,22 @@ namespace APPVIEW.Controllers
                 if (filter.Colors != null && filter.Colors.Count > 0 && !filter.Colors.Contains("all"))
                 {
                     filterProductsWithImages = filterProductsWithImages
-                        .Where(p => filter.Colors.Contains(p.ProductDetail.Color?.Name))
-                        .ToList();
+                        .Where(p => filter.Colors.Contains(p.ProductDetail.Id_Color.ToString())).ToList();
+                       
                 }
 
                 if (filter.Sizes != null && filter.Sizes.Count > 0 && !filter.Sizes.Contains("all"))
                 {
                     filterProductsWithImages = filterProductsWithImages
-                        .Where(p => filter.Sizes.Contains(p.ProductDetail.Size?.Name))
+                        .Where(p => filter.Sizes.Contains(p.ProductDetail.Id_Size.ToString()))
                         .ToList();
 
-                    Console.WriteLine("Filtered Products Count: " + filterProductsWithImages.Count);
-                    Console.WriteLine("Selected Sizes: " + string.Join(", ", filter.Sizes));
-                    foreach (var product in filterProductsWithImages)
-                    {
-                        var sizeName = product.ProductDetail.Size?.Name ?? "null";
-                    }
+                    //Console.WriteLine("Filtered Products Count: " + filterProductsWithImages.Count);
+                    //Console.WriteLine("Selected Sizes: " + string.Join(", ", filter.Sizes));
+                    //foreach (var product in filterProductsWithImages)
+                    //{
+                    //    var sizeName = product.ProductDetail.Size?.Name ?? "null";
+                    //}
                 }
 
                 if (filter.PriceRanges != null && filter.PriceRanges.Count > 0 && !filter.PriceRanges.Contains("all"))
@@ -534,10 +647,7 @@ namespace APPVIEW.Controllers
                 }
 
                 ViewBag.Products = filterProductsWithImages;
-                foreach (var product in ViewBag.Products)
-                {
-                    var sizeName = product.ProductDetail.Size?.Name ?? "null";
-                }
+            
                 return PartialView("_ReturnProducts", filterProductsWithImages);
             }
             catch (Exception ex)
@@ -726,6 +836,13 @@ namespace APPVIEW.Controllers
         }
         public async Task<IActionResult> Checkout()
         {
+
+            var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
+            if (!User.Identity.IsAuthenticated)
+            {
+                return Redirect("~/Account/Login");
+            }
+
             var client = new OnlineGatewayClient($"https://online-gateway.ghn.vn/shiip/public-api/master-data/province", "bdbbde2a-fec2-11ed-8a8c-6e4795e6d902");
 
             // Gọi API để lấy danh sách các tỉnh/thành phố
@@ -788,10 +905,15 @@ namespace APPVIEW.Controllers
             ViewBag.TT = tt;
             ViewBag.Total = ViewBag.TT;
 
-            var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
+            
             if (account != null)
             {
-                var dc = getapiAddress.GetApi("Address").FirstOrDefault(c => c.AccountId == account.Id);
+
+                var Uid = User.Claims.FirstOrDefault(c => c.Type == "Id").Value; 
+                var acc = getapiAc.GetApi("Account").FirstOrDefault(c => c.Id.ToString() == Uid);
+                SessionService.SetObjToJson(HttpContext.Session, "Account", acc);
+                var dc = getapiAddress.GetApi("Address").FirstOrDefault(c => c.AccountId.ToString() == Uid);
+
                 if (dc != null)
                 {
                     var p = await province(dc.Province);
@@ -825,7 +947,6 @@ namespace APPVIEW.Controllers
                 {
                     ViewBag.fee = 0;
                 }
-
                 return View(dc);
             }
 
@@ -949,9 +1070,9 @@ namespace APPVIEW.Controllers
 
         {
             string url = "http://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
-            string returnUrl = $"https://localhost:7095/Home/PaymentConfirm";
-            string tmnCode = "OQK7ZU4V";
-            string hashSecret = "WRKKYLZIEYLLPPFRNNQXVAKXHKGRIEEA";
+            string returnUrl = $"https://localhost:7095/Home/PaymentConfirm?id={bill.id}";
+            string tmnCode = "6AV1KO3E";
+            string hashSecret = "UGHKKYGUTTLWWTQOJBECDFAMDHZDBLWW";
 
             PayLib pay = new PayLib();
 
@@ -972,40 +1093,11 @@ namespace APPVIEW.Controllers
 
             string paymentUrl = pay.CreateRequestUrl(url, hashSecret);
 
-            if (paymentUrl != null)
-            {
-                ///phương thức thanh toán
-                var PM = getapiPM.GetApi("PaymentMethod").FirstOrDefault(c => c.Method == "Online");
-                if (PM == null)
-                {
-                    PM = new PaymentMethod();
-                    PM.id = Guid.NewGuid();
-                    PM.Method = "Online";
-                    PM.Status = 1;
-                    PM.CreateDate = DateTime.Now;
-                    PM.UpdateDate = DateTime.Now;
-                    PM.Description = "Thanh toán online";
-
-                    await getapiPM.CreateObj(PM, "PaymentMethod");
-                }
-                var pmd = new PaymentMethodDetail()
-                {
-                    id = Guid.NewGuid(),
-                    BillId = bill.id,
-                    PaymentMethodID = PM.id,
-                    Status = 1,
-                    TotalMoney = bill.TotalMoney.ToString(),
-                    Description = "đã thanh toán",
-                };
-                await getapiPMD.CreateObj(pmd, "PaymentMethodDetail");
-                bill.Type = "Online - Đã Thanh Toán";
-                await bills.UpdateObj(bill, "Bill");
-            }
             return Redirect(paymentUrl);
 
         }
 
-        public ActionResult PaymentConfirm()
+        public async Task<IActionResult> PaymentConfirm(Guid id)
         {
             if (Request.QueryString.Value != null)
             {
@@ -1035,6 +1127,40 @@ namespace APPVIEW.Controllers
                     {
                         //Thanh toán thành công
                         ViewBag.Message = "Thanh toán thành công hóa đơn " + orderId + " | Mã giao dịch: " + vnpayTranId;
+
+                       
+                        var Bill = bills.GetApi("Bill").FirstOrDefault(c => c.id == id);
+                        if (Bill!=null)
+                        {
+
+                        ///phương thức thanh toán
+                        var PM = getapiPM.GetApi("PaymentMethod").FirstOrDefault(c => c.Method == "Online");
+                            if (PM == null)
+                            {
+                                PM = new PaymentMethod();
+                                PM.id = Guid.NewGuid();
+                                PM.Method = "Online";
+                                PM.Status = 1;
+                                PM.CreateDate = DateTime.Now;
+                                PM.UpdateDate = DateTime.Now;
+                                PM.Description = "Thanh toán online";
+
+                                await getapiPM.CreateObj(PM, "PaymentMethod");
+                            }
+                            var pmd = new PaymentMethodDetail()
+                            {
+                                id = Guid.NewGuid(),
+                                BillId = id,
+                                PaymentMethodID = PM.id,
+                                Status = 1,
+                                TotalMoney = Bill.TotalMoney.ToString(),
+                                Description = "đã thanh toán",
+                            };
+                            await getapiPMD.CreateObj(pmd, "PaymentMethodDetail");
+                             Bill.Type = "Online - Đã Thanh Toán";
+                            await bills.UpdateObj(Bill, "Bill");
+                        }
+
                     }
                     else
                     {
@@ -1053,7 +1179,9 @@ namespace APPVIEW.Controllers
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
+          
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+
         }
     }
 }

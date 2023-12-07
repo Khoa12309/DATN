@@ -46,11 +46,11 @@
                     <h3>Billing Details</h3>
                     <form class="row contact_form" action="~/home/dathangn" method="post" novalidate="novalidate">
                         <div class="col-md-6 form-group p_star">
-                            <input type="text" class="form-control" id="first" name="Fullname" placeholder="Fullname" asp-for="@Model.Name">
+                            <input type="text" class="form-control" id="first" name="Fullname" placeholder="Fullname" asp-for="@Model.Name" required>
                             <span class="placeholder" data-placeholder="Fullname" placeholder="Fullname"></span>
                         </div>
                         <div class="col-md-6 form-group p_star">
-                            <input type="text" class="form-control" placeholder="Phonenumber" id="last" asp-for="@Model.PhoneNumber">
+                            <input type="text" class="form-control" placeholder="Phonenumber" max="10" id="last" asp-for="@Model.PhoneNumber" required> 
                             <span class="placeholder" data-placeholder="Phonenumber"></span>
                         </div>
 
@@ -65,7 +65,7 @@
                             <div class="row">
 
                                 <div class="col-lg-4">
-                                    <select class="country_select" id="countrySelect" asp-for="@Model.Province">
+                                    <select class="country_select" id="countrySelect" asp-for="@Model.Province" size="5">
                                         @foreach (var item in ViewBag.province)
                                         {
                                             if (Model != null)
