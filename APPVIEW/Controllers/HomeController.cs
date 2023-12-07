@@ -364,9 +364,7 @@ namespace APPVIEW.Controllers
 
         }
 
-        [HttpPost]
-        [HttpPost]
-        [HttpPost]
+
         [HttpPost]
         public ActionResult getsl(string productId, string size, string color)
         {
@@ -494,6 +492,7 @@ namespace APPVIEW.Controllers
 
         }
 
+        [Authorize(Roles ="Customer")]
         public IActionResult Contact()
         {
             return View();
@@ -1065,7 +1064,9 @@ namespace APPVIEW.Controllers
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
+          
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+
         }
     }
 }

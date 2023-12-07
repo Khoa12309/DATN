@@ -141,6 +141,7 @@
 
                         <form asp-action="Login" id="formAuthentication" class="mb-3" method="POST">
                             <div class="form-floating form-floating-outline mb-3">
+                                <input type="hidden" name="ReturnUrl" value="@ViewData["ReturnUrl"]" />
                                 <input asp-for="Email" type="text"
                                        class="form-control"
                                        id="email"
