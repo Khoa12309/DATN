@@ -38,7 +38,7 @@ namespace APPVIEW.Controllers
         private readonly SendEmailMessage _sendEmailMessage;
         private readonly ShoppingDB _dbContext;
 
-        public AccountController(HttpClient httpClient, INotyfService notyf, ISendEmail sendEmail)
+        public AccountController(HttpClient httpClient, ISendEmail sendEmail)
         {
             getapi = new Getapi<Account>();
             _httpClient = httpClient;
@@ -60,7 +60,7 @@ namespace APPVIEW.Controllers
             int pageSize = 8;
             int pageNumber = (page ?? 1);
             return View(obj.OrderByDescending(x => x.Id).ToPagedList(pageNumber, pageSize));
-            
+
         }
         public async Task<IActionResult> Search(string searchTerm)
         {
@@ -193,14 +193,16 @@ namespace APPVIEW.Controllers
 
         [HttpGet, AllowAnonymous]
 
-        public IActionResult Login()
+        public IActionResult Login(string ReturnUrl)
         {
+            ViewData["ReturnUrl"] = ReturnUrl;
             return View();
         }
         [HttpPost, AllowAnonymous]
 
-        public async Task<IActionResult> Login(LoginVm obj)
-        {
+        public async Task<IActionResult> Login(LoginVm obj,string ReturnUrl)
+        { 
+            ViewData["ReturnUrl"] = ReturnUrl;
             if (string.IsNullOrWhiteSpace(obj.Email) || string.IsNullOrWhiteSpace(obj.Password))
             {
                 ViewData["ErrorMessage"] = "Please enter your email and password.";
@@ -280,12 +282,12 @@ namespace APPVIEW.Controllers
                 Response.Cookies.Append("AccessToken", loginResult.AccessToken);
                 if (checkRoleAdmin == true)
                 {
-                    return Redirect("~/Admin/Admin/Index");
+                    return Redirect(!string.IsNullOrEmpty(ViewData["ReturnUrl"]?.ToString()) ? ViewData["ReturnUrl"].ToString() : "~/Admin/Admin/Index");
 
                 }
                 else
                 {
-                    return Redirect("~/Home/Index");
+                    return Redirect(!string.IsNullOrEmpty(ViewData["ReturnUrl"]?.ToString()) ? ViewData["ReturnUrl"].ToString() : "~/Home/Index");
                 }
 
 
@@ -327,7 +329,7 @@ namespace APPVIEW.Controllers
             if (acc != null)
             {
                 var add = await _context.Address.FirstOrDefaultAsync(c => c.AccountId == id);
-                if (add.Status==2&&acc.Status==2)
+                if (add.Status == 2 && acc.Status == 2)
                 {
                     acc.Status = 1;
                     add.Status = 1;
@@ -473,7 +475,7 @@ namespace APPVIEW.Controllers
                 var responeseAcc = await getapi.UpdateObj(user, "Account");
                 var responeseAdd = await getapiAddress.UpdateObj(address, "Address");
 
-                return Redirect("~/Home/Index");
+                return Redirect($"~/Account/MyProfile?id_User={obj.AccountId}");
             }
             catch
             {
@@ -713,6 +715,7 @@ namespace APPVIEW.Controllers
 
 
         }
+  
 
     }
 }
