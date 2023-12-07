@@ -40,6 +40,7 @@ namespace APPVIEW.Controllers
             bills = new Getapi<Bill>();
             billDetails = new Getapi<BillDetail>();
             _account = new Getapi<Account>();
+          
         }
 
         public ActionResult Index()
@@ -85,6 +86,7 @@ namespace APPVIEW.Controllers
         }
         public async Task<IActionResult> HuyDon(Guid id)
         {
+           
             var x = bills.GetApi("Bill").FirstOrDefault(c => c.id == id);
             var y = billDetails.GetApi("BillDetail").Where(c => c.BIllId == id).ToList();
             foreach (var item in y)
@@ -142,6 +144,13 @@ namespace APPVIEW.Controllers
 
         public ActionResult DonHuy(string search)
         {
+            if (User.Identity.IsAuthenticated)
+            {
+
+                var Uid = User.Claims.FirstOrDefault(c => c.Type == "Id").Value;
+                var acc = _account.GetApi("Account").FirstOrDefault(c => c.Id.ToString() == Uid);
+                SessionService.SetObjToJson(HttpContext.Session, "Account", acc);
+            }
             var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
             var userBills = bills.GetApi("Bill").Where(c => c.Status == 0).OrderByDescending(d => d.CreateDate).ToList();
             ViewBag.viewbill = userBills;

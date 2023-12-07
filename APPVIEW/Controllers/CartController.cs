@@ -97,7 +97,7 @@ namespace APPVIEW.Controllers
         public async Task<IActionResult> AddToCart(Guid id, int Soluong, Guid color, Guid size)
         {
             loadcart();
-            if (!User.Identity.IsAuthenticated)
+            if (User.Identity.IsAuthenticated)
             {
 
                 var Uid = User.Claims.FirstOrDefault(c => c.Type == "Id").Value;

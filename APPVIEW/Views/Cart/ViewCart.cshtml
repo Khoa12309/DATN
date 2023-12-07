@@ -91,7 +91,7 @@
                                         <td>
                                          
                                             <div class="product_count">
-                                                <input type="number" id=@Model[i].Id maxlength="12" title="Quantity:" class="input-text qty" value="@Model[i].Quantity" asp-for="@Model[i].Quantity" min="0">
+                                            <input type="number" id=@Model[i].Id maxlength="12" title="Quantity:" class="input-text qty" value="@Model[i].Quantity" asp-for="@Model[i].Quantity" min="0" onchange="updatecart(@Model[i].Id)">
                                                 <button onclick="var result = document.getElementById('@Model[i].Id'); var sst = result.value; if( !isNaN( sst )) result.value++;return false;"
                                                     class="increase items-count" type="button">
                                                     <i class="fa fa-plus"></i>
@@ -206,6 +206,7 @@
 <script>
     var Size = document.getElementById("size");
     var pro = document.getElementById("pro");
+   
     var color = document.getElementById("color");
     Size.onchange = function () {
         // Lấy giá trị được chọn trong thẻ select
@@ -236,8 +237,24 @@
 
 
     };
-    function updatecart(){
+    function updatecart( quant){
+        var quantity = document.getElementById(quant);
+        var data = {
+           Quantity : quantity.value
+        };
+        var json = JSON.stringify(data);
+        // Sử dụng fetch() để gửi một request GET đến /Home/GetUsers
+        fetch("/Cart/updatecart", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: json
+        })
 
-
+            .catch(error => {
+                // Xử lý lỗi
+                console.error(error); // In ra lỗi
+            });
     }
 </script>
