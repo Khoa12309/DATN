@@ -295,7 +295,7 @@ namespace APPVIEW.Controllers
             bill.Status = 1;
             bill.PayDate = DateTime.Now;
             bill.Type = pay + " - Chưa Thanh Toán ";
-            var vo = getapiVoucher.GetApi("Voucher").FirstOrDefault(c => c.Code == voucherCode);
+            var vo = getapiVoucher.GetApi("Voucher").FirstOrDefault(c => c.Code == vouchercode);
             if (vo != null)
             {
                 bill.Voucherid = vo.Id;
