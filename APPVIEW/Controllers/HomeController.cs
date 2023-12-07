@@ -38,6 +38,7 @@ namespace APPVIEW.Controllers
         private Getapi<BillDetail> billDetails;
         private Getapi<Voucher> getapiVoucher;
         private Getapi<Address> getapiAddress;
+        private Getapi<Account> getapiAc;
         private Getapi<CartDetail> getapiCD;
         private Getapi<PaymentMethodDetail> getapiPMD;
         private Getapi<PaymentMethod> getapiPM;
@@ -60,11 +61,12 @@ namespace APPVIEW.Controllers
             billDetails = new Getapi<BillDetail>();
             getapiVoucher = new Getapi<Voucher>();
             getapiAddress = new Getapi<Address>();
+            getapiAc = new Getapi<Account>();
 
-            getapiCD=new Getapi<CartDetail>();
+              getapiCD =new Getapi<CartDetail>();
             getapiPM=new Getapi<PaymentMethod>();
             getapiPMD = new Getapi<PaymentMethodDetail>();
-
+           
         }
 
         public IActionResult Index()
@@ -788,6 +790,13 @@ namespace APPVIEW.Controllers
         }
         public async Task<IActionResult> Checkout()
         {
+
+            var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
+            if (!User.Identity.IsAuthenticated)
+            {
+                return Redirect("~/Account/Login");
+            }
+
             var client = new OnlineGatewayClient($"https://online-gateway.ghn.vn/shiip/public-api/master-data/province", "bdbbde2a-fec2-11ed-8a8c-6e4795e6d902");
 
             // Gọi API để lấy danh sách các tỉnh/thành phố
@@ -850,7 +859,7 @@ namespace APPVIEW.Controllers
             ViewBag.TT = tt;
             ViewBag.Total = ViewBag.TT;
 
-            var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
+            
             if (account != null)
             {
                 var dc = getapiAddress.GetApi("Address").FirstOrDefault(c => c.AccountId == account.Id);
@@ -887,7 +896,6 @@ namespace APPVIEW.Controllers
                 {
                     ViewBag.fee = 0;
                 }
-
                 return View(dc);
             }
             
