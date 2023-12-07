@@ -364,9 +364,7 @@ namespace APPVIEW.Controllers
 
         }
 
-        [HttpPost]
-        [HttpPost]
-        [HttpPost]
+
         [HttpPost]
         public ActionResult getsl(string productId, string size, string color)
         {
@@ -494,6 +492,7 @@ namespace APPVIEW.Controllers
 
         }
 
+        [Authorize(Roles ="Customer")]
         public IActionResult Contact()
         {
             return View();
@@ -791,11 +790,10 @@ namespace APPVIEW.Controllers
         }
         public async Task<IActionResult> Checkout()
         {
-            
+
             var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
             if (!User.Identity.IsAuthenticated)
             {
-               
                 return Redirect("~/Account/Login");
             }
 
@@ -864,10 +862,12 @@ namespace APPVIEW.Controllers
             
             if (account != null)
             {
+
                 var Uid = User.Claims.FirstOrDefault(c => c.Type == "Id").Value; 
                 var acc = getapiAc.GetApi("Account").FirstOrDefault(c => c.Id.ToString() == Uid);
                 SessionService.SetObjToJson(HttpContext.Session, "Account", acc);
                 var dc = getapiAddress.GetApi("Address").FirstOrDefault(c => c.AccountId.ToString() == Uid);
+
                 if (dc != null)
                 {
                     var p = await province(dc.Province);
@@ -1069,7 +1069,9 @@ namespace APPVIEW.Controllers
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
+          
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+
         }
     }
 }
