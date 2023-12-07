@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace APPVIEW.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    //[Authorize(Roles = "Admin")]
     public class ColorController : Controller
     {
         private Getapi<Color> getapi;
@@ -22,7 +22,10 @@ namespace APPVIEW.Controllers
         public async Task<IActionResult> Search(string searchTerm)
         {
             var lstColor = getapi.GetApi("Color").ToList();
-
+            if (string.IsNullOrWhiteSpace(searchTerm))
+            {
+                return View("GetList", lstColor);
+            }
             var searchResult = lstColor
                 .Where(v =>
                     v.Colorcode.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||

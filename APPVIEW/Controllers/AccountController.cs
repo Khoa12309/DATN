@@ -24,7 +24,11 @@ using X.PagedList;
 
 using APPVIEW.Models;
 using _APPAPI.ViewModels;
+
+using Microsoft.AspNetCore.Identity;
+
 using Microsoft.AspNetCore.Mvc.RazorPages;
+
 
 namespace APPVIEW.Controllers
 {
@@ -51,7 +55,7 @@ namespace APPVIEW.Controllers
             _dbContext = new ShoppingDB();
         }
 
-        [Authorize(Roles = "Admin,Staff")]
+        //[Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> GetList(int? page)
 
         {
@@ -87,6 +91,7 @@ namespace APPVIEW.Controllers
             return View(obj.OrderByDescending(x => x.Id).ToPagedList(pageNumber, pageSize));
             
         }
+
         
         public async Task<IActionResult> Search(string tk, int? page)
         {
@@ -105,6 +110,7 @@ namespace APPVIEW.Controllers
                 int pageNumber = (page ?? 1);
                 return RedirectToAction("Getlist", lstAcc.OrderByDescending(x => x.Id).ToPagedList(pageNumber, pageSize));
         }
+
 
 
         [AllowAnonymous]
@@ -305,6 +311,7 @@ namespace APPVIEW.Controllers
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
 
                 Response.Cookies.Append("AccessToken", loginResult.AccessToken);
+                
                 if (checkRoleAdmin == true)
                 {
                     return Redirect(!string.IsNullOrEmpty(ViewData["ReturnUrl"]?.ToString()) ? ViewData["ReturnUrl"].ToString() : "~/Admin/Admin/Index");
@@ -314,7 +321,6 @@ namespace APPVIEW.Controllers
                 {
                     return Redirect(!string.IsNullOrEmpty(ViewData["ReturnUrl"]?.ToString()) ? ViewData["ReturnUrl"].ToString() : "~/Home/Index");
                 }
-
 
 
             }
@@ -740,7 +746,6 @@ namespace APPVIEW.Controllers
 
 
         }
-  
 
     }
 }

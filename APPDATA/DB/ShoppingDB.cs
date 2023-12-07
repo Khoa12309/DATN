@@ -19,7 +19,6 @@ namespace APPDATA.DB
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 
         {       
-
             optionsBuilder.UseSqlServer(@"Data Source=LAPTOP-N6FK027M;Initial Catalog=DATN;Persist Security Info=True;User ID=khoaph20877;Password=123456");
         }
 
@@ -49,5 +48,6 @@ namespace APPDATA.DB
         public DbSet<Size> Sizes { get; set; }
         public DbSet<BillHistory> BillHistories { get; set; }
         public DbSet<RefreshToken> RefreshTokens { get; set; }
+        public DbSet<VoucherForAcc> VoucherForAccs { get; set; }
     }
 }

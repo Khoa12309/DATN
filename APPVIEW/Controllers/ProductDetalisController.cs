@@ -13,7 +13,7 @@ using X.PagedList;
 
 namespace APPVIEW.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    //[Authorize(Roles = "Admin")]
     public class ProductDetailController : Controller
     {
         private Getapi<ProductDetail> getapi;

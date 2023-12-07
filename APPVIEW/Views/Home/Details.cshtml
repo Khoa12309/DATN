@@ -67,8 +67,27 @@
                         }
                     }
 
+
+                </div>
+                <div class="voucher-container" style="margin-top: 15px">
+                    <div class="voucher-list">
+                        <form asp-controller="Home" asp-action="SaveVoucherForUser" method="post">
+                            <ul class="voucher-list" style="list-style-type: none; padding: 0; margin: 0; display: inline-flex; flex-wrap: nowrap;">
+                                @foreach (var vc in ViewBag.Voucher)
+                                {
+                                    <li class="voucher-item" style="background: #F5F5F5; border-radius: 5px; color: #FF6A6A">
+                                        <a>Giảm: @vc.Value% - Max: @vc.DiscountAmount VND</a>
+                                        <input type="hidden" name="voucherId" value="@vc.Id" />
+                                        <input type="submit" value="+" class="btn btn-light addVoucherButton" data-voucher-id="@vc.Id" style="margin-left: 5px; color: #FF6A6A"/>
+                                        @*<button type="submit" class="btn btn-light addVoucherButton" data-voucher-id="@vc.Id" style="margin-left: 5px; color: #FF6A6A">+</button>*@
+                                    </li>
+                                }
+                            </ul>
+                        </form>
+                    </div>
                 </div>
             </div>
+           
             <div class="col-lg-5 offset-lg-1">
                 <form asp-action="AddToCart" asp-controller="Cart">
                     <input hidden name="id" value="@Model.Id" />
@@ -78,17 +97,18 @@
                         <h2>@Model.Price.ToString("C0", new CultureInfo("vi-VN"))</h2>
                         <p>@Model.Desciption</p>
 
+                       
+
+
                         <ul class="list">
 
 
                             <li>
                                 Sizes:
-
-
                                 @{
                                     var lstS = new List<Guid>();
                                 }
-                                
+
                                 @foreach (var pd in ViewBag.lspd)
                                 {
                                     if (lstS.Any(c => c == pd.Id_Size))
@@ -133,7 +153,9 @@
                                                 <label class="custom-control-label" for="@item.Id">@item.Name</label>
                                             </div>
 
+
                                         }
+
 
                                     }
                                 }
@@ -144,6 +166,7 @@
                         <div class="product_count">
                             <label for="Soluong">Quantity:</label>
                             @* <button onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst )) result.value++;return false;"
+
                             class="increase items-count" type="button"><i class="ti-angle-left"></i></button>*@
                             <input type="number" id="sst" size="2" value="1" title="Quantity:" class="input-text qty" min="0" max="@Model.Quantity" name="Soluong">
                             @*<button onclick="var result = document.getElementById('sst'); var sst = result.value; if( !isNaN( sst ) &amp;&amp; sst > 0 ) result.value--;return false;"
@@ -151,6 +174,7 @@
 
                         </div>
                         <button type="submit" data-product-id="@Model.Id" class="button primary-btn">Add to Cart</button>
+
                     </div>
                 </form>
 
@@ -171,6 +195,7 @@
                    aria-selected="false">Description</a>
             </li>
             @*<li class="nav-item">
+
             <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact"
             aria-selected="false">Comments</a>
             </li>
@@ -178,6 +203,7 @@
             <a class="nav-link " id="review-tab" data-toggle="tab" href="#review" role="tab" aria-controls="review"
             aria-selected="false">Reviews</a>
             </li>*@
+
         </ul>
         <div class="tab-content" id="myTabContent">
             <div class="tab-pane fade" id="home" role="tabpanel" aria-labelledby="home-tab">
@@ -212,6 +238,7 @@
 
                                             }
                                         }
+
                                     }
                                 </td>
                             </tr>
@@ -232,6 +259,7 @@
                                         }
                                         @foreach (var item in ViewBag.Size)
                                         {
+
                                             if (pd.Id_Size == item.Id)
                                             {
                                                 lstS1.Add(pd.Id_Size);
@@ -337,6 +365,7 @@
                         </tbody>
                     </table>
                 </div>
+
             </div>
             @*		<div class="tab-pane fade" id="contact" role="tabpanel" aria-labelledby="contact-tab">
             <div class="row">
@@ -540,6 +569,7 @@
             </div>
             </div>
             </div>*@
+
         </div>
     </div>
 </section>
@@ -587,8 +617,11 @@
             }
         </div>
     </div>
-@* </section>
-<script>
+
+</section>
+
+
+@*<script>
     document.addEventListener("DOMContentLoaded", function () {
         const addButton = document.querySelector(".button.primary-btn");
 

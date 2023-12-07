@@ -1,16 +1,16 @@
 ﻿@{
     ViewData["Title"] = "DatHang";
     Layout = "~/Views/Shared/_LayoutWeb.cshtml";
-@using APPDATA.Models;
+    @using APPDATA.Models;
     List<Image> image = ViewBag.image;
-     BillDetail bill = ViewBag.Billct;
+    BillDetail bill = ViewBag.Billct;
     var img = image.FirstOrDefault(c => c.IdProductdetail == bill.ProductDetailID);
 }
 @*
-<h1 style="color:forestgreen">Đặt hàng thành công</h1>
-<h2 style="margin-top:50px">Thông tin đơn hàng</h2>
+    <h1 style="color:forestgreen">Đặt hàng thành công</h1>
+    <h2 style="margin-top:50px">Thông tin đơn hàng</h2>
 
-<div style="margin-left:100px;color:black;font-size:25px" >
+    <div style="margin-left:100px;color:black;font-size:25px" >
     <span>Trạng thái đơn hàng : @if (ViewBag.Bill.Status==1) { <span>Chờ xác nhận</span>}</span>
     <p>Tên sản phẩm : @ViewBag.sp.Name </p>
     <p>Tổng tiền : @ViewBag.Bill.TotalMoney</p>
@@ -22,7 +22,7 @@
     <p>Size : @ViewBag.sizee.Name </p>
     <p>Màu : @ViewBag.Collor.Name </p>
 
-</div> *@
+    </div> *@
 
 
 
@@ -66,7 +66,7 @@
 
                                 <td>
                                     <img src="~/images/@img.Name" style="width: 100px; height:auto" alt="">
-                                </td> 
+                                </td>
                                 <td>
                                     <p>@ViewBag.sp.Name</p>
                                 </td>
@@ -90,7 +90,35 @@
                                 <td><h4 style="color:black"><hr style="color:black"></h4></td>
                                 <td><h4 style="color:black"><hr style="color:black"></h4></td>
                             </tr>
-
+                            <tr>
+                                <td>
+                                    <h4>Voucher</h4>
+                                </td>
+                                <td>
+                                    <h5></h5>
+                                </td>
+                                <td>
+                                    <h5>
+                                        @if (ViewBag.VoucherAcc.Value != null)
+                                        {
+                                            if (ViewBag.VoucherAcc != null)
+                                            {
+                                                <span>Mã: @ViewBag.VoucherAcc.Code</span> <br></br>
+                                                <span>Giảm: @ViewBag.VoucherAcc.Value%</span> <br></br>
+                                                <span>Giảm tối đa: @ViewBag.VoucherAcc.DiscountAmount VND</span>
+                                            }
+                                            else
+                                            {
+                                                <span>Không có voucher áp dụng</span>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <span>Không có voucher áp dụng</span>
+                                        }
+                                    </h5>
+                                </td>
+                            </tr>
                             <tr>
                                 <td>
                                     <h4>Shipping</h4>
@@ -132,7 +160,27 @@
                                     <h5></h5>
                                 </td>
                                 <td>
-                                    <p>@ViewBag.Bill.TotalMoney</p>
+                                    @{
+                                        @if (ViewBag.VoucherAcc != null)
+                                        {
+                                            var priceProd = ViewBag.Billct.Price;
+                                            var percent = ViewBag.VoucherAcc.Value / 100;
+                                            var priceXpercent = priceProd * percent;
+                                            @if (priceXpercent > ViewBag.VoucherAcc.DiscountAmount)
+                                            {
+                                                ViewBag.Bill.TotalMoney = (priceProd - ViewBag.VoucherAcc.DiscountAmount) + ViewBag.Bill.ShipFee;
+                                            }
+                                            else
+                                            {
+                                                ViewBag.Bill.TotalMoney = (priceProd - priceXpercent) + ViewBag.Bill.ShipFee;
+                                            }
+
+                                        }
+                                        else
+                                        {
+                                            <p>@ViewBag.Bill.TotalMoney</p>
+                                        }
+                                    }
                                 </td>
                             </tr>
                         </tbody>

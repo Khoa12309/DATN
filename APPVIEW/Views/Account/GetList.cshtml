@@ -63,6 +63,9 @@
   
     <div class="card-body">
         <a class="btn btn-success mb-3" asp-controller="Account" asp-action="Create">Create New</a>
+        @*<form asp-action="Search" method="get" class="form-inline" style="margin-left: 1000px">
+            <input placeholder="Search" type="text" name="searchTerm" id="searchTerm" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2" />
+        </form>*@
         @if (!string.IsNullOrEmpty(ViewData["ErrorMessage"] as string))
         {
             <div class="alert alert-warning alert-dismissible" role="alert">
@@ -159,7 +162,7 @@
                                         <span class="badge rounded-pill bg-label-danger">Blocked</span>
                                     }
                                 </td>
-                                <td>                                  
+                                <td>
                                     <div class="d-inline-block text-nowrap">
                                         <button class="btn btn-sm btn-icon btn-text-secondary rounded-pill btn-icon dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
                                             <i class="mdi mdi-dots-vertical mdi-20px"></i>

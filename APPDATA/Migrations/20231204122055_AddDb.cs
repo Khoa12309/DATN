@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace APPDATA.Migrations
 {
-    public partial class updateAccount : Migration
+    public partial class AddDb : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -138,7 +138,8 @@ namespace APPDATA.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    Value = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AccountId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    Value = table.Column<int>(type: "int", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Code = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ReduceForm = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -152,31 +153,6 @@ namespace APPDATA.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Vouchers", x => x.Id);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Accounts",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    IdRole = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Avatar = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ResetPasswordcode = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Status = table.Column<int>(type: "int", nullable: false),
-                    Create_date = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Update_date = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Accounts", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Accounts_Roles_IdRole",
-                        column: x => x.IdRole,
-                        principalTable: "Roles",
-                        principalColumn: "id");
                 });
 
             migrationBuilder.CreateTable(
@@ -232,6 +208,58 @@ namespace APPDATA.Migrations
                         name: "FK_ProductDetails_Suppliers_Id_supplier",
                         column: x => x.Id_supplier,
                         principalTable: "Suppliers",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Accounts",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    IdRole = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Avatar = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ResetPasswordcode = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    Create_date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Update_date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    VoucherId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Accounts", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Accounts_Roles_IdRole",
+                        column: x => x.IdRole,
+                        principalTable: "Roles",
+                        principalColumn: "id");
+                    table.ForeignKey(
+                        name: "FK_Accounts_Vouchers_VoucherId",
+                        column: x => x.VoucherId,
+                        principalTable: "Vouchers",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Images",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    IdProductdetail = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    Create_date = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Update_date = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Images", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Images_ProductDetails_IdProductdetail",
+                        column: x => x.IdProductdetail,
+                        principalTable: "ProductDetails",
                         principalColumn: "Id");
                 });
 
@@ -365,27 +393,6 @@ namespace APPDATA.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Images",
-                columns: table => new
-                {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    IdProductdetail = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Status = table.Column<int>(type: "int", nullable: false),
-                    Create_date = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    Update_date = table.Column<DateTime>(type: "datetime2", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Images", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Images_ProductDetails_IdProductdetail",
-                        column: x => x.IdProductdetail,
-                        principalTable: "ProductDetails",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
                 name: "BillDetails",
                 columns: table => new
                 {
@@ -489,6 +496,11 @@ namespace APPDATA.Migrations
                 name: "IX_Accounts_IdRole",
                 table: "Accounts",
                 column: "IdRole");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Accounts_VoucherId",
+                table: "Accounts",
+                column: "VoucherId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Address_AccountId",
@@ -651,10 +663,10 @@ namespace APPDATA.Migrations
                 name: "Accounts");
 
             migrationBuilder.DropTable(
-                name: "Vouchers");
+                name: "Roles");
 
             migrationBuilder.DropTable(
-                name: "Roles");
+                name: "Vouchers");
         }
     }
 }

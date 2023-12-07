@@ -4,6 +4,7 @@ using APPDATA.DB;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace APPDATA.Migrations
 {
     [DbContext(typeof(ShoppingDB))]
-    partial class ShoppingDBModelSnapshot : ModelSnapshot
+    [Migration("20231204122055_AddDb")]
+    partial class AddDb
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,21 +23,6 @@ namespace APPDATA.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
-
-            modelBuilder.Entity("AccountVoucher", b =>
-                {
-                    b.Property<Guid>("AccountsId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("VoucherId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("AccountsId", "VoucherId");
-
-                    b.HasIndex("VoucherId");
-
-                    b.ToTable("AccountVoucher");
-                });
 
             modelBuilder.Entity("APPDATA.Models.Account", b =>
                 {
@@ -74,9 +61,14 @@ namespace APPDATA.Migrations
                     b.Property<DateTime>("Update_date")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("VoucherId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
                     b.HasIndex("IdRole");
+
+                    b.HasIndex("VoucherId");
 
                     b.ToTable("Accounts");
                 });
@@ -767,67 +759,15 @@ namespace APPDATA.Migrations
                     b.ToTable("Vouchers");
                 });
 
-            modelBuilder.Entity("APPDATA.Models.VoucherForAcc", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Code")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<double>("DiscountAmount")
-                        .HasColumnType("float");
-
-                    b.Property<DateTime>("EndDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("Id_Account")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("Id_Voucher")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("Status")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Value")
-                        .HasColumnType("int");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("Id_Account");
-
-                    b.HasIndex("Id_Voucher");
-
-                    b.ToTable("VoucherForAccs");
-                });
-
-            modelBuilder.Entity("AccountVoucher", b =>
-                {
-                    b.HasOne("APPDATA.Models.Account", null)
-                        .WithMany()
-                        .HasForeignKey("AccountsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("APPDATA.Models.Voucher", null)
-                        .WithMany()
-                        .HasForeignKey("VoucherId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("APPDATA.Models.Account", b =>
                 {
                     b.HasOne("APPDATA.Models.Role", "Role")
                         .WithMany("Accounts")
                         .HasForeignKey("IdRole");
+
+                    b.HasOne("APPDATA.Models.Voucher", null)
+                        .WithMany("Accounts")
+                        .HasForeignKey("VoucherId");
 
                     b.Navigation("Role");
                 });
@@ -987,25 +927,6 @@ namespace APPDATA.Migrations
                     b.Navigation("Account");
                 });
 
-            modelBuilder.Entity("APPDATA.Models.VoucherForAcc", b =>
-                {
-                    b.HasOne("APPDATA.Models.Account", "Account")
-                        .WithMany()
-                        .HasForeignKey("Id_Account")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("APPDATA.Models.Voucher", "Voucher")
-                        .WithMany()
-                        .HasForeignKey("Id_Voucher")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Account");
-
-                    b.Navigation("Voucher");
-                });
-
             modelBuilder.Entity("APPDATA.Models.Account", b =>
                 {
                     b.Navigation("Address");
@@ -1084,6 +1005,8 @@ namespace APPDATA.Migrations
 
             modelBuilder.Entity("APPDATA.Models.Voucher", b =>
                 {
+                    b.Navigation("Accounts");
+
                     b.Navigation("Bill");
                 });
 #pragma warning restore 612, 618

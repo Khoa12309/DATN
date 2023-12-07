@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace APPDATA.Migrations
 {
     [DbContext(typeof(ShoppingDB))]
-    [Migration("20231202073849_lan22")]
-    partial class lan22
+    [Migration("20231204134634_AddDb1")]
+    partial class AddDb1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -23,6 +23,21 @@ namespace APPDATA.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+
+            modelBuilder.Entity("AccountVoucher", b =>
+                {
+                    b.Property<Guid>("AccountsId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("VoucherId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("AccountsId", "VoucherId");
+
+                    b.HasIndex("VoucherId");
+
+                    b.ToTable("AccountVoucher");
+                });
 
             modelBuilder.Entity("APPDATA.Models.Account", b =>
                 {
@@ -42,6 +57,9 @@ namespace APPDATA.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<Guid?>("IdRole")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid?>("IdVoucher")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Name")
@@ -713,6 +731,9 @@ namespace APPDATA.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("AccountId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Code")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -749,6 +770,21 @@ namespace APPDATA.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Vouchers");
+                });
+
+            modelBuilder.Entity("AccountVoucher", b =>
+                {
+                    b.HasOne("APPDATA.Models.Account", null)
+                        .WithMany()
+                        .HasForeignKey("AccountsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("APPDATA.Models.Voucher", null)
+                        .WithMany()
+                        .HasForeignKey("VoucherId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("APPDATA.Models.Account", b =>
