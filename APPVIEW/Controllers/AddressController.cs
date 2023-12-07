@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace APPVIEW.Controllers
 {
-    [Authorize(Roles ="Admin")]
+    //[Authorize(Roles ="Admin")]
     public class AddressController : Controller
     {
         private Getapi<Address> getapi;
@@ -19,7 +19,34 @@ namespace APPVIEW.Controllers
             var obj = getapi.GetApi("Address");
             return View(obj);
         }
+        public async Task<IActionResult> Search(string searchTerm)
+        {
+            var lstAddress = getapi.GetApi("Address").ToList();
+            if (string.IsNullOrWhiteSpace(searchTerm))
+            {
+                return View("GetList", lstAddress);
+            }
+            var searchResult = lstAddress
+                .Where(v =>
+                    v.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                    v.PhoneNumber.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                    v.SpecificAddress.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                    v.Ward.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                    v.City.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                    v.District.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                    v.Province.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                    v.DefaultAddress.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                    v.Status.ToString().Contains(searchTerm, StringComparison.OrdinalIgnoreCase)
+                )
+                .ToList();
 
+            if (searchResult.Any())
+            {
+                return View("GetList", searchResult);
+            }
+
+            return NotFound("Address không tồn tại");
+        }
 
         [HttpGet]
         public async Task<IActionResult> Create()

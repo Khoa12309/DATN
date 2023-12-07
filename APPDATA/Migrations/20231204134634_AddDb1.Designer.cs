@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace APPDATA.Migrations
 {
     [DbContext(typeof(ShoppingDB))]
-    [Migration("20231130171150_AddDB")]
-    partial class AddDB
+    [Migration("20231204134634_AddDb1")]
+    partial class AddDb1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -23,6 +23,21 @@ namespace APPDATA.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+
+            modelBuilder.Entity("AccountVoucher", b =>
+                {
+                    b.Property<Guid>("AccountsId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("VoucherId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("AccountsId", "VoucherId");
+
+                    b.HasIndex("VoucherId");
+
+                    b.ToTable("AccountVoucher");
+                });
 
             modelBuilder.Entity("APPDATA.Models.Account", b =>
                 {
@@ -44,6 +59,9 @@ namespace APPDATA.Migrations
                     b.Property<Guid?>("IdRole")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("IdVoucher")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -54,6 +72,9 @@ namespace APPDATA.Migrations
 
                     b.Property<string>("ResetPasswordcode")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("Update_date")
                         .HasColumnType("datetime2");
@@ -97,6 +118,9 @@ namespace APPDATA.Migrations
 
                     b.Property<string>("SpecificAddress")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
 
                     b.Property<string>("Ward")
                         .HasColumnType("nvarchar(max)");
@@ -707,6 +731,9 @@ namespace APPDATA.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("AccountId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Code")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -737,13 +764,27 @@ namespace APPDATA.Migrations
                     b.Property<DateTime>("Update_date")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Value")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Value")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.ToTable("Vouchers");
+                });
+
+            modelBuilder.Entity("AccountVoucher", b =>
+                {
+                    b.HasOne("APPDATA.Models.Account", null)
+                        .WithMany()
+                        .HasForeignKey("AccountsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("APPDATA.Models.Voucher", null)
+                        .WithMany()
+                        .HasForeignKey("VoucherId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("APPDATA.Models.Account", b =>

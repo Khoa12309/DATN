@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace APPDATA.Migrations
 {
     [DbContext(typeof(ShoppingDB))]
-    [Migration("20231202073849_lan22")]
-    partial class lan22
+    [Migration("20231206135627_AddDb2")]
+    partial class AddDb2
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -23,6 +23,21 @@ namespace APPDATA.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
+
+            modelBuilder.Entity("AccountVoucher", b =>
+                {
+                    b.Property<Guid>("AccountsId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("VoucherId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("AccountsId", "VoucherId");
+
+                    b.HasIndex("VoucherId");
+
+                    b.ToTable("AccountVoucher");
+                });
 
             modelBuilder.Entity("APPDATA.Models.Account", b =>
                 {
@@ -713,6 +728,9 @@ namespace APPDATA.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("AccountId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Code")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -749,6 +767,45 @@ namespace APPDATA.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Vouchers");
+                });
+
+            modelBuilder.Entity("APPDATA.Models.VoucherForAcc", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("Id_Account")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("Id_Voucher")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Id_Account");
+
+                    b.HasIndex("Id_Voucher");
+
+                    b.ToTable("VoucherForAccs");
+                });
+
+            modelBuilder.Entity("AccountVoucher", b =>
+                {
+                    b.HasOne("APPDATA.Models.Account", null)
+                        .WithMany()
+                        .HasForeignKey("AccountsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("APPDATA.Models.Voucher", null)
+                        .WithMany()
+                        .HasForeignKey("VoucherId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("APPDATA.Models.Account", b =>
@@ -913,6 +970,25 @@ namespace APPDATA.Migrations
                         .IsRequired();
 
                     b.Navigation("Account");
+                });
+
+            modelBuilder.Entity("APPDATA.Models.VoucherForAcc", b =>
+                {
+                    b.HasOne("APPDATA.Models.Account", "Account")
+                        .WithMany()
+                        .HasForeignKey("Id_Account")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("APPDATA.Models.Voucher", "Voucher")
+                        .WithMany()
+                        .HasForeignKey("Id_Voucher")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Account");
+
+                    b.Navigation("Voucher");
                 });
 
             modelBuilder.Entity("APPDATA.Models.Account", b =>

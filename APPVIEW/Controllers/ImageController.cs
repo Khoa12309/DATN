@@ -24,7 +24,27 @@ namespace APPVIEW.Controllers
            
             return View( obj);
         }
+        public async Task<IActionResult> Search(string searchTerm)
+        {
+            var lstImg = getapi.GetApi("Image").ToList();
+            if (string.IsNullOrWhiteSpace(searchTerm))
+            {
+                return View("GetList", lstImg);
+            }
+            var searchResult = lstImg
+                .Where(v =>
+                    v.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                    v.Status.ToString().Contains(searchTerm, StringComparison.OrdinalIgnoreCase)
+                )
+                .ToList();
 
+            if (searchResult.Any())
+            {
+                return View("GetList", searchResult);
+            }
+
+            return NotFound("Image không tồn tại");
+        }
 
         [HttpGet]
         public async Task<IActionResult> Create()

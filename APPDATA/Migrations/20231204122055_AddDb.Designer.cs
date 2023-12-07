@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace APPDATA.Migrations
 {
     [DbContext(typeof(ShoppingDB))]
-    [Migration("20231129030624_updateAccount")]
-    partial class updateAccount
+    [Migration("20231204122055_AddDb")]
+    partial class AddDb
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -61,9 +61,14 @@ namespace APPDATA.Migrations
                     b.Property<DateTime>("Update_date")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("VoucherId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.HasKey("Id");
 
                     b.HasIndex("IdRole");
+
+                    b.HasIndex("VoucherId");
 
                     b.ToTable("Accounts");
                 });
@@ -713,6 +718,9 @@ namespace APPDATA.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("AccountId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Code")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -743,9 +751,8 @@ namespace APPDATA.Migrations
                     b.Property<DateTime>("Update_date")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Value")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Value")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -757,6 +764,10 @@ namespace APPDATA.Migrations
                     b.HasOne("APPDATA.Models.Role", "Role")
                         .WithMany("Accounts")
                         .HasForeignKey("IdRole");
+
+                    b.HasOne("APPDATA.Models.Voucher", null)
+                        .WithMany("Accounts")
+                        .HasForeignKey("VoucherId");
 
                     b.Navigation("Role");
                 });
@@ -994,6 +1005,8 @@ namespace APPDATA.Migrations
 
             modelBuilder.Entity("APPDATA.Models.Voucher", b =>
                 {
+                    b.Navigation("Accounts");
+
                     b.Navigation("Bill");
                 });
 #pragma warning restore 612, 618

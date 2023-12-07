@@ -24,6 +24,7 @@ using X.PagedList;
 
 using APPVIEW.Models;
 using _APPAPI.ViewModels;
+using Microsoft.AspNetCore.Identity;
 
 namespace APPVIEW.Controllers
 {
@@ -50,7 +51,7 @@ namespace APPVIEW.Controllers
             _dbContext = new ShoppingDB();
         }
 
-        [Authorize(Roles = "Admin,Staff")]
+        //[Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> GetList(int? page)
 
         {
@@ -62,24 +63,25 @@ namespace APPVIEW.Controllers
             return View(obj.OrderByDescending(x => x.Id).ToPagedList(pageNumber, pageSize));
             
         }
-        public async Task<IActionResult> Search(string searchTerm)
-        {
-            var lstAcc = getapi.GetApi("Voucher").ToList();
+        //public async Task<IActionResult> Search(string searchTerm)
+        //{
+        //    var lstAcc = getapi.GetApi("Account").ToList();
 
-            var searchResult = lstAcc
-                .Where(v =>
-                    v.Email.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
-                    v.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)
-                )
-                .ToList();
+        //    var searchResult = lstAcc
+        //        .Where(v =>
+        //            v.Email.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+        //            v.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+        //            v.Status.ToString().Contains(searchTerm, StringComparison.OrdinalIgnoreCase)
+        //        )
+        //        .ToList();
 
-            if (searchResult.Any())
-            {
-                return View("GetList", searchResult);
-            }
+        //    if (searchResult.Any())
+        //    {
+        //        return View("GetList", searchResult);
+        //    }
 
-            return NotFound("Voucher không tồn tại");
-        }
+        //    return NotFound("Account không tồn tại");
+        //}
 
 
         [AllowAnonymous]
@@ -278,6 +280,7 @@ namespace APPVIEW.Controllers
                 await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
 
                 Response.Cookies.Append("AccessToken", loginResult.AccessToken);
+                
                 if (checkRoleAdmin == true)
                 {
                     return Redirect("~/Admin/Admin/Index");
@@ -287,7 +290,6 @@ namespace APPVIEW.Controllers
                 {
                     return Redirect("~/Home/Index");
                 }
-
 
 
             }
@@ -713,6 +715,7 @@ namespace APPVIEW.Controllers
 
 
         }
+        
 
     }
 }
