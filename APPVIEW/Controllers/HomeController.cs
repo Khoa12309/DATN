@@ -864,7 +864,9 @@ namespace APPVIEW.Controllers
             
             if (account != null)
             {
-                var Uid = User.Claims.FirstOrDefault(c => c.Type == "Id").Value;
+                var Uid = User.Claims.FirstOrDefault(c => c.Type == "Id").Value; 
+                var acc = getapiAc.GetApi("Account").FirstOrDefault(c => c.Id.ToString() == Uid);
+                SessionService.SetObjToJson(HttpContext.Session, "Account", acc);
                 var dc = getapiAddress.GetApi("Address").FirstOrDefault(c => c.AccountId.ToString() == Uid);
                 if (dc != null)
                 {
