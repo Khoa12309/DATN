@@ -23,6 +23,8 @@ using System.Xml.Linq;
 using X.PagedList;
 
 using APPVIEW.Models;
+using _APPAPI.ViewModels;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 
 namespace APPVIEW.Controllers
 {
@@ -55,29 +57,55 @@ namespace APPVIEW.Controllers
         {
             ViewBag.Roles = GetListRole();
             var obj = getapi.GetApi("Account");
+
             int pageSize = 8;
             int pageNumber = (page ?? 1);
             return View(obj.OrderByDescending(x => x.Id).ToPagedList(pageNumber, pageSize));
             
         }
-        public async Task<IActionResult> Search(string searchTerm)
+        [HttpPost]
+        public async Task<IActionResult> GetList(int? page,string tk,string status ,Guid role)
         {
-            var lstAcc = getapi.GetApi("Voucher").ToList();
+
+            ViewBag.Roles = GetListRole();
+            var obj = getapi.GetApi("Account");
+            if (tk!=null)
+            {
+               obj= obj.Where(c => c.Name.ToLower().Contains(tk.ToLower())||c.Email==tk).ToList();
+
+            }
+            if (role!=Guid.Empty)
+            {
+                obj = obj.Where(c => c.IdRole == role).ToList();
+            }
+            if (status!=null)
+            {
+                obj = obj.Where(c => c.Status.ToString() == status).ToList();
+            }
+            int pageSize = 8;
+            int pageNumber = (page ?? 1);
+            return View(obj.OrderByDescending(x => x.Id).ToPagedList(pageNumber, pageSize));
+            
+        }
+        
+        public async Task<IActionResult> Search(string tk, int? page)
+        {
+            var lstAcc = getapi.GetApi("Account").Where(c=>c.Name.ToLower().Contains(tk.ToLower()));
 
             var searchResult = lstAcc
                 .Where(v =>
-                    v.Email.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
-                    v.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)
+                    
+                    v.Name.ToLower().Contains(tk.ToLower())
                 )
                 .ToList();
 
-            if (searchResult.Any())
-            {
-                return View("GetList", searchResult);
-            }
+           
 
-            return NotFound("Voucher không tồn tại");
+             int pageSize = 8;
+                int pageNumber = (page ?? 1);
+                return RedirectToAction("Getlist", lstAcc.OrderByDescending(x => x.Id).ToPagedList(pageNumber, pageSize));
         }
+
 
         [AllowAnonymous]
         public IActionResult Register()
@@ -324,12 +352,21 @@ namespace APPVIEW.Controllers
             if (acc != null)
             {
                 var add = await _context.Address.FirstOrDefaultAsync(c => c.AccountId == id);
+                if (add.Status==2&&acc.Status==2)
+                {
+                    acc.Status = 1;
+                    add.Status = 1;
+                    _context.Update(acc);
+                    _context.Update(add);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(GetList));
+                }
                 acc.Status = 2;
                 add.Status = 2;
                 _context.Update(acc);
                 _context.Update(add);
                 await _context.SaveChangesAsync();
-                _sendEmail.SendEmailAsync(acc.Email, "Khóa tài khoản", _sendEmailMessage.SendEmailBlock(acc.Name, acc.Email));
+                //_sendEmail.SendEmailAsync(acc.Email, "Khóa tài khoản", _sendEmailMessage.SendEmailBlock(acc.Name, acc.Email));
                 return RedirectToAction(nameof(GetList));
             }
 
@@ -352,6 +389,17 @@ namespace APPVIEW.Controllers
         [HttpGet, Authorize(Roles = "Admin,Staff,Customer")]
         public async Task<IActionResult> MyProfile(Guid id_User)
         {
+            var client = new OnlineGatewayClient($"https://online-gateway.ghn.vn/shiip/public-api/master-data/province", "bdbbde2a-fec2-11ed-8a8c-6e4795e6d902");
+            // Lấy thông tin voucher từ TempData
+            var discountAmountString = TempData["DiscountAmount"] as string;
+            var voucherCode = TempData["VoucherCode"] as string;
+            // Gọi API để lấy danh sách các tỉnh/thành phố
+            var response = await client.GetProvincesAsync();
+            if (response.Code == 200) // Thành công
+            {
+                // Trả về danh sách các quận/huyện dưới dạng JSON
+                ViewBag.province = response.Data;
+            }
 
             var obj = getapi.GetApi("Account");
             var address = getapiAddress.GetApi("Address");
@@ -411,12 +459,17 @@ namespace APPVIEW.Controllers
         {
             try
             {
-
+                var client = new OnlineGatewayClient($"https://online-gateway.ghn.vn/shiip/public-api/master-data/province", "bdbbde2a-fec2-11ed-8a8c-6e4795e6d902");
+                // Gọi API để lấy danh sách các tỉnh/thành phố
+                var response = await client.GetProvincesAsync();
+                foreach (var item in response.Data)
+                {
+                    if (item.ProvinceID.ToString() == obj.Province)
+                    {
+                        obj.Province = item.ProvinceName; break;
+                    }
+                }
                 var user = new Account();
-
-
-
-
                 if (imageFile != null)
                 {
                     user.Id = obj.AccountId;
@@ -426,8 +479,6 @@ namespace APPVIEW.Controllers
                     user.IdRole = obj.Id_Role;
                     user.Avatar = AddImg(imageFile);
                 }
-
-
                 var address = new Address()
                 {
                     AccountId = obj.AccountId,
@@ -658,10 +709,35 @@ namespace APPVIEW.Controllers
             }
 
         }
-        //public async Task<IActionResult> Delete(Guid id)
-        //{
+        [HttpGet, Authorize(Roles = "Staff,Admin")]
+        public async Task<IActionResult> AccountBlockedCustomer()
+        {
 
-        //    return View();
-        //}
+            Guid customer = _context.Roles.FirstOrDefault(c => c.name == "Customer").id;
+            ViewBag.Roles = GetListRole();
+            var lst = getapi.GetApi("Account");
+            if (lst != null)
+            {
+                return View(lst.Where(c => c.Status == 2 && c.IdRole == customer).ToList());
+            }
+            return View();
+
+
+        }
+        [HttpGet, Authorize(Roles = "Staff,Admin")]
+        public async Task<IActionResult> AccountBlockedAll()
+        {
+
+            ViewBag.Roles = GetListRole();
+            var lst = getapi.GetApi("Account");
+            if (lst != null)
+            {
+                return View(lst.Where(c => c.Status == 2).ToList());
+            }
+            return View();
+
+
+        }
+
     }
 }

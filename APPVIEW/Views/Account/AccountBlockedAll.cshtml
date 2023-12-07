@@ -1,15 +1,12 @@
 ﻿@using APPDATA.Models;
-@model X.PagedList.IPagedList<APPDATA.Models.Account>
-@using X.PagedList.Web.Common
-@using X.PagedList
-@using X.PagedList.Mvc.Core
+@model IEnumerable<APPDATA.Models.Account>
 
 @{
-    ViewData["Title"] = "Account-List";
+    ViewData["Title"] = "Account Blockeds";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
     int stt = 0;
-
 }
+
 @functions
 {
     private string GetRoleName(Guid? roleId)
@@ -28,39 +25,31 @@
     <div class="card-header">
         <h5 class="card-title">Account</h5>
     </div>
-    <form asp-action="getlist">
-        <div class="card-header row">
-            <div class="col-md-3">
-                <select id="FilterTransaction" class="form-select text-capitalize" name="status">
-                    <option value=""> Select Status </option>
-                    <option value="2" class="text-capitalize">Blocked</option>
-                    <option value="1" class="text-capitalize">Active</option>
-                    <option value="0" class="text-capitalize">Inactive</option>
-                </select>
-            </div>
-            <div class="col-md-3">
-                <select id="UserRole" class="form-select text-capitalize" name="role">
-                    <option value=""> Select Role </option>
-                    @foreach (var item in ViewBag.Roles)
-                    {
-                        <option value="@item.id">@item.name</option>
-                    }
-                   
-                </select>
-            </div>
-            <div class="col-md-3">
-                <div id="DataTables_Table_0_filter" class="dataTables_filter">
-                    <label><input type="search" class="form-control" placeholder="Search.." aria-controls="DataTables_Table_0" name="tk" /></label>
-                </div>
-            </div> 
-            <div class="col-md-3">
-                <div id="DataTables_Table_0_filter" class="dataTables_filter">
-                    <label><button class="btn btn-success mb-3" type="submit">Tìm kiếm</button></label>
-                </div>
+    <div class="card-header row">
+        <div class="col-md-3">
+            <select id="FilterTransaction" class="form-select text-capitalize">
+                <option value=""> Select Status </option>
+                <option value="Blocked" class="text-capitalize">Blocked</option>
+                <option value="Active" class="text-capitalize">Active</option>
+                <option value="Inactive" class="text-capitalize">Inactive</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <select id="UserRole" class="form-select text-capitalize">
+                <option value=""> Select Role </option>
+                <option value="Admin">Admin</option>
+                <option value="Author">Author</option>
+                <option value="Editor">Editor</option>
+                <option value="Maintainer">Maintainer</option>
+                <option value="Subscriber">Subscriber</option>
+            </select>
+        </div>
+        <div class="col-md-3">
+            <div id="DataTables_Table_0_filter" class="dataTables_filter">
+                <label><input type="search" class="form-control" placeholder="Search.." aria-controls="DataTables_Table_0"></label>
             </div>
         </div>
-    </form>
-  
+    </div>
     <div class="card-body">
         <a class="btn btn-success mb-3" asp-controller="Account" asp-action="Create">Create New</a>
         @if (!string.IsNullOrEmpty(ViewData["ErrorMessage"] as string))
@@ -159,7 +148,7 @@
                                         <span class="badge rounded-pill bg-label-danger">Blocked</span>
                                     }
                                 </td>
-                                <td>                                  
+                                <td>
                                     <div class="d-inline-block text-nowrap">
                                         <button class="btn btn-sm btn-icon btn-text-secondary rounded-pill btn-icon dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
                                             <i class="mdi mdi-dots-vertical mdi-20px"></i>
@@ -174,8 +163,8 @@
                                                 <span>Edit</span>
                                             </a>
                                             <a href="@Url.Action("Delete", new { id = item.Id })" class="dropdown-item delete-record">
-                                                <i class="mdi mdi-delete-outline me-2"></i>
-                                                <span>Delete</span>
+                                                <i class="mdi mdi-account-reactivate"></i>
+                                                <span>Reactive</span>
                                             </a>
                                         </div>
                                     </div>
@@ -196,18 +185,3 @@
     </div>
 </div>
 
-
-<div>
-    @Html.PagedListPager(Model, page => Url.Action("GetList", new {page = page, sort=ViewBag.sort}), new PagedListRenderOptions()
-    {
-    ActiveLiElementClass = "active",
-    PageClasses = new[]{ "page-link"},
-    LiElementClasses=new[] { "page-item"},
-    UlElementClasses = new[] { "pagination","justify-content-center", "mt-3", "size" },
-    LinkToNextPageFormat = "Next",
-    LinkToPreviousPageFormat = "Previous",
-    MaximumPageNumbersToDisplay = 8,
-    DisplayLinkToPreviousPage = PagedListDisplayMode.Always,
-    DisplayLinkToNextPage = PagedListDisplayMode.Always
-    })
-</div>

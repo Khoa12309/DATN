@@ -40,8 +40,9 @@
                 <table class="table">
                     <thead>
                         <tr>
-                            <th scope="col">Name</th> 
                             <th scope="col">Images</th>
+                            <th scope="col">Name</th> 
+                           
                             <th scope="col">Price</th>
                             <th scope="col">Quantity</th>
                             <th scope="col">Size</th>
@@ -55,12 +56,14 @@
                               
                              
                         @{
-                                
 
+                                var ls = new List<string>();
+                                var lc = new List<string>();
 
                             @for (int i = 0; i < Model.Count; i++)
                             {
-                              
+                                    lc.Add(Model[i].Id_Color.ToString());
+                                    ls.Add(Model[i].Id_Size.ToString());
                                     <input hidden asp-for="@Model[i].Id" value="@Model[i].Id" id="pro" />
                                     <input hidden asp-for="@Model[i].Id_Product" value="@Model[i].Id_Product" />
                                     <input hidden asp-for="@Model[i].Name" value="@Model[i].Name" />
@@ -82,11 +85,12 @@
                                                 break;
                                             }
                                     }
+                                        <td >@Model[i].Name</td>
                                         <td >@Model[i].Price</td>
                                         <td>
                                          
                                             <div class="product_count">
-                                                <input type="text" id=@Model[i].Id maxlength="12" title="Quantity:" class="input-text qty" value="@Model[i].Quantity" asp-for="@Model[i].Quantity" min="0">
+                                                <input type="number" id=@Model[i].Id maxlength="12" title="Quantity:" class="input-text qty" value="@Model[i].Quantity" asp-for="@Model[i].Quantity" min="0">
                                                 <button onclick="var result = document.getElementById('@Model[i].Id'); var sst = result.value; if( !isNaN( sst )) result.value++;return false;"
                                                     class="increase items-count" type="button">
                                                     <i class="fa fa-plus"></i>
@@ -100,11 +104,16 @@
 
                                         <td class="align-middle">
                                             <select asp-for="@Model[i].Id_Size" id="size">
-                                                @foreach (var Size in ViewBag.Size)
+                                            @foreach (var Size in ViewBag.Size)
                                             {
-                                            
-                                                    <option value="@Size.Id">@Size.Name</option>
-                                            }
+                                                    @foreach (var c in ls)
+                                                    {
+                                                        if (c == @Size.Id.ToString())
+                                                        {
+                                                            <option value="@Size.Id">@Size.Name</option>
+                                                        }
+                                                    }
+                                                }
                                             </select>
                                         </td>
                                         <td class="align-middle">
@@ -115,12 +124,19 @@
                                                     @foreach (var Color in ViewBag.Color)
                                                     {
                                                        
-                                                        
+                                                    @foreach (var c in lc)
+                                                    {
+                                                        if (c == @Color.Id.ToString())
+                                                        {
                                                         <option value="@Color.Id">@Color.Name</option>
+                                                        }
+
+                                                   
+                                                    }
+                                                       
 
 
-                                                        
-
+                                                       
                                                     }
                                                 
 
@@ -199,34 +215,19 @@
         //inputdis.value = "";
         //inputward.value = "";
         var data = {
-            Id_Size: Size.value,
+           Id_Size: Size.value,
            Id: pro.value ,
         };
         var json = JSON.stringify(data);
         // Sử dụng fetch() để gửi một request GET đến /Home/GetUsers
-        fetch("/Cart/Chossesize", {
+        fetch("/Cart/updatecart", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
             },
             body: json
         })
-            .then(response => response.json()) // Chuyển đổi response thành JSON
-            .then(data => {
-
-                // Xử lý dữ liệu JSON
-
-                data.forEach(function (districs) {
-                   
-                    // Duyệt qua mảng các user
-                    var option = document.createElement("option"); // Tạo một phần tử option mới
-                    option.innerHTML = districs.name; // Gán giá trị cho option
-                    option.value = districs.id; // Gán nội dung hiển thị cho option
-                    color.appendChild(option); // Thêm option vào thẻ select
-                    console.log(districs.name);
-                });
-
-            })
+           
             .catch(error => {
                 // Xử lý lỗi
                 console.error(error); // In ra lỗi
@@ -234,4 +235,8 @@
 
 
     };
+    function updatecart(){
+
+
+    }
 </script>
