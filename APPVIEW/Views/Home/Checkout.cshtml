@@ -118,7 +118,7 @@
                             @foreach (var item in ViewBag.Product)
                             {
                                 var tt = item.Quantity * item.Price;
-                                <li><a href="#">@item.Name<span class="middle">x @item.Quantity</span> <span class="last">$@tt</span></a></li>
+                                <li><a href="#">@item.Name<span class="middle">x @item.Quantity</span> <span class="last">@tt VND</span></a></li>
                             }
                         </ul>
                         <ul class="list list_2">
