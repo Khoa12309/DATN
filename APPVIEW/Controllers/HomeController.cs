@@ -43,7 +43,7 @@ namespace APPVIEW.Controllers
         private Getapi<BillDetail> billDetails;
         private Getapi<Voucher> getapiVoucher;
         private Getapi<Address> getapiAddress;
-        private Getapi<Account> getapiAc;
+        
         private Getapi<CartDetail> getapiCD;
         private Getapi<PaymentMethodDetail> getapiPMD;
         private Getapi<PaymentMethod> getapiPM;
@@ -910,7 +910,7 @@ namespace APPVIEW.Controllers
             {
 
                 var Uid = User.Claims.FirstOrDefault(c => c.Type == "Id").Value; 
-                var acc = getapiAc.GetApi("Account").FirstOrDefault(c => c.Id.ToString() == Uid);
+                var acc = getapiAcc.GetApi("Account").FirstOrDefault(c => c.Id.ToString() == Uid);
                 SessionService.SetObjToJson(HttpContext.Session, "Account", acc);
                 var dc = getapiAddress.GetApi("Address").FirstOrDefault(c => c.AccountId.ToString() == Uid);
 
