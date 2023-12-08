@@ -22,7 +22,10 @@ namespace APPVIEW.Controllers
         public async Task<IActionResult> Search(string searchTerm)
         {
             var lstSupplier = getapi.GetApi("Supplier").ToList();
-
+            if (string.IsNullOrWhiteSpace(searchTerm))
+            {
+                return View("GetList", lstSupplier);
+            }
             var searchResult = lstSupplier
                 .Where(v =>
                     v.Suppliercode.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||

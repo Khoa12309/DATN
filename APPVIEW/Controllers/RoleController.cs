@@ -27,7 +27,10 @@ namespace APPVIEW.Controllers
         public async Task<IActionResult> Search(string searchTerm)
         {
             var lstRole = getapi.GetApi("Role").ToList();
-
+            if (string.IsNullOrWhiteSpace(searchTerm))
+            {
+                return View("GetList", lstRole);
+            }
             var searchResult = lstRole
                 .Where(v =>
                     v.name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
