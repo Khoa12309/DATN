@@ -148,13 +148,14 @@
 
                                 if (ViewBag.DiscountAmount > ViewBag.FirstDiscountAmount)
                                 {
-                                    <li><a href="#">Total <span>@totalll VND</span></a></li>
-                                    <li><a href="#">Total <span> <input style="height:30px; width:50px; border: none; outline: none; background-color:#e8f0f2;" value="@(totalll+ViewBag.fee)" id="tShip" /> VND</span></a></li>
+                                    
+                                    <li><a href="#">Total <span> <input style="height:30px; width:50px; border: none; outline: none; background-color:#e8f0f2;" value="@(ViewBag.TT -  ViewBag.FirstDiscountAmount+ViewBag.fee)" id="tShip" /> VND</span></a></li>
 
                                 }
                                 else
                                 {
-                                    <li><a href="#">Total <span> <input style="height:30px; width:50px; border: none; outline: none; background-color:#e8f0f2;" value="@(totall+ViewBag.fee)" id="tShip" /> VND</span></a></li>
+                                    
+                                    <li><a href="#">Total <span> <input style="height:30px; width:50px; border: none; outline: none; background-color:#e8f0f2;" value="@(ViewBag.TT -  ViewBag.DiscountAmount+ViewBag.fee)" id="tShip" /> VND</span></a></li>
 
                                 }
                             }

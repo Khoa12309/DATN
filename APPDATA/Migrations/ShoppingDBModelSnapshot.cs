@@ -177,12 +177,17 @@ namespace APPDATA.Migrations
                     b.Property<DateTime?>("UpdateBy")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("VoucherForAccId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<Guid?>("Voucherid")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("id");
 
                     b.HasIndex("AccountId");
+
+                    b.HasIndex("VoucherForAccId");
 
                     b.HasIndex("Voucherid");
 
@@ -847,6 +852,10 @@ namespace APPDATA.Migrations
                         .WithMany("Bill")
                         .HasForeignKey("AccountId");
 
+                    b.HasOne("APPDATA.Models.VoucherForAcc", null)
+                        .WithMany("Bill")
+                        .HasForeignKey("VoucherForAccId");
+
                     b.HasOne("APPDATA.Models.Voucher", "Voucher")
                         .WithMany("Bill")
                         .HasForeignKey("Voucherid");
@@ -1083,6 +1092,11 @@ namespace APPDATA.Migrations
                 });
 
             modelBuilder.Entity("APPDATA.Models.Voucher", b =>
+                {
+                    b.Navigation("Bill");
+                });
+
+            modelBuilder.Entity("APPDATA.Models.VoucherForAcc", b =>
                 {
                     b.Navigation("Bill");
                 });

@@ -24,5 +24,6 @@ namespace APPDATA.Models
         public DateTime EndDate { get; set; }
         public virtual Voucher? Voucher { get; set; }
         public virtual Account? Account { get; set; }
+        public List<Bill>? Bill { get; set; }
     }
 }
