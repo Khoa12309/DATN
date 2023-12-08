@@ -1,0 +1,560 @@
+﻿@model IEnumerable<APPDATA.Models.ProductDetail>
+
+@{@using APPDATA.Models;
+    ViewData["Title"] = "BanHangOff";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+
+}
+
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Phần bên trái để tạo hóa đơn -->
+            <div class="col-md-5">
+                <div class="card">
+                    <form action="~/qlbills/CreateBill" method="post">
+                        <div class="card-header">
+                            Tạo Hóa Đơn
+                        </div>
+                        <div class="card-body">
+                    
+                      
+                        </div>
+                        <div class="card-footer">
+                         <span>Tên khách hàng : </span>   <input type="text"  name="tenkh"><br>
+                         <span>Tổng tiền : </span>   <input type="number" min="0" id="tong" name="tongtien" readonly="readonly" style="border:none"><br>
+
+                            <button type="submit" class="btn btn-primary" style="margin-top:15px">Tạo Hóa Đơn</button>
+                        </div>
+
+                 </form>
+                    <form action="~/qlbills/banhangoff" method="post">
+                        <button type="submit" action="~/qlbills/banhangoff" class="btn btn-primary" style="margin-top:15px ;margin-left:20px">Tạo Hóa Đơn Khác</button>
+                    </form>
+                </div>
+            </div>
+            <!-- Phần bên phải để hiển thị sản phẩm -->
+            <div class="col-md-7">
+                <!-- Danh sách sản phẩm -->
+                <div class="card">
+                    <div class="card-header">
+       @*                  <form id="iForm" action="~/qlbills/banhangoff" >
+
+                            <span></span>   <input type="text" id="tk" style="height:40px" name="inputValue" > <button type="submit" class="btn btn-success">Tìm kiếm</button><br>
+                        </form> *@
+
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+
+                            @foreach (var item in Model)
+                            {
+
+
+                                <div class="col-md-6 col-lg-4 col-xl-3">
+                                    <div class="card text-center card-product">
+                                        <div class="card-product__img">
+                                            @foreach (var img in ViewBag.Img)
+                                            {
+                                                if (img.IdProductdetail == item.Id)
+                                                {
+                                                    <img class="card-img" src="~/images/@img.Name" alt="">
+                                                    break;
+                                                }
+
+                                            }
+
+
+
+                                            <button class="btn btn-primary" style="margin-top:10px" data-id="@item.Id">Chọn sản phẩm</button>
+                                         
+                                        </div>
+                                        <div class="card-body">
+
+                                            <p style="text-align:left" >
+                                                Sản phẩm : @item.Name
+                                            </p>
+                                                @foreach (var size in ViewBag.size)
+                                                {
+                                                    if (size.Id == item.Id_Size)
+                                                    {
+                                                    <p style="text-align:left">Sise : @size.Name</p>
+                                                        break;
+                                                    }
+
+                                                }  
+                                           
+                                                @foreach (var size in ViewBag.color)
+                                                {
+                                                    if (size.Id == item.Id_Color)
+                                                    {
+                                                    <p style ="text-align:left"> Màu: @size.Name</p>
+                                                        break;
+                                                    }
+
+                                                }
+
+                                            <p style="text-align:left">Giá : @item.Price</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                            }
+
+                        </div>
+                    </div>
+                </div>
+
+
+</body>
+@* <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const productButtons = document.querySelectorAll('button[data-id]');
+        const cardBody = document.querySelector('.card-body'); // Chọn phần tử chứa thông tin sản phẩm
+        let totalPrice = 0; // Biến để lưu tổng giá của các sản phẩm đã chọn
+        let chosenProducts = JSON.parse(localStorage.getItem('chosenProducts')) || {}; // Load thông tin sản phẩm đã chọn từ localStorage
+
+        // Tái tạo sản phẩm đã chọn từ localStorage
+        function recreateChosenProducts() {
+            for (const productId in chosenProducts) {
+                const product = chosenProducts[productId];
+
+                const productContainer = document.createElement('div');
+                productContainer.style.display = 'flex';
+                productContainer.style.flexDirection = 'column'; // Hiển thị các phần tử theo chiều dọc
+
+                const productName = document.createElement('p');
+                productName.textContent = `Sản phẩm: ${product.name} | Size: ${product.size} | Màu : ${product.color}`;
+                productName.setAttribute('data-productid', product.id);
+                productContainer.appendChild(productName);
+
+                const productInfoContainer = document.createElement('div');
+                productInfoContainer.style.display = 'flex';
+                productInfoContainer.style.alignItems = 'center'; // Căn giữa các phần tử con theo chiều dọc
+                productInfoContainer.style.marginTop = '5px'; // Khoảng cách từ tên sản phẩm đến số lượng
+
+                const productQuantityLabel = document.createElement('p');
+                productQuantityLabel.textContent = 'Số lượng: ';
+                productInfoContainer.appendChild(productQuantityLabel);
+
+                const productQuantityInput = document.createElement('input');
+                productQuantityInput.setAttribute('type', 'number');
+                productQuantityInput.setAttribute('value', product.quantity);
+                productQuantityInput.setAttribute('min', '1');
+                productQuantityInput.setAttribute('max', product.quantityAvailable);
+                productQuantityInput.setAttribute('name', 'soluong');
+                productQuantityInput.style.marginLeft = '5px';
+                productQuantityInput.style.marginBottom = '12px';
+                productQuantityInput.style.width = '50px';
+                productInfoContainer.appendChild(productQuantityInput);
+
+                const productPriceContainer = document.createElement('p');
+                productPriceContainer.style.display = 'flex';
+                productPriceContainer.style.alignItems = 'center';
+
+                const productPrice = document.createElement('span');
+                productPrice.textContent = `${product.price}`;
+                productPriceContainer.appendChild(productPrice);
+                productPriceContainer.classList.add('product-price'); // Thêm lớp product-price vào phần tử chứa giá sản phẩm
+
+                const productPriceVND = document.createElement('span');
+                productPriceVND.textContent = ` VND`;
+                productPriceVND.style.marginLeft = '5px';
+                productPriceContainer.appendChild(productPriceVND);
+
+                const cancelButton = document.createElement('button');
+                cancelButton.textContent = 'Hủy chọn';
+                cancelButton.setAttribute('type', 'button');
+                cancelButton.addEventListener('click', function () {
+                    delete chosenProducts[productId];
+                    localStorage.setItem('chosenProducts', JSON.stringify(chosenProducts));
+                    totalPrice -= parseInt(productPrice.textContent);
+                    tongInput1.value = totalPrice;
+                    productContainer.remove();
+                });
+                cancelButton.style.width = '170px';
+                cancelButton.style.marginBottom = '17px';
+                cancelButton.style.backgroundColor = '#F08080';
+                cancelButton.style.borderRadius = '17px';
+                productContainer.appendChild(productInfoContainer);
+                productContainer.appendChild(productPriceContainer);
+                productContainer.appendChild(cancelButton);
+
+                cardBody.appendChild(productContainer);
+
+                const tongInput1 = document.getElementById('tong');
+                const productPriceValue = parseInt(productQuantityInput.value) * product.price;
+                totalPrice += productPriceValue; // Cộng giá sản phẩm vào tổng giá
+                tongInput1.value = totalPrice; // Cập nhật tổng giá vào input có id là 'tong'
+
+                // Sự kiện thay đổi số lượng sản phẩm và tính tổng giá sản phẩm
+                productQuantityInput.addEventListener('change', function () {
+                    const quantity = parseInt(productQuantityInput.value); // Lấy giá trị số lượng từ ô input
+
+                    if (!isNaN(quantity) && quantity > 0) {
+                        const updatedPrice = product.price * quantity; // Tính giá sản phẩm mới dựa trên số lượng nhập vào
+
+                        const previousPrice = parseInt(productPrice.textContent);
+                        totalPrice -= previousPrice; // Trừ giá cũ khỏi tổng giá
+
+                        productPrice.textContent = `${updatedPrice}`;
+
+                        totalPrice += updatedPrice; // Cộng giá mới vào tổng giá
+
+                        const tongInput = document.getElementById('tong');
+                        if (tongInput) {
+                            tongInput.value = totalPrice; // Cập nhật tổng giá vào input có id là 'tong'
+                        }
+                    } else {
+                        console.error('Số lượng không hợp lệ!');
+                    }
+                });
+            }
+        }
+
+        // Gọi hàm tái tạo sản phẩm đã chọn khi trang được tải lại
+        recreateChosenProducts();
+
+        // Xử lý sự kiện click cho nút chọn sản phẩm
+        productButtons.forEach(button => {
+            button.addEventListener('click', function (event) {
+                event.preventDefault();
+
+                const productId = this.getAttribute('data-id');
+
+                if (!chosenProducts[productId]) { // Kiểm tra nếu sản phẩm chưa được chọn
+                    chosenProducts[productId] = {
+                        id: productId, // Thêm thông tin sản phẩm vào đối tượng chosenProducts
+                        name:product.name, // Thay bằng tên thực của sản phẩm
+                        size: size, // Thay bằng thông tin thực về size
+                        color: color, // Thay bằng thông tin thực về màu sắc
+                        price: product.price, // Thay bằng giá thực của sản phẩm
+                   
+                    };
+
+                    // Lưu thông tin sản phẩm đã chọn vào localStorage
+                    localStorage.setItem('chosenProducts', JSON.stringify(chosenProducts));
+
+                    // Gọi lại hàm tái tạo sản phẩm đã chọn để cập nhật giao diện
+                    recreateChosenProducts();
+                } else {
+                    console.log('Sản phẩm đã được chọn trước đó');
+                    // Hiển thị thông báo cho người dùng rằng sản phẩm đã được chọn trước đó
+                }
+            });
+        });
+
+        // ... (Phần mã JavaScript khác của bạn)
+    });
+
+</script> *@
+
+
+
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const productButtons = document.querySelectorAll('button[data-id]');
+        const cardBody = document.querySelector('.card-body'); // Chọn phần tử chứa thông tin sản phẩm
+        let totalPrice = 0; // Biến để lưu tổng giá của các sản phẩm đã chọn
+        const chosenProducts = {}; // Đối tượng để lưu trữ các sản phẩm đã chọn
+
+        productButtons.forEach(button => {
+            button.addEventListener('click', function (event) {
+                event.preventDefault();
+
+                const productId = this.getAttribute('data-id');
+
+                if (!chosenProducts[productId]) { // Kiểm tra nếu sản phẩm chưa được chọn
+                    chosenProducts[productId] = true; // Đánh dấu sản phẩm đã chọn
+
+                    const xhr = new XMLHttpRequest();
+                    xhr.open('POST', '/QLBills/ChosenProduct');
+                    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                    xhr.onreadystatechange = function () {
+                        if (xhr.readyState === XMLHttpRequest.DONE) {
+                            if (xhr.status === 200) {
+                                const response = JSON.parse(xhr.responseText);
+                                if (response.success) {
+                                    const product = response.sanphamchitiets[0]; // Lấy thông tin sản phẩm
+                                    const size = response.size;
+                                    const color = response.color;
+
+                                    const productContainer = document.createElement('div');
+                                    productContainer.style.display = 'flex';
+                                    productContainer.style.flexDirection = 'column'; // Hiển thị các phần tử theo chiều dọc
+
+                                    const productName = document.createElement('p');
+                                    productName.textContent = `Sản phẩm: ${product.name} | Size: ${size} | Màu : ${color}`;
+                                    productName.setAttribute('data-productid', product.id);
+                                    productContainer.appendChild(productName);
+
+                                    const productInfoContainer = document.createElement('div');
+                                    productInfoContainer.style.display = 'flex';
+                                    productInfoContainer.style.alignItems = 'center'; // Căn giữa các phần tử con theo chiều dọc
+                                    productInfoContainer.style.marginTop = '5px'; // Khoảng cách từ tên sản phẩm đến số lượng
+
+                                    const productQuantityLabel = document.createElement('p');
+                                    productQuantityLabel.textContent = 'Số lượng: ';
+                                    productInfoContainer.appendChild(productQuantityLabel);
+                               
+                          
+                                    const productQuantityInput = document.createElement('input');
+                                    productQuantityInput.setAttribute('type', 'number');
+                                    productQuantityInput.setAttribute('value', '1')
+                                 
+                                    productQuantityInput.setAttribute('min', '1');
+                                    productQuantityInput.setAttribute('max', product.quantity);
+                                    productQuantityInput.setAttribute('name', 'soluong');
+                                    productQuantityInput.style.marginLeft = '5px';
+                                    productQuantityInput.style.marginBottom = '12px';
+                                    productQuantityInput.style.width = '50px';
+                                    const idprd = document.createElement('input');
+                                    idprd.setAttribute('type', 'hidden');
+                                    idprd.setAttribute('value', product.id);
+
+                                   idprd.setAttribute('name', 'productId');
+                             
+
+                                    productInfoContainer.appendChild(idprd);
+
+                                    productInfoContainer.appendChild(productQuantityInput);
+
+                                    const productPriceContainer = document.createElement('p');
+                                    productPriceContainer.style.display = 'flex';
+                                    productPriceContainer.style.alignItems = 'center';
+
+                                    const productPrice = document.createElement('span');
+                                    productPrice.textContent = `${product.price}`;
+                                    productPriceContainer.appendChild(productPrice);
+                                    productPriceContainer.classList.add('product-price'); // Thêm lớp product-price vào phần tử chứa giá sản phẩm
+
+                                    const productPriceVND = document.createElement('span');
+                                    productPriceVND.textContent = ` VND`;
+                                    productPriceVND.style.marginLeft = '5px';
+                                    productPriceContainer.appendChild(productPriceVND);
+
+                                    const cancelButton = document.createElement('button');
+                                    cancelButton.textContent = 'Hủy chọn';
+                                    cancelButton.setAttribute('type', 'button');
+                                    cancelButton.addEventListener('click', function () {
+                                        totalPrice -= parseInt(productPrice.textContent);
+                                        tongInput1.value = totalPrice;
+                                        delete chosenProducts[productId];
+                                        productContainer.remove();
+                                    });
+                                    cancelButton.style.width = '170px'; 
+                                    cancelButton.style.marginBottom = '17px';
+                                    cancelButton.style.backgroundColor = '#F08080';
+                                    cancelButton.style.borderRadius = '17px';
+                                    productContainer.appendChild(productInfoContainer);
+                                    productContainer.appendChild(productPriceContainer);
+                                    productContainer.appendChild(cancelButton);
+
+
+                                    cardBody.appendChild(productContainer);
+
+                                    const tongInput1 = document.getElementById('tong');
+                                    const productPriceValue = parseInt(productQuantityInput.value) * product.price;
+                                    totalPrice += productPriceValue; // Cộng giá sản phẩm vào tổng giá
+                                    tongInput1.value = totalPrice; // Cập nhật tổng giá vào input có id là 'tong'
+
+                                    // Sự kiện thay đổi số lượng sản phẩm và tính tổng giá sản phẩm
+                                    productQuantityInput.addEventListener('change', function () {
+                                        const quantity = parseInt(productQuantityInput.value); // Lấy giá trị số lượng từ ô input
+
+                                        if (!isNaN(quantity) && quantity > 0) {
+                                            const updatedPrice = product.price * quantity; // Tính giá sản phẩm mới dựa trên số lượng nhập vào
+
+                                            const previousPrice = parseInt(productPrice.textContent);
+                                            totalPrice -= previousPrice; // Trừ giá cũ khỏi tổng giá
+
+                                            productPrice.textContent = `${updatedPrice}`;
+
+                                            totalPrice += updatedPrice; // Cộng giá mới vào tổng giá
+
+                                            const tongInput = document.getElementById('tong');
+                                            if (tongInput) {
+                                                tongInput.value = totalPrice; // Cập nhật tổng giá vào input có id là 'tong'
+                                            }
+                                        } else {
+                                            console.error('Số lượng không hợp lệ!');
+                                        }
+                                    });
+                                } else {
+                                    console.error('Có lỗi xảy ra khi lấy thông tin sản phẩm');
+                                }
+                            } else {
+                                console.error('Yêu cầu không thành công');
+                            }
+                        }
+                    };
+                    xhr.send(`productId=${productId}`);
+                } else {
+                    console.log('Sản phẩm đã được chọn trước đó');
+                    // Có thể hiển thị thông báo cho người dùng rằng sản phẩm đã được chọn trước đó
+                }
+            });
+        });
+    });
+
+
+
+</script> 
+
+
+
+
+
+
+
+@* 
+ 
+<script>
+
+
+    document.addEventListener('DOMContentLoaded', function () {
+        const productButtons = document.querySelectorAll('button[data-id]');
+        const cardBody = document.querySelector('.card-body'); // Chọn phần tử chứa thông tin sản phẩm
+        let totalPrice = 0; // Biến để lưu tổng giá của các sản phẩm đã chọn
+        const chosenProducts = {}; // Đối tượng để lưu trữ các sản phẩm đã chọn
+
+        productButtons.forEach(button => {
+            button.addEventListener('click', function (event) {
+                event.preventDefault();
+
+                const productId = this.getAttribute('data-id');
+
+                if (!chosenProducts[productId]) { // Kiểm tra nếu sản phẩm đã được chọn
+                    chosenProducts[productId] = true; // Đánh dấu sản phẩm đã chọn
+
+                    const xhr = new XMLHttpRequest();
+                    xhr.open('POST', '/QLBills/ChosenProduct');
+                    xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
+                    xhr.onreadystatechange = function () {
+                        if (xhr.readyState === XMLHttpRequest.DONE) {
+                            if (xhr.status === 200) {
+                                const response = JSON.parse(xhr.responseText);
+                                if (response.success) {
+                                    const products = response.sanphamchitiets;
+                                    const size = response.size;
+                                    const color = response.color;
+                                    if (products.length > 0) {
+                                        products.forEach(product => {
+                                            const productExists = cardBody.querySelector(`[data-productid="${product.Id}"]`);
+
+                                            if (!productExists) {
+                                                totalPrice += product.price;
+                                                const productContainer = document.createElement('div');
+                                                productContainer.style.display = 'flex';
+                                                productContainer.style.flexDirection = 'column'; // Hiển thị các phần tử theo chiều dọc
+
+                                                const productName = document.createElement('p');
+                                                productName.textContent = `Sản phẩm: ${product.name} | Size: ${size} | Màu : ${color}`;
+                                                productName.setAttribute('data-productid', product.id);
+                                                productContainer.appendChild(productName);
+
+                                                const productInfoContainer = document.createElement('div');
+                                                productInfoContainer.style.display = 'flex';
+                                                productInfoContainer.style.alignItems = 'center'; // Căn giữa các phần tử con theo chiều dọc
+                                                productInfoContainer.style.marginTop = '5px'; // Khoảng cách từ tên sản phẩm đến số lượng
+
+                                                const productQuantityLabel = document.createElement('p');
+                                                productQuantityLabel.textContent = 'Số lượng: ';
+                                                productInfoContainer.appendChild(productQuantityLabel);
+
+
+                                                const productQuantityInput = document.createElement('input');
+                                                productQuantityInput.setAttribute('type', 'number');
+                                                productQuantityInput.setAttribute('value', '1');
+                                                productQuantityInput.setAttribute('min', '1');
+                                                productQuantityInput.setAttribute('name', 'soluong');
+                                                const productctid = document.createElement('input');
+                                                productctid.setAttribute('type', 'hidden');
+                                                productctid.setAttribute('value', product.id);
+                                                productctid.setAttribute('name', 'productId');
+                                                console.log('idnayla' + product.id)
+                                                cardBody.appendChild(productctid);
+                                                // Giá trị mặc định là 1, bạn có thể thay đổi nếu cần
+                                                productQuantityInput.style.marginLeft = '5px';
+                                                productQuantityInput.style.marginBottom = '12px';
+                                                productQuantityInput.style.width = '50px';
+                                                // Khoảng cách giữa nhãn 'Số lượng' và input
+
+                                                productInfoContainer.appendChild(productQuantityInput);
+
+                                                productContainer.appendChild(productInfoContainer);
+
+                                                const productPriceContainer = document.createElement('p');
+                                                productPriceContainer.style.display = 'flex';
+                                                productPriceContainer.style.alignItems = 'center';
+
+                                                const productPrice = document.createElement('span');
+                                                productPrice.textContent = `${product.price}`;
+                                                productPriceContainer.appendChild(productPrice);
+                                                productPriceContainer.classList.add('product-price'); // Thêm lớp product-price vào phần tử chứa giá sản phẩm
+
+                                                const productPriceVND = document.createElement('span');
+                                                productPriceVND.textContent = ` VND`;
+                                                productPriceVND.style.marginLeft = '5px';
+                                                productPriceContainer.appendChild(productPriceVND);
+
+                                                productContainer.appendChild(productPriceContainer);
+
+                                                cardBody.appendChild(productContainer);
+
+                                                const tongInput1 = document.getElementById('tong');
+                                                tongInput1.value = totalPrice;
+
+                                                // Sự kiện thay đổi số lượng sản phẩm và tính tổng giá sản phẩm
+                                                productQuantityInput.addEventListener('change', function () {
+                                                    const quantity = parseInt(productQuantityInput.value); // Lấy giá trị số lượng từ ô input
+
+                                                    if (!isNaN(quantity) && quantity > 0) {
+                                                        const updatedPrice = product.price * quantity; // Tính giá sản phẩm mới dựa trên số lượng nhập vào
+
+                                                        // Cập nhật giá sản phẩm hiển thị trên giao diện
+                                                        productPrice.textContent = `${updatedPrice}`;
+
+                                                        // Tính lại tổng giá của tất cả các sản phẩm
+                                                        const allProductPrices = document.querySelectorAll('.product-price');
+                                                        totalPrice = 0; // reset lại giá trị tổng giá
+
+                                                        allProductPrices.forEach(priceElement => {
+                                                            const priceValue = parseInt(priceElement.textContent);
+                                                            if (!isNaN(priceValue)) {
+                                                                totalPrice += priceValue;
+                                                            }
+                                                        });
+
+                                                        // Cập nhật tổng giá vào input có id là 'tong'
+                                                        const tongInput = document.getElementById('tong');
+                                                        if (tongInput) {
+                                                            tongInput.value = `${totalPrice}`;
+                                                        }
+                                                    } else {
+                                                        // Xử lý khi số lượng không hợp lệ
+                                                        console.error('Số lượng không hợp lệ!');
+                                                    }
+                                                });
+                                            }
+                                        });
+                                    } else {
+                                        console.error('Không có thông tin sản phẩm');
+                                    }
+                                } else {
+                                    console.error('Có lỗi xảy ra khi lấy thông tin sản phẩm');
+                                }
+                            } else {
+                                console.error('Yêu cầu không thành công');
+                            }
+                        }
+                    };
+                    xhr.send(`productId=${productId}`);
+                } else {
+                    console.log('Sản phẩm đã được chọn trước đó');
+                    // Có thể hiển thị thông báo cho người dùng rằng sản phẩm đã được chọn trước đó
+                }
+            });
+        });
+    });
+</script> *@

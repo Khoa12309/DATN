@@ -1,4 +1,5 @@
-﻿@{
+﻿@model APPDATA.Models.Address;
+@{
     ViewData["Title"] = "ViewBill";
     Layout = "~/Views/Shared/_LayoutWeb.cshtml";
     Guid id;
@@ -108,11 +109,12 @@
                 <div class="col-lg-8">
                     <h3>Đơn hàng</h3>
 
-                    <img src="~/images/@ViewBag.image.Name" style="width: 250px; height:auto;margin-top : 50px;margin-bottom:50px" alt="">
+                    <img id="myImage" src="~/images/@ViewBag.image.Name" style="width: 250px; height:auto;margin-top : 50px;margin-bottom:50px" alt="">
                     <form class="row contact_form" action="~/home/dathang" method="post" novalidate="novalidate">
                         <input type="hidden" name="productId" value="@ViewBag.id" />
 
-
+                        <input name="pay" id="pay" hidden value="shipcod" />
+                        <input name="pay" id="price" hidden value="" />
                         <div class="col-md-12 form-group">
 
                             <select name="size" class="form-select">
@@ -148,10 +150,10 @@
 
                         </div>
                         <div class="col-md-2 form-group">
-                            <input type="text" class="form-control" name="soluong" placeholder="Số lượng">
+                            <input type="text" class="form-control" id="soluong" name="soluong" placeholder="Số lượng">
                         </div>
                         <div class="col-md-4 form-group">
-                            <input type="text" class="form-control" name="sdt" placeholder="SDT">
+                            <input type="text" class="form-control" name="sdt" asp-for="@Model.PhoneNumber" placeholder="SDT">
                         </div>
                         <div class="col-md-12 form-group">
                             <div class="row">
@@ -162,13 +164,7 @@
                             </div>
 
 
-                            <div class="col-md-12 form-group">
-                                <div class="row">
-                                    <div class="col-lg-3">
-                                        <button style="margin-bottom: 20px" type="button" id="submitOrder" class="button button-paypal">Xác nhận</button>
-                                        <div />
-                                    </div>
-                                </div>
+                      
 
 
 
@@ -178,47 +174,80 @@
                                 <div class="col-md-12 form-group p_star">
                                     <div class="row">
                                         <div class="col-lg-4">
-                                            <select class="country_select" id="countrySelect" name="province">
+                                            <select class="country_select" id="countrySelect" asp-for="@Model.Province">
                                                 @foreach (var item in ViewBag.province)
                                                 {
+                                                    if (Model != null)
+                                                    {
+                                                        if (item.ProvinceName == Model.Province)
+                                                        {
+                                                            <option selected value="@item.ProvinceID">@item.ProvinceName</option>
+                                                        }
+                                                    }
+
                                                     <option value="@item.ProvinceID">@item.ProvinceName</option>
-
-
                                                 }
-
                                             </select>
                                             <input type="hidden" name="province2" value="" />
                                         </div>
                                         <div class="col-lg-4">
 
-                                            <input list="districtSelect" id="district" name="district" placeholder="Chọn quận huyện">
+                                            <input list="districtSelect" id="district" name="district" asp-for="@Model.District" placeholder="Chọn quận huyện">
                                             <datalist id="districtSelect">
                                             </datalist>
                                         </div>
                                         <div class="col-lg-4">
 
-                                            <input list="wardSelect" id="ward" name="ward" placeholder="Chọn xã phường">
+                                            <input list="wardSelect" id="ward" name="ward" placeholder="Chọn xã phường" asp-for="@Model.Ward">
                                             <datalist id="wardSelect">
                                             </datalist>
                                         </div>
                                         <div class="col-md-7 form-group">
-                                            <input type="text" style="margin-top:10px" class="form-control" name="diachict" placeholder="Địa chỉ cụ thể">
+                                            <input type="text" style="margin-top:10px" class="form-control" name="diachict" asp-for="@Model.SpecificAddress" placeholder="Địa chỉ cụ thể">
+                                        </div>
+                                    <div class="col-md-12 form-group">
+                                        <div class="row">
+                                            <div class="col-lg-3">
+                                                <button style="margin-bottom: 20px" type="button" id="submitOrder" class="button button-paypal">Xác nhận</button>
+                                                <div />
+                                            </div>
                                         </div>
                                     </div>
 
                                 </div>
+                                <input name="pay" id="pay" hidden value="shipcod" />
 
+                                <div class="payment_item">
+                                    <div class="radion_btn">
+                                        <input type="radio" id="f-option5" name="selector">
+                                        <label for="f-option5">Thanh toán thường</label>
+                                        <div class="check"></div>
+                                    </div>
 
+                                </div>
+                                <div class="payment_item active">
+                                    <div class="radion_btn">
+                                        <input type="radio" id="f-option6" name="selector">
+                                        <label for="f-option6"> Thanh toán trực tuyến </label>
+                                        <img src="img/product/card.jpg" alt="">
+                                        <div class="check"></div>
+                                    </div>
+
+                                </div>
                                 <div class="col-md-12 form-group">
 
 
 
                                     <ul class="list list_2">
 
-                                        <li><a href="#" style="text-decoration:none;color:black">Phí ship :  <span><input width="30px" style="height:30px;border:none" readonly id="feeship" name="ship"></span></a></li>
+                                        <li><a href="#" style="text-decoration:none;color:black">Phí ship :  <span><input width="30px" style="height:30px;border:none" readonly id="feeship" name="ship" value="@ViewBag.fee"></span></a></li>
 
                                     </ul>
+                                   
 
+                                        <span>Tổng tiền :  <span><input width="30px" style="height:30px;border:none" readonly id="tongtien" name="tongtien" value=""></span></span>
+
+                               
                                 </div>
                                 <div class="text-center  form-group">
                                     <button type="submit" class="button button-paypal">Order Confirmation</button>
@@ -338,46 +367,99 @@
 
 
     inputward.onchange = function () {
-        // Lấy giá trị được chọn trong thẻ select
         var district = 0;
-        var ward = 0
+        var ward = 0;
         lward.forEach(function (id) {
             if (id.wardName == inputward.value) {
-
                 idwar = id.wardCode;
                 ward = id.wardCode;
             }
-
         });
+
+        var sl = document.getElementById("soluong").value;
+
         var data = {
             towardcode: ward,
-            to_district_id: iddis,
+            to_district_id: iddis
         };
-        var json = JSON.stringify(data);
-        // Sử dụng fetch() để gửi một request GET đến /Home/GetUsers
-        fetch("/Home/Feeship", {
+
+        fetch(`/Home/Feeship2?towardcode=${ward}&to_district_id=${iddis}&soluong=${sl}`, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
-            },
-            body: json
+            }
         })
-            .then(response => response.json()) // Chuyển đổi response thành JSON
+            .then(response => response.json())
             .then(data => {
-
-                // Xử lý dữ liệu JSON
-
                 console.log(data.total);
-
-
                 document.getElementById("feeship").value = data.total;
             })
             .catch(error => {
-                // Xử lý lỗi
-                console.error(error); // In ra lỗi
+                console.error(error);
             });
+
+        // Các đoạn mã xử lý sự kiện onclick của inputon và inputoff cũng như các đoạn mã khác sau đây
+    };
+    // Hàm thực hiện các thao tác sau khi giá trị của soluong thay đổi
+    // Sự kiện oninput của input soluong
+    document.getElementById("soluong").oninput = function () {
+        handleInputwardChange(); // Gọi hàm xử lý của inputward khi giá trị của soluong thay đổi
     };
 
+    function handleInputwardChange() {
+        // Gọi lại hành động khi giá trị của inputward thay đổi
+
+        ward = @ViewBag.xa;
+        iddis = @ViewBag.huyen;
+        lward.forEach(function (id) {
+            if (id.wardName == inputward.value) {
+                idwar = id.wardCode;
+                ward = id.wardCode;
+
+            }
+        });
+        ldistrict.forEach(function (id) {
+            if (id.districtName == inputdis.value) {
+                district = id.districtID;
+                iddis = id.districtID;
+            }
+
+        });
+
+        var sl = document.getElementById("soluong").value;
+
+        var data = {
+            towardcode: ward,
+            to_district_id: iddis
+        };
+
+        fetch(`/Home/Feeship2?towardcode=${ward}&to_district_id=${iddis}&soluong=${sl}`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log(data.total);
+                document.getElementById("feeship").value = data.total;
+            })
+            .catch(error => {
+                console.error(error);
+            });
+
+        // Các đoạn mã xử lý sự kiện onclick của inputon và inputoff cũng như các đoạn mã khác sau đây
+    }
+
+
+    var inputon = document.getElementById("f-option6");
+    var inputoff = document.getElementById("f-option5");
+    inputon.onclick = function () {
+        document.getElementById("pay").value = "Online"
+    }
+    inputoff.onclick = function () {
+        document.getElementById("pay").value = "shipCod"
+    }
 
     //function showLabel(input) {
     //    // Lấy giá trị của input
@@ -402,6 +484,7 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
+
     $(document).ready(function () {
         $("#submitOrder").click(function () {
             var productId = $("input[name='productId']").val();
@@ -412,6 +495,8 @@
             if (size && color) {
                 if (quantity === '' || isNaN(quantity)) {
                     $("span[name='error']").html('Nhập số lượng sản phẩm cần mua hợp lệ');
+                } else if (quantity === '0') {
+                    $("span[name='error']").html('Tối thiểu mua 1 sản phẩm');
                 } else {
                     $.ajax({
                         url: '/home/getsl',
@@ -424,16 +509,36 @@
                         success: function (response) {
                             if (response.success) {
                                 var idsanphamcthitiet = response.idsanphamcthitiet;
-                                if (idsanphamcthitiet === 0) {
-                                    $("span[name='error']").html('Size hoặc màu này tạm hết bạn thử chọn size hoặc màu khác nhé !');
+                                var img = response.img;
+                                var x = 0;
+                                if (idsanphamcthitiet === x) {
+                                    $("span[name='error']").html('Sản phẩm đã hết vui lòng chọn size hoặc màu khác');
                                     $("input[name='soluong']").val('');
-                                } else if (quantity > idsanphamcthitiet) {
-                                    $("span[name='error']").html('Tối đa ' + idsanphamcthitiet);
+                                } else if (quantity > idsanphamcthitiet.quantity) {
+                                    $("span[name='error']").html('Tối đa ' + idsanphamcthitiet.quantity);
                                     $("input[name='soluong']").val('');
                                 } else {
+
                                     $("span[name='error']").html('');
+
+                                    var sluong = parseInt($("input[name='soluong']").val());
+                                    var shipp = parseFloat($("input[name='ship']").val());
+                                    var tong = 0; 
+                                    tong = idsanphamcthitiet.price * sluong + shipp;
+                                    console.log(tong)
+                                    // Cập nhật giá trị tổng tiền vào trường #tongtien
+                                    var tt =     $("#tongtien").val(tong);
+                                    console.log(tt);
+                                    $("#tongtien").val(tong);
+                                    idsanphamcthitiet
+                                    var newImageSrc = '/images/' + img.name; // Thay đổi đường dẫn ảnh mới ở đây
+
+                                    console.log(img.name);
+                                    $("#myImage").attr("src", newImageSrc);
+
+
+                                    console.log("Đã tìm thấy idsanphamcthitiet: " + idsanphamcthitiet);
                                 }
-                                console.log("Đã tìm thấy idsanphamcthitiet: " + idsanphamcthitiet);
                             } else {
                                 console.error("Không tìm thấy sản phẩm chi tiết phù hợp.");
                             }
@@ -449,5 +554,8 @@
             }
         });
     });
+
+
+
 
 </script>
