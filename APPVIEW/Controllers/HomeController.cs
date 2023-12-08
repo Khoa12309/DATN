@@ -39,9 +39,11 @@ namespace APPVIEW.Controllers
         private Getapi<BillDetail> billDetails;
         private Getapi<Voucher> getapiVoucher;
         private Getapi<Address> getapiAddress;
+        private Getapi<Account> getapiAc;
         private Getapi<CartDetail> getapiCD;
         private Getapi<PaymentMethodDetail> getapiPMD;
         private Getapi<PaymentMethod> getapiPM;
+        private Getapi<VoucherForAcc> getapiVoucherAcc;
 
         private static readonly Random random = new Random();
         private string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
@@ -61,11 +63,14 @@ namespace APPVIEW.Controllers
             billDetails = new Getapi<BillDetail>();
             getapiVoucher = new Getapi<Voucher>();
             getapiAddress = new Getapi<Address>();
+            getapiAc = new Getapi<Account>();
 
             getapiCD = new Getapi<CartDetail>();
             getapiPM = new Getapi<PaymentMethod>();
-            getapiPMD = new Getapi<PaymentMethodDetail>();
 
+            getapiPMD = new Getapi<PaymentMethodDetail>();
+            getapiVoucherAcc = new Getapi<VoucherForAcc>();
+           
         }
 
         public IActionResult Index()
@@ -347,7 +352,7 @@ namespace APPVIEW.Controllers
             bill.UpdateBy = DateTime.Now;
             bill.ShipFee = phiship;
             bill.PayDate = DateTime.Now;
-            bill.TotalMoney = phiship - voucher;
+            bill.TotalMoney = 0;
             bill.Status = 1;
             bill.PayDate = DateTime.Now;
             bill.Type = pay + " - Chưa Thanh Toán ";
@@ -375,6 +380,36 @@ namespace APPVIEW.Controllers
                     bill.TotalMoney += billct.Price;
                     await bills.UpdateObj(bill, "Bill");
                 }
+            }
+            var voucherAcc = getapiVoucherAcc.GetApi("VoucherForAcc").FirstOrDefault(c => c.Id_Account == account.Id && c.Id_Voucher == bill.Voucherid);
+
+            if (voucherAcc != null && voucherAcc.Id_Account == account.Id)
+            {
+                if (voucherAcc.Value > 0) // Kiểm tra nếu voucher có giảm giá theo phần trăm
+                {
+                    // Tính toán giảm giá dựa trên phần trăm
+                    float percentage = voucherAcc.Value / 100;
+                    //float? discountFromPercentage = bill.TotalMoney * percentage;
+                    var discount = bill.TotalMoney * percentage;
+                    if (discount > voucherAcc.DiscountAmount)
+                    {
+                        bill.TotalMoney = (float)(bill.TotalMoney - voucherAcc.DiscountAmount) + bill.ShipFee;
+                    }
+                    else
+                    {
+                        bill.TotalMoney = (bill.TotalMoney - discount) + bill.ShipFee;
+                    }
+                    voucherAcc.Status = 2;file:///C:/Program%20Files%20(x86)/UltraViewer/images/close-icon.png
+                    await getapiVoucherAcc.UpdateObj(voucherAcc, "VoucherForAcc");
+
+
+                }
+                await bills.UpdateObj(bill, "Bill");
+            }
+            else
+            {
+                bill.TotalMoney += bill.ShipFee;
+                await bills.UpdateObj(bill, "Bill");
             }
             var products = SessionService.GetObjFromSession(HttpContext.Session, "Cart");
 
@@ -410,9 +445,7 @@ namespace APPVIEW.Controllers
 
         }
 
-        [HttpPost]
-        [HttpPost]
-        [HttpPost]
+
         [HttpPost]
         public ActionResult getsl(string productId, string size, string color)
         {
@@ -569,9 +602,19 @@ namespace APPVIEW.Controllers
             var billDetailsApi = billDetails.GetApi("BillDetail");
             var productDetailsApi = getapi.GetApi("ProductDetails");
             var productsApi = getapiProduct.GetApi("Product");
+            var voucherApi = getapiVoucher.GetApi("Voucher");
+            // Lấy thông tin về voucher
+            foreach (var userBill in userBills)
+            {
+                if (userBill.Voucherid.HasValue)
+                {
+                    userBill.Voucher = voucherApi.FirstOrDefault(v => v.Id == userBill.Voucherid);
+                }
+            }
             ViewBag.viewbillct = billDetailsApi;
             ViewBag.viewprdct = productDetailsApi;
             ViewBag.viewprd = productsApi;
+            ViewBag.Voucher = voucherApi;
             ViewBag.sizee = getapiSize.GetApi("Size");
             ViewBag.Collor = getapiColor.GetApi("Color");
             ViewBag.image = getapiImg.GetApi("Image");
@@ -579,6 +622,7 @@ namespace APPVIEW.Controllers
 
         }
 
+        [Authorize(Roles ="Customer")]
         public IActionResult Contact()
         {
             return View();
@@ -705,6 +749,7 @@ namespace APPVIEW.Controllers
             ViewBag.Img = getapiImg.GetApi("Image");
             ViewBag.Size = getapiSize.GetApi("Size");
             ViewBag.Color = getapiColor.GetApi("Color");
+            ViewBag.Voucher = getapiVoucher.GetApi("Voucher").Where(v => v.EndDate >= DateTime.Now).ToList();
 
 
             ViewBag.Category = getapiCategory.GetApi("Category");
@@ -892,7 +937,7 @@ namespace APPVIEW.Controllers
 
                 foreach (var item in response.Data)
                 {
-                    if (item.NameExtension.Any(c => c.Contains(ten)))
+                    if (item.NameExtension.Any(c => c.Contains(ten))||item.WardName.ToLower()==ten.ToLower())
                     {
                         return item.WardCode;
                     }
@@ -1010,6 +1055,13 @@ namespace APPVIEW.Controllers
 
         public async Task<IActionResult> Checkout()
         {
+
+            var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
+            if (!User.Identity.IsAuthenticated)
+            {
+                return Redirect("~/Account/Login");
+            }
+
             var client = new OnlineGatewayClient($"https://online-gateway.ghn.vn/shiip/public-api/master-data/province", "bdbbde2a-fec2-11ed-8a8c-6e4795e6d902");
 
             // Gọi API để lấy danh sách các tỉnh/thành phố
@@ -1070,12 +1122,17 @@ namespace APPVIEW.Controllers
                 }
             }
             ViewBag.TT = tt;
-            ViewBag.Total = ViewBag.TT;
+            ViewBag.Total = tt;
 
-            var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
+            
             if (account != null)
             {
-                var dc = getapiAddress.GetApi("Address").FirstOrDefault(c => c.AccountId == account.Id);
+
+                var Uid = User.Claims.FirstOrDefault(c => c.Type == "Id").Value; 
+                var acc = getapiAc.GetApi("Account").FirstOrDefault(c => c.Id.ToString() == Uid);
+                SessionService.SetObjToJson(HttpContext.Session, "Account", acc);
+                var dc = getapiAddress.GetApi("Address").FirstOrDefault(c => c.AccountId.ToString() == Uid);
+
                 if (dc != null)
                 {
                     var p = await province(dc.Province);
@@ -1104,49 +1161,118 @@ namespace APPVIEW.Controllers
                     }
 
 
+
                 }
+
                 else
                 {
                     ViewBag.fee = 0;
                 }
-
+                if (ViewBag.fee == null)
+                {
+                    ViewBag.fee = 0;
+                }
                 return View(dc);
             }
 
             return View();
         }
 
+        [HttpPost]
+        public async Task<IActionResult> SaveVoucherForUser(Guid voucherId)
+        {
+
+            var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
+
+            if (account == null || account.Id == Guid.Empty)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            var voucher = getapiVoucher.GetApi("Voucher").FirstOrDefault(v => v.Id == voucherId);
+            var voucherAcc = getapiVoucherAcc.GetApi("VoucherForAcc").FirstOrDefault(v => v.Id_Voucher == voucherId);
+
+            if (voucher != null)
+            {
+                if (voucherAcc == null)
+                {
+                    var voucherForAcc = new VoucherForAcc()
+                    {
+                        Id = Guid.NewGuid(),
+                        Id_Account = account.Id,
+                        Id_Voucher = voucher.Id,
+                        Code = voucher.Code,
+                        Name = voucher.Name,
+                        Value = voucher.Value,
+                        DiscountAmount = voucher.DiscountAmount,
+                        EndDate = voucher.EndDate,
+                        Status = voucher.Status,
+                    };
+                    await getapiVoucherAcc.CreateObj(voucherForAcc, "VoucherForAcc");
+                }
+                else
+                {
+                    // Trả về thông báo hoặc thực hiện các xử lý khác nếu voucher đã tồn tại
+                    TempData["VoucherError"] = "Voucher đã có trong tài khoản của bạn.";
+                }
+            }
+            else
+            {
+                return NotFound("Voucher không hợp lệ");
+            }
+
+
+            return RedirectToAction("ApplyDiscount", "Home");
+
+        }
 
         [HttpGet]
         public async Task<IActionResult> ApplyDiscount()
         {
 
-            // Kiểm tra người dùng đã đăng nhập hay chưa
-            //var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
-            //if (account == null || account.Id == Guid.Empty)
-            //{
-            //    return RedirectToAction("Login", "Account");
-            //}
-            // Lấy giá trị từ TempData
-            // Lấy danh sách các voucher có thể áp dụng
-
-            var vouchers = getapiVoucher.GetApi("Voucher").Where(v => v.EndDate >= DateTime.Now).ToList();
-            var view = vouchers.Select(v => new VoucherVm
+            try
             {
-                Code = v.Code,
-                Name = v.Name,
-                Value = v.Value,
-                DiscountAmount = v.DiscountAmount,
-                EndDate = v.EndDate,
-            }).ToList();
-            return View(view);
+                // Lấy thông tin tài khoản từ session
+                var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
+
+                if (account == null || account.Id == Guid.Empty)
+                {
+                    // Xử lý trường hợp người dùng chưa đăng nhập
+                    return RedirectToAction("Login", "Account");
+                }
+                else
+                {
+                    // Lấy danh sách voucher cho tài khoản
+                    var voucherAcc = getapiVoucherAcc.GetApi("VoucherForAcc").Where(c => c.Id_Account == account.Id && c.Status == 1).ToList();
+
+                    if (voucherAcc != null && voucherAcc.Any())
+                    {
+                        return View(voucherAcc);
+                    }
+                    else
+                    {
+                        return View();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Xử lý nếu có lỗi xảy ra
+                return StatusCode(500, new { ErrorMessage = $"Lỗi máy chủ nội bộ: {ex.Message}" });
+            }
 
         }
         [HttpPost]
         public async Task<IActionResult> ApplyDiscount(string selectedVoucher)
         {
-            // Lấy thông tin voucher và tính số ngày còn lại
-            var voucher = getapiVoucher.GetApi("Voucher").FirstOrDefault(d => d.Code == selectedVoucher && d.EndDate >= DateTime.Now);
+            var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
+
+            if (account == null || account.Id == Guid.Empty)
+            {
+                // xử lý trường hợp người dùng chưa đăng nhập
+                return RedirectToAction("Login", "Account");
+            }
+            var voucher = getapiVoucherAcc.GetApi("VoucherForAcc").FirstOrDefault(d => d.Code == selectedVoucher && d.EndDate >= DateTime.Now);
             if (voucher != null)
             {
                 TempData["DiscountAmount"] = voucher.DiscountAmount.ToString();
@@ -1157,7 +1283,7 @@ namespace APPVIEW.Controllers
             }
             else
             {
-                // Xử lý khi mã giảm giá không hợp lệ
+                // xử lý khi mã giảm giá không hợp lệ
                 ModelState.AddModelError("Error", "Mã giảm giá không hợp lệ");
                 return RedirectToAction("Checkout");
             }
@@ -1215,8 +1341,8 @@ namespace APPVIEW.Controllers
         {
             string url = "http://sandbox.vnpayment.vn/paymentv2/vpcpay.html";
             string returnUrl = $"https://localhost:7095/Home/PaymentConfirm?id={bill.id}";
-            string tmnCode = "OQK7ZU4V";
-            string hashSecret = "WRKKYLZIEYLLPPFRNNQXVAKXHKGRIEEA";
+            string tmnCode = "6AV1KO3E";
+            string hashSecret = "UGHKKYGUTTLWWTQOJBECDFAMDHZDBLWW";
 
             PayLib pay = new PayLib();
 
@@ -1324,7 +1450,9 @@ namespace APPVIEW.Controllers
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
+          
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+
         }
     }
 }

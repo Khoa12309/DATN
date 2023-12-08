@@ -155,9 +155,9 @@
                                                 <img class="card-img" src="~/images/@product.Image.Name" alt="ErrorImg" width="150px" height="250px">
                                             }
                                             <ul class="card-product__imgOverlay">
-                                                <li><button><i class="ti-search"></i></button></li>
-                                                <li><button><i class="ti-shopping-cart"></i></button></li>
-                                                <li><button><i class="ti-heart"></i></button></li>
+                                                <li><a href="@Url.ActionLink("details","home",new{id=product.ProductDetail.Id})"><button><i class="ti-search"></i></button></a></li>
+                                                <li><a href="@Url.ActionLink("Addtocart","cart",new{id=product.ProductDetail.Id,Soluong=1})"><button><i class="ti-shopping-cart"></i></button></a></li>
+
                                             </ul>
                                         </div>
                                         <div class="card-body">

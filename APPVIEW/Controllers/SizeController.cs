@@ -22,7 +22,27 @@ namespace APPVIEW.Controllers
             return View(obj);
         }
 
+        public async Task<IActionResult> Search(string searchTerm)
+        {
+            var lstSize = getapi.GetApi("Size").ToList();
+            if (string.IsNullOrWhiteSpace(searchTerm))
+            {
+                return View("GetList", lstSize);
+            }
+            var searchResult = lstSize
+                .Where(v =>
+                    v.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                    v.Status.ToString().Contains(searchTerm, StringComparison.OrdinalIgnoreCase)
+                )
+                .ToList();
 
+            if (searchResult.Any())
+            {
+                return View("GetList", searchResult);
+            }
+
+            return NotFound("Size không tồn tại");
+        }
         [HttpGet]
         public async Task<IActionResult> Create()
         {

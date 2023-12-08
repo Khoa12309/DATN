@@ -30,15 +30,15 @@
                 <form asp-action="MyProfile" id="profileForm" enctype="multipart/form-data" method="post">
                     <div class="mb-3">
                         <label asp-for=Name class="labels">Name</label>
-                        <input asp-for=Name  type="text" class="form-control" placeholder="Enter your name" value="@Model.Name">
-                    </div>                    
+                        <input asp-for=Name type="text" class="form-control" placeholder="Enter your name" value="@Model.Name">
+                    </div>
                     <div hidden class="mb-3">
                         <label hidden asp-for=Id class="labels">Name</label>
-                        <input hidden asp-for=Id  type="text" class="form-control" placeholder="Enter your name" value="@Model.Id">
-                    </div>                    
+                        <input hidden asp-for=Id type="text" class="form-control" placeholder="Enter your name" value="@Model.Id">
+                    </div>
                     <div hidden class="mb-3">
                         <label hidden asp-for=Id_Role class="labels">Name</label>
-                        <input hidden asp-for=Id_Role  type="text" class="form-control" placeholder="Enter your name" value="@Model.Id_Role">
+                        <input hidden asp-for=Id_Role type="text" class="form-control" placeholder="Enter your name" value="@Model.Id_Role">
                     </div>
                     <div hidden class="mb-3">
                         <label hidden asp-for=AccountId class="labels">Name</label>
@@ -57,9 +57,9 @@
                         <input asp-for=PhoneNumber type="text" class="form-control" placeholder="Enter your phone number" value="@Model.PhoneNumber">
                     </div>
                     <div class="row mb-3">
-                        <div class="col-md-4">
+                        <div class="col-md-2">
                             <label asp-for=Province class="labels">Province</label>
-                            <select class="country_select" id="countrySelect" asp-for="Province" size="8">
+                            <select class="country_select" id="countrySelect" asp-for="Province">
                                 @foreach (var item in ViewBag.province)
                                 {
                                     if (Model != null)
@@ -75,7 +75,7 @@
                             </select>
                         </div> <div class="col-md-4">
                             <label asp-for=District class="labels">District</label>
-                         @*   <input asp-for=District type="text" class="form-control" placeholder="Enter your District" value="@Model.District">*@
+                            @*   <input asp-for=District type="text" class="form-control" placeholder="Enter your District" value="@Model.District">*@
                             <input list="districtSelect" class="form-control" id="district" placeholder="chọn quận huyện" asp-for="District">
 
                             <datalist id="districtSelect">
@@ -83,7 +83,7 @@
                         </div>
                         <div class="col-md-4">
                             <label asp-for=Ward class="labels">Ward</label>
-                          @* <input asp-for=Ward type="text" class="form-control" placeholder="Enter your Ward" value="@Model.Ward">*@
+                            @* <input asp-for=Ward type="text" class="form-control" placeholder="Enter your Ward" value="@Model.Ward">*@
                             <input list="wardSelect" class="form-control" id="ward" placeholder="chọn phường xã" asp-for="Ward">
                             <datalist id="wardSelect">
                             </datalist>
@@ -100,21 +100,24 @@
                         </div>
                     </div>
                     <div class="row mb-3">
-                                   
+
                         <div class="col-md-6">
                             <label asp-for=Avatar class="labels">Avatar</label>
                             <input asp-for="Avatar" class="form-control" type="file" name="imageFile" />
-                        </div>                        
+                        </div>
                         <div class="col-md-6">
                             <label asp-for=Description class="labels">Description</label>
                             <input asp-for="Description" class="form-control" value="@Model.Description" />
                         </div>
                     </div>
                     <div class="text-center">
-                        <div class="btn-group" role="group" aria-label="Profile actions">
-                            <button type="submit" value="submit" class="btn btn-information w-50">Save Profile</button>
-                            <a asp-action="ChangePassword" class="btn btn-login w-50">Change Password</a>
+                        <div class="hover">
+                            <div class="btn-group" role="group" aria-label="Profile actions" style="gap:10px">
+                                <button type="submit" value="submit" class="button button-register-login w-60">Save change</button>
+                                <a class="button button-register-login w-60" href="~/Account/ChangePassword">Change password</a>
+                            </div>
                         </div>
+
                     </div>
 
 
@@ -123,7 +126,8 @@
         </div>
     </div>
 </div>
-<!-- Thêm mã JavaScript -->
+
+
 <script>
     // Lắng nghe sự kiện submit của form
     document.getElementById('profileForm').addEventListener('submit', function (event) {
@@ -142,6 +146,15 @@
             if (result.isConfirmed) {
                 // Nếu người dùng chấp nhận, tiếp tục submit form
                 document.getElementById('profileForm').submit();
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: 'Your changes have been saved successfully!',
+                    timer: 2000,
+                    position: 'bottom-right',
+                    showConfirmButton: false,
+                    toast: true
+                });
             }
         });
     });
@@ -162,7 +175,6 @@
     var btncf = document.getElementById("btncf");
 
 
-
     // Thêm một sự kiện onchange cho thẻ select
     select.onchange = function () {
         // Lấy giá trị được chọn trong thẻ select
@@ -172,7 +184,7 @@
         $("#wardSelect").empty();
         inputdis.value = "";
         inputward.value = "";
-   
+
         // Sử dụng fetch() để gửi một request GET đến /Home/GetUsers
         fetch("/Home/district", {
             method: "POST",
@@ -252,7 +264,7 @@
             });
     };
 
-   
+
 
 
 
