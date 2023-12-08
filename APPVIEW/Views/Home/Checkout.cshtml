@@ -138,7 +138,7 @@
                                     <p>Giảm tối đa: <span>@ViewBag.FirstDiscountAmount</span>VND</p>
                                 </li>
                             }
-                            <li><a href="#">Shipping <span><input style="height:30px; width:50px; border: none; outline: none; background-color:#e8f0f2;" value="@ViewBag.fee" readonly id="feeship">VND</span></a></li>
+                            <li><a href="#">Shipping <span><input style="height:30px; width:80px; border: none; outline: none; background-color:#e8f0f2;" value="@ViewBag.fee" readonly id="feeship">VND</span></a></li>
 
                             @if (ViewBag.Value != null)
                             {
@@ -149,19 +149,19 @@
                                 if (ViewBag.DiscountAmount > ViewBag.FirstDiscountAmount)
                                 {
                                     
-                                    <li><a href="#">Total <span> <input style="height:30px; width:50px; border: none; outline: none; background-color:#e8f0f2;" value="@(totalll+ViewBag.fee)" id="tShip" /> VND</span></a></li>
+                                    <li><a href="#">Total <span> <input readonly style="height:30px; width:80px; border: none; outline: none; background-color:#e8f0f2;" value="@(totalll+ViewBag.fee)" id="tShip" /> VND</span></a></li>
 
                                 }
                                 else
                                 {
                                     
-                                    <li><a href="#">Total <span> <input style="height:30px; width:50px; border: none; outline: none; background-color:#e8f0f2;" value="@(ViewBag.TT -  ViewBag.DiscountAmount+ViewBag.fee)" id="tShip" /> VND</span></a></li>
+                                    <li><a href="#">Total <span> <input readonly style="height:30px; width:80px; border: none; outline: none; background-color:#e8f0f2;" value="@(ViewBag.TT -  ViewBag.DiscountAmount+ViewBag.fee)" id="tShip" /> VND</span></a></li>
 
                                 }
                             }
                             else
                             {
-                                <li><a href="#">Total <span> <input style="height:30px; width:50px; border: none; outline: none; background-color:#e8f0f2;" value="@ViewBag.TT" id="tShip" /> VND</span></a></li>
+                                <li><a href="#">Total <span> <input readonly style="height:30px; width:80px; border: none; outline: none; background-color:#e8f0f2;" value="@(ViewBag.TT+ViewBag.fee)" id="tShip" /> VND</span></a></li>
 
                             }
                         </ul>
