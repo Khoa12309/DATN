@@ -68,6 +68,23 @@
                     }
 
                 </div>
+                <div class="voucher-container" style="margin-top: 15px">
+                    <div class="voucher-list">
+                        <form asp-controller="Home" asp-action="SaveVoucherForUser" method="post">
+                            <ul class="voucher-list" style="list-style-type: none; padding: 0; margin: 0; display: inline-flex; flex-wrap: nowrap;">
+                                @foreach (var vc in ViewBag.Voucher)
+                                {
+                                    <li class="voucher-item" style="background: #F5F5F5; border-radius: 5px; color: #FF6A6A">
+                                        <a>Giảm: @vc.Value% - Max: @vc.DiscountAmount VND</a>
+                                        <input type="hidden" name="voucherId" value="@vc.Id" />
+                                        <input type="submit" value="+" class="btn btn-light addVoucherButton" data-voucher-id="@vc.Id" style="margin-left: 5px; color: #FF6A6A"/>
+                                        
+                                    </li>
+                                }
+                            </ul>
+                        </form>
+                    </div>
+                </div>
             </div>
             <div class="col-lg-5 offset-lg-1">
                 <form asp-action="AddToCart" asp-controller="Cart">
