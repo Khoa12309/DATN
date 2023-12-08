@@ -149,7 +149,7 @@
                                 if (ViewBag.DiscountAmount > ViewBag.FirstDiscountAmount)
                                 {
                                     
-                                    <li><a href="#">Total <span> <input style="height:30px; width:50px; border: none; outline: none; background-color:#e8f0f2;" value="@(ViewBag.TT -  ViewBag.FirstDiscountAmount+ViewBag.fee)" id="tShip" /> VND</span></a></li>
+                                    <li><a href="#">Total <span> <input style="height:30px; width:50px; border: none; outline: none; background-color:#e8f0f2;" value="@(totalll+ViewBag.fee)" id="tShip" /> VND</span></a></li>
 
                                 }
                                 else
@@ -161,7 +161,7 @@
                             }
                             else
                             {
-                                <li><a href="#">Total <span> <input style="height:30px; width:50px; border: none; outline: none; background-color:#e8f0f2;" value="@( ViewBag.TT+ViewBag.fee)" id="tShip" /> VND</span></a></li>
+                                <li><a href="#">Total <span> <input style="height:30px; width:50px; border: none; outline: none; background-color:#e8f0f2;" value="@ViewBag.TT" id="tShip" /> VND</span></a></li>
 
                             }
                         </ul>
@@ -228,7 +228,7 @@
         $("#wardSelect").empty();
         inputdis.value = "";
         inputward.value = "";
-        document.getElementById("tShip").value -= document.getElementById("feeship").value;
+        document.getElementById("tShip").value = parseFloat(document.getElementById("tShip").value) - parseFloat(document.getElementById("feeship").value);
         document.getElementById("feeship").value = 0;
         // Sử dụng fetch() để gửi một request GET đến /Home/GetUsers
         fetch("/Home/district", {

@@ -360,6 +360,7 @@ namespace APPVIEW.Controllers
             else
             {
                 bill.TotalMoney += bill.ShipFee;
+                await bills.UpdateObj(bill, "Bill");
             }
             var products = SessionService.GetObjFromSession(HttpContext.Session, "Cart");
 
@@ -820,7 +821,7 @@ namespace APPVIEW.Controllers
 
                 foreach (var item in response.Data)
                 {
-                    if (item.NameExtension.Any(c => c.Contains(ten)))
+                    if (item.NameExtension.Any(c => c.Contains(ten))||item.WardName.ToLower()==ten.ToLower())
                     {
                         return item.WardCode;
                     }
@@ -936,10 +937,14 @@ namespace APPVIEW.Controllers
                         }
                        
                     }
-                  
-                    
-                }
+
+                   
+                }              
                 else
+                {
+                    ViewBag.fee = 0;
+                }
+                if (ViewBag.fee == null)
                 {
                     ViewBag.fee = 0;
                 }
