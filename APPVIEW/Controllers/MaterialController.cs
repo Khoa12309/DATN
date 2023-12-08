@@ -20,7 +20,27 @@ namespace APPVIEW.Controllers
             var obj = getapi.GetApi("Material");
             return View(obj);
         }
+        public async Task<IActionResult> Search(string searchTerm)
+        {
+            var lstMaterial = getapi.GetApi("Material").ToList();
+            if (string.IsNullOrWhiteSpace(searchTerm))
+            {
+                return View("GetList", lstMaterial);
+            }
+            var searchResult = lstMaterial
+                .Where(v =>
+                    v.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                    v.Status.ToString().Contains(searchTerm, StringComparison.OrdinalIgnoreCase)
+                )
+                .ToList();
 
+            if (searchResult.Any())
+            {
+                return View("GetList", searchResult);
+            }
+
+            return NotFound("Material không tồn tại");
+        }
 
         [HttpGet]
         public async Task<IActionResult> Create()
@@ -34,7 +54,7 @@ namespace APPVIEW.Controllers
         {
             try
             {
-                getapi.CreateObj(obj, "Material");
+               await getapi.CreateObj(obj, "Material");
                 return RedirectToAction("GetList");
             }
             catch
@@ -58,7 +78,7 @@ namespace APPVIEW.Controllers
         {
             try
             {
-                getapi.UpdateObj(obj, "Material");
+             await   getapi.UpdateObj(obj, "Material");
                 return RedirectToAction("GetList");
             }
             catch
@@ -70,7 +90,7 @@ namespace APPVIEW.Controllers
 
         public async Task<IActionResult> Delete(Guid id)
         {
-            getapi.DeleteObj(id, "Material");
+           await getapi.DeleteObj(id, "Material");
             return RedirectToAction("GetList");
 
         }

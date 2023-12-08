@@ -25,6 +25,7 @@ using X.PagedList;
 using APPVIEW.Models;
 using _APPAPI.ViewModels;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Identity;
 
 namespace APPVIEW.Controllers
 {
