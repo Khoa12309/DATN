@@ -19,19 +19,16 @@
         <a class="btn btn-success waves-effect waves-light" asp-action="Create">
             <span class="mdi mdi-plus-thick">Create new</span>
         </a>
-        @*<form asp-controller="productdetail" asp-action="getlist" class="row contact_form" method="post">
-            <div class="col-md-5 form-group" style="margin-right:50px">
-            <input type="text" class="form-control" name="tk" placeholder="Nhập tên sản phẩm để tìm kiếm">
-            <button type="submit" style="background-color:brown ; color:black">Search</button>
-            </div>
-            <div class="input-group mb-3">
+      <form asp-controller="productdetail" asp-action="getlist" class="row contact_form" method="post">
+    <div class="col-md-5 form-group" style="margin-right:50px">
+        <input type="text" class="form-control" name="tk" placeholder="Nhập tên sản phẩm để tìm kiếm">
+        <button type="submit" style="background-color:brown ; color:black">Search</button>
+    </div>
+      @*<div class="input-group mb-3">
             <input type="text" name="tk" class="form-control" placeholder="Tìm kiếm" aria-label="Tìm kiếm" aria-describedby="button-addon2">
             <button class="btn btn-outline-secondary" type="submit" id="button-addon2"><i class="fas fa-search"></i>Tìm kiếm</button>
-            </div>
-            </form>*@
-        <form asp-action="Search" method="get" class="form-inline" style="margin-left: 1000px">
-            <input placeholder="Search" type="text" name="searchTerm" id="searchTerm" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2" />
-        </form>
+        </div>*@
+    </form>
         <div class="table-responsive">
             <table class="table table-hover">
                 <thead>
@@ -49,12 +46,12 @@
                         <th> Status</th>
                         <th>Create_date </th>
                         <th> Update_date </th>
-                        @*                        <th>
+@*                        <th>
                             Create_by
-                            </th>
-                            <th>
+                        </th>
+                        <th>
                             Update_by
-                            </th>*@
+                        </th>*@
 
 
                         <th>Actions</th>
@@ -176,22 +173,22 @@
                                     }
                                     @formattedUpdateDate
                                 </td>
-                                @*                                <td>
+@*                                <td>
                                     @Html.DisplayFor(modelItem => item.Create_by)
-                                    </td>
+                                </td>
 
-                                    <td>
+                                <td>
                                     @Html.DisplayFor(modelItem => item.Update_by)
-                                    </td>*@
+                                </td>*@
 
 
 
                                 <td>
 
-                                    <a href="@Url.Action("Edit", new { id = item.Id  })" class="btn btn-info waves-effect waves-light">
+                                    <a href="@Url.Action("Edit", new { id = item.Id  })" class="btn btn-info waves-effect waves-light" >
                                         <span class="mdi mdi-pencil-box-outline"></span>Edit
-                                    </a> <a href="@Url.Action( "Details","Home", new { id = item.Id  })" class="btn btn-warning waves-effect waves-light">
-                                        <span class="mdi mdi-pencil-box-outline"></span>Details
+                                    </a> <a href="@Url.Action( "Details","Home", new { id = item.Id  })" class="btn btn-warning waves-effect waves-light" >
+                                        <span class="mdi mdi-pencil-box-outline"></span>Details 
                                     </a>
                                     <a href="@Url.Action("Delete", new { id = item.Id  })" class="btn btn-danger waves-effect waves-light">
                                         <span class="mdi mdi-delete"></span>Delete
@@ -216,17 +213,17 @@
 </div>
 @*<div class="col-12">
     <nav>
-    <ul class="pagination justify-content-center">
-    <li class="page-item disabled"><a class="page-link" href="#">Previous</span></a></li>
-    @for (int i = 1; i <= Model.PagingInfo.TotalPages; i++)
-    {
-    <li class="page-item"><a class="page-link" href="/ProductDetalis/GetList?ProductPage=@i">@i</a></li>
+        <ul class="pagination justify-content-center">
+            <li class="page-item disabled"><a class="page-link" href="#">Previous</span></a></li>
+            @for (int i = 1; i <= Model.PagingInfo.TotalPages; i++)
+            {
+                <li class="page-item"><a class="page-link" href="/ProductDetalis/GetList?ProductPage=@i">@i</a></li>
 
-    }
-    <li class="page-item"><a class="page-link" href="">Next</a></li>
-    </ul>
+            }
+            <li class="page-item"><a class="page-link" href="">Next</a></li>
+        </ul>
     </nav>
-    </div>*@
+</div>*@
 <div>
     @Html.PagedListPager(Model, page => Url.Action("GetList", new {page = page, sort=ViewBag.sort}), new PagedListRenderOptions()
     {

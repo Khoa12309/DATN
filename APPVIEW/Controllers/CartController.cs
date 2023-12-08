@@ -272,7 +272,8 @@ namespace APPVIEW.Controllers
         {
 
             loadcart();
-            ViewBag.Img = getapiImg.GetApi("Image");         
+            ViewBag.Img = getapiImg.GetApi("Image");
+            ViewBag.prod =getapiPD.GetApi("ProductDetails");
             ViewBag.Color = getapiColor.GetApi("Color");
             ViewBag.Size = getapiSize.GetApi("Size");
            

@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace APPVIEW.Controllers
 {
-    //[Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin")]
     public class RoleController : Controller
     {
         private Getapi<Role> getapi;
@@ -27,10 +27,7 @@ namespace APPVIEW.Controllers
         public async Task<IActionResult> Search(string searchTerm)
         {
             var lstRole = getapi.GetApi("Role").ToList();
-            if (string.IsNullOrWhiteSpace(searchTerm))
-            {
-                return View("GetList", lstRole);
-            }
+
             var searchResult = lstRole
                 .Where(v =>
                     v.name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||

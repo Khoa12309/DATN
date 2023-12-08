@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace APPVIEW.Controllers
 {
-    //[Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin")]
     public class SupplierController : Controller
     {
         private Getapi<Supplier> getapi;
@@ -22,10 +22,7 @@ namespace APPVIEW.Controllers
         public async Task<IActionResult> Search(string searchTerm)
         {
             var lstSupplier = getapi.GetApi("Supplier").ToList();
-            if (string.IsNullOrWhiteSpace(searchTerm))
-            {
-                return View("GetList", lstSupplier);
-            }
+
             var searchResult = lstSupplier
                 .Where(v =>
                     v.Suppliercode.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
@@ -40,7 +37,7 @@ namespace APPVIEW.Controllers
                 return View("GetList", searchResult);
             }
 
-            return NotFound("Supplier không tồn tại");
+            return NotFound("Voucher không tồn tại");
         }
 
 

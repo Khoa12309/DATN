@@ -8,15 +8,15 @@
 
 <div class="card">
     <div class="card-header">
-        <h5 class="mb-0">Voucher</h5>
+        <h5 class="mb-0">Suppliers</h5>
     </div>
     <div class="card-body">
         <a class="btn btn-success waves-effect waves-light" asp-action="Create">
             <span class="mdi mdi-plus-thick">Create new</span>
         </a>
-        <form asp-action="Search" method="get" class="form-inline" style="margin-left: 1000px">
-            <input placeholder="Search" type="text" name="searchTerm" id="searchTerm" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2"/>
-        </form>
+<form asp-action="Search" method="get" class="form-inline">
+    <input placeholder="Voucher Search" type="text" name="searchTerm" id="searchTerm" /><button>Tìm</button>
+</form>
 
         <div class="table-responsive">
             <table class="table table-hover">
@@ -27,7 +27,6 @@
                         <th>Code</th>
                         <th>Status</th>
                         <th>Value</th>
-                        <th>Max discount</th>
                         <th>Create date</th>
                         <th>Update date</th>
                         <th>Start date</th>
@@ -49,8 +48,7 @@
                                         @(item.Status == 1 ? "Using" : "Not use")
                                     </span>
                                 </td>
-                                <td>@item.Value%</td>
-                                <td>@item.DiscountAmount VND</td>
+                                <td>@Html.DisplayFor(modelItem => item.Value)</td>
                                 <td>
                                     @{
                                         DateTime createDate = item.Create_date;

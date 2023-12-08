@@ -3,7 +3,6 @@
     public class VoucherVm
     {
         public Guid Id { get; set; }
-        public Guid? AccountId { get; set; }
         public int Value { get; set; }
         public string Name { get; set; }
         public string Code { get; set; }

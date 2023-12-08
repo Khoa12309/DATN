@@ -6,7 +6,7 @@ using X.PagedList;
 
 namespace APPVIEW.Controllers
 {
-    //[Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin")]
     public class ProductController : Controller
     {
         private Getapi<Product> getapi;
@@ -23,28 +23,25 @@ namespace APPVIEW.Controllers
             return View(obj.OrderByDescending(x => x.Id).ToPagedList(pageNumber, pageSize));
         }
 
-        //public async Task<IActionResult> Search(string searchTerm)
-        //{
-        //    var lstProduct = getapi.GetApi("Product").ToList();
-        //    if (string.IsNullOrWhiteSpace(searchTerm))
-        //    {
-        //        return View("GetList", lstProduct);
-        //    }
-        //    var searchResult = lstProduct
-        //        .Where(v =>
-        //            v.Code.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
-        //            v.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
-        //            v.Status.ToString().Contains(searchTerm, StringComparison.OrdinalIgnoreCase)
-        //        )
-        //        .ToList();
+        public async Task<IActionResult> Search(string searchTerm)
+        {
+            var lstProduct = getapi.GetApi("Product").ToList();
 
-        //    if (searchResult.Any())
-        //    {
-        //        return View("GetList", searchResult);
-        //    }
+            var searchResult = lstProduct
+                .Where(v =>
+                    v.Code.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                    v.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                    v.Status.ToString().Contains(searchTerm, StringComparison.OrdinalIgnoreCase)
+                )
+                .ToList();
 
-        //    return NotFound("Product không tồn tại");
-        //}
+            if (searchResult.Any())
+            {
+                return View("GetList", searchResult);
+            }
+
+            return NotFound("Voucher không tồn tại");
+        }
 
         [HttpGet]
         public async Task<IActionResult> Create()
