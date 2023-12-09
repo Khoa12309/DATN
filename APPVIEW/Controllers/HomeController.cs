@@ -70,7 +70,7 @@ namespace APPVIEW.Controllers
 
             getapiPMD = new Getapi<PaymentMethodDetail>();
             getapiVoucherAcc = new Getapi<VoucherForAcc>();
-           
+
         }
 
         public IActionResult Index()
@@ -165,7 +165,7 @@ namespace APPVIEW.Controllers
             var can = 100;
             ViewBag.huyen = 0;
             ViewBag.xa = 0;
-   
+
             if (account != null)
             {
                 var dc = getapiAddress.GetApi("Address").FirstOrDefault(c => c.AccountId == account.Id);
@@ -233,6 +233,7 @@ namespace APPVIEW.Controllers
         {
             var x = bills.GetApi("Bill").FirstOrDefault(c => c.id == id);
             x.Status = 4;
+            x.PayDate = DateTime.Now;
             await bills.UpdateObj(x, "Bill");
             return RedirectToAction("Thongtin");
         }
@@ -399,7 +400,7 @@ namespace APPVIEW.Controllers
                     {
                         bill.TotalMoney = (bill.TotalMoney - discount) + bill.ShipFee;
                     }
-                    voucherAcc.Status = 2;file:///C:/Program%20Files%20(x86)/UltraViewer/images/close-icon.png
+                    voucherAcc.Status = 2; file:///C:/Program%20Files%20(x86)/UltraViewer/images/close-icon.png
                     await getapiVoucherAcc.UpdateObj(voucherAcc, "VoucherForAcc");
 
 
@@ -460,7 +461,7 @@ namespace APPVIEW.Controllers
             }
             else
             {
-                return Json(new { success = true, idsanphamcthitiet = sl});
+                return Json(new { success = true, idsanphamcthitiet = sl });
             }
         }
 
@@ -475,14 +476,14 @@ namespace APPVIEW.Controllers
 
             var idsanphamcthitiet = getapi.GetApi("ProductDetails")
                 .FirstOrDefault(c => c.Id_Product == Guid.Parse(productId) && c.Id_Size == Guid.Parse(size) && c.Id_Color == Guid.Parse(color));
-         
+
 
 
             // Trả về dữ liệu dưới dạng JSON
             return Json(new { success = true, idsanphamcthitiet = idsanphamcthitiet });
         }
 
-        public async Task<IActionResult> DatHang(Guid size, Guid color, Guid productId, int soluong, string sdt, float ship, int province, string district, string ward, string diachict ,string pay )
+        public async Task<IActionResult> DatHang(Guid size, Guid color, Guid productId, int soluong, string sdt, float ship, int province, string district, string ward, string diachict, string pay)
 
         {
 
@@ -503,7 +504,7 @@ namespace APPVIEW.Controllers
             }
             var client = new OnlineGatewayClient($"https://online-gateway.ghn.vn/shiip/public-api/master-data/province", "bdbbde2a-fec2-11ed-8a8c-6e4795e6d902");
 
-            string province2 ="";
+            string province2 = "";
 
             // Gọi API để lấy danh sách các tỉnh/thành phố
             var response = await client.GetProvincesAsync();
@@ -529,7 +530,7 @@ namespace APPVIEW.Controllers
             bill.UpdateBy = DateTime.Now;
             bill.ShipFee = ship;
             bill.PayDate = DateTime.Now;
-            bill.TotalMoney = 
+            bill.TotalMoney =
             bill.Status = 1;
             bill.PayDate = DateTime.Now;
             bill.Type = pay + " - Chưa Thanh Toán ";
@@ -542,19 +543,19 @@ namespace APPVIEW.Controllers
 
             await bills.CreateObj(bill, "Bill");
 
-          
+
             if (x != null)
             {
-                    var billct = new BillDetail();
-                    billct.ProductDetailID = x.Id;
-                    billct.BIllId = bill.id;
-                    billct.Amount = soluong;
-                    billct.Price = soluong*x.Price;
-                    billct.Status = 1;
-                    await billDetails.CreateObj(billct, "BillDetail");
-                    bill.TotalMoney = billct.Price+ship;
-                    await bills.UpdateObj(bill, "Bill");
-               
+                var billct = new BillDetail();
+                billct.ProductDetailID = x.Id;
+                billct.BIllId = bill.id;
+                billct.Amount = soluong;
+                billct.Price = soluong * x.Price;
+                billct.Status = 1;
+                await billDetails.CreateObj(billct, "BillDetail");
+                bill.TotalMoney = billct.Price + ship;
+                await bills.UpdateObj(bill, "Bill");
+
             }
 
 
@@ -570,9 +571,9 @@ namespace APPVIEW.Controllers
 
                 return RedirectToAction("Thongtin");
             }
-          
+
         }
-        
+
         public async Task<IActionResult> Thongtin()
         {
             var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
@@ -583,18 +584,18 @@ namespace APPVIEW.Controllers
             {
                 return BadRequest("Bạn chưa đăng nhập");
             }
-            var billss = bills.GetApi("Bill").Where(c=>c.Type == "Online - Chưa Thanh Toán ").ToList();
+            var billss = bills.GetApi("Bill").Where(c => c.Type == "Online - Chưa Thanh Toán ").ToList();
             foreach (var item in billss)
             {
-                
-                    var xx = bills.GetApi("Bill").FirstOrDefault(c => c.id == item.id);
-                    var y = billDetails.GetApi("BillDetail").Where(c => c.BIllId == item.id).ToList();
-                    foreach (var item2 in y)
-                    {
-                        await billDetails.DeleteObj(item2.id, "BillDetail");
-                    }
-                    await bills.DeleteObj(item.id, "Bill");
-               
+
+                var xx = bills.GetApi("Bill").FirstOrDefault(c => c.id == item.id);
+                var y = billDetails.GetApi("BillDetail").Where(c => c.BIllId == item.id).ToList();
+                foreach (var item2 in y)
+                {
+                    await billDetails.DeleteObj(item2.id, "BillDetail");
+                }
+                await bills.DeleteObj(item.id, "Bill");
+
             }
             var client = new OnlineGatewayClient($"https://online-gateway.ghn.vn/shiip/public-api/master-data/province", "bdbbde2a-fec2-11ed-8a8c-6e4795e6d902");
             // Gọi API để lấy danh sách các tỉnh/thành phố
@@ -622,7 +623,7 @@ namespace APPVIEW.Controllers
 
         }
 
-        [Authorize(Roles ="Customer")]
+        [Authorize(Roles = "Customer")]
         public IActionResult Contact()
         {
             return View();
@@ -801,9 +802,9 @@ namespace APPVIEW.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> feeship([FromBody] diachi data )
+        public async Task<JsonResult> feeship([FromBody] diachi data)
         {
-            var products = SessionService.GetObjFromSession(HttpContext.Session, "Cart"); 
+            var products = SessionService.GetObjFromSession(HttpContext.Session, "Cart");
             var can = 100;
             if (products.Count != 0)
             {
@@ -832,16 +833,17 @@ namespace APPVIEW.Controllers
 
         }
         [HttpPost]
-        public async Task<JsonResult> feeship2(int soluong , int towardcode , int to_district_id)
+        public async Task<JsonResult> feeship2(int soluong, int towardcode, int to_district_id)
         {
 
             var can = 100;
-    
-            if (soluong!=null || soluong!=0) {
+
+            if (soluong != null || soluong != 0)
+            {
 
                 can = soluong * 100;
             }
-            
+
             int sship = await getServiceShip(to_district_id);
             var client = new OnlineGatewayClient($"https://online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/fee?service_id={sship}" + $"&insurance_value=100000&to_ward_code={towardcode.ToString()}" + $"&to_district_id={to_district_id.ToString()}" + "&from_district_id=3440" + $"&weight={can}", "bdbbde2a-fec2-11ed-8a8c-6e4795e6d902");
             // Gọi API để lấy danh sách các tỉnh/thành phố
@@ -937,7 +939,7 @@ namespace APPVIEW.Controllers
 
                 foreach (var item in response.Data)
                 {
-                    if (item.NameExtension.Any(c => c.Contains(ten))||item.WardName.ToLower()==ten.ToLower())
+                    if (item.NameExtension.Any(c => c.Contains(ten)) || item.WardName.ToLower() == ten.ToLower())
                     {
                         return item.WardCode;
                     }
@@ -977,7 +979,7 @@ namespace APPVIEW.Controllers
             var discountAmountString = TempData["DiscountAmount"] as string;
             var voucherCode = TempData["VoucherCode"] as string;
             var valueString = TempData["Value"] as string;
-            var vocher = getapiVoucher.GetApi("Voucher").FirstOrDefault(c=>c.Code==voucherCode);
+            var vocher = getapiVoucher.GetApi("Voucher").FirstOrDefault(c => c.Code == voucherCode);
             ViewBag.vocher = vocher;
             foreach (var item in ViewBag.Product)
             {
@@ -1124,11 +1126,11 @@ namespace APPVIEW.Controllers
             ViewBag.TT = tt;
             ViewBag.Total = tt;
 
-            
+
             if (account != null)
             {
 
-                var Uid = User.Claims.FirstOrDefault(c => c.Type == "Id").Value; 
+                var Uid = User.Claims.FirstOrDefault(c => c.Type == "Id").Value;
                 var acc = getapiAc.GetApi("Account").FirstOrDefault(c => c.Id.ToString() == Uid);
                 SessionService.SetObjToJson(HttpContext.Session, "Account", acc);
                 var dc = getapiAddress.GetApi("Address").FirstOrDefault(c => c.AccountId.ToString() == Uid);
@@ -1258,7 +1260,7 @@ namespace APPVIEW.Controllers
             catch (Exception ex)
             {
                 // Xử lý nếu có lỗi xảy ra
-                return StatusCode(500, new { ErrorMessage = $"Lỗi máy chủ nội bộ: {ex.Message}" });
+                return StatusCode(500, new { ErrorMessage = $"Lỗi viewáy chủ nội bộ: {ex.Message}" });
             }
 
         }
@@ -1288,7 +1290,7 @@ namespace APPVIEW.Controllers
                 return RedirectToAction("Checkout");
             }
         }
-        
+
         [HttpGet]
         public async Task<IActionResult> ApplyDiscount2()
         {
@@ -1450,7 +1452,7 @@ namespace APPVIEW.Controllers
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
-          
+
             return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
 
         }
