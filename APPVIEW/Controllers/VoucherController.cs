@@ -22,7 +22,10 @@ namespace APPVIEW.Controllers
         public async Task<IActionResult> Search(string searchTerm)
         {
             var lstVoucher = getapi.GetApi("Voucher").ToList();
-
+            if (string.IsNullOrWhiteSpace(searchTerm))
+            {
+                return View("GetList", lstVoucher);
+            }
             var searchResult = lstVoucher
                 .Where(v =>
                     v.Code.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
@@ -52,7 +55,7 @@ namespace APPVIEW.Controllers
         {
             try
             {
-                getapi.CreateObj(obj, "Voucher");
+              await  getapi.CreateObj(obj, "Voucher");
                 return RedirectToAction("GetList");
             }
             catch
@@ -89,7 +92,7 @@ namespace APPVIEW.Controllers
         public async Task<IActionResult> Delete(Guid id)
         {
 
-            getapi.DeleteObj(id, "Voucher");
+           await getapi.DeleteObj(id, "Voucher");
             return RedirectToAction("GetList");
 
         }

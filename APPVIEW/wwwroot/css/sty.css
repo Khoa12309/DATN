@@ -1,0 +1,13 @@
+﻿
+
+
+.voucher-list {
+    white-space: nowrap;
+    overflow-x: hidden;
+    cursor: grab; /* Thêm con trỏ grab để báo hiệu có thể di chuyển */
+}
+
+.voucher-item {
+    display: inline-block;
+    margin-right: 10px;
+}

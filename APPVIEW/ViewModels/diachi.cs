@@ -6,5 +6,7 @@ namespace APPVIEW.ViewModels
     {
         public int to_district_id { get; set; }
         public int  towardcode { get; set; }
+       
+
     }
 }

@@ -105,7 +105,7 @@ namespace APPVIEW.Controllers
         public async Task<IActionResult> AddToCart(Guid id, int Soluong, Guid color, Guid size)
         {
             loadcart();
-            if (!User.Identity.IsAuthenticated)
+            if (User.Identity.IsAuthenticated)
             {
 
                 var Uid = User.Claims.FirstOrDefault(c => c.Type == "Id").Value;
@@ -281,7 +281,8 @@ namespace APPVIEW.Controllers
         {
 
             loadcart();
-            ViewBag.Img = getapiImg.GetApi("Image");         
+            ViewBag.Img = getapiImg.GetApi("Image");
+            ViewBag.prod =getapiPD.GetApi("ProductDetails");
             ViewBag.Color = getapiColor.GetApi("Color");
             ViewBag.Size = getapiSize.GetApi("Size");
            

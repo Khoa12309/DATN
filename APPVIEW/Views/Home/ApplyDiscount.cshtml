@@ -1,6 +1,6 @@
-﻿@model IEnumerable<APPVIEW.ViewModels.VoucherVm>
+﻿@model IEnumerable<APPDATA.Models.VoucherForAcc>
 @{
-    ViewData["Title"] = "Apply Discount";
+    ViewData["Title"] = "Your Voucher";
     Layout = "~/Views/Shared/_LayoutWeb.cshtml";
 }
 <style>
@@ -33,11 +33,21 @@
     .coupon .time {
         font-size: 1.6rem;
     }
+
+    
 </style>
 <div class="container my-5">
-    <form class="row" method="post" asp-action="ApplyDiscount">
-        @foreach (var voucher in Model)
-        {
+    <h2 style="text-align: center; margin-bottom: 20px">Your Voucher</h2>
+    @if (Model == null || !Model.Any())
+    {
+        <h4 style="text-align: center;">Không có voucher nào trong tài khoản của bạn</h4>
+    }
+    else
+    {
+
+        <form id="voucherForm" class="row" method="post" asp-action="ApplyDiscount">
+            @foreach (var voucher in Model)
+            {
                 <div class="col-sm-6">
                     <div class="coupon bg-white rounded mb-3 d-flex justify-content-between">
                         <div class="tengah py-3 d-flex w-100 justify-content-start p-3"
@@ -60,19 +70,21 @@
                                             </p>
                                         </span>
                                     </div>
-                                    <input type="submit" value="Apply" class="btn btn-sm btn-outline-danger btn-block apply-btn" data-code="@voucher.Code"/>
+                                    <input type="submit" value="Apply" class="btn btn-sm btn-outline-danger btn-block apply-btn" data-code="@voucher.Code" />
                                     <input type="hidden" name="selectedVoucher" value="@voucher.Code" />
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-        }
-    </form>
+            }
+        </form>
+
+    }
 </div>
 
 <script>
-    // Lấy tất cả các phần tử có class "apply-btn"
+    //// Lấy tất cả các phần tử có class "apply-btn"
     var applyButtons = document.querySelectorAll('.apply-btn');
 
     // Lặp qua từng nút và thêm sự kiện click
@@ -85,4 +97,32 @@
             document.querySelector('input[name="selectedVoucher"]').value = voucherCode;
         });
     });
+    //var applyButtons = document.querySelectorAll('.apply-btn');
+
+    //applyButtons.forEach(function (button) {
+    //    button.addEventListener('click', function (event) {
+    //        event.preventDefault(); // Ngăn chặn sự kiện mặc định của nút submit
+
+    //        var voucherCode = button.getAttribute('data-code');
+    //        applyDiscount(voucherCode);
+    //    });
+    //});
+
+    function applyDiscount(voucherCode) {
+        // Sử dụng jQuery.ajax để gửi yêu cầu Ajax
+        $.ajax({
+            url: '/Home/ApplyDiscount',
+            type: 'POST',
+            data: { selectedVoucher: voucherCode },
+            success: function (data) {
+                // Xử lý thành công
+                console.log('Áp dụng thành công!');
+                // Cập nhật giao diện người dùng nếu cần
+            },
+            error: function (xhr, status, error) {
+                // Xử lý lỗi
+                console.error('Lỗi khi áp dụng:', error);
+            }
+        });
+    }
 </script>

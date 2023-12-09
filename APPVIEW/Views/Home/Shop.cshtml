@@ -144,16 +144,25 @@
                 <!-- Start Best Seller -->
                 <section class="lattest-product-area pb-40 category-list">
                     <div class="row" id="filtered-products">
+                        @{
+                            var p = new List<Guid>();
+                        }
                         @if (ViewBag.Products != null && ViewBag.Products.Count > 0)
                         {
                             foreach (var product in ViewBag.Products)
                             {
+                                if (p.Any(c => c == product.ProductDetail.Id_Product))
+                                {
+                                    continue;
+                                }
+                                p.Add(product.ProductDetail.Id_Product);
                                 <div class="col-md-6 col-lg-4">
                                     <div class="card text-center card-product">
                                         <div class="card-product__img">
-                                            @if (!string.IsNullOrEmpty(product.Image.Name))
+                                            @if (!string.IsNullOrEmpty(product.ProductDetail.Name))
                                             {
                                                 <img class="card-img" src="~/images/@product.Image.Name" alt="ErrorImg" width="150px" height="250px">
+
                                             }
                                             <ul class="card-product__imgOverlay">
                                                 <li><a href="@Url.ActionLink("details","home",new{id=product.ProductDetail.Id})"><button><i class="ti-search"></i></button></a></li>
@@ -167,7 +176,9 @@
                                         </div>
                                         <div class="card-body">
                                             <h4 class="card-product__title"><a href="#">@product.ProductDetail.Name</a></h4>
+
                                             <p class="card-product__price">@product.ProductDetail.Price.ToString("C0", new CultureInfo("vi-VN"))</p>
+
                                         </div>
                                     </div>
                                 </div>

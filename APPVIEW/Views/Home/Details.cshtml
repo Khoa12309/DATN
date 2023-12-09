@@ -35,7 +35,9 @@
     <div class="container">
         <div class="row s_product_inner">
             <div class="col-lg-6">
-                <div class="owl-carousel owl-theme s_Product_carousel autoplay">
+
+                <div class="owl-carousel owl-theme s_Product_carousel  carousel slide autoplay ">
+
                     @{
                         var isFirstImage = true;
                     }
@@ -55,6 +57,23 @@
                     <!-- Một ảnh mẫu nếu không có ảnh nào -->
                     <div class="single-prd-item">
                         <img class="img-fluid" src="img/category/s-p1.jpg" alt="">
+                    </div>
+                </div>
+                <div class="voucher-container" style="margin-top: 15px">
+                    <div class="voucher-list">
+                        <form asp-controller="Home" asp-action="SaveVoucherForUser" method="post">
+                            <ul class="voucher-list" style="list-style-type: none; padding: 0; margin: 0; display: inline-flex; flex-wrap: nowrap;">
+                                @foreach (var vc in ViewBag.Voucher)
+                                {
+                                    <li class="voucher-item" style="background: #F5F5F5; border-radius: 5px; color: #FF6A6A">
+                                        <a>Giảm: @vc.Value% - Max: @vc.DiscountAmount VND</a>
+                                        <input type="hidden" name="voucherId" value="@vc.Id" />
+                                        <input type="submit" value="+" class="btn btn-light addVoucherButton" data-voucher-id="@vc.Id" style="margin-left: 5px; color: #FF6A6A"/>
+                                        
+                                    </li>
+                                }
+                            </ul>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -177,7 +196,7 @@
                                             if (pd.Id_Color == item.Id)
                                             {
                                                 lstC1.Add(pd.Id_Color);
-                                                <h5 style="display: inline-block; margin-right: 10px;">@item.Name mmm</h5>
+                                                <h5 style="display: inline-block; margin-right: 10px;">@item.Name</h5>
 
                                             }
                                         }
@@ -403,3 +422,15 @@
 
 </script>
 <!--================ end related Product area =================-->
+    <script>
+        $(document).ready(function () {
+            $(".s_Product_carousel").owlCarousel({
+                items: 1,
+                loop: true,
+                margin: 10,
+                autoplay: true,
+                autoplayTimeout: 5000, // Thời gian chờ giữa các lượt autoplay (ms)
+                autoplayHoverPause: true // Tạm dừng khi di chuột qua
+            });
+        });
+    </script>
