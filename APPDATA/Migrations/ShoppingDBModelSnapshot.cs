@@ -22,6 +22,21 @@ namespace APPDATA.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
+            modelBuilder.Entity("AccountVoucher", b =>
+                {
+                    b.Property<Guid>("AccountsId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("VoucherId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.HasKey("AccountsId", "VoucherId");
+
+                    b.HasIndex("VoucherId");
+
+                    b.ToTable("AccountVoucher");
+                });
+
             modelBuilder.Entity("APPDATA.Models.Account", b =>
                 {
                     b.Property<Guid>("Id")
@@ -162,12 +177,17 @@ namespace APPDATA.Migrations
                     b.Property<DateTime?>("UpdateBy")
                         .HasColumnType("datetime2");
 
+                    b.Property<Guid?>("VoucherForAccId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<Guid?>("Voucherid")
                         .HasColumnType("uniqueidentifier");
 
                     b.HasKey("id");
 
                     b.HasIndex("AccountId");
+
+                    b.HasIndex("VoucherForAccId");
 
                     b.HasIndex("Voucherid");
 
@@ -711,6 +731,9 @@ namespace APPDATA.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<Guid?>("AccountId")
+                        .HasColumnType("uniqueidentifier");
+
                     b.Property<string>("Code")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -728,9 +751,8 @@ namespace APPDATA.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ReduceForm")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
@@ -747,6 +769,62 @@ namespace APPDATA.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Vouchers");
+                });
+
+            modelBuilder.Entity("APPDATA.Models.VoucherForAcc", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("DiscountAmount")
+                        .HasColumnType("float");
+
+                    b.Property<DateTime>("EndDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<Guid>("Id_Account")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<Guid>("Id_Voucher")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Value")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Id_Account");
+
+                    b.HasIndex("Id_Voucher");
+
+                    b.ToTable("VoucherForAccs");
+                });
+
+            modelBuilder.Entity("AccountVoucher", b =>
+                {
+                    b.HasOne("APPDATA.Models.Account", null)
+                        .WithMany()
+                        .HasForeignKey("AccountsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("APPDATA.Models.Voucher", null)
+                        .WithMany()
+                        .HasForeignKey("VoucherId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("APPDATA.Models.Account", b =>
@@ -772,6 +850,10 @@ namespace APPDATA.Migrations
                     b.HasOne("APPDATA.Models.Account", "Account")
                         .WithMany("Bill")
                         .HasForeignKey("AccountId");
+
+                    b.HasOne("APPDATA.Models.VoucherForAcc", null)
+                        .WithMany("Bill")
+                        .HasForeignKey("VoucherForAccId");
 
                     b.HasOne("APPDATA.Models.Voucher", "Voucher")
                         .WithMany("Bill")
@@ -913,6 +995,25 @@ namespace APPDATA.Migrations
                     b.Navigation("Account");
                 });
 
+            modelBuilder.Entity("APPDATA.Models.VoucherForAcc", b =>
+                {
+                    b.HasOne("APPDATA.Models.Account", "Account")
+                        .WithMany()
+                        .HasForeignKey("Id_Account")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("APPDATA.Models.Voucher", "Voucher")
+                        .WithMany()
+                        .HasForeignKey("Id_Voucher")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Account");
+
+                    b.Navigation("Voucher");
+                });
+
             modelBuilder.Entity("APPDATA.Models.Account", b =>
                 {
                     b.Navigation("Address");
@@ -990,6 +1091,11 @@ namespace APPDATA.Migrations
                 });
 
             modelBuilder.Entity("APPDATA.Models.Voucher", b =>
+                {
+                    b.Navigation("Bill");
+                });
+
+            modelBuilder.Entity("APPDATA.Models.VoucherForAcc", b =>
                 {
                     b.Navigation("Bill");
                 });

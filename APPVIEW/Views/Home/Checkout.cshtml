@@ -1,8 +1,9 @@
-﻿@model APPDATA.Models.Address
+﻿@using System.Globalization;
+@model APPDATA.Models.Address
 @{
     ViewData["Title"] = "Checkout";
     Layout = "~/Views/Shared/_LayoutWeb.cshtml";
-    int fee = ViewBag.fee;
+    
 }
 <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 
@@ -35,7 +36,7 @@
             <div class="check_title">
                 <h2>Have a coupon? <a href="#">Click here to enter your code</a></h2>
             </div>
-            <input type="text" placeholder="Enter coupon code">
+           @* <input type="text" placeholder="Enter coupon code">*@
             <a class="button button-coupon" asp-action="ApplyDiscount">Apply Coupon</a>
         </div>
         <div class="billing_details">
@@ -46,11 +47,11 @@
                     <h3>Billing Details</h3>
                     <form class="row contact_form" action="~/home/dathangn" method="post" novalidate="novalidate">
                         <div class="col-md-6 form-group p_star">
-                            <input type="text" class="form-control" id="first" name="Fullname" placeholder="Fullname" asp-for="@Model.Name">
+                            <input type="text" class="form-control" id="first" name="Fullname" placeholder="Fullname" asp-for="@Model.Name" required>
                             <span class="placeholder" data-placeholder="Fullname" placeholder="Fullname"></span>
                         </div>
                         <div class="col-md-6 form-group p_star">
-                            <input type="text" class="form-control" placeholder="Phonenumber" id="last" asp-for="@Model.PhoneNumber">
+                            <input type="text" class="form-control" placeholder="Phonenumber" max="10" id="last" asp-for="@Model.PhoneNumber" required> 
                             <span class="placeholder" data-placeholder="Phonenumber"></span>
                         </div>
 
@@ -118,31 +119,58 @@
                             @foreach (var item in ViewBag.Product)
                             {
                                 var tt = item.Quantity * item.Price;
-                                <li><a href="#">@item.Name<span class="middle">x @item.Quantity</span> <span class="last">$@tt</span></a></li>
-                            }
-                        </ul>
-                        <ul class="list list_2">
-                            <li><a href="#">Subtotal <span>$@ViewBag.TT VND</span></a></li>
-                            @if (ViewBag.DiscountAmount != null)
-                            {
-                                <a href="javascript:void(0);" onclick="confirmCancelVoucher()" style="color: red; padding-left: 278px"><i class='bx bxs-x-square' type="font-size: 12px"></i></a>
-                                <li>
-                                    <h6 style="font-size: 14px">Thông tin giảm giá:</h6>
-                                    <p>Mã giảm giá: <span>@ViewBag.VoucherCode</span></p>
-                                    <p>Số tiền giảm: <span>@ViewBag.DiscountAmount</span>VND</p>
-                                </li>
+
+                                <li><a href="#">@item.Name<span class="middle">x @item.Quantity</span> <span class="last">$@tt.ToString("C0", new CultureInfo("vi-VN"))</span></a></li>
 
                             }
-                            <li><a href="#">Shipping <span><input style="height:30px; width:50px; border: none; outline: none; background-color:#e8f0f2;" value="@ViewBag.fee" readonly id="feeship">VND</span></a></li>
-                            @if (ViewBag.DiscountAmount != null)
+                        </ul>
+                     
+
+                    
+                        <ul class="list list_2">
+                            <li><a href="#">Subtotal <span>@ViewBag.TT VND</span></a></li>
+                            @if (ViewBag.Value != null)
                             {
-                                <li><a href="#">Total <span> <input style="height:30px; width:50px; border: none; outline: none; background-color:#e8f0f2;" value="@(ViewBag.TT - ViewBag.DiscountAmount+ViewBag.fee)" id="tShip" /> VND</span></a></li>
+                                <li>
+                                    <a href="javascript:void(0);" onclick="confirmCancelVoucher()" style="color: red; padding-left: 278px">
+                                        <i class='bx bxs-x-square' style="font-size: 12px"></i>
+                                    </a>
+                                    <h6 style="font-size: 14px">Thông tin giảm giá:</h6>
+                                    <p>Mã: <span>@ViewBag.VoucherCode</span></p>
+                                    <p>Giảm: <span>@ViewBag.FirstValue%</span></p>
+                                    <p>Giảm tối đa: <span>@ViewBag.FirstDiscountAmount</span>VND</p>
+                                </li>
+                            }
+                            <li><a href="#">Shipping <span><input style="height:30px; width:80px; border: none; outline: none; background-color:#e8f0f2;" value="@ViewBag.fee" readonly id="feeship">VND</span></a></li>
+
+                            @if (ViewBag.Value != null)
+                            {
+                                var totall = @ViewBag.TT - @ViewBag.DiscountAmount;
+                                var totalll = @ViewBag.TT - @ViewBag.FirstDiscountAmount;
+                                var fe = @ViewBag.fee;
+
+                                if (ViewBag.DiscountAmount > ViewBag.FirstDiscountAmount)
+                                {
+                                    
+                                    <li><a href="#">Total <span> <input readonly style="height:30px; width:80px; border: none; outline: none; background-color:#e8f0f2;" value="@(totalll+ViewBag.fee)" id="tShip" /> VND</span></a></li>
+
+                                }
+                                else
+                                {
+                                    
+                                    <li><a href="#">Total <span> <input readonly style="height:30px; width:80px; border: none; outline: none; background-color:#e8f0f2;" value="@(ViewBag.TT -  ViewBag.DiscountAmount+ViewBag.fee)" id="tShip" /> VND</span></a></li>
+
+                                }
                             }
                             else
                             {
-                                <li><a href="#">Total <span><input style="height:30px; width:50px; border: none; outline: none; background-color:#e8f0f2;" value="@(ViewBag.TT + ViewBag.fee)" id="tShip" /> VND</span></a></li>
+                                <li><a href="#">Total <span> <input readonly style="height:30px; width:80px; border: none; outline: none; background-color:#e8f0f2;" value="@(ViewBag.TT+ViewBag.fee)" id="tShip" /> VND</span></a></li>
+
                             }
                         </ul>
+
+
+
                         <div class="payment_item">
                             <div class="radion_btn">
                                 <input type="radio" id="f-option5" name="selector">
@@ -203,7 +231,7 @@
         $("#wardSelect").empty();
         inputdis.value = "";
         inputward.value = "";
-        document.getElementById("tShip").value -= document.getElementById("feeship").value;
+        document.getElementById("tShip").value = parseFloat(document.getElementById("tShip").value) - parseFloat(document.getElementById("feeship").value);
         document.getElementById("feeship").value = 0;
         // Sử dụng fetch() để gửi một request GET đến /Home/GetUsers
         fetch("/Home/district", {
@@ -350,4 +378,3 @@
         }
     }
 </script>
-

@@ -1,4 +1,5 @@
 ﻿using _APPAPI.Service;
+using APPDATA.Migrations;
 using APPDATA.Models;
 using APPVIEW.Services;
 using AspNetCoreHero.ToastNotification.Abstractions;
@@ -39,6 +40,13 @@ namespace APPVIEW.Controllers
             return View(obj);
         }
 
+        [HttpGet]
+        public IActionResult GetCartCount()
+        {
+            var cart = SessionService.GetObjFromSession(HttpContext.Session, "Cart");
+            int cartCount = cart != null ? cart.Count : 0;
+            return Json(new { CartCount = cartCount });
+        }
 
         [HttpGet]
         public async Task<IActionResult> Create()
@@ -97,7 +105,7 @@ namespace APPVIEW.Controllers
         public async Task<IActionResult> AddToCart(Guid id, int Soluong, Guid color, Guid size)
         {
             loadcart();
-            if (!User.Identity.IsAuthenticated)
+            if (User.Identity.IsAuthenticated)
             {
 
                 var Uid = User.Claims.FirstOrDefault(c => c.Type == "Id").Value;
@@ -184,7 +192,8 @@ namespace APPVIEW.Controllers
 
                 }
             }
-            return RedirectToAction("ViewCart");
+            return Json(new { success = true, count = products.Count });
+
         }
         public async Task<IActionResult> DeleteCartItem(Guid id)
         {
@@ -272,7 +281,8 @@ namespace APPVIEW.Controllers
         {
 
             loadcart();
-            ViewBag.Img = getapiImg.GetApi("Image");         
+            ViewBag.Img = getapiImg.GetApi("Image");
+            ViewBag.prod =getapiPD.GetApi("ProductDetails");
             ViewBag.Color = getapiColor.GetApi("Color");
             ViewBag.Size = getapiSize.GetApi("Size");
            

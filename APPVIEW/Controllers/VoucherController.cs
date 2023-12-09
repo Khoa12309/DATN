@@ -9,20 +9,26 @@ namespace APPVIEW.Controllers
     public class VoucherController : Controller
     {
         private Getapi<Voucher> getapi;
+        private Getapi<Category> getapiCategory;
         public VoucherController()
         {
             getapi = new Getapi<Voucher>();
+            getapiCategory = new Getapi<Category>();
         }
 
         public async Task<IActionResult> GetList()
         {
+            ViewBag.Category = await getapiCategory.GetApia("Category");
             var obj = getapi.GetApi("Voucher");
             return View(obj);
         }
         public async Task<IActionResult> Search(string searchTerm)
         {
             var lstVoucher = getapi.GetApi("Voucher").ToList();
-
+            if (string.IsNullOrWhiteSpace(searchTerm))
+            {
+                return View("GetList", lstVoucher);
+            }
             var searchResult = lstVoucher
                 .Where(v =>
                     v.Code.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
@@ -43,6 +49,7 @@ namespace APPVIEW.Controllers
         [HttpGet]
         public async Task<IActionResult> Create()
         {
+            ViewBag.Category = await getapiCategory.GetApia("Category");
             return View();
         }
 
@@ -52,7 +59,7 @@ namespace APPVIEW.Controllers
         {
             try
             {
-                getapi.CreateObj(obj, "Voucher");
+              await  getapi.CreateObj(obj, "Voucher");
                 return RedirectToAction("GetList");
             }
             catch
@@ -65,7 +72,7 @@ namespace APPVIEW.Controllers
 
         public async Task<IActionResult> Edit(Guid id)
         {
-
+            ViewBag.Category = await getapiCategory.GetApia("Category");
             var lst = getapi.GetApi("Voucher");
             return View(lst.Find(c => c.Id == id));
         }
@@ -89,7 +96,7 @@ namespace APPVIEW.Controllers
         public async Task<IActionResult> Delete(Guid id)
         {
 
-            getapi.DeleteObj(id, "Voucher");
+           await getapi.DeleteObj(id, "Voucher");
             return RedirectToAction("GetList");
 
         }
