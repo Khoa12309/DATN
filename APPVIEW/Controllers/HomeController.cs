@@ -1373,7 +1373,7 @@ namespace APPVIEW.Controllers
             if (Request.QueryString.Value != null)
             {
 
-                string hashSecret = "WRKKYLZIEYLLPPFRNNQXVAKXHKGRIEEA"; //Chuỗi bí mật
+                string hashSecret = "UGHKKYGUTTLWWTQOJBECDFAMDHZDBLWW"; //Chuỗi bí mật
                 var vnpayData = Request.Query;
                 PayLib pay = new PayLib();
 
