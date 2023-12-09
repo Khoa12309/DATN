@@ -48,7 +48,7 @@ namespace _APPAPI.Controllers
                     Status = 1
                 };
                 _context.Roles.Add(customerRole);
-                _context.SaveChangesAsync();
+               
                 var adminRole = new Role()
                 {
                     id = Guid.NewGuid(),
@@ -56,7 +56,7 @@ namespace _APPAPI.Controllers
                     Status = 1
                 };
                 _context.Roles.Add(adminRole);
-                _context.SaveChangesAsync();
+               
                 var staffRole = new Role()
                 {
                     id = Guid.NewGuid(),

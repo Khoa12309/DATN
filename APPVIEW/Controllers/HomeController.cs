@@ -44,11 +44,12 @@ namespace APPVIEW.Controllers
         private Getapi<PaymentMethodDetail> getapiPMD;
         private Getapi<PaymentMethod> getapiPM;
         private Getapi<VoucherForAcc> getapiVoucherAcc;
+        public INotyfService _notyf;
 
         private static readonly Random random = new Random();
         private string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger,INotyfService notyf)
         {
             _logger = logger;
             getapi = new Getapi<ProductDetail>();
@@ -70,6 +71,7 @@ namespace APPVIEW.Controllers
 
             getapiPMD = new Getapi<PaymentMethodDetail>();
             getapiVoucherAcc = new Getapi<VoucherForAcc>();
+            _notyf = notyf;
 
         }
 
@@ -539,8 +541,7 @@ namespace APPVIEW.Controllers
 
 
             await bills.CreateObj(bill, "Bill");
-
-            var x = getapi.GetApi("ProductDetails").FirstOrDefault(c => c.Id_Product == productId && c.Id_Size == size && c.Id_Color == color);
+           
 
 
           
@@ -1236,21 +1237,22 @@ namespace APPVIEW.Controllers
                     }
                     else
                     {
-                        // Trả về thông báo hoặc thực hiện các xử lý khác nếu voucher đã tồn tại
-                        TempData["VoucherError"] = "Voucher đã có trong tài khoản của bạn.";
+                       
+                        _notyf.Success("Voucher đã có trong tài khoản của bạn!");
                     }
 
 
                 }
                 else
                 {
-                    TempData["VoucherError"] = "Chúc bạn may mắn lần sau";
+                   
+                    _notyf.Warning("Chúc bạn may mắn lần sau!");
                 }
 
             }
             else
-            {
-                TempData["VoucherError"] = "Voucher không hợp lệ";
+            {                
+                _notyf.Warning("Voucher không hợp lệ!");
             }
 
 
@@ -1362,7 +1364,7 @@ namespace APPVIEW.Controllers
             else
             {
                 // Xử lý khi mã giảm giá không hợp lệ
-                ModelState.AddModelError("Error", "Mã giảm giá không hợp lệ");
+                _notyf.Error("Mã giảm giá không hợp lệ");
                 return RedirectToAction("CheckOutOnl");
             }
         }
