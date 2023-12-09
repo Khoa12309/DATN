@@ -9,13 +9,16 @@ namespace APPVIEW.Controllers
     public class VoucherController : Controller
     {
         private Getapi<Voucher> getapi;
+        private Getapi<Category> getapiCategory;
         public VoucherController()
         {
             getapi = new Getapi<Voucher>();
+            getapiCategory = new Getapi<Category>();
         }
 
         public async Task<IActionResult> GetList()
         {
+            ViewBag.Category = await getapiCategory.GetApia("Category");
             var obj = getapi.GetApi("Voucher");
             return View(obj);
         }
@@ -46,6 +49,7 @@ namespace APPVIEW.Controllers
         [HttpGet]
         public async Task<IActionResult> Create()
         {
+            ViewBag.Category = await getapiCategory.GetApia("Category");
             return View();
         }
 
@@ -68,7 +72,7 @@ namespace APPVIEW.Controllers
 
         public async Task<IActionResult> Edit(Guid id)
         {
-
+            ViewBag.Category = await getapiCategory.GetApia("Category");
             var lst = getapi.GetApi("Voucher");
             return View(lst.Find(c => c.Id == id));
         }

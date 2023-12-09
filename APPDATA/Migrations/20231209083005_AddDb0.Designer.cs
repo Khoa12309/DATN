@@ -4,6 +4,7 @@ using APPDATA.DB;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,10 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace APPDATA.Migrations
 {
     [DbContext(typeof(ShoppingDB))]
-    partial class ShoppingDBModelSnapshot : ModelSnapshot
+    [Migration("20231209083005_AddDb0")]
+    partial class AddDb0
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -734,6 +736,9 @@ namespace APPDATA.Migrations
                     b.Property<Guid?>("AccountId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<double>("AppliesToOrders")
+                        .HasColumnType("float");
+
                     b.Property<string>("Code")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -776,6 +781,9 @@ namespace APPDATA.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<double>("AppliesToOrders")
+                        .HasColumnType("float");
 
                     b.Property<string>("Code")
                         .IsRequired()

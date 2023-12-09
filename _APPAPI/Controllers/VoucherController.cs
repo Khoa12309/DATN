@@ -33,7 +33,24 @@ namespace _APPAPI.Controllers
         public bool Delete(Guid id)
         {
             Voucher item = _crud.GetAllItems().FirstOrDefault(c => c.Id == id);
-            return _crud.DeleteItem(item);
+            if (item != null)
+            {
+                // Kiểm tra xem voucher đã được sử dụng hay chưa
+                if (IsVoucherUsed(item) || VoucherHasBeenSaved(item))
+                {
+                    // Nếu đã sử dụng, thay đổi trạng thái thành 2
+                    item.Status = 2;
+                    item.Update_date = DateTime.Now;
+                    return _crud.UpdateItem(item);
+                }
+                else
+                {
+                    // Nếu chưa sử dụng, xóa voucher khỏi cơ sở dữ liệu
+                    return _crud.DeleteItem(item);
+                }
+                
+            }
+            return false;
         }
         [Route("Update")]
         [HttpPut]
@@ -44,7 +61,7 @@ namespace _APPAPI.Controllers
             item.Value = obj.Value;
             item.Name = obj.Name;
             item.Code = obj.Code;
-            item.ReduceForm = obj.ReduceForm;
+            item.Quantity = obj.Quantity;
             item.Status = obj.Status;
             item.DiscountAmount = obj.DiscountAmount;
             item.Update_date = DateTime.Now;
@@ -53,6 +70,20 @@ namespace _APPAPI.Controllers
 
 
             return _crud.UpdateItem(item);
+        }
+        private bool IsVoucherUsed(Voucher voucher)
+        {
+            // Kiểm tra trong bảng đơn hàng
+            var billsWithVoucher = _context.Bills.Where(bill => bill.Voucherid == voucher.Id);
+
+            return billsWithVoucher.Any();
+        }
+        private bool VoucherHasBeenSaved(Voucher voucher)
+        {
+            // Kiểm tra trong tài khoản
+            var accWithVoucher = _context.VoucherForAccs.Where(acc => acc.Id_Voucher == voucher.Id);
+
+            return accWithVoucher.Any();
         }
     }
 }

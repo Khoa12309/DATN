@@ -92,11 +92,15 @@
         button.addEventListener('click', function () {
             // Lấy giá trị mã voucher từ thuộc tính data-code
             var voucherCode = button.getAttribute('data-code');
-
+            
             // Gán giá trị vào trường ẩn selectedVoucher
             document.querySelector('input[name="selectedVoucher"]').value = voucherCode;
         });
     });
+    function applyDiscount(voucherCode) {
+        // Gọi hàm áp dụng voucher ở đây
+        // ...
+    }
     //var applyButtons = document.querySelectorAll('.apply-btn');
 
     //applyButtons.forEach(function (button) {
