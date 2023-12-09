@@ -540,7 +540,7 @@ namespace APPVIEW.Controllers
 
             await bills.CreateObj(bill, "Bill");
 
-            var x = getapi.GetApi("ProductDetails").FirstOrDefault(c => c.Id_Product == productId && c.Id_Size == size && c.Id_Color == color);
+           
 
 
           
