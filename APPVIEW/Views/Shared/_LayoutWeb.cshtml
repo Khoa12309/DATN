@@ -32,14 +32,45 @@
     <link href="~/css/sty.css" rel='stylesheet'>
     <link href="~/contentwebb/css/style.css" rel="stylesheet" />
     <link href="~/contentwebb/css/main.css" rel="stylesheet" />
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
 
+
 </head>
 
 <body>
+    <style>
+        /* CSS code here */
+        body {
+            background-color: #fff; /* Màu nền trắng hoặc màu nền tùy chọn của bạn */
+            margin: 0; /* Loại bỏ margin để navbar có thể trải dài từ trên đầu trang */
+        }
+
+        .navbar {
+            background: rgba(255, 255, 255, 0.9); /* Màu nền với độ trong suốt */
+            backdrop-filter: blur(400px); /* Giảm mức độ làm mờ */
+            position: fixed; /* Đặt navbar ở vị trí cố định */
+            width: 100%; /* Navbar chiếm toàn bộ chiều rộng của trang */
+            z-index: 1000; /* Z-index để đảm bảo navbar hiển thị phía trên nền */
+        }
+
+        .navbar-nav .nav-link {
+            color: #000; /* Màu chữ của các menu item */
+        }
+
+        .navbar-toggler-icon {
+            background-color: #000; /* Màu của biểu tượng toggle (nút hiển thị menu trên di động) */
+        }
+
+        /* Thêm một số kiểu CSS tùy chỉnh cho các menu item dropdown */
+        .navbar-nav .nav-item.submenu:hover .dropdown-menu {
+            display: block;
+        }
+
+    </style>
     <!--================ Start Header Menu Area =================-->
     <header class="header_area">
         <div class="main_menu">
@@ -109,15 +140,14 @@
                                             <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l1.313 7h8.17l1.313-7H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"></path>
                                         </svg>
                                         @{
+
                                             var procarrt = SessionService.GetObjFromSession(Context.Session, "Cart");
-                                            if (procarrt!=null)
-                                            {
-                                                <span id="cart-count" class="nav-shop__circle"> @procarrt.Count.ToString()</span>
-                                            }else
-                                            {
-                                                <span id="cart-count" class="nav-shop__circle">0</span>
-                                            }
-                                           
+                                          
+                                                <div id="reload" class="cart-count">
+                                                    <div class="nav-shop__circle">@procarrt.Count</div>
+                                                </div>
+                                                                                    
+
                                         }
                                         
                                     </button>
@@ -308,9 +338,11 @@
     <!--================ End footer Area  =================-->
 
     <script src="~/js/site.js"></script>
+
     <!-- Thư viện jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.js"></script>
+
 
     <script src="~/contentwebb/vendors/jquery/jquery-3.2.1.min.js"></script>
     <script src="~/contentwebb/js/main.js"></script>

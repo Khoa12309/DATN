@@ -1,4 +1,5 @@
-﻿@model APPDATA.Models.Address
+﻿@using System.Globalization;
+@model APPDATA.Models.Address
 @{
     ViewData["Title"] = "Checkout";
     Layout = "~/Views/Shared/_LayoutWeb.cshtml";
@@ -118,7 +119,9 @@
                             @foreach (var item in ViewBag.Product)
                             {
                                 var tt = item.Quantity * item.Price;
-                                <li><a href="#">@item.Name<span class="middle">x @item.Quantity</span> <span class="last">@tt VND</span></a></li>
+
+                                <li><a href="#">@item.Name<span class="middle">x @item.Quantity</span> <span class="last">$@tt.ToString("C0", new CultureInfo("vi-VN"))</span></a></li>
+
                             }
                         </ul>
                      
@@ -138,7 +141,7 @@
                                     <p>Giảm tối đa: <span>@ViewBag.FirstDiscountAmount</span>VND</p>
                                 </li>
                             }
-                            <li><a href="#">Shipping <span><input style="height:30px; width:50px; border: none; outline: none; background-color:#e8f0f2;" value="@ViewBag.fee" readonly id="feeship">VND</span></a></li>
+                            <li><a href="#">Shipping <span><input style="height:30px; width:80px; border: none; outline: none; background-color:#e8f0f2;" value="@ViewBag.fee" readonly id="feeship">VND</span></a></li>
 
                             @if (ViewBag.Value != null)
                             {
@@ -149,19 +152,19 @@
                                 if (ViewBag.DiscountAmount > ViewBag.FirstDiscountAmount)
                                 {
                                     
-                                    <li><a href="#">Total <span> <input style="height:30px; width:50px; border: none; outline: none; background-color:#e8f0f2;" value="@(ViewBag.TT -  ViewBag.FirstDiscountAmount+ViewBag.fee)" id="tShip" /> VND</span></a></li>
+                                    <li><a href="#">Total <span> <input readonly style="height:30px; width:80px; border: none; outline: none; background-color:#e8f0f2;" value="@(totalll+ViewBag.fee)" id="tShip" /> VND</span></a></li>
 
                                 }
                                 else
                                 {
                                     
-                                    <li><a href="#">Total <span> <input style="height:30px; width:50px; border: none; outline: none; background-color:#e8f0f2;" value="@(ViewBag.TT -  ViewBag.DiscountAmount+ViewBag.fee)" id="tShip" /> VND</span></a></li>
+                                    <li><a href="#">Total <span> <input readonly style="height:30px; width:80px; border: none; outline: none; background-color:#e8f0f2;" value="@(ViewBag.TT -  ViewBag.DiscountAmount+ViewBag.fee)" id="tShip" /> VND</span></a></li>
 
                                 }
                             }
                             else
                             {
-                                <li><a href="#">Total <span> <input style="height:30px; width:50px; border: none; outline: none; background-color:#e8f0f2;" value="@( ViewBag.TT+ViewBag.fee)" id="tShip" /> VND</span></a></li>
+                                <li><a href="#">Total <span> <input readonly style="height:30px; width:80px; border: none; outline: none; background-color:#e8f0f2;" value="@(ViewBag.TT+ViewBag.fee)" id="tShip" /> VND</span></a></li>
 
                             }
                         </ul>
@@ -228,7 +231,7 @@
         $("#wardSelect").empty();
         inputdis.value = "";
         inputward.value = "";
-        document.getElementById("tShip").value -= document.getElementById("feeship").value;
+        document.getElementById("tShip").value = parseFloat(document.getElementById("tShip").value) - parseFloat(document.getElementById("feeship").value);
         document.getElementById("feeship").value = 0;
         // Sử dụng fetch() để gửi một request GET đến /Home/GetUsers
         fetch("/Home/district", {

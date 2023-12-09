@@ -25,7 +25,8 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 var sendmail = builder.Configuration.GetSection("SendEmail");
 builder.Services.Configure<SendEmail>(sendmail);
 builder.Services.AddSingleton<ISendEmail, SendEmailServices>();
-
+builder.Services.AddHttpClient();
+builder.Services.AddMemoryCache();
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromMinutes(100);
@@ -70,6 +71,12 @@ app.UseEndpoints(endpoints =>
       pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
     );
 });
+
+    // Các cấu hình khác...
+
+
+
+
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
