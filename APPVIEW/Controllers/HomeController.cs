@@ -688,10 +688,13 @@ namespace APPVIEW.Controllers
 
                 var img = getapiImg.GetApi("Image");
                 var filterProductsWithImages = getapi.GetApi("ProductDetails")
-                    .Join(img, pd => pd.Id, pi => pi.IdProductdetail, (pd, pi) => new { ProductDetail = pd, Image = pi })
+                    .Join(img, pd => pd.Id, pi => pi.IdProductdetail, (pd, pi) => new { ProductDetail = pd, Image = pi})
                     .ToList();
-
-                Console.WriteLine("Original Products Count: " + filterProductsWithImages.Count);
+                //var filterProductsWithImages = getapi.GetApi("ProductDetails")
+                //   .Join(img, pd => pd.Id, pi => pi.IdProductdetail, (pd, pi) => new { ProductDetail = pd, Image = pi })
+                //   .Select(cs => new { cs.ProductDetail.Id, cs.Image.Name, cs.ProductDetail.Id_Product, cs.ProductDetail.Price, cs.ProductDetail.Id_Color, cs.ProductDetail.Id_Size, nap = cs.ProductDetail.Name })
+                //   .ToList();
+                //Console.WriteLine("Original Products Count: " + filterProductsWithImages.Count);
 
                 // Áp dụng bộ lọc
                 if (filter.Colors != null && filter.Colors.Count > 0 && !filter.Colors.Contains("all"))
