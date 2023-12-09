@@ -411,25 +411,7 @@ namespace APPVIEW.Controllers
                 bill.TotalMoney += bill.ShipFee;
                 await bills.UpdateObj(bill, "Bill");
             }
-            var products = SessionService.GetObjFromSession(HttpContext.Session, "Cart");
-
-
-            foreach (var item in products)
-            {
-                var productcartdetails = getapiCD.GetApi("CartDetails").FirstOrDefault(c => c.ProductDetail_ID == item.Id);
-
-                var p = products.Find(c => c.Id == item.Id);
-
-
-
-                if (productcartdetails != null)
-                {
-                    await getapiCD.DeleteObj(productcartdetails.id, "CartDetails");
-
-                }
-            }
-            products.Clear();
-            SessionService.SetObjToJson(HttpContext.Session, "Cart", products);
+           
 
 
             if (pay == "Online")
@@ -439,7 +421,25 @@ namespace APPVIEW.Controllers
             }
             else
             {
+                var products = SessionService.GetObjFromSession(HttpContext.Session, "Cart");
 
+
+                foreach (var item in products)
+                {
+                    var productcartdetails = getapiCD.GetApi("CartDetails").FirstOrDefault(c => c.ProductDetail_ID == item.Id);
+
+                    var p = products.Find(c => c.Id == item.Id);
+
+
+
+                    if (productcartdetails != null)
+                    {
+                        await getapiCD.DeleteObj(productcartdetails.id, "CartDetails");
+
+                    }
+                }
+                products.Clear();
+                SessionService.SetObjToJson(HttpContext.Session, "Cart", products);
                 return RedirectToAction("Thongtin");
             }
 
@@ -579,9 +579,16 @@ namespace APPVIEW.Controllers
             var userBills = bills.GetApi("Bill").Where(c => c.AccountId == account.Id && c.Status != 4 && c.Status != 5).OrderByDescending(d => d.CreateDate).ToList();
             ViewBag.viewbill = userBills;
 
-            if (account.Id == Guid.Empty)
+            if (User.Identity.IsAuthenticated)
             {
-                return BadRequest("Bạn chưa đăng nhập");
+
+                var Uid = User.Claims.FirstOrDefault(c => c.Type == "Id").Value;
+                var acc = getapiAc.GetApi("Account").FirstOrDefault(c => c.Id.ToString() == Uid);
+                SessionService.SetObjToJson(HttpContext.Session, "Account", acc);
+            }
+            else
+            {
+                return Redirect("~/Account/login");
             }
             var billss = bills.GetApi("Bill").Where(c=>c.Type == "Online - Chưa Thanh Toán ").ToList();
             foreach (var item in billss)
@@ -1373,7 +1380,7 @@ namespace APPVIEW.Controllers
             if (Request.QueryString.Value != null)
             {
 
-                string hashSecret = "WRKKYLZIEYLLPPFRNNQXVAKXHKGRIEEA"; //Chuỗi bí mật
+                string hashSecret = "UGHKKYGUTTLWWTQOJBECDFAMDHZDBLWW"; //Chuỗi bí mật
                 var vnpayData = Request.Query;
                 PayLib pay = new PayLib();
 
@@ -1431,6 +1438,25 @@ namespace APPVIEW.Controllers
                             Bill.Type = "Online - Đã Thanh Toán";
                             await bills.UpdateObj(Bill, "Bill");
                         }
+                        var products = SessionService.GetObjFromSession(HttpContext.Session, "Cart");
+
+
+                        foreach (var item in products)
+                        {
+                            var productcartdetails = getapiCD.GetApi("CartDetails").FirstOrDefault(c => c.ProductDetail_ID == item.Id);
+
+                            var p = products.Find(c => c.Id == item.Id);
+
+
+
+                            if (productcartdetails != null)
+                            {
+                                await getapiCD.DeleteObj(productcartdetails.id, "CartDetails");
+
+                            }
+                        }
+                        products.Clear();
+                        SessionService.SetObjToJson(HttpContext.Session, "Cart", products);
 
                     }
                     else
