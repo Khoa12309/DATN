@@ -1,4 +1,5 @@
-﻿@model APPDATA.Models.Address
+﻿@using System.Globalization;
+@model APPDATA.Models.Address
 @{
     ViewData["Title"] = "Checkout";
     Layout = "~/Views/Shared/_LayoutWeb.cshtml";
@@ -118,7 +119,9 @@
                             @foreach (var item in ViewBag.Product)
                             {
                                 var tt = item.Quantity * item.Price;
-                                <li><a href="#">@item.Name<span class="middle">x @item.Quantity</span> <span class="last">@tt VND</span></a></li>
+
+                                <li><a href="#">@item.Name<span class="middle">x @item.Quantity</span> <span class="last">$@tt.ToString("C0", new CultureInfo("vi-VN"))</span></a></li>
+
                             }
                         </ul>
                      
