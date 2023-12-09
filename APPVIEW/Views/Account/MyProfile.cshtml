@@ -8,9 +8,30 @@
     string Id_userValue = IdUser?.Value;
 
 }
+<style>
 
+    .nice-select form-select open{
+        max-height: 210px; /* Set the max height based on the height of 5 options */
+        overflow-y: auto; /* Add a scrollbar if needed */
+    }
+</style>
+<section class="blog-banner-area" id="category">
+    <div class="container h-100">
+        <div class="blog-banner">
+            <div class="text-center">
+                <h1>My Profile</h1>
+                <nav aria-label="breadcrumb" class="banner-breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="#">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">My Profile</li>
+                    </ol>
+                </nav>
+            </div>
+        </div>
+    </div>
+</section>
 <div class="container mt-5">
-    <h1 class="text-center mb-5">My Profile</h1>
+   
 
     <div class="row mt-3">
         <div class="col-md-4 border-right">
@@ -58,21 +79,22 @@
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-2">
-                            <label asp-for=Province class="labels">Province</label>
-                            <select class="country_select" id="countrySelect" asp-for="Province">
+                            <label asp-for="Province" class="labels">Province</label>
+                            <select class="form-select" size="5" aria-label="Size 5 select example" id="countrySelect" asp-for="Province">
                                 @foreach (var item in ViewBag.province)
                                 {
-                                    if (Model != null)
+                                    if (Model != null && item.ProvinceName == Model.Province)
                                     {
-                                        if (item.ProvinceName == Model.Province)
-                                        {
-                                            <option selected value="@item.ProvinceID">@item.ProvinceName</option>
-                                        }
+                                        <option selected value="@item.ProvinceID">@item.ProvinceName</option>
                                     }
-
-                                    <option value="@item.ProvinceID">@item.ProvinceName</option>
+                                    else
+                                    {
+                                        <option value="@item.ProvinceID">@item.ProvinceName</option>
+                                    }
                                 }
                             </select>
+
+
                         </div> <div class="col-md-4">
                             <label asp-for=District class="labels">District</label>
                             @*   <input asp-for=District type="text" class="form-control" placeholder="Enter your District" value="@Model.District">*@
@@ -269,6 +291,7 @@
 
 
 </script>
+
 
 
 
