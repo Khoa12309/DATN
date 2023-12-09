@@ -12,7 +12,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace APPDATA.Migrations
 {
     [DbContext(typeof(ShoppingDB))]
-    [Migration("20231208140905_AddDb1")]
+    [Migration("20231209094708_AddDb1")]
     partial class AddDb1
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -753,9 +753,8 @@ namespace APPDATA.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ReduceForm")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");

@@ -25,6 +25,8 @@
                         <th>STT</th>
                         <th>Name</th>
                         <th>Code</th>
+                        <th>DiscountAmount</th>
+                        <th>Quantity</th>
                         <th>Status</th>
                         <th>Value</th>
                         <th>Create date</th>
@@ -43,12 +45,14 @@
                                 <td>@(stt += 1)</td>
                                 <td>@Html.DisplayFor(modelItem => item.Name)</td>
                                 <td>@Html.DisplayFor(modelItem => item.Code)</td>
+                                <td>@Html.DisplayFor(modelItem => item.DiscountAmount)</td>
+                                <td>@Html.DisplayFor(modelItem => item.Quantity)</td>
                                 <td>
                                     <span class="badge @(item.Status == 1 ? "badge rounded-pill bg-label-success" : "badge rounded-pill bg-label-danger")">
                                         @(item.Status == 1 ? "Using" : "Not use")
                                     </span>
                                 </td>
-                                <td>@Html.DisplayFor(modelItem => item.Value)</td>
+                                <td>@Html.DisplayFor(modelItem => item.Value)%</td>
                                 <td>
                                     @{
                                         DateTime createDate = item.Create_date;
