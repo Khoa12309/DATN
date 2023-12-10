@@ -1,6 +1,18 @@
-﻿
+
+﻿@using System.Globalization;
+
+
+﻿@{
+    var p = new List<Guid>();
+}
+
 @foreach (var product in ViewBag.Products ?? Enumerable.Empty<APPDATA.Models.ProductDetail>())
 {
+    if (p.Any(c => c == product.ProductDetail.Id_Product))
+    {
+        continue;
+    }
+    p.Add(product.ProductDetail.Id_Product);
     <div class="col-md-6 col-lg-4">
         <div class="card text-center card-product">
             <div class="card-product__img">
@@ -16,7 +28,7 @@
             </div>
             <div class="card-body">
                 <h4 class="card-product__title"><a href="#">@product.ProductDetail.Name</a></h4>
-                <p class="card-product__price">$@product.ProductDetail.Price</p>
+                <p class="card-product__price">@product.ProductDetail.Price.ToString("C0", new CultureInfo("vi-VN"))</p>
             </div>
         </div>
     </div>

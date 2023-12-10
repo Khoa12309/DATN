@@ -13,7 +13,7 @@ namespace APPDATA.Models
         public int Value { get; set; }
         public string Name { get; set; }
         public string Code { get; set; }
-        public string ReduceForm { get; set; }
+        public int Quantity { get; set; }
         public int Status { get; set; }
         public double DiscountAmount { get; set; }
         public DateTime Create_date { get; set; }

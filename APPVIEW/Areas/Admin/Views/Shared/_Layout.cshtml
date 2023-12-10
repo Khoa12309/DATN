@@ -1,7 +1,8 @@
 @{
     var Name = ((System.Security.Claims.ClaimsIdentity)User.Identity).FindFirst("Name");
     string NameValue = Name?.Value;
-
+    var IdUser = ((System.Security.Claims.ClaimsIdentity)User.Identity).FindFirst("Id");
+    string Id_userValue = IdUser?.Value;
     var AvatarUser = ((System.Security.Claims.ClaimsIdentity)User.Identity).FindFirst("Avatar");
     string AvatarUserValue = AvatarUser?.Value;
     if (AvatarUserValue == null)
@@ -146,10 +147,12 @@
                                <!-- Dashboards -->
                      
                            
+
                          
                              
                            
                       <li class="menu-item active open">
+
                             <a href="javascript:void(0);" class="menu-link menu-toggle">
                                 <i class="menu-icon tf-icons mdi mdi-home-outline"></i>
                                 <div data-i18n="Dashboards">Home</div>
@@ -323,6 +326,7 @@
                         }
                         @if (IsStaff)
                         {
+
                             <!-- Layouts -->
 
                         <li class="menu-item active open">
@@ -341,12 +345,15 @@
                                     <a href="~/QLBills/BanHangOff" class="menu-link">
                                         <span class="mdi mdi-chart-line"></span>
                                         <div data-i18n="Analytics">Bán Hàng</div>
+
                                     </a>
                                 </li>
                             </ul>
                         </li>
 
+
                         <li class="menu-item active open">
+
                                 <a href="javascript:void(0);" class="menu-link menu-toggle">
                                     <i class="menu-icon tf-icons mdi mdi-receipt-text"></i>
                                     <div data-i18n="Dashboards">Bill management</div>
@@ -421,68 +428,6 @@
                                     </li>
                                 </ul>
                             </li>
-                            <li class="menu-item active ">
-                                <a href="javascript:void(0);" class="menu-link menu-toggle">
-                                    <i class="menu-icon tf-icons mdi mdi-store"></i>
-                                    <div data-i18n="Dashboards">Store Management </div>
-                                </a>
-                                <ul class="menu-sub">
-                                    <li class="menu-item ">
-                                        <a href="~/Product/getlist" class="menu-link">
-                                            <i class="menu-icon tf-icons mdi mdi-tshirt-crew"></i>
-                                            <div data-i18n="Layouts"> Product </div>
-                                        </a>
-                                    </li>
-                                    <li class="menu-item ">
-                                        <a href="~/ProductDetail/getlist" class="menu-link">
-                                            <i class="menu-icon tf-icons mdi mdi-tshirt-crew"></i>
-                                            <div data-i18n="Layouts"> Product Details </div>
-                                        </a>
-                                    </li>
-                                    <li class="menu-item">
-                                        <a href="~/Supplier/getlist" class="menu-link">
-                                            <i class="mdi mdi-alpha-b-box"></i>
-                                            <div data-i18n="Layouts"> Suppliers </div>
-                                        </a>
-                                    </li>
-                                    <li class="menu-item">
-                                        <a href="~/Category/getlist" class="menu-link">
-                                            <i class="mdi mdi-shape"></i>
-                                            <div data-i18n="Layouts"> Categorys </div>
-                                        </a>
-                                    </li>
-                                    <li class="menu-item">
-                                        <a href="~/Color/getlist" class="menu-link">
-                                            <i class="mdi mdi-invert-colors"></i>
-                                            <div data-i18n="Layouts"> Colors </div>
-                                        </a>
-                                    </li>
-                                    <li class="menu-item">
-                                        <a href="~/Size/getlist" class="menu-link">
-                                            <i class="mdi mdi-size-xxxl"></i>
-                                            <div data-i18n="Layouts"> Sizes </div>
-                                        </a>
-                                    </li>
-                                    <li class="menu-item">
-                                        <a href="~/Material/getlist" class="menu-link">
-                                            <i class="mdi mdi-material-ui"></i>
-                                            <div data-i18n="Layouts"> Materials </div>
-                                        </a>
-                                    </li>
-                                    <li class="menu-item">
-                                        <a href="~/Image/getlist" class="menu-link">
-                                            <i class="mdi mdi-image"></i>
-                                            <div data-i18n="Layouts"> Images </div>
-                                        </a>
-                                    </li>
-                                    <li class="menu-item">
-                                        <a href="~/Voucher/getlist" class="menu-link">
-                                            <i class="mdi mdi-ticket-percent-outline"></i>
-                                            <div data-i18n="Layouts"> Vouchers </div>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </li>
                         }
                      
                     </ul>
@@ -551,7 +496,7 @@
                                         <div class="dropdown-divider my-1"></div>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item" href="#">
+                                        <a class="dropdown-item" href="~/Account/MyProfile?id_User= @Id_userValue">
                                             <i class="mdi mdi-account-outline me-1 mdi-20px"></i>
                                             <span class="align-middle">My Profile</span>
                                         </a>
@@ -612,6 +557,7 @@
 
     <!-- Place this tag in your head or just before your close body tag. -->
     <script async defer src="https://buttons.github.io/buttons.js"></script>
-
+    @await Component.InvokeAsync("Notyf")
+    @RenderSection("Scripts", required: false)
 </body>
 </html>

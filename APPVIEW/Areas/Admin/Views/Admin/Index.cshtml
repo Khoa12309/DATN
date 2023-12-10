@@ -88,6 +88,21 @@
                 </div>
             </div>
         </div>
+        <div class="col-xl-12 col-md-12">
+            <div class="card">
+                <div class="card-header">
+                    <div class="d-flex justify-content-between">
+                        <h5 class="mb-1">Trending Products</h5>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div id="container">
+                        @* <canvas id="trendingProductsChart"></canvas> *@
+                        <canvas id="weeklyChartview"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
         <!--/ Transactions -->
         <!-- Weekly Overview Chart -->
         <div class="col-xl-6 col-md-6">
@@ -99,17 +114,14 @@
                 </div>
                 <div class="card-body">
                     <div id="container">
-                        <canvas id="weeklyChartview"></canvas>
+                        <canvas id="weeklyChart"></canvas>
                     </div>
-                    <div class="mt-1 mt-md-3">
-                        <div class="d-flex align-items-center gap-3">
-                            <h3 class="mb-0">45%</h3>
-                            <p class="mb-0">Your sales performance is 45% 😎 better compared to last month</p>
-                        </div>
-                    </div>
+
                 </div>
             </div>
         </div>
+
+
         <!--/ Weekly Overview Chart -->
         <!-- Total Earnings -->
 
@@ -132,17 +144,12 @@
                     <div class="container">
                         <canvas id="revenueChart"></canvas>
                     </div>  
-                    <div class="mt-1 mt-md-3">
-                        <div class="d-flex align-items-center gap-3">
-                            <h3 class="mb-0">45%</h3>
-                            <p class="mb-0">Your sales performance is 45% 😎 better compared to last month</p>
-                        </div>
-                    </div>
                 </div>
             </div>
         </div>
         <!-- Sales by Countries -->
-        <div class="col-xl-4 col-md-6">
+        <!-- Thêm ID để dễ dàng truy cập thông qua JavaScript -->
+        <div class="col-xl-6 col-md-6">
             <div class="card">
                 <div class="card-header d-flex align-items-center justify-content-between">
                     <h5 class="card-title m-0 me-2">Top Trending</h5>
@@ -156,19 +163,18 @@
                             <i class="mdi mdi-dots-vertical mdi-24px"></i>
                         </button>
                         <div class="dropdown-menu dropdown-menu-end" aria-labelledby="saleStatus">
-                            <a class="dropdown-item" href="javascript:void(0);">Last 28 Days</a>
-                            <a class="dropdown-item" href="javascript:void(0);">Last Month</a>
-                            <a class="dropdown-item" href="javascript:void(0);">Last Year</a>
+                            <a class="dropdown-item" href="javascript:void(0);" onclick="sortBy('quantity')">By quantity</a>
+                            <a class="dropdown-item" href="javascript:void(0);" onclick="sortBy('earnings')">By money</a>
                         </div>
                     </div>
                 </div>
                 <div class="card-body">
                     <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
-
                         <!-- HTML cho hiển thị dữ liệu -->
                         <table class="table" id="productTable">
                             <thead>
                                 <tr>
+                                    <th>Image Product</th>
                                     <th>Product Name</th>
                                     <th>Quantity Sold</th>
                                     <th>Total Earnings</th>
@@ -182,7 +188,7 @@
         </div>
         <!--/ Sales by Countries -->
         <!-- Deposit / Withdraw -->
-        <div class="col-xl-8">
+        <div class="col-xl-8" style="visibility:hidden">
             <div class="card h-100">
                 <div class="card-body row g-2">
                     <div class="col-12 col-md-6 card-separator pe-0 pe-md-3">
@@ -378,7 +384,7 @@
         <script>
             let yearlyChart;
             var weeklyChart;
-
+            var trendingProductsChart;
 
             $(document).ready(function () {
                 // Khởi tạo biểu đồ ban đầu
@@ -398,7 +404,7 @@
                 // Gọi hàm vẽ biểu đồ khi trang web được tải
                 DrawChartForYear(currentYear);
                 DrawWeeklyOverviewChart();
-
+                DrawTrendingProducts();
                 // Gọi hàm vẽ biểu đồ khi có sự kiện thay đổi năm
                 $('#select').on('change', function () {
                     var selectedYear = $(this).val();
@@ -447,7 +453,6 @@
 
                 // Hàm gọi API và vẽ biểu đồ cho năm được chọn
                 function DrawChartForYear(selectedYear) {
-                    // test case = 2023
                     // Gửi yêu cầu Ajax để lấy dữ liệu
                     $.ajax({
                         url: 'https://localhost:7042/api/Chart/' + selectedYear,
@@ -473,7 +478,7 @@
                     // var currentDay = new Date('12/7/2023');
                     var currentDay = new Date();
 
-                    const ctx = document.getElementById('weeklyChartview').getContext('2d');
+                    const ctx = document.getElementById('weeklyChart').getContext('2d');
                     if (weeklyChart) {
                         weeklyChart.destroy();
                     }
@@ -496,7 +501,7 @@
                     }
 
                     var z = labels[0].slice(0, 2);
-                    console.log('Begin Date:' + z);
+                    // console.log('Begin Date:' + z);
                     var dayIndex = 0;
                     var biengancuaIndex = 0;
                     // Ánh xạ dữ liệu từ API vào mảng của 7 ngày gần nhất
@@ -527,27 +532,25 @@
                                 daydate = day.slice(3, 4); // Lấy ngày từ vị trí 3 trong chuỗi
                             }
 
-                            console.log("Ngày là: " + daydate);
+                            // console.log("Ngày là: " + daydate);
 
-                            dayIndex = daydate - z;               
+                            dayIndex = daydate - z;
                             if (dayIndex < 0) {
                                 dayData[biengancuaIndex] = value;
                                 biengancuaIndex += 1;
-                                console.log("Bien: " + biengancuaIndex);
+                                // console.log("Bien: " + biengancuaIndex);
                             }
 
                             else {
                                 dayData[dayIndex] = value;
                                 biengancuaIndex = dayIndex + 1;
-                                console.log("Bien: " + dayIndex);
+                                // console.log("Bien: " + dayIndex);
                             }
-                            //console.log("index: " + index);
                         }
-                        
-                    );
 
+                    );
                     weeklyChart = new Chart(ctx, {
-                        type: 'bar',
+                        type: 'line',
                         data: {
                             labels: labels,
                             datasets: [{
@@ -572,7 +575,7 @@
                         method: 'GET',
                         dataType: 'json',
                         success: function (data) {
-                            console.log(data);
+                            // console.log(data);
                             if (data && data.labels && data.values && data.label) {
                                 DrawWeeklyChart(data);
 
@@ -585,45 +588,145 @@
                         }
                     });
                 }
-                // Danh sách sản phẩm
-                // Gọi API khi trang được tải
-                $.ajax({
-                    url: 'https://localhost:7042/api/Chart/SoldProductsByMonth',
-                    method: 'GET',
-                    success: function (data) {
-                        // Kiểm tra dữ liệu trong console log
-                        console.log(data);
 
-                        // Xử lý dữ liệu và cập nhật HTML
-                        var tableBody = $('#productTable tbody');
-                        tableBody.empty();
+                //Top 5 product
+                function DrawTrendingProductsChart(data) {
+                    var currentDay = new Date();
 
-                        // Kiểm tra cấu trúc dữ liệu để xác định tên thuộc tính
-                        var productNameKey = 'ProductName';
-                        var quantitySoldKey = 'QuantitySold';
-                        var totalEarningsKey = 'TotalEarnings';
+                    const ctx = document.getElementById('weeklyChartview').getContext('2d');
 
-                        // Sử dụng $.each để lặp qua mảng dữ liệu
-                        $.each(data.labels, function (index, productName) {
-                            var quantitySold = data.quantities[index];
-                            var totalEarnings = data.earnings[index];
-
-                            // Hiển thị thông tin sản phẩm trong bảng
-                            var row = '<tr>' +
-                                '<td>' + productName + '</td>' +
-                                '<td>' + quantitySold + '</td>' +
-                                '<td>' + totalEarnings + '</td>' +
-                                '</tr>';
-
-                            tableBody.append(row);
-                        });
-                    },
-                    error: function (error) {
-                        // Xử lý lỗi nếu có
-                        console.error('Error fetching data:', error);
+                    if (trendingProductsChart) {
+                        trendingProductsChart.destroy();
                     }
-                });
 
+                    // Mảng chứa dữ liệu của 15 ngày gần nhất cho mỗi sản phẩm
+                    var datasets = [];
+                    var dayData = new Array(15).fill(0);
+
+                    // Mảng chứa nhãn của 15 ngày gần nhất với định dạng ngày/tháng
+                    var labels = [];
+                    for (var i = 14; i >= 0; i--) {
+                        var date = new Date(currentDay);
+                        date.setDate(currentDay.getDate() - i);
+
+                        var day = date.getDate();
+                        var month = date.getMonth() + 1;
+
+                        // Định dạng ngày và tháng thành "dd/mm" và thêm vào mảng labels
+                        var formattedDate = `${day < 10 ? '0' : ''}${day}/${month < 10 ? '0' : ''}${month}`;
+                        labels.push(formattedDate);
+                    }
+
+                    // Ánh xạ dữ liệu từ API vào mảng của 15 ngày gần nhất cho mỗi sản phẩm
+                    data.datasets.forEach(function (dataset) {
+                        var productData = new Array(15).fill(0);
+
+                        dataset.data.forEach(function (value, index) {
+                            productData[index] = value;
+                        });
+
+                        datasets.push({
+                            label: dataset.label,
+                            data: productData,
+                            borderWidth: 1,
+                            borderColor: getRandomColor(), // Màu sắc ngẫu nhiên cho mỗi đường biểu đồ
+                        });
+                    });
+
+                    trendingProductsChart = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: labels,
+                            datasets: datasets,
+                        },
+                        options: {
+                            scales: {
+                                y: {
+                                    beginAtZero: true
+                                }
+                            }
+                        }
+                    });
+                }
+
+                // Hàm để tạo màu ngẫu nhiên
+                function getRandomColor() {
+                    var letters = '0123456789ABCDEF';
+                    var color = '#';
+                    for (var i = 0; i < 6; i++) {
+                        color += letters[Math.floor(Math.random() * 16)];
+                    }
+                    return color;
+                }
+
+                function DrawTrendingProducts() {
+                    $.ajax({
+                        url: 'https://localhost:7042/api/Chart/TopProduct',
+                        method: 'GET',
+                        dataType: 'json',
+                        success: function (data) {
+                            console.log(data);
+                            if (data && data.labels && data.datasets) {
+                                DrawTrendingProductsChart(data);
+                            } else {
+                                console.error('Invalid data received from API');
+                            }
+                        },
+                        error: function (error) {
+                            console.error('Error fetching data:', error);
+                        }
+                    });
+                }
+
+
+                // Danh sách sản phẩm
+                $(document).ready(
+                    sortBy('quantity'));
+            
+                function sortBy(option) {
+                    // Gọi API với tùy chọn sắp xếp tương ứng
+                    var apiUrl = 'https://localhost:7042/api/Chart/SoldProductsByMonth?sortBy=' + option;
+
+                    $.ajax({
+                        url: apiUrl,
+                        method: 'GET',
+                        success: function (data) {
+                            // Kiểm tra dữ liệu trong console log
+                            // console.log(data);
+
+                            // Xử lý dữ liệu và cập nhật HTML
+                            var tableBody = $('#productTable tbody');
+                            tableBody.empty();
+
+                            // Kiểm tra cấu trúc dữ liệu để xác định tên thuộc tính
+                            var productNameKey = 'ProductName';
+                            var quantitySoldKey = 'QuantitySold';
+                            var totalEarningsKey = 'TotalEarnings';
+                            var imageProductKey = 'ProductImage';  // Điều chỉnh tên thuộc tính hình ảnh
+
+                            // Sử dụng $.each để lặp qua mảng dữ liệu
+                            $.each(data.labels, function (index, productName) {
+                                var quantitySold = data.quantities[index];
+                                var totalEarnings = data.earnings[index];
+                                var imageProduct = data.images[index];  // Điều chỉnh tên thuộc tính hình ảnh
+
+                                // Hiển thị thông tin sản phẩm trong bảng
+                                var row = '<tr>' +
+                                    '<td><img src="/images/' + imageProduct.trim() + '" alt="Product Image" width="90px" height="90px"></td>' +
+                                    '<td>' + productName + '</td>' +
+                                    '<td>' + quantitySold + '</td>' +
+                                    '<td>' + totalEarnings + '</td>' +
+                                    '</tr>';
+
+                                tableBody.append(row);
+                            });
+                        },
+                        error: function (error) {
+                            // Xử lý lỗi nếu có
+                            console.error('Error fetching data:', error);
+                        }
+                    });
+                }
             });
         </script>
     </div>

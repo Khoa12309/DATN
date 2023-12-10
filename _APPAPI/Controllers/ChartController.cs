@@ -4,6 +4,7 @@ using MailKit.Search;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Org.BouncyCastle.Asn1.Ocsp;
 
 namespace _APPAPI.Controllers
 {
@@ -102,41 +103,153 @@ namespace _APPAPI.Controllers
         }
 
         [HttpGet("SoldProductsByMonth")]
-        public IActionResult GetSoldProductsByMonth()
+        public IActionResult GetSoldProductsByMonth(string sortBy)
         {
             try
             {
                 DateTime currentDate = DateTime.Now;
                 int currentYear = currentDate.Year;
 
-                var soldProducts = (from products in _context.Products
-                                   join details in _context.ProductDetails on products.Id equals details.Id_Product
-                                   join billdetails in _context.BillDetails on details.Id equals billdetails.ProductDetailID
-                                   join bills in _context.Bills on billdetails.BIllId equals bills.id
-                                   where bills.Status == 4 && bills.PayDate.HasValue && bills.PayDate.Value >= currentDate.AddDays(-30)
-                                    group new { products, details, billdetails, bills } by new { products.Name } into grouped
-                                   select new
-                                   {
-                                       ProductName = grouped.Key.Name,
-                                       QuantitySold = grouped.Sum(x => x.billdetails.Amount),
-                                       TotalEarnings = grouped.Sum(x => x.billdetails.Price)
-                                   }).OrderByDescending(x => x.QuantitySold).Take(5).ToList();
-                // Chuyển đổi dữ liệu thành định dạng phù hợp cho JSON
-                var responseData = new
+                var soldProductsQuery = (from products in _context.Products
+                                         join details in _context.ProductDetails on products.Id equals details.Id_Product
+                                         join billdetails in _context.BillDetails on details.Id equals billdetails.ProductDetailID
+                                         join bills in _context.Bills on billdetails.BIllId equals bills.id
+                                         join images in _context.Images on details.Id equals images.IdProductdetail
+                                         where bills.Status == 4 && bills.PayDate.HasValue && bills.PayDate.Value >= currentDate.AddDays(-30)
+                                         group new { products, details, billdetails, bills, images } by new { products.Name } into grouped
+                                         select new
+                                         {
+                                             ProductName = grouped.Key.Name,
+                                             QuantitySold = grouped.Sum(x => x.billdetails.Amount),
+                                             TotalEarnings = grouped.Sum(x => x.billdetails.Price),
+                                             ProductImage = grouped.FirstOrDefault().images.Name,
+                                         });
+
+                // Sắp xếp theo số lượng bán hoặc giá tiền
+                switch (sortBy)
                 {
-                    labels = soldProducts.Select(item => item.ProductName),
-                    quantities = soldProducts.Select(item => item.QuantitySold),
-                    earnings = soldProducts.Select(item => item.TotalEarnings),
+                    case "quantity":
+                        soldProductsQuery = soldProductsQuery.OrderByDescending(x => x.QuantitySold);
+                        break;
+                    case "earnings":
+                        soldProductsQuery = soldProductsQuery.OrderByDescending(x => x.TotalEarnings);
+                        break;
+                    default:
+                        // Mặc định sắp xếp theo số lượng bán nếu không có hoặc không hợp lệ sortBy
+                        soldProductsQuery = soldProductsQuery.OrderByDescending(x => x.QuantitySold);
+                        soldProductsQuery = soldProductsQuery.OrderByDescending(x => x.TotalEarnings);
+                        break;
+                }
+
+                var soldProducts = soldProductsQuery.Take(5).ToList();
+
+                var responseData = soldProducts.Select(item => new
+                {
+                    ProductName = item.ProductName,
+                    QuantitySold = item.QuantitySold,
+                    TotalEarnings = item.TotalEarnings,
+                    ProductImage = item.ProductImage
+                }).ToList();
+
+                var response = new
+                {
+                    labels = responseData.Select(item => item.ProductName),
+                    quantities = responseData.Select(item => item.QuantitySold),
+                    earnings = responseData.Select(item => item.TotalEarnings),
+                    images = responseData.Select(item => item.ProductImage),
                     label = "Sản Phẩm Đã Bán Tháng Này"
                 };
 
-                return Ok(responseData);
+                return Ok(response);
             }
             catch (Exception ex)
             {
                 return StatusCode(500, $"Internal server error: {ex.Message}");
             }
         }
+
+
+        [HttpGet("TopProduct")]
+        public IActionResult TopProduct()
+        {
+            try
+            {
+                DateTime currentDate = DateTime.Now;
+                DateTime startDate = currentDate.AddDays(-15);
+
+                // Tạo danh sách ngày mong muốn
+                List<DateTime> dateRange = Enumerable.Range(0, 15)
+                                                     .Select(i => startDate.AddDays(i))
+                                                     .ToList();
+
+                var soldProducts = (from products in _context.Products
+                                    join details in _context.ProductDetails on products.Id equals details.Id_Product
+                                    join billdetails in _context.BillDetails on details.Id equals billdetails.ProductDetailID
+                                    join bills in _context.Bills on billdetails.BIllId equals bills.id
+                                    // Sử dụng danh sách ngày mong muốn
+                                    where bills.Status == 4 && bills.PayDate.HasValue && dateRange.Contains(bills.PayDate.Value.Date)
+                                    group new { products, details, billdetails, bills } by new { products.Id, products.Name, bills.PayDate.Value.Date } into grouped
+                                    select new
+                                    {
+                                        ProductName = grouped.Key.Name,
+                                        Date = grouped.Key.Date,
+                                        QuantitySold = grouped.Sum(x => x.billdetails.Amount),
+                                    }).OrderBy(x => x.Date).ThenByDescending(x => x.QuantitySold).ToList();
+
+                var responseData = soldProducts.GroupBy(item => item.ProductName).Select(group => new
+                {
+                    ProductName = group.Key,
+                    Dates = dateRange,
+                    Quantities = dateRange.Select(date => group.FirstOrDefault(item => item.Date == date)?.QuantitySold ?? 0),
+                }).ToList();
+
+                var response = new
+                {
+                    labels = dateRange,
+                    datasets = responseData.Select(item => new
+                    {
+                        label = item.ProductName,
+                        data = item.Quantities,
+                    }).Take(5).ToList(),
+                };
+
+                return new JsonResult(response);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Internal server error: {ex.Message}");
+            }
+        }
+
+
+
+        //[HttpGet("getDoanhThu7dayOfAProduct")]
+        //public IActionResult getDoanhThu7DaysOfAProduct(string productID)
+        //{
+        //  //  try
+        //  //  {
+        //     //   var response = new
+        //    //    {
+        //    //       labels = responseData.Select(item => item.ProductName),
+        //     //       quantities = responseData.Select(item => item.QuantitySold),
+        //     //       earnings = responseData.Select(item => item.TotalEarnings),
+        //     //       label = "Sản Phẩm Đã Bán Tháng Này"
+        //   //     };
+        //        // viet tiep
+        //        // lấy doanh thu 7 ngày gần nhất của 1 sản phẩm
+        //        // productID là id của sản phẩm hoặc là name (tuỳ m)
+        //        // trả về 1 datasets như test bên viewu
+        //        // cần thì viết thêm 1 hàm trả về mảng gồm 5 sản phẩm trong top 5 sau đấy gọi bằng chính hàm này.
+        //       // return Ok(response);
+
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, $"Internal server error: {ex.Message}");
+        //    }
+        //}
+
+
 
 
     }

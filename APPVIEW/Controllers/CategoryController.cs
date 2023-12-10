@@ -1,17 +1,20 @@
 ﻿using APPDATA.Models;
 using APPVIEW.Services;
+using AspNetCoreHero.ToastNotification.Abstractions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Data;
 
 namespace APPVIEW.Controllers
 {
-   
+
     public class CategoryController : Controller
     {
         private Getapi<Category> getapi;
-        public CategoryController()
+        public INotyfService _notyf;
+        public CategoryController(INotyfService notyf)
         {
+            _notyf = notyf;
             getapi = new Getapi<Category>();
         }
 
@@ -34,12 +37,22 @@ namespace APPVIEW.Controllers
         {
             try
             {
-                obj.Create_date = DateTime.Now;               
-              await  getapi.CreateObj(obj, "Category");
-                return RedirectToAction("GetList");
+                obj.Create_date = DateTime.Now;
+                var item = getapi.CreateObj(obj, "Category").Result;
+                if (item != null)
+                {
+                    _notyf.Success("Thêm thành công!");
+                    return RedirectToAction("GetList");
+                }
+                else
+                {
+                    _notyf.Warning("Không được để trống!");
+                    return View();
+                }
             }
             catch
             {
+                _notyf.Error("Lỗi!");
                 return View();
             }
         }
@@ -58,8 +71,17 @@ namespace APPVIEW.Controllers
         {
             try
             {
-              await  getapi.UpdateObj(obj, "Category");
-                return RedirectToAction("GetList");
+                var item = getapi.UpdateObj(obj, "Category").Result;
+                if (item != null)
+                {
+                    _notyf.Success("Edit thành công!");
+                    return RedirectToAction("GetList");
+                }
+                else
+                {
+                    _notyf.Warning("Không được để trống!");
+                    return View();
+                }
             }
             catch
             {
@@ -70,7 +92,7 @@ namespace APPVIEW.Controllers
 
         public async Task<IActionResult> Delete(Guid id)
         {
-          await  getapi.DeleteObj(id, "Category");
+            await getapi.DeleteObj(id, "Category");
             return RedirectToAction("GetList");
 
         }
