@@ -11,73 +11,73 @@
 
 @* <div class="col-md-6 col-lg-4 col-xl-3">
     <div class="card text-center card-product">
-        <div class="card-product__img">
-            <img class="card-img" src="~/contentwebb/img/product/product1.png" alt="">
-
-        </div>
-
-        <p style="float:left">Tên sản phẩm : @ViewBag.pro.Name </p>
-
-        <p style="float:left">Giá : @ViewBag.pro.Price</p>
-        <form id="datHangForm" asp-controller="Home" asp-action="DatHang" method="post">
-
-
-
-
-
-            <input type="hidden" name="productId" value="@ViewBag.id" />
-
-
-            <div class="mb-3">
-
-                <select name="size" class="form-select">
-                    <option value=""> Chọn Size</option>
-                    @foreach (var item in ViewBag.prd)
-                    {
-                        @foreach (var size in ViewBag.size)
-                        {
-                            if (item.Id_Size == size.Id)
-                            {
-                                <option value="@item.Id_Size"> @size.Name</option>
-                            }
-                        }
-                    }
-                </select>
-            </div>
-            <div class="mb-3" >
-                <select name="color"  class="form-select">
-                    <option value=""> Chọn Màu </option>
-                    @foreach (var item in ViewBag.prd)
-                    {
-                        @foreach (var color in ViewBag.color)
-                        {
-                            if (item.Id_Color == color.Id)
-                            {
-                                <option value="@item.Id_Color"> @color.Name</option>
-                            }
-                        }
-                    }
-                </select>
-            </div>
-
-            <div class="mb-3" style="margin-top:20px">
-
-                <input class="form-control" type="text" name="soluong" placeholder="Số lượng" style="margin-top: 20px">
-            </div>
-            <div class="mb-3">
-
-                <input class="form-control" type="text" name="sdt" placeholder="Số điện thoại">
-            </div>
-            <div class="mb-3">
-
-                <input class="form-control" type="text" name="diachi" placeholder="Địa chỉ">
-            </div>
-            <button type="submit" style="margin-top: 30px;margin-left:10px;float:left">Đặt hàng</button>
-        </form>
+    <div class="card-product__img">
+    <img class="card-img" src="~/contentwebb/img/product/product1.png" alt="">
 
     </div>
-</div>
- *@
+
+    <p style="float:left">Tên sản phẩm : @ViewBag.pro.Name </p>
+
+    <p style="float:left">Giá : @ViewBag.pro.Price</p>
+    <form id="datHangForm" asp-controller="Home" asp-action="DatHang" method="post">
+
+
+
+
+
+    <input type="hidden" name="productId" value="@ViewBag.id" />
+
+
+    <div class="mb-3">
+
+    <select name="size" class="form-select">
+    <option value=""> Chọn Size</option>
+    @foreach (var item in ViewBag.prd)
+    {
+    @foreach (var size in ViewBag.size)
+    {
+    if (item.Id_Size == size.Id)
+    {
+    <option value="@item.Id_Size"> @size.Name</option>
+    }
+    }
+    }
+    </select>
+    </div>
+    <div class="mb-3" >
+    <select name="color"  class="form-select">
+    <option value=""> Chọn Màu </option>
+    @foreach (var item in ViewBag.prd)
+    {
+    @foreach (var color in ViewBag.color)
+    {
+    if (item.Id_Color == color.Id)
+    {
+    <option value="@item.Id_Color"> @color.Name</option>
+    }
+    }
+    }
+    </select>
+    </div>
+
+    <div class="mb-3" style="margin-top:20px">
+
+    <input class="form-control" type="text" name="soluong" placeholder="Số lượng" style="margin-top: 20px">
+    </div>
+    <div class="mb-3">
+
+    <input class="form-control" type="text" name="sdt" placeholder="Số điện thoại">
+    </div>
+    <div class="mb-3">
+
+    <input class="form-control" type="text" name="diachi" placeholder="Địa chỉ">
+    </div>
+    <button type="submit" style="margin-top: 30px;margin-left:10px;float:left">Đặt hàng</button>
+    </form>
+
+    </div>
+    </div>
+*@
 
 
 
@@ -109,7 +109,7 @@
                 <div class="col-lg-8">
                     <h3>Đơn hàng</h3>
 
-                    <img id="myImage" src="~/images/@ViewBag.image.Name" style="width: 250px; height:auto;margin-top : 50px;margin-bottom:50px" alt="">
+                    <img id="myImage" src="~/images/@ViewBag.image?.Name" style="width: 250px; height:auto;margin-top : 50px;margin-bottom:50px" alt="">
                     <form class="row contact_form" action="~/home/dathang" method="post" novalidate="novalidate">
                         <input type="hidden" name="productId" value="@ViewBag.id" />
 
@@ -164,56 +164,60 @@
                             </div>
 
 
-                      
 
 
 
 
 
 
-                                <div class="col-md-12 form-group p_star">
-                                    <div class="row">
-                                        <div class="col-lg-4">
-                                            <select class="country_select" id="countrySelect" asp-for="@Model.Province">
-                                                @foreach (var item in ViewBag.province)
+
+                            <div class="col-md-12 form-group p_star">
+                                <div class="row">
+                                    <div class="col-lg-4">
+                                        <select class="country_select" id="countrySelect" asp-for="@Model.Province">
+                                            @foreach (var item in ViewBag.province)
+                                            {
+                                                if (Model != null)
                                                 {
-                                                    if (Model != null)
+                                                    if (item.ProvinceName == Model.Province)
                                                     {
-                                                        if (item.ProvinceName == Model.Province)
-                                                        {
-                                                            <option selected value="@item.ProvinceID">@item.ProvinceName</option>
-                                                        }
+                                                        <option selected value="@item.ProvinceID">@item.ProvinceName</option>
                                                     }
-
-                                                    <option value="@item.ProvinceID">@item.ProvinceName</option>
                                                 }
-                                            </select>
-                                            <input type="hidden" name="province2" value="" />
-                                        </div>
-                                        <div class="col-lg-4">
 
-                                            <input list="districtSelect" id="district" name="district" asp-for="@Model.District" placeholder="Chọn quận huyện">
-                                            <datalist id="districtSelect">
-                                            </datalist>
-                                        </div>
-                                        <div class="col-lg-4">
+                                                <option value="@item.ProvinceID">@item.ProvinceName</option>
+                                            }
+                                        </select>
+                                        <input type="hidden" name="province2" value="" />
+                                    </div>
+                                    <div class="col-lg-4">
 
-                                            <input list="wardSelect" id="ward" name="ward" placeholder="Chọn xã phường" asp-for="@Model.Ward">
-                                            <datalist id="wardSelect">
-                                            </datalist>
-                                        </div>
-                                        <div class="col-md-7 form-group">
-                                            <input type="text" style="margin-top:10px" class="form-control" name="diachict" asp-for="@Model.SpecificAddress" placeholder="Địa chỉ cụ thể">
-                                        </div>
+                                        <input list="districtSelect" id="district" name="district" asp-for="@Model.District" placeholder="Chọn quận huyện">
+                                        <datalist id="districtSelect">
+                                        </datalist>
+                                    </div>
+                                    <div class="col-lg-4">
+
+                                        <input list="wardSelect" id="ward" name="ward" placeholder="Chọn xã phường" asp-for="@Model.Ward">
+                                        <datalist id="wardSelect">
+                                        </datalist>
+                                    </div>
+                                    <div class="col-md-7 form-group">
+                                        <input type="text" style="margin-top:10px" class="form-control" name="diachict" asp-for="@Model.SpecificAddress" placeholder="Địa chỉ cụ thể">
+                                    </div>
                                     <div class="col-md-12 form-group">
                                         <div class="row">
                                             <div class="col-lg-3">
                                                 <button style="margin-bottom: 20px" type="button" id="submitOrder" class="button button-paypal">Xác nhận</button>
                                                 <div />
                                             </div>
-                                        </div>
-                                    </div>
 
+                                        </div>
+                                        <div class="text-center  form-group">
+                                            <a style="margin-bottom: 20px" class="button button-paypal" asp-action="ApplyViewBill">Apply Coupon</a>
+                                        </div>
+
+                                    </div>
                                 </div>
                                 <input name="pay" id="pay" hidden value="shipcod" />
 
@@ -236,18 +240,30 @@
                                 </div>
                                 <div class="col-md-12 form-group">
 
+                                    @if (ViewBag.Value != null)
+                                    {
+                                        <ul>
+                                            <li>
+                                                <a href="javascript:void(0);" onclick="confirmCancelVoucher()" style="color: red;">
+                                                    <i class='bx bxs-x-square' style="font-size: 12px"></i>
+                                                </a>
+                                                <h6 style="font-size: 14px">Thông tin giảm giá:</h6>
+                                                <p style="margin: 0px">Mã: <span>@ViewBag.VoucherCode</span> - Giảm: <span>@ViewBag.FirstValue%</span> - Tối đa: <span>@ViewBag.FirstDiscountAmount</span>VND</p>
+                                            </li>
+                                        </ul>
 
+                                    }
 
                                     <ul class="list list_2">
 
                                         <li><a href="#" style="text-decoration:none;color:black">Phí ship :  <span><input width="30px" style="height:30px;border:none" readonly id="feeship" name="ship" value="@ViewBag.fee"></span></a></li>
 
                                     </ul>
-                                   
 
-                                        <span>Tổng tiền :  <span><input width="30px" style="height:30px;border:none" readonly id="tongtien" name="tongtien" value=""></span></span>
 
-                               
+                                    <span>Tổng tiền :  <span><input width="30px" style="height:30px;border:none" readonly id="tongtien" name="tongtien" value=""></span></span>
+
+
                                 </div>
                                 <div class="text-center  form-group">
                                     <button type="submit" class="button button-paypal">Order Confirmation</button>
@@ -523,7 +539,7 @@
 
                                     var sluong = parseInt($("input[name='soluong']").val());
                                     var shipp = parseFloat($("input[name='ship']").val());
-                                    var tong = 0; 
+                                    var tong = 0;
                                     tong = idsanphamcthitiet.price * sluong + shipp;
                                     console.log(tong)
                                     // Cập nhật giá trị tổng tiền vào trường #tongtien
@@ -558,4 +574,13 @@
 
 
 
+</script>
+<script>
+    function confirmCancelVoucher() {
+        var result = confirm("Bạn có chắc chắn muốn hủy voucher?");
+        if (result) {
+            // Chuyển đến trang xử lý hủy voucher
+            window.location.href = "@Url.Action("ViewBill", "Home")";
+        }
+    }
 </script>
