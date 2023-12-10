@@ -1,4 +1,5 @@
-﻿@model IEnumerable<APPDATA.Models.VoucherForAcc>
+﻿@using System.Globalization;
+@model IEnumerable<APPDATA.Models.VoucherForAcc>
 @{
     ViewData["Title"] = "Your Voucher";
     Layout = "~/Views/Shared/_LayoutWeb.cshtml";
@@ -56,7 +57,7 @@
                                 <span class="badge badge-success">@voucher.Code</span>
                                 <h4 class="text-muted mb-0">@voucher.Name</h4>
                                 <p class="text-muted mb-0">Giảm: @voucher.Value%</p>
-                                <p class="text-muted mb-0">Tối đa: @voucher.DiscountAmount VND</p>
+                                <p class="text-muted mb-0">Tối đa: @voucher.DiscountAmount.ToString("C0", new CultureInfo("vi-VN"))</p>
                             </div>
                         </div>
 

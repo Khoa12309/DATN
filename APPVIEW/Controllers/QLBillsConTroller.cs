@@ -23,7 +23,7 @@ using Size = APPDATA.Models.Size;
 using System.Text;
 using static System.Net.Mime.MediaTypeNames;
 using System.Globalization;
-
+using AspNetCoreHero.ToastNotification.Abstractions;
 
 namespace APPVIEW.Controllers
 {
@@ -44,9 +44,10 @@ namespace APPVIEW.Controllers
         private Getapi<Bill> bills;
         private Getapi<BillDetail> billDetails;
         private Getapi<Account> _account;
+        public INotyfService _notyf;
         private static readonly Random random = new Random();
         private string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-        public QLBillsConTroller(ILogger<QLBillsConTroller> logger)
+        public QLBillsConTroller(ILogger<QLBillsConTroller> logger,INotyfService notyf)
         {
             _logger = logger;
             getapi = new Getapi<ProductDetail>();
@@ -60,7 +61,7 @@ namespace APPVIEW.Controllers
             bills = new Getapi<Bill>();
             billDetails = new Getapi<BillDetail>();
             _account = new Getapi<Account>();
-          
+            _notyf = notyf;
         }
 
         public ActionResult Index()
@@ -82,15 +83,17 @@ namespace APPVIEW.Controllers
 
                 if (sl < 0)
                 {
-
-                    return BadRequest("Mặt hàng này trong kho không đủ ");
+                    _notyf.Warning("Mặt hàng này trong kho không đủ");
+                    return View();
                 }
                 else
                 {
+                    _notyf.Success("Đã xác nhận đơn hàng!");
                     prdct.Quantity = sl;
                     await getapi.UpdateObj(prdct, "ProductDetails");
                     x.Status = 2;
                     await bills.UpdateObj(x, "Bill");
+                   
                 }
             }
 
@@ -102,6 +105,7 @@ namespace APPVIEW.Controllers
             var x = bills.GetApi("Bill").FirstOrDefault(c => c.id == id);
             x.Status = 3;
             await bills.UpdateObj(x, "Bill");
+            _notyf.Success("Đã xác nhận giao hàng");
             return RedirectToAction("ShowBillXacNhan");
         }
         public async Task<IActionResult> HuyDon(Guid id)
@@ -114,6 +118,7 @@ namespace APPVIEW.Controllers
                 await billDetails.DeleteObj(item.id, "BillDetail");
             }
             await bills.DeleteObj(id, "Bill");
+            _notyf.Success("Đã xác nhận hủy đơn");
             return RedirectToAction("DonHuy");
         }
 
@@ -122,7 +127,6 @@ namespace APPVIEW.Controllers
             var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
             var userBills = bills.GetApi("Bill").Where(c => c.Status == 1).OrderByDescending(d => d.CreateDate).ToList();
             ViewBag.viewbill = userBills;
-
 
             var billDetailsApi = billDetails.GetApi("BillDetail");
             var productDetailsApi = getapi.GetApi("ProductDetails");
@@ -158,7 +162,6 @@ namespace APPVIEW.Controllers
             {
                 return View(userBills);
             }
-            return View(userBills);
 
         }
 
@@ -201,7 +204,7 @@ namespace APPVIEW.Controllers
 
 
 
-
+                    _notyf.Information("Không tìm thấy đơn hàng!");
                     return View(userBills);
                 }
 
@@ -210,7 +213,7 @@ namespace APPVIEW.Controllers
             {
                 return View(userBills);
             }
-            return View(userBills);
+           
 
         }
         public ActionResult ShowBillXacNhan(string search)
@@ -245,7 +248,7 @@ namespace APPVIEW.Controllers
 
 
 
-
+                    
                     return View(userBills);
                 }
             }

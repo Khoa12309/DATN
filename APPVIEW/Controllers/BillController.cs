@@ -52,6 +52,7 @@ namespace APPVIEW.Controllers
             try
             {
                 getapi.CreateObj(obj, "Bill");
+                
                 return RedirectToAction("GetList");
             }
             catch
