@@ -391,7 +391,7 @@ namespace APPVIEW.Controllers
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
 
-            return Redirect("~/Account/Login");
+            return Redirect("~/Home/Index");
         }
 
         [HttpGet, Authorize(Roles = "Admin,Staff,Customer")]
