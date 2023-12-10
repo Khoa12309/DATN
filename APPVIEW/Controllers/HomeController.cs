@@ -541,7 +541,6 @@ namespace APPVIEW.Controllers
 
 
             await bills.CreateObj(bill, "Bill");
-           
 
 
           
