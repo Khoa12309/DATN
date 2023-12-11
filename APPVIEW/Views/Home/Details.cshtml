@@ -30,6 +30,7 @@
         <button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>
     </div>
 }
+
 <!--================Single Product Area =================-->
 <div class="product_image_area">
     <div class="container">
@@ -66,10 +67,10 @@
                                 @foreach (var vc in ViewBag.Voucher)
                                 {
                                     <li class="voucher-item" style="background: #F5F5F5; border-radius: 5px; color: #FF6A6A">
-                                        <a>Mã: @vc.Code - Giảm: @vc.Value% - Max: @vc.DiscountAmount.ToString("C0", new CultureInfo("vi-VN"))</a>
+
+                                        <a>Tên: @vc.Name - Giảm: @vc.Value% - Max: @vc.DiscountAmount.ToString("C0", new CultureInfo("vi-VN"))</a>
                                         <input type="hidden" name="voucherId" value="@vc.Id" />
-                                        <input type="submit" value="+" class="btn btn-light addVoucherButton" data-voucher-id="@vc.Id" style="margin-left: 5px; color: #FF6A6A"/>
-                                        
+                                        <input type="submit" value="+" class="btn btn-light addVoucherButton" data-voucher-id="@vc.Id" style="margin-left: 5px; color: #FF6A6A" />
                                     </li>
                                 }
                             </ul>
@@ -159,13 +160,13 @@
                    aria-selected="false">Description</a>
             </li>
             @*<li class="nav-item">
-            <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact"
-            aria-selected="false">Comments</a>
-            </li>
-            <li class="nav-item">
-            <a class="nav-link " id="review-tab" data-toggle="tab" href="#review" role="tab" aria-controls="review"
-            aria-selected="false">Reviews</a>
-            </li>*@
+                <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact"
+                aria-selected="false">Comments</a>
+                </li>
+                <li class="nav-item">
+                <a class="nav-link " id="review-tab" data-toggle="tab" href="#review" role="tab" aria-controls="review"
+                aria-selected="false">Reviews</a>
+                </li>*@
         </ul>
         <div class="tab-content" id="myTabContent">
             <div class="tab-pane fade" id="home" role="tabpanel" aria-labelledby="home-tab">
@@ -374,12 +375,12 @@
             }
         </div>
     </div>
- </section>
+</section>
 
 <script>
     $('body').on('click', '.button.primary-btn', function (e) {
         e.preventDefault();
-        var id = $(this).data('product-id');  
+        var id = $(this).data('product-id');
         var quantity = parseInt(document.getElementById('sst').value);
         var quantityText = $('.o').text();
         if (quantityText != '') {
@@ -422,15 +423,15 @@
 
 </script>
 <!--================ end related Product area =================-->
-    <script>
-        $(document).ready(function () {
-            $(".s_Product_carousel").owlCarousel({
-                items: 1,
-                loop: true,
-                margin: 10,
-                autoplay: true,
-                autoplayTimeout: 5000, // Thời gian chờ giữa các lượt autoplay (ms)
-                autoplayHoverPause: true // Tạm dừng khi di chuột qua
-            });
+<script>
+    $(document).ready(function () {
+        $(".s_Product_carousel").owlCarousel({
+            items: 1,
+            loop: true,
+            margin: 10,
+            autoplay: true,
+            autoplayTimeout: 5000, // Thời gian chờ giữa các lượt autoplay (ms)
+            autoplayHoverPause: true // Tạm dừng khi di chuột qua
         });
-    </script>
+    });
+</script>
