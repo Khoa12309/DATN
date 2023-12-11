@@ -160,7 +160,7 @@ namespace APPVIEW.Controllers
                 District = "N/A",
                 PhoneNumber = obj.PhoneNumber,
                 Description = "N/A",
-                Name = obj.Email,
+                Name = obj.Name,
                 Province = "N/A",
                 DefaultAddress = "N/A",
                 SpecificAddress = "N/A"

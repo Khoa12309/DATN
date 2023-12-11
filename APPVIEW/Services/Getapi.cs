@@ -67,6 +67,10 @@ namespace APPVIEW.Services
             var response = await httpClient.DeleteAsync(requestURL + name + "/Delete?id=" + id.ToString());
 
             string apiData = await response.Content.ReadAsStringAsync();
+            if (response.IsSuccessStatusCode == false)
+            {
+                return false;
+            }
             return true;
 
         }

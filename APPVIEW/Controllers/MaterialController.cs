@@ -116,7 +116,12 @@ namespace APPVIEW.Controllers
         {
             try
             {
-                await getapi.DeleteObj(id, "Material");
+                if (await getapi.DeleteObj(id, "Material"))
+                {
+                    var lst = getapi.GetApi("Material").Find(c => c.Id == id);
+                    lst.Status = 0;
+                    await getapi.UpdateObj(lst, "Material");
+                }
                 _notyf.Success("Đã xóa");
                 return RedirectToAction("GetList");
             }
