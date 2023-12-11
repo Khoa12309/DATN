@@ -529,6 +529,7 @@ namespace APPVIEW.Controllers
                     return RedirectToAction("Index");
                 }
                 _notyf.Success("Đặt hàng thành công");
+
                 return RedirectToAction("Thongtin");
             }
 
