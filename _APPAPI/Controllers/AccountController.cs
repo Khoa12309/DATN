@@ -34,11 +34,10 @@ namespace _APPAPI.Controllers
         [Route("Post")]
         [HttpPost]
         public bool addaccemty(Account obj)
-        {
-        
+        {          
             return _crud.CreateItem(obj);
         }
-            [Route("Register")]
+        [Route("Register")]
         [HttpPost]
         public bool Create(Account obj)
         {

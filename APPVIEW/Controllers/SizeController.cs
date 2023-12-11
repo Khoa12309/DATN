@@ -93,7 +93,7 @@ namespace APPVIEW.Controllers
         {
             try
             {
-                var item = getapi.UpdateObj(obj, "Size").Result;
+                var item = await getapi.UpdateObj(obj, "Size");
                 if (item != null)
                 {
                     _notyf.Success("Edit thành công!");
@@ -117,7 +117,13 @@ namespace APPVIEW.Controllers
         {
             try
             {
-                await getapi.DeleteObj(id, "Size");
+                if (await getapi.DeleteObj(id, "Size"))
+                {
+                    var lst = getapi.GetApi("Size").Find(c => c.Id == id);
+                    lst.Status = 0;
+                    await getapi.UpdateObj(lst, "Size");
+                }
+                
                 _notyf.Success("Đã xóa!");
                 return RedirectToAction("GetList");
             }

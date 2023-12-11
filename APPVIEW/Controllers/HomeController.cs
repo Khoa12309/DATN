@@ -20,6 +20,7 @@ using AspNetCore;
 using System.Reflection.Metadata;
 using System.Security.Principal;
 using DocumentFormat.OpenXml.Math;
+using DocumentFormat.OpenXml.Office2010.Excel;
 
 namespace APPVIEW.Controllers
 {
@@ -30,7 +31,7 @@ namespace APPVIEW.Controllers
         private readonly ILogger<HomeController> _logger;
         private Getapi<ProductDetail> getapi;
         private Getapi<Category> getapiCategory;
-        private Getapi<Color> getapiColor;
+        private Getapi<APPDATA.Models.Color> getapiColor;
         private Getapi<Image> getapiImg;
         private Getapi<Size> getapiSize;
         private Getapi<Supplier> getapiSupplier;
@@ -56,7 +57,7 @@ namespace APPVIEW.Controllers
             _logger = logger;
             getapi = new Getapi<ProductDetail>();
             getapiCategory = new Getapi<Category>();
-            getapiColor = new Getapi<Color>();
+            getapiColor= new Getapi<APPDATA.Models.Color>();
             getapiImg = new Getapi<Image>();
             getapiSize = new Getapi<Size>();
             getapiSupplier = new Getapi<Supplier>();
@@ -81,12 +82,24 @@ namespace APPVIEW.Controllers
 
         public async Task<IActionResult> Index()
         {
+
+            if (User.Identity.IsAuthenticated)
+            {
+
+                var Uid = User.Claims.FirstOrDefault(c => c.Type == "Id").Value;
+                var acc = getapiAc.GetApi("Account").FirstOrDefault(c => c.Id.ToString() == Uid);
+                SessionService.SetObjToJson(HttpContext.Session, "Account", acc);
+            }
+           
             var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
+            
             if (account.Id == Guid.Empty)
             {
+               
                 account = getapiAc.GetApi("Account").FirstOrDefault(c => c.Name == "khach k dang nhap");
+                var role = getapiRole.GetApi("Role").FirstOrDefault(c => c.name == "Customer");
                 if (account == null)
-                {
+                {                 
                     account = new Account();
                     account.Id = Guid.Empty;
                     account.Status = 1;
@@ -96,7 +109,10 @@ namespace APPVIEW.Controllers
                     account.Avatar = "";
                     account.Create_date = DateTime.Now;
                     account.Update_date = DateTime.Now;
-                    account.IdRole = getapiRole.GetApi("Role").FirstOrDefault(c => c.name == "Customer").id;
+                    if (role!= null)
+                    {
+                        account.IdRole = role.id;
+                    }
                     await getapiAc.CreateObj(account, "Account");
                 }
             }
@@ -380,6 +396,7 @@ namespace APPVIEW.Controllers
 
         public async Task<IActionResult> DatHangN(Address obj, string pay, float phiship, float voucher, string vouchercode)
         {
+           
             if (obj.Name==null)
             {
                 _notyf.Warning("Tên không được để trống");
@@ -448,11 +465,27 @@ namespace APPVIEW.Controllers
             }
 
 
-            await bills.CreateObj(bill, "Bill");
+          
 
             var procarrt = SessionService.GetObjFromSession(HttpContext.Session, "Cart");
-            if (procarrt != null)
+            if (procarrt.Count>0)
             {
+                await bills.CreateObj(bill, "Bill");
+            }
+            else
+            {
+                _notyf.Error("Lỗi");
+                return RedirectToAction("checkout");
+            }
+            var lpd = SessionService.GetObjFromSession(HttpContext.Session, "mpd");
+            if (lpd.Count>0)
+            {
+                procarrt.Clear();
+                procarrt = lpd;
+            }
+            if (procarrt.Count > 0)
+            {
+              
                 foreach (var item in procarrt)
                 {
                     var billct = new BillDetail();
@@ -506,29 +539,35 @@ namespace APPVIEW.Controllers
             }
             else
             {
-                var products = SessionService.GetObjFromSession(HttpContext.Session, "Cart");
 
-
-                foreach (var item in products)
+                var pp = SessionService.GetObjFromSession(HttpContext.Session, "Cart");
+               
+                foreach (var item in procarrt)
                 {
+
                     var productcartdetails = getapiCD.GetApi("CartDetails").FirstOrDefault(c => c.ProductDetail_ID == item.Id);
 
-                    var p = products.Find(c => c.Id == item.Id);
+                    var p = procarrt.Find(c => c.Id == item.Id);
 
                     if (productcartdetails != null)
                     {
                         await getapiCD.DeleteObj(productcartdetails.id, "CartDetails");
 
                     }
+                pp.RemoveAll(p => p.Id == item.Id);
                 }
-                products.Clear();
-                SessionService.SetObjToJson(HttpContext.Session, "Cart", products);
+
+                SessionService.Clearobj(HttpContext.Session, "mpd");
+              
+                SessionService.Clearobj(HttpContext.Session, "Cart");
+                SessionService.SetObjToJson(HttpContext.Session, "Cart", pp);
                 if (account.Name== "khach k dang nhap")
                 {
                     _notyf.Success("Đặt hàng thành công");
                     return RedirectToAction("Index");
                 }
                 _notyf.Success("Đặt hàng thành công");
+
                 return RedirectToAction("Thongtin");
             }
 
@@ -1205,7 +1244,7 @@ namespace APPVIEW.Controllers
             return View();
         }
 
-        public async Task<IActionResult> Checkout()
+        public async Task<IActionResult> Checkout( Guid? id)
         {
             try
             {
@@ -1230,6 +1269,20 @@ namespace APPVIEW.Controllers
 
                 //// fee ship
                 var products = SessionService.GetObjFromSession(HttpContext.Session, "Cart");
+
+                if (id!=null)
+                {
+                    
+                   var p= products.FirstOrDefault(c => c.Id == id);
+                   SessionService.Clearobj(HttpContext.Session, "mpd");
+                  
+                    var lpd = new List<ProductDetail>();
+                    lpd.Add(p);
+                    SessionService.SetObjToJson(HttpContext.Session, "mpd", lpd);
+                    products.Clear();
+                    products = lpd;
+                }
+
                 var can = 100;
                 if (products.Count != 0)
                 {
@@ -1671,7 +1724,7 @@ namespace APPVIEW.Controllers
                         return RedirectToAction("Index");
                     }
                     ViewBag.Message = "Có lỗi xảy ra trong quá trình xử lý";
-
+                     
                 }
             }
             return RedirectToAction("thongtin");
