@@ -3,64 +3,75 @@
 @{
     ViewData["Title"] = "GetList";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+    var stt = 0;
 }
 
-<h1>GetList</h1>
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0">Hình ảnh</h5>
+    </div>
+    <div class="card-body">
+        <a class="btn btn-success waves-effect waves-light" asp-action="Create">
+            <span class="mdi mdi-plus-thick">Tạo mới</span>
+        </a>
+       @*  <form asp-action="Search" method="get" class="form-inline" style="margin-left: 1000px">
+            <input placeholder="Tìm Kiếm" type="text" name="searchTerm" id="searchTerm" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2" />
+        </form> *@
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>STT</th>
+                        <th>Tên sản phẩm</th>
+                        <th>Hình ảnh</th>                                                             
+                        <th>Xóa</th>                                                             
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model != null && Model.Any())
+                    {
+                        @foreach (var item in Model)
+                        {
+                            <tr>
+                                <td>@(stt += 1)</td>
+                               
+                                    @foreach (var PD in ViewBag.PD)
+                                    {
+                                        if (PD.Id==item.IdProductdetail)
+                                        {
+                                        <td> @PD.Name </td>
+                                        break;
+                                        }
+                                    }
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Id)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.IdProductdetail)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Status)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Create_date)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Update_date)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Id)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.IdProductdetail)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Name)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Status)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Create_date)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Update_date)
-            </td>
-            <td>
-                    @Html.ActionLink("Edit", "Edit", new {  id=item.Id }) |
-                    @Html.ActionLink("Details", "Details", new {  id=item.Id}) |
-                    @Html.ActionLink("Delete", "Delete", new { id=item.Id })
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
+                                
+                                <td>
+                                    <img src="~/images/@item.Name" alt="Fjords" width="90px" height="90px">
+
+                                </td>
+                             
+                              
+                                
+
+                                <td>                                 
+                                    <a href="@Url.Action("Delete", new { id = item.Id  })" class="btn btn-danger waves-effect waves-light">
+                                        <span class="mdi mdi-delete"></span>Delete
+                                    </a>
+                                </td>
+
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="8" class="text-center">No Data.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+

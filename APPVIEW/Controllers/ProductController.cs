@@ -1,5 +1,6 @@
 ﻿using APPDATA.Models;
 using APPVIEW.Services;
+using AspNetCoreHero.ToastNotification.Abstractions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using X.PagedList;
@@ -10,8 +11,10 @@ namespace APPVIEW.Controllers
     public class ProductController : Controller
     {
         private Getapi<Product> getapi;
-        public ProductController()
+        public INotyfService _notyf;
+        public ProductController(INotyfService notyf)
         {
+            _notyf = notyf;
             getapi = new Getapi<Product>();
         }
 
@@ -55,11 +58,24 @@ namespace APPVIEW.Controllers
         {
             try
             {
-                await getapi.CreateObj(obj, "Product");
-                return RedirectToAction("GetList");
+                var item = getapi.CreateObj(obj, "Product").Result;
+                if (item != null)
+                {
+                    _notyf.Success("Thêm thành công!");
+                    return RedirectToAction("GetList");
+                }
+                else
+                {
+                    _notyf.Warning("Không được để trống");
+                    return View();
+                }
+
+
+
             }
             catch
             {
+                _notyf.Error("Lỗi!");
                 return View();
             }
         }
@@ -79,8 +95,18 @@ namespace APPVIEW.Controllers
         {
             try
             {
-                await getapi.UpdateObj(obj, "Product");
-                return RedirectToAction("GetList");
+                var item = await getapi.UpdateObj(obj, "Product");
+                if (item != null)
+                {
+                    _notyf.Success("Edit Thành công");
+                    return RedirectToAction("GetList");
+                }
+                else
+                {
+                    _notyf.Warning("Không được để trống!");
+                    return View();
+                }
+
             }
             catch
             {
@@ -91,7 +117,12 @@ namespace APPVIEW.Controllers
 
         public async Task<IActionResult> Delete(Guid id)
         {
-            await getapi.DeleteObj(id, "Product");
+            if (await getapi.DeleteObj(id, "Product"))
+            {
+                var lst = getapi.GetApi("Product").Find(c => c.Id == id);
+                lst.Status = 0;
+                await getapi.UpdateObj(lst, "Product");
+            }
             return RedirectToAction("GetList");
 
         }

@@ -1,4 +1,5 @@
-﻿@model APPDATA.Models.Address
+﻿@using System.Globalization;
+@model APPDATA.Models.Address
 @{
     ViewData["Title"] = "Checkout";
     Layout = "~/Views/Shared/_LayoutWeb.cshtml";
@@ -35,7 +36,7 @@
             <div class="check_title">
                 <h2>Have a coupon? <a href="#">Click here to enter your code</a></h2>
             </div>
-            <input type="text" placeholder="Enter coupon code">
+           @* <input type="text" placeholder="Enter coupon code">*@
             <a class="button button-coupon" asp-action="ApplyDiscount">Apply Coupon</a>
         </div>
         <div class="billing_details">
@@ -46,7 +47,7 @@
                     <h3>Billing Details</h3>
                     <form class="row contact_form" action="~/home/dathangn" method="post" novalidate="novalidate">
                         <div class="col-md-6 form-group p_star">
-                            <input type="text" class="form-control" id="first" name="Fullname" placeholder="Fullname" asp-for="@Model.Name" required>
+                            <input type="text" class="form-control" id="first" placeholder="Fullname" asp-for="@Model.Name" required>
                             <span class="placeholder" data-placeholder="Fullname" placeholder="Fullname"></span>
                         </div>
                         <div class="col-md-6 form-group p_star">
@@ -118,14 +119,16 @@
                             @foreach (var item in ViewBag.Product)
                             {
                                 var tt = item.Quantity * item.Price;
-                                <li><a href="#">@item.Name<span class="middle">x @item.Quantity</span> <span class="last">@tt VND</span></a></li>
+
+                                <li><a href="#">@item.Name<span class="middle">x @item.Quantity</span> <span class="last">$@tt.ToString("C0", new CultureInfo("vi-VN"))</span></a></li>
+
                             }
                         </ul>
                      
 
                     
                         <ul class="list list_2">
-                            <li><a href="#">Subtotal <span>@ViewBag.TT VND</span></a></li>
+                            <li><a href="#">Subtotal <span>@ViewBag.TT.ToString("C0", new CultureInfo("vi-VN"))</span></a></li>
                             @if (ViewBag.Value != null)
                             {
                                 <li>
@@ -135,10 +138,10 @@
                                     <h6 style="font-size: 14px">Thông tin giảm giá:</h6>
                                     <p>Mã: <span>@ViewBag.VoucherCode</span></p>
                                     <p>Giảm: <span>@ViewBag.FirstValue%</span></p>
-                                    <p>Giảm tối đa: <span>@ViewBag.FirstDiscountAmount</span>VND</p>
+                                    <p>Giảm tối đa: <span>@ViewBag.FirstDiscountAmount.ToString("C0", new CultureInfo("vi-VN"))</span></p>
                                 </li>
                             }
-                            <li><a href="#">Shipping <span><input style="height:30px; width:50px; border: none; outline: none; background-color:#e8f0f2;" value="@ViewBag.fee" readonly id="feeship">VND</span></a></li>
+                            <li><a href="#">Shipping <span><input style="height:30px; width:80px; border: none; outline: none; background-color:#e8f0f2;" value="@ViewBag.fee" readonly id="feeship">VND</span></a></li>
 
                             @if (ViewBag.Value != null)
                             {
@@ -148,20 +151,50 @@
 
                                 if (ViewBag.DiscountAmount > ViewBag.FirstDiscountAmount)
                                 {
-                                    
-                                    <li><a href="#">Total <span> <input style="height:30px; width:50px; border: none; outline: none; background-color:#e8f0f2;" value="@(ViewBag.TT -  ViewBag.FirstDiscountAmount+ViewBag.fee)" id="tShip" /> VND</span></a></li>
+
+                                    <li>
+                                        <a  href="#">
+                                            Total
+                                            <span>
+                                                <input readonly style="height:30px; width:80px; border: none; outline: none; background-color:#e8f0f2;" value="@(totalll+ViewBag.fee)" id="tShip" /> VND
+                                            </span>
+                                        </a>
+                                      @*   <a   href="#">
+                                            Total
+                                            <span>
+                                                @(totalll + ViewBag.fee.ToString("C0", new CultureInfo("vi-VN")))
+                                            </span>
+                                        </a> *@
+                                    </li>
+
 
                                 }
                                 else
                                 {
                                     
-                                    <li><a href="#">Total <span> <input style="height:30px; width:50px; border: none; outline: none; background-color:#e8f0f2;" value="@(ViewBag.TT -  ViewBag.DiscountAmount+ViewBag.fee)" id="tShip" /> VND</span></a></li>
+                                    <li>
+                                        <a  href="#">
+                                            Total
+                                            <span>
+                                                @(Convert.ToDecimal(ViewBag.TT) - Convert.ToDecimal(ViewBag.DiscountAmount) + Convert.ToDecimal(ViewBag.fee).ToString("C0", new CultureInfo("vi-VN")))
+                                            </span>
+                                        </a>
+                                        <a  href="#">Total <span> <input readonly style="height:30px; width:80px; border: none; outline: none; background-color:#e8f0f2;" value="@(ViewBag.TT -  ViewBag.DiscountAmount+ViewBag.fee)" id="tShip" /> VND</span></a>
+                                    </li>
 
                                 }
                             }
                             else
                             {
-                                <li><a href="#">Total <span> <input style="height:30px; width:50px; border: none; outline: none; background-color:#e8f0f2;" value="@( ViewBag.TT+ViewBag.fee)" id="tShip" /> VND</span></a></li>
+                               <li>
+                                    @* <a href="#">
+                                        Total
+                                        <span>
+                                            @((Convert.ToDecimal(ViewBag.TT) + Convert.ToDecimal(ViewBag.fee)).ToString("C0", new CultureInfo("vi-VN")))
+                                        </span>
+                                    </a> *@
+                                    <a  href="#">Total <span> <input readonly style="height:30px; width:80px; border: none; outline: none; background-color:#e8f0f2;" value="@(ViewBag.TT+ViewBag.fee)" id="tShip" /> VND</span></a>
+                                    </li>
 
                             }
                         </ul>
@@ -228,7 +261,7 @@
         $("#wardSelect").empty();
         inputdis.value = "";
         inputward.value = "";
-        document.getElementById("tShip").value -= document.getElementById("feeship").value;
+        document.getElementById("tShip").value = parseFloat(document.getElementById("tShip").value) - parseFloat(document.getElementById("feeship").value);
         document.getElementById("feeship").value = 0;
         // Sử dụng fetch() để gửi một request GET đến /Home/GetUsers
         fetch("/Home/district", {
@@ -375,4 +408,3 @@
         }
     }
 </script>
-

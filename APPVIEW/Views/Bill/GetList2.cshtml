@@ -1,6 +1,6 @@
 ﻿@model IEnumerable<APPDATA.Models.Bill>
 @{
-    ViewData["Title"] = "HoaDonOnl";
+    ViewData["Title"] = "HoaDonTaiQuay";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
 
@@ -9,7 +9,7 @@
 
 
 
-<form asp-action="GetList" class="row contact_form" method="post">
+<form asp-action="GetList2" class="row contact_form" method="post">
     <div class="row">
         <div class="col-md-3 form-group">
             <input type="text" id="searchTerm" class="form-control" name="searchTerm" placeholder="Nhập mã hóa đơn để tìm kiếm">
@@ -23,38 +23,30 @@
 <table class="table">
     <thead>
         <tr>
-         
+
             <th>
-            <span>Tên Khách Hàng</span>
+                <span>Người tạo hóa đơn</span>
             </th>
-     
+
             <th>
                 @Html.DisplayNameFor(model => model.Code)
             </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ShipFee)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PhoneNumber)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Address)
-            </th>
+     
             <th>
                 @Html.DisplayNameFor(model => model.TotalMoney)
             </th>
-         
+
             <th>
                 @Html.DisplayNameFor(model => model.Type)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.CreateDate)
             </th>
-        
+
             <th>
                 @Html.DisplayNameFor(model => model.PayDate)
             </th>
-       
+
             <th>
                 @Html.DisplayNameFor(model => model.Status)
             </th>
@@ -62,11 +54,12 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            
-            <td>
-                    @foreach(var acc in ViewBag.account)
+        @foreach (var item in Model)
+        {
+            <tr>
+
+                <td>
+                    @foreach (var acc in ViewBag.account)
                     {
 
                         if (acc.Id == item.AccountId)
@@ -77,36 +70,28 @@
                         }
                     }
                 </td>
-        
-            <td>
-                @Html.DisplayFor(modelItem => item.Code)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ShipFee)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PhoneNumber)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Address)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TotalMoney)
-            </td>
-       
-            <td>
-                @Html.DisplayFor(modelItem => item.Type)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreateDate)
-            </td>
-         
-         
-            <td>
-                @Html.DisplayFor(modelItem => item.PayDate)
-            </td>
-         
-            <td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.Code)
+                </td>
+          
+                <td>
+                    @Html.DisplayFor(modelItem => item.TotalMoney)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.Type)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CreateDate)
+                </td>
+
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.PayDate)
+                </td>
+
+                <td>
                     @if (item.Status == 1)
                     {
 
@@ -123,14 +108,14 @@
                     }
                     else if (item.Status == 4)
                     {
-                        <span>Đã nhận hàng </span>
+                        <span>Đã Thanh Toán </span>
                     }
-           
 
-            </td>
-          
-        </tr>
-}
+
+                </td>
+
+            </tr>
+        }
     </tbody>
 </table>
 

@@ -4,7 +4,7 @@
     ViewData["Title"] = "index";
     Layout = "~/Views/Shared/_LayoutWeb.cshtml";
 
-     List<Image> Img = ViewBag.Img;
+    List<Image> Img = ViewBag.Img;
 }
 
 <section class="hero-banner">
@@ -65,7 +65,7 @@
             @foreach (var item in ViewBag.Result)
             {
                 ht++;
-                if (ht==12)
+                if (ht == 12)
                 {
                     break;
                 }
@@ -79,12 +79,13 @@
                         <div class="card-product__img">
                             @foreach (var img in Img)
                             {
-                                if (img.IdProductdetail==item.Id)
+                                if (img.IdProductdetail == item.Id)
                                 {
-                                    <img class="card-img" src="~/images/@img.Name" alt="" >
+                                    <img class="card-img" src="~/images/@img.Name" width="150px" height="250px"
+                                         alt="">
                                     break;
                                 }
-                                                      
+
                             }
                             <ul class="card-product__imgOverlay">
                                 <li><a href="@Url.ActionLink("details","home",new{id=item.Id})"><button><i class="ti-search"></i></button></a></li>
@@ -97,19 +98,20 @@
 
                                 <li><button><i class="ti-heart"></i></button></li>
 
-                                <li><button> @Html.ActionLink("Mua hàng", "ViewBill", new { id=item.Id_Product }, new { style = "color:black;" })</button></li>
+                                <li><button> @Html.ActionLink("Mua ngay", "ViewBill", new { id = item.Id_Product }, new { style = "color:black;" })</button></li>
+
                             </ul>
                         </div>
                         <div class="card-body">
                             <p>Accessories</p>
 
-                            <h4 class="card-product__title"><a href="single-product.html">@item.Name</a></h4>                           
+                            <h4 class="card-product__title"><a href="single-product.html">@item.Name</a></h4>
                             <p class="card-product__price"> @item.Price.ToString("C0", new CultureInfo("vi-VN"))</p>
 
                         </div>
                     </div>
                 </div>
-                
+
             }
 
         </div>
@@ -193,69 +195,49 @@
         </div>
     </div>
 </section>
- <script>
-    document.addEventListener("DOMContentLoaded", function () {
-        const buyButtons = document.querySelectorAll(".buy-btn");
 
-        buyButtons.forEach((button) => {
-            button.addEventListener("click", addToCart);
-        });
+<script>
+    $('body').on('click', '.buy-btn', function (e) {
+        e.preventDefault();
+        var id = $(this).data('product-id');
+        var quantity = 1;
+        var quantityText = $('.o').text();
+        if (quantityText != '') {
+            quantity = parseInt(quantityText);
+        }
 
-        function addToCart(event) {
-            const productId = event.currentTarget.dataset.productId;
-            const quantityy = 1;
-            const data = {
-                id: productId,
-                Soluong: parseInt(quantityy),
-            };
-
-            $.ajax({
-                type: "POST",
-                url: "/cart/AddToCart",
-                data: data,
-                success: function (response) {
+        $.ajax({
+            url: '/cart/AddToCart',
+            type: 'POST',
+            data: { id: id, Soluong: quantity },
+            success: function (rs) {
+                if (rs.success) {
+                    // Hiển thị thông báo thành công
                     Swal.fire({
                         icon: 'success',
-                        title: 'Thêm sản phẩm thành công',
-                        position: 'bottom-right',
+                        title: 'Thêm vào giỏ hàng thành công!',
                         showConfirmButton: false,
+                        position: 'bottom-right',
                         timer: 2000,
                         toast: true
                     });
 
-                    // Cập nhật thông tin giỏ hàng trên trang (ví dụ: hiển thị số lượng sản phẩm trong giỏ hàng)
-                    updateCartInfo(response);
-
-                    // Nếu muốn thêm các thay đổi khác liên quan đến trang, bạn có thể thực hiện ở đây
-                },
-                error: function () {
+                    // Cập nhật số lượng sản phẩm trong giỏ hàng
+                    $('.nav-shop__circle').html(rs.count);
+                } else {
+                    // Hiển thị thông báo lỗi nếu cần
                     Swal.fire({
                         icon: 'error',
                         title: 'Lỗi',
-                        text: 'Có lỗi xảy ra khi thêm sản phẩm vào giỏ hàng.',
-                        position: 'bottom-right',
+                        text: 'Có lỗi xảy ra khi thêm vào giỏ hàng.',
                         showConfirmButton: false,
-                        timer: 2000, toast: true
+                        position: 'bottom-right',
+                        timer: 2000,
+                        toast: true
                     });
-                },
-            });
-        }
-
-        // Hàm cập nhật thông tin giỏ hàng trên trang
-        // Hàm cập nhật thông tin giỏ hàng trên trang
-        function updateCartInfo(response) {
-            $.ajax({
-                url: '/Cart/ViewCart',
-                type: 'GET',
-                success: function (data) {
-                    $("#reload").html(data);
                 }
-            });
-           
-        }
+            }
+        });
     });
-
-
-
- </script>
+</script>
 

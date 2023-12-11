@@ -55,6 +55,7 @@
         -ms-transform: rotate(-135deg);
             transform: rotate(-135deg); }
   .nice-select.open .list {
+
     opacity: 1;
     pointer-events: auto;
     -webkit-transform: scale(1) translateY(0);
@@ -136,3 +137,8 @@
 
 .no-csspointerevents .nice-select.open .list {
   display: block; }
+.nice-select .list {
+    /* Existing styles ... */
+    max-height: 200px; /* Adjust the value based on the height of 5 options */
+    overflow-y: auto; /* Add a scrollbar if needed */
+}

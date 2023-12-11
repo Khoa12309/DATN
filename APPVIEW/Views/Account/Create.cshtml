@@ -23,21 +23,21 @@
             <div class="card-body">
                 <form asp-action="Create" method="post">
                     <div class="row mb-3">
-                        <label asp-for="Name" class="col-sm-2 col-form-label">Full Name</label>
+                        <label asp-for="Name" class="col-sm-2 col-form-label">Tên đây đủ</label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" asp-for="Name" placeholder="Enter Name" />
+                            <input type="text" class="form-control" asp-for="Name" placeholder="Enter Tên" />
                             <span asp-validation-for="Name" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="row mb-3">
-                        <label asp-for="Email" class="col-sm-2 col-form-label">Email Address</label>
+                        <label asp-for="Email" class="col-sm-2 col-form-label">Email</label>
                         <div class="col-sm-10">
                             <input type="text" class="form-control" asp-for="Email" placeholder="Enter Email" />
                             <span asp-validation-for="Email" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="row mb-3">
-                        <label asp-for="PhoneNumber" class="col-sm-2 col-form-label">Phone number</label>
+                        <label asp-for="PhoneNumber" class="col-sm-2 col-form-label">Số điện thoại</label>
                         <div class="col-sm-10">
                             <input type="text" class="form-control" asp-for="PhoneNumber" placeholder="Enter phone" />
                             <span asp-validation-for="PhoneNumber" class="text-danger"></span>
@@ -47,11 +47,11 @@
                         <label asp-for="Id_Role" class="col-sm-2 col-form-label">Role</label>
                         <div class="col-md-4 user_role">
                             <div class="input-group">
-                                <label class="input-group-text" asp-for="Id_Role" >Options</label>
+                                <label class="input-group-text" asp-for="Id_Role" >Quyền</label>
                                 <select asp-for=Id_Role class="form-select text-capitalize" id="inputGroupSelect01">
                                     @if (ViewBag.ListRole != null)
                                     {
-                                        <option selected>Choose...</option>
+                                        <option selected>Chọn...</option>
                                         @foreach (var item in ViewBag.ListRole as List<Role>)
                                         {
 
@@ -60,7 +60,7 @@
                                     }
                                     else
                                     {
-                                        <option selected>Choose...</option>
+                                        <option selected>Chọn...</option>
                                     }
 
                                 </select>
@@ -70,11 +70,11 @@
                     <div class="row justify-content-end">
                         <div class="col-sm-10">
                             <button type="submit" class="btn btn-primary">
-                                <span class="mdi mdi-check-outline"></span> Submit
+                                <span class="mdi mdi-check-outline"></span> Thêm
                             </button>
                             <div class="btn-group ms-2">
                                 <a href="#" class="btn btn-danger waves-effect waves-light" onclick="goBack()">
-                                    <span class="mdi mdi-close"></span> Cancel
+                                    <span class="mdi mdi-close"></span> Thoát
                                 </a>
                                 <script>
                                     function goBack() {

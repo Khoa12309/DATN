@@ -17,12 +17,12 @@
     <meta name="viewport"
           content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
 
-    <title>Login Pages </title>
+    <title>Đăng nhập </title>
 
     <meta name="description" content="" />
 
     <!-- Favicon -->
-    <link rel="icon" type="image/x-icon" href="~/contentadmin/img/favicon/favicon.ico" />
+    <link rel="icon" type="image/x-icon" href="~/contentadmin/assets/img/favicon/favicon.ico" />
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -123,8 +123,8 @@
                     <!-- /Logo -->
 
                     <div class="card-body mt-2">
-                        <h4 class="mb-2">Welcome to Supper Fashion! 👋</h4>
-                        <p class="mb-4">Please sign-in to your account and start the adventure</p>                      
+                        <h4 class="mb-2">Chào mừng đến với Supper Fashion! 👋</h4>
+                        <p class="mb-4">Hãy đăng nhập để có trải nghiệm tốt nhất</p>                      
                         @if (!string.IsNullOrEmpty(ViewData["ErrorMessage"] as string))
                         {
                             <div class="alert alert-warning alert-dismissible" role="alert">
@@ -172,7 +172,7 @@
                                     <label class="form-check-label" for="remember-me"> Remember Me </label>
                                 </div>
                                 <a asp-action="ForgotPassword" asp-controller="Account" class="float-end mb-1">
-                                    <span>Forgot Password?</span>
+                                    <span>Quên mật khẩu?</span>
                                 </a>
                             </div>
                             <div class="mb-3">
@@ -182,7 +182,7 @@
                         <div class="text-center">
                             <a href="#" class="d-flex align-items-center justify-content-center" onclick="goBack()">
                                 <i class="mdi mdi-chevron-left scaleX-n1-rtl mdi-24px"></i>
-                                Cancel
+                                Quay lại
                             </a>
                             <script>
                                 function goBack() {
@@ -193,7 +193,7 @@
                         <p class="text-center">
                             <span>New on our platform?</span>
                             <a href="~/Account/Register">
-                                <span>Create an account</span>
+                                <span>Tạo tài khoản mới</span>
                             </a>
                         </p>
                     </div>

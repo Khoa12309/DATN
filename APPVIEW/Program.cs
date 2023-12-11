@@ -25,7 +25,8 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
 var sendmail = builder.Configuration.GetSection("SendEmail");
 builder.Services.Configure<SendEmail>(sendmail);
 builder.Services.AddSingleton<ISendEmail, SendEmailServices>();
-
+builder.Services.AddHttpClient();
+builder.Services.AddMemoryCache();
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromMinutes(100);
@@ -37,9 +38,9 @@ builder.Services.AddScoped<INotyfService, NotyfService>();
 // Add Notyf // Đây là thông báo
 builder.Services.AddNotyf(config =>
 {
-    config.DurationInSeconds = 5;
+    config.DurationInSeconds = 3;
     config.IsDismissable = true;
-    config.Position = NotyfPosition.TopLeft;
+    config.Position = NotyfPosition.TopRight;
 });
 
 var app = builder.Build();
@@ -70,6 +71,12 @@ app.UseEndpoints(endpoints =>
       pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}"
     );
 });
+
+    // Các cấu hình khác...
+
+
+
+
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");

@@ -52,6 +52,7 @@ namespace _APPAPI.Controllers
             item.Status = obj.Status;
             item.CreateBy = obj.CreateBy;
             item.CreateDate = obj.CreateDate;
+            item.PayDate = obj.PayDate;
             
             return _crud.UpdateItem(item);
         }
