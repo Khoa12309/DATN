@@ -226,7 +226,7 @@ namespace APPVIEW.Controllers
                 District = "N/A",
                 PhoneNumber = obj.PhoneNumber,
                 Description = "N/A",
-                Name = obj.Email,
+                Name = obj.Name,
                 Province = "N/A",
                 DefaultAddress = "N/A",
                 SpecificAddress = "N/A"
@@ -457,7 +457,7 @@ namespace APPVIEW.Controllers
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
 
-            return Redirect("~/Account/Login");
+            return Redirect("~/Home/Index");
         }
 
         [HttpGet, Authorize(Roles = "Admin,Staff,Customer")]

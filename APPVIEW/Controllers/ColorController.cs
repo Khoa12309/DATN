@@ -117,7 +117,13 @@ namespace APPVIEW.Controllers
         {
             try
             {
-                await getapi.DeleteObj(id, "Color");
+               
+                if (await getapi.DeleteObj(id, "Color"))
+                {
+                    var lst = getapi.GetApi("Color").Find(c => c.Id == id);
+                    lst.Status = 0;
+                    await getapi.UpdateObj(lst, "Color");
+                }
                 return RedirectToAction("GetList");
             }
             catch (Exception ex)
