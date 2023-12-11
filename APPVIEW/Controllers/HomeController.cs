@@ -1654,7 +1654,7 @@ namespace APPVIEW.Controllers
                         return RedirectToAction("Index");
                     }
                     ViewBag.Message = "Có lỗi xảy ra trong quá trình xử lý";
-
+                     
                 }
             }
             return RedirectToAction("thongtin");
