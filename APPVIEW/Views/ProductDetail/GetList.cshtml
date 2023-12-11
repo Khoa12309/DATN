@@ -1,5 +1,4 @@
 ﻿@model X.PagedList.IPagedList<APPDATA.Models.ProductDetail>
-@using System.Globalization;
 @using X.PagedList.Web.Common
 @using X.PagedList
 @using X.PagedList.Mvc.Core
@@ -143,7 +142,7 @@
                                 </td>
 
                                 <td>
-                                    @item.Price.ToString("C0", new CultureInfo("vi-VN"))
+                                    @Html.DisplayFor(modelItem => item.Price)
                                 </td>
                                 <td>
                                     @if (item.Status == 1)
@@ -185,25 +184,15 @@
 
 
                                 <td>
-                                    <div class="d-inline-block text-nowrap">
-                                        <button class="btn btn-sm btn-icon btn-text-secondary rounded-pill btn-icon dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
-                                            <i class="mdi mdi-dots-vertical mdi-20px"></i>
-                                        </button>
-                                        <div class="dropdown-menu dropdown-menu-end m-0">
-                                            <a href="@Url.Action( "Details","Home", new { id = item.Id  })" class="dropdown-item">
-                                                <i class="mdi mdi-eye-outline me-2"></i>
-                                                <span>View</span>
-                                            </a>
-                                            <a href="@Url.Action("Edit", new { id = item.Id })" class="dropdown-item">
-                                                <i class="mdi mdi-pencil-outline me-2"></i>
-                                                <span>Edit</span>
-                                            </a>
-                                            <a href="@Url.Action("Delete", new { id = item.Id })" class="dropdown-item delete-record">
-                                                <i class="mdi mdi-delete-outline me-2"></i>
-                                                <span>Delete</span>
-                                            </a>
-                                        </div>
-                                    </div>
+
+                                    <a href="@Url.Action("Edit", new { id = item.Id  })" class="btn btn-info waves-effect waves-light" >
+                                        <span class="mdi mdi-pencil-box-outline"></span>Edit
+                                    </a> <a href="@Url.Action( "Details","Home", new { id = item.Id  })" class="btn btn-warning waves-effect waves-light" >
+                                        <span class="mdi mdi-pencil-box-outline"></span>Details 
+                                    </a>
+                                    <a href="@Url.Action("Delete", new { id = item.Id  })" class="btn btn-danger waves-effect waves-light">
+                                        <span class="mdi mdi-delete"></span>Delete
+                                    </a>
                                 </td>
                             </tr>
 

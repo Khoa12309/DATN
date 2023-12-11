@@ -1,4 +1,4 @@
-﻿using APPDATA.Models;
+using APPDATA.Models;
 using APPVIEW.Services;
 using APPVIEW.ViewModels;
 using Microsoft.AspNetCore.Authentication.Cookies;

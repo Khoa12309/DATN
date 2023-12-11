@@ -1,6 +1,5 @@
 ﻿using APPDATA.Models;
 using APPVIEW.Services;
-using AspNetCoreHero.ToastNotification.Abstractions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using X.PagedList;
@@ -11,10 +10,8 @@ namespace APPVIEW.Controllers
     public class ProductController : Controller
     {
         private Getapi<Product> getapi;
-        public INotyfService _notyf;
-        public ProductController(INotyfService notyf)
+        public ProductController()
         {
-            _notyf = notyf;
             getapi = new Getapi<Product>();
         }
 
@@ -58,24 +55,11 @@ namespace APPVIEW.Controllers
         {
             try
             {
-                var item = getapi.CreateObj(obj, "Product").Result;
-                if (item != null)
-                {
-                    _notyf.Success("Thêm thành công!");
-                    return RedirectToAction("GetList");
-                }
-                else
-                {
-                    _notyf.Warning("Không được để trống");
-                    return View();
-                }
-
-
-
+                await getapi.CreateObj(obj, "Product");
+                return RedirectToAction("GetList");
             }
             catch
             {
-                _notyf.Error("Lỗi!");
                 return View();
             }
         }
@@ -95,6 +79,7 @@ namespace APPVIEW.Controllers
         {
             try
             {
+
                 var item = await getapi.UpdateObj(obj, "Product");
                 if (item != null)
                 {
@@ -106,6 +91,7 @@ namespace APPVIEW.Controllers
                     _notyf.Warning("Không được để trống!");
                     return View();
                 }
+
 
             }
             catch

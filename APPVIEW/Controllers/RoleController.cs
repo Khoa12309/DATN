@@ -10,12 +10,12 @@ namespace APPVIEW.Controllers
     public class RoleController : Controller
     {
         private Getapi<Role> getapi;
-        public  INotyfService _notyf { get; }
+        public  INotyfService _notyff { get; }
 
         public RoleController(INotyfService notyff)
         {
             getapi = new Getapi<Role>();
-            _notyf = notyff;
+            _notyff = notyff;
         }
 
         public async Task<IActionResult> GetList()
@@ -59,25 +59,15 @@ namespace APPVIEW.Controllers
         {
 
 
-            try
-            {
-                var item = getapi.CreateObj(obj, "Role").Result;
-                if (item != null)
-                {
-                    _notyf.Success("Thêm thành công!");
-                    return RedirectToAction("GetList");
-                }
-                else
-                {
-                    _notyf.Warning("Không được để trống!");
-                    return View();
-                }
-            }
-            catch (Exception)
+            var role = await getapi.CreateObj(obj, "Role");
+            if (role != null)
             {
 
-                return View();
+                _notyff.Success("Add new value sucess!");
+                return RedirectToAction("GetList");
             }
+            _notyff.Error("Error,try again!");
+            return View();
 
 
 
@@ -99,17 +89,8 @@ namespace APPVIEW.Controllers
         {
             try
             {
-                var item = getapi.UpdateObj(obj, "Role").Result;
-                if (item != null)
-                {
-                    _notyf.Success("Edit thành công!");
-                    return RedirectToAction("GetList");
-                }
-                else
-                {
-                    _notyf.Warning("Không được để trống!");
-                    return View();
-                }
+                await getapi.UpdateObj(obj, "Role");
+                return RedirectToAction("GetList");
             }
             catch
             {

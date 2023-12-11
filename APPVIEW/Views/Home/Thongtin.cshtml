@@ -2,7 +2,6 @@
     ViewData["Title"] = "Thongtin";
     Layout = "~/Views/Shared/_LayoutWeb.cshtml";
     @using APPDATA.Models;
-@using System.Globalization;
     List<Bill> bill = ViewBag.viewbill;
     List<BillDetail> billct = ViewBag.viewbillct;
     List<ProductDetail> prdct = ViewBag.viewprdct;
@@ -167,7 +166,7 @@
                                             <p>@colo.Name</p>
                                         </td>
                                         <td>
-                                            <h5>@bil.Price.ToString("C0", new CultureInfo("vi-VN"))</h5>
+                                            <h5>@bil.Price</h5>
                                         </td>
 
                                     </tr>
@@ -194,7 +193,7 @@
                                                 {
                                                     <span>Mã: @vouchers.Code</span> <br></br>
                                                     <span>Giảm: @vouchers.Value%</span> <br></br>
-                                                    <span>Giảm tối đa: @vouchers.DiscountAmount.ToString("C0", new CultureInfo("vi-VN"))</span>
+                                                    <span>Giảm tối đa: @vouchers.DiscountAmount VND</span>
                                                 }
                                                 else
                                                 {
@@ -216,7 +215,7 @@
                                         <h5></h5>
                                     </td>
                                     <td>
-                                        <h5>@string.Format(new CultureInfo("vi-VN"), "{0:C0}", itembill.ShipFee)</h5>
+                                        <h5>@itembill.ShipFee</h5>
                                     </td>
                                 </tr>
                                 <tr>
@@ -305,11 +304,11 @@
                                             {
                                                 itembill.TotalMoney = (priceProd - priceXpercent) + itembill.ShipFee;
                                             }
-                                            <h5><span>@itembill.TotalMoney@string.Format(new CultureInfo("vi-VN"), "{0:C0}", itembill.TotalMoney)</span></h5>
+                                            <h5><span>@itembill.TotalMoney</span></h5>
                                         }
                                         else
                                         {
-                                            <p>@string.Format(new CultureInfo("vi-VN"), "{0:C0}", itembill.TotalMoney)</p>
+                                            <p>@itembill.TotalMoney</p>
                                         }
                                     </td>
                                 </tr>

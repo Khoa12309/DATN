@@ -1,5 +1,4 @@
-﻿@using System.Globalization;
-@model IEnumerable<APPDATA.Models.Voucher>
+﻿@model IEnumerable<APPDATA.Models.Voucher>
 
 @{
     ViewData["Title"] = "Voucher-List";
@@ -46,7 +45,7 @@
                                 <td>@(stt += 1)</td>
                                 <td>@Html.DisplayFor(modelItem => item.Name)</td>
                                 <td>@Html.DisplayFor(modelItem => item.Code)</td>
-                                <td>@item.DiscountAmount.ToString("C0", new CultureInfo("vi-VN"))</td>
+                                <td>@Html.DisplayFor(modelItem => item.DiscountAmount)</td>
                                 <td>@Html.DisplayFor(modelItem => item.Quantity)</td>
                                 <td>
                                     <span class="badge @(item.Status == 1 ? "badge rounded-pill bg-label-success" : "badge rounded-pill bg-label-danger")">

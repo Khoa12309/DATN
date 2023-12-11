@@ -2,7 +2,6 @@
 using APPDATA.Models;
 using APPVIEW.Services;
 using APPVIEW.ViewModels;
-using AspNetCoreHero.ToastNotification.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using System.Security.Policy;
@@ -12,10 +11,8 @@ namespace APPVIEW.Controllers
     public class SizeController : Controller
     {
         private Getapi<Size> getapi;
-        public INotyfService _notyf;
-        public SizeController(INotyfService notyf)
+        public SizeController()
         {
-            _notyf = notyf;
             getapi = new Getapi<Size>();
         }
 
@@ -44,8 +41,7 @@ namespace APPVIEW.Controllers
                 return View("GetList", searchResult);
             }
 
-            _notyf.Information("Size không tồn tại");
-            return View();
+            return NotFound("Size không tồn tại");
         }
         [HttpGet]
         public async Task<IActionResult> Create()
@@ -59,21 +55,12 @@ namespace APPVIEW.Controllers
         {
             try
             {
-                var item = getapi.CreateObj(obj, "Size").Result;
-                if (item != null)
-                {
-                    _notyf.Success("Thêm thành công!");
-                    return RedirectToAction("GetList");
-                }
-                else
-                {
-                    _notyf.Warning("Không được để trống!");
-                    return View();
-                }
+                obj.Id=Guid.NewGuid();  
+              await  getapi.CreateObj(obj, "Size");
+                return RedirectToAction("GetList");
             }
             catch
             {
-                _notyf.Error("Lỗi!");
                 return View();
             }
         }
@@ -93,6 +80,7 @@ namespace APPVIEW.Controllers
         {
             try
             {
+
                 var item = await getapi.UpdateObj(obj, "Size");
                 if (item != null)
                 {
@@ -104,10 +92,10 @@ namespace APPVIEW.Controllers
                     _notyf.Warning("Không được để trống!");
                     return View();
                 }
+
             }
             catch
             {
-                _notyf.Error("Lỗi!");
                 return View();
             }
         }
@@ -115,6 +103,7 @@ namespace APPVIEW.Controllers
 
         public async Task<IActionResult> Delete(Guid id)
         {
+
             try
             {
                 if (await getapi.DeleteObj(id, "Size"))
@@ -137,5 +126,9 @@ namespace APPVIEW.Controllers
         }
 
 
+
+        }  
+        
+    
     }
 }

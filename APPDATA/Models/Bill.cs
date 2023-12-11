@@ -12,7 +12,6 @@ namespace APPDATA.Models
         public Guid? AccountId { get; set; }
         public Guid? Voucherid { get; set; }
         public string Code { get; set; }
-        public string Name { get; set; }
         public float? ShipFee { get; set; }
         public string? PhoneNumber { get; set; }
         public string? Address { get; set; }

@@ -1,6 +1,5 @@
 ﻿using APPDATA.Models;
 using APPVIEW.Services;
-using AspNetCoreHero.ToastNotification.Abstractions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,10 +9,8 @@ namespace APPVIEW.Controllers
     public class SupplierController : Controller
     {
         private Getapi<Supplier> getapi;
-        public INotyfService _notyf;
-        public SupplierController(INotyfService notyf)
+        public SupplierController()
         {
-            _notyf = notyf;
             getapi = new Getapi<Supplier>();
         }
 
@@ -43,8 +40,7 @@ namespace APPVIEW.Controllers
                 return View("GetList", searchResult);
             }
 
-            _notyf.Information("Voucher không tồn tại");
-            return View();
+            return NotFound("Voucher không tồn tại");
         }
 
 
@@ -60,17 +56,8 @@ namespace APPVIEW.Controllers
         {
             try
             {
-                var item = getapi.CreateObj(obj, "Supplier").Result;
-                if (item != null)
-                {
-                    _notyf.Success("Thêm thành công!");
-                    return RedirectToAction("GetList");
-                }
-                else
-                {
-                    _notyf.Warning("Không được để trống!");
-                    return View();
-                }
+                await getapi.CreateObj(obj, "Supplier");
+                return RedirectToAction("GetList");
             }
             catch
             {
@@ -83,7 +70,7 @@ namespace APPVIEW.Controllers
         public async Task<IActionResult> Edit(Guid id)
         {
 
-            var lst = getapi.GetApi("Supplier");            
+            var lst = getapi.GetApi("Supplier");
             return View(lst.Find(c => c.Id == id));
         }
 
@@ -93,21 +80,11 @@ namespace APPVIEW.Controllers
         {
             try
             {
-                var item = getapi.UpdateObj(obj, "Supplier").Result;
-                if (item != null)
-                {
-                    _notyf.Success("Edit thành công!");
-                    return RedirectToAction("GetList");
-                }
-                else
-                {
-                    _notyf.Warning("Không được để trống!");
-                    return View();
-                }
+                await getapi.UpdateObj(obj, "Supplier");
+                return RedirectToAction("GetList");
             }
             catch
             {
-                _notyf.Error("Lỗi!");
                 return View();
             }
         }
