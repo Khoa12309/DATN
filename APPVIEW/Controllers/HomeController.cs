@@ -127,7 +127,7 @@ namespace APPVIEW.Controllers
 
             ViewBag.Img = getapiImg.GetApi("Image");
 
-            return View(productJoin);
+            return View(productJoin); 
         }
         [HttpGet]
         public async Task<IActionResult> Search(string searchTerm)
@@ -143,18 +143,18 @@ namespace APPVIEW.Controllers
 
             if (searchResult.Any())
             {
-                return View("Index", searchResult);
+                return View("Index", searchResult); 
             }
 
             return NotFound("Voucher không tồn tại");
-
+             
         }
 
         public async Task<IActionResult> ViewBill(Guid id)
         {
 
             var productDetails = getapi.GetApi("ProductDetails");
-            var products = getapiProduct.GetApi("Product");
+            var products = getapiProduct.GetApi("Product");  
 
             var productJoin = productDetails.Join(products, ct => ct.Id_Product, s => s.Id, (ct, s) => new { ct, s })
                                     .Select(cs => new { cs.s.Id, cs.s.Name, cs.ct.Price })
