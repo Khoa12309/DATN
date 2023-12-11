@@ -92,4 +92,36 @@ function saveVoucherToAccount(voucherId) {
             }
         }
     });
+    //$.ajax({
+    //    url: `/Home/SaveVoucherForUser?voucherId=${voucherId}`,
+    //    type: 'POST',
+    //    contentType: 'application/json',
+    //    success: function (rs) {
+    //        if (rs.success) {
+    //            // Hiển thị thông báo thành công
+    //            Swal.fire({
+    //                icon: 'success',
+    //                title: 'Lưu thành công!',
+    //                showConfirmButton: false,
+    //                position: 'bottom-right',
+    //                timer: 2000,
+    //                toast: true
+    //            });
+
+    //            // Cập nhật số lượng sản phẩm trong giỏ hàng
+    //            $('.nav-shop__circle').html(rs.count);
+    //        } else {
+    //            // Hiển thị thông báo lỗi nếu cần
+    //            Swal.fire({
+    //                icon: 'error',
+    //                title: 'Lỗi',
+    //                text: 'Có lỗi xảy ra khi lưu phiếu giảm giá hoặc bạn chưa đăng nhập.',
+    //                showConfirmButton: false,
+    //                position: 'bottom-right',
+    //                timer: 2000,
+    //                toast: true
+    //            });
+    //        }
+    //    }
+    //});
 };

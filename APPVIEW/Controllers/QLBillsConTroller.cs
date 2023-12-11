@@ -541,8 +541,8 @@ namespace APPVIEW.Controllers
 
         }
 
-        // POST: QLBills/Delete/5
-        [HttpPost]
+            // POST: QLBills/Delete/5
+            [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int id, IFormCollection collection)
         {

@@ -22,6 +22,10 @@ using System.Security.Principal;
 using DocumentFormat.OpenXml.Math;
 using DocumentFormat.OpenXml.Office2010.Excel;
 
+//using DocumentFormat.OpenXml.Math;
+//using DocumentFormat.OpenXml.Office2010.Excel;
+
+
 namespace APPVIEW.Controllers
 {
     [AllowAnonymous]
@@ -45,6 +49,7 @@ namespace APPVIEW.Controllers
         private Getapi<CartDetail> getapiCD;
         private Getapi<PaymentMethodDetail> getapiPMD;
         private Getapi<PaymentMethod> getapiPM;
+        private Getapi<Role> getapiRole;
         private Getapi<VoucherForAcc> getapiVoucherAcc;
         private Getapi<Role> getapiRole;
         public INotyfService _notyf;
@@ -423,6 +428,7 @@ namespace APPVIEW.Controllers
                 return RedirectToAction("checkout");
             } 
 
+
             var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
             if (account.Id == Guid.Empty)
             {
@@ -568,6 +574,7 @@ namespace APPVIEW.Controllers
                 }
                 _notyf.Success("Đặt hàng thành công");
 
+
                 return RedirectToAction("Thongtin");
             }
 
@@ -679,7 +686,7 @@ namespace APPVIEW.Controllers
                 billct.Price = soluong * x.Price;
                 billct.Status = 1;
                 await billDetails.CreateObj(billct, "BillDetail");
-                bill.TotalMoney = billct.Price + ship;
+                bill.TotalMoney = 0;
                 await bills.UpdateObj(bill, "Bill");
 
             }
@@ -926,7 +933,7 @@ namespace APPVIEW.Controllers
             ViewBag.Category = getapiCategory.GetApi("Category");
             ViewBag.Supplier = getapiSupplier.GetApi("Supplier");
             ViewBag.Material = getapiMaterial.GetApi("Material");
-
+            TempData["prodtId"] = pro.Id;
             return View(pro);
         }
 

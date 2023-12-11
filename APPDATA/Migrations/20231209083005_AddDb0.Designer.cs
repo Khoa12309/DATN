@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace APPDATA.Migrations
 {
     [DbContext(typeof(ShoppingDB))]
-    [Migration("20231208151119_lan77")]
-    partial class lan77
+    [Migration("20231209083005_AddDb0")]
+    partial class AddDb0
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -736,6 +736,9 @@ namespace APPDATA.Migrations
                     b.Property<Guid?>("AccountId")
                         .HasColumnType("uniqueidentifier");
 
+                    b.Property<double>("AppliesToOrders")
+                        .HasColumnType("float");
+
                     b.Property<string>("Code")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -753,9 +756,8 @@ namespace APPDATA.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ReduceForm")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<int>("Quantity")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("StartDate")
                         .HasColumnType("datetime2");
@@ -779,6 +781,9 @@ namespace APPDATA.Migrations
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("uniqueidentifier");
+
+                    b.Property<double>("AppliesToOrders")
+                        .HasColumnType("float");
 
                     b.Property<string>("Code")
                         .IsRequired()
