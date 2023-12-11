@@ -1,5 +1,6 @@
 ﻿using APPDATA.Models;
 using APPVIEW.Services;
+using AspNetCoreHero.ToastNotification.Abstractions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,8 +10,10 @@ namespace APPVIEW.Controllers
     public class SupplierController : Controller
     {
         private Getapi<Supplier> getapi;
-        public SupplierController()
+        public INotyfService _notyf;
+        public SupplierController(INotyfService notyf)
         {
+            _notyf = notyf;
             getapi = new Getapi<Supplier>();
         }
 
@@ -40,7 +43,8 @@ namespace APPVIEW.Controllers
                 return View("GetList", searchResult);
             }
 
-            return NotFound("Voucher không tồn tại");
+            _notyf.Information("Voucher không tồn tại");
+            return View();
         }
 
 
@@ -56,8 +60,17 @@ namespace APPVIEW.Controllers
         {
             try
             {
-                await getapi.CreateObj(obj, "Supplier");
-                return RedirectToAction("GetList");
+                var item = getapi.CreateObj(obj, "Supplier").Result;
+                if (item != null)
+                {
+                    _notyf.Success("Thêm thành công!");
+                    return RedirectToAction("GetList");
+                }
+                else
+                {
+                    _notyf.Warning("Không được để trống!");
+                    return View();
+                }
             }
             catch
             {
@@ -80,11 +93,21 @@ namespace APPVIEW.Controllers
         {
             try
             {
-                await getapi.UpdateObj(obj, "Supplier");
-                return RedirectToAction("GetList");
+                var item = getapi.UpdateObj(obj, "Supplier").Result;
+                if (item != null)
+                {
+                    _notyf.Success("Edit thành công!");
+                    return RedirectToAction("GetList");
+                }
+                else
+                {
+                    _notyf.Warning("Không được để trống!");
+                    return View();
+                }
             }
             catch
             {
+                _notyf.Error("Lỗi!");
                 return View();
             }
         }

@@ -20,8 +20,8 @@ using AspNetCore;
 using System.Reflection.Metadata;
 using System.Security.Principal;
 
-using DocumentFormat.OpenXml.Math;
-using DocumentFormat.OpenXml.Office2010.Excel;
+//using DocumentFormat.OpenXml.Math;
+//using DocumentFormat.OpenXml.Office2010.Excel;
 
 
 namespace APPVIEW.Controllers
@@ -47,6 +47,7 @@ namespace APPVIEW.Controllers
         private Getapi<CartDetail> getapiCD;
         private Getapi<PaymentMethodDetail> getapiPMD;
         private Getapi<PaymentMethod> getapiPM;
+        private Getapi<Role> getapiRole;
         private Getapi<VoucherForAcc> getapiVoucherAcc;
         INotyfService _notyf;
         private static readonly Random random = new Random();
@@ -71,15 +72,14 @@ namespace APPVIEW.Controllers
 
             getapiCD = new Getapi<CartDetail>();
             getapiPM = new Getapi<PaymentMethod>();
-
+            getapiRole= new Getapi<Role>();
             getapiPMD = new Getapi<PaymentMethodDetail>();
             getapiVoucherAcc = new Getapi<VoucherForAcc>();
             _notyf = notyf;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-
 
             if (User.Identity.IsAuthenticated)
             {

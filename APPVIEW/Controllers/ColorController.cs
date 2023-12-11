@@ -1,5 +1,6 @@
 ﻿using APPDATA.Models;
 using APPVIEW.Services;
+using AspNetCoreHero.ToastNotification.Abstractions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,9 +10,11 @@ namespace APPVIEW.Controllers
     public class ColorController : Controller
     {
         private Getapi<Color> getapi;
-        public ColorController()
+        public INotyfService _notyf;
+        public ColorController(INotyfService notyf)
         {
             getapi = new Getapi<Color>();
+            _notyf = notyf;
         }
 
         public async Task<IActionResult> GetList()
@@ -39,7 +42,7 @@ namespace APPVIEW.Controllers
                 return View("GetList", searchResult);
             }
 
-            return NotFound("Color không tồn tại");
+            return View();
         }
 
 
@@ -56,9 +59,18 @@ namespace APPVIEW.Controllers
             try
             {
 
-                await getapi.CreateObj(obj, "Color");
+                var item = getapi.CreateObj(obj, "Color").Result;
+                if (item != null)
+                {
+                    _notyf.Success("Thêm thành công!");
+                    return RedirectToAction("GetList");
+                }
+                else
+                {
+                    _notyf.Warning("Không được để trống!");
+                    return View();
+                }
 
-                return RedirectToAction("GetList");
             }
             catch
             {
@@ -81,11 +93,21 @@ namespace APPVIEW.Controllers
         {
             try
             {
-                await getapi.UpdateObj(obj, "Color");
-                return RedirectToAction("GetList");
+                var item = getapi.UpdateObj(obj, "Color").Result;
+                if (item != null)
+                {
+                    _notyf.Success("Edit thành công!");
+                    return RedirectToAction("GetList");
+                }
+                else
+                {
+                    _notyf.Warning("Không được để trống!");
+                    return View();
+                }
             }
             catch
             {
+                _notyf.Success("Lỗi!");
                 return View();
             }
         }
@@ -93,10 +115,9 @@ namespace APPVIEW.Controllers
 
         public async Task<IActionResult> Delete(Guid id)
         {
-
             try
             {
-               
+
                 if (await getapi.DeleteObj(id, "Color"))
                 {
                     var lst = getapi.GetApi("Color").Find(c => c.Id == id);
@@ -111,7 +132,6 @@ namespace APPVIEW.Controllers
                 _notyf.Error($"Lỗi:{ex.Message} ");
                 return View();
             }
-
 
         }
     }
