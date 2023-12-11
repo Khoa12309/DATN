@@ -81,7 +81,7 @@
                                     <p>@ViewBag.Collor.Name</p>
                                 </td>
                                 <td>
-                                    <p>@ViewBag.Billct.Price</p>
+                                    <p>@((decimal)ViewBag.Billct.Price).ToString("C", new CultureInfo("vi-VN"))</p>
                                 </td>
 
                             </tr>

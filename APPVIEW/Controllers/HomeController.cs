@@ -443,6 +443,7 @@ namespace APPVIEW.Controllers
                 }
                 products.Clear();
                 SessionService.SetObjToJson(HttpContext.Session, "Cart", products);
+                
                 return RedirectToAction("Thongtin");
             }
 
