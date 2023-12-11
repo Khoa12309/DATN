@@ -19,7 +19,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Supper Fashion - Home</title>
+    <title>Supper Fashion - Trang chủ</title>
     <link rel="icon" href="~/contentwebb/img/Fevicon.png" type="image/png">
     <link rel="stylesheet" href="~/contentwebb/vendors/bootstrap/bootstrap.min.css">
     <link rel="stylesheet" href="~/contentwebb/vendors/fontawesome/css/all.min.css">
@@ -85,12 +85,12 @@
                     </button>
                     <div class="collapse navbar-collapse offset" id="navbarSupportedContent">
                         <ul class="nav navbar-nav menu_nav ml-auto mr-auto">
-                            <li class="nav-item active"><a class="nav-link" asp-action="Index" asp-controller="Home">Home</a></li>
+                            <li class="nav-item active"><a class="nav-link" asp-action="Index" asp-controller="Home">Trang chủ</a></li>
                             <li class="nav-item submenu dropdown">
                                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
                                    aria-expanded="false">Shop</a>
                                 <ul class="dropdown-menu">
-                                    <li class="nav-item"><a class="nav-link" asp-action="Shop" asp-controller="Home">Shop Category</a></li>
+                                    <li class="nav-item"><a class="nav-link" asp-action="Shop" asp-controller="Home">Danh mục cửa hàng</a></li>
                                     <li class="nav-item"><a class="nav-link" href="cart.html">Shopping Cart</a></li>
                                 </ul>
                             </li>
@@ -102,7 +102,7 @@
                                     <li class="nav-item"><a class="nav-link" href="single-blog.html">Blog Details</a></li>
                                 </ul>
                             </li>
-                            <li class="nav-item"><a class="nav-link" asp-action="Contact" asp-controller="Home">Contact</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-action="Contact" asp-controller="Home">Liên hệ</a></li>
                         </ul>
 
 
@@ -122,17 +122,7 @@
                                     <input name="__RequestVerificationToken" type="hidden" value="CfDJ8CnR_TcGempMiDo_giSawHBHDIQQzoKN8iv-INfhDVVg9-UkdZadOhYA_UGkaMWJjsRCjlEqQov5oiwqnviDeixyKxyI3YMUwa0bjfBtEi5csLE89F2RRy83vsBrcYqy7Jee6YmUfvcAHTAYO8KDeDw">
                                 </form>
                             </li>
-                            @*                             <li class="nav-item">
-                            <a style="color: black;" href="/Cart/ViewCart">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cart" viewBox="0 0 16 16">
-                            <path d="M0 1.5A.5.5 0 0 1 .5 1H2a.5.5 0 0 1 .485.379L2.89 3H14.5a.5.5 0 0 1 .491.592l-1.5 8A.5.5 0 0 1 13 12H4a.5.5 0 0 1-.491-.408L2.01 3.607 1.61 2H.5a.5.5 0 0 1-.5-.5zM3.102 4l1.313 7h8.17l1.313-7H3.102zM5 12a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm7 0a2 2 0 1 0 0 4 2 2 0 0 0 0-4zm-7 1a1 1 0 1 1 0 2 1 1 0 0 1 0-2zm7 0a1 1 0 1 1 0 2 1 1 0 0 1 0-2z"></path>
-                            </svg>
-
-                            <span class="nav-shop__circle">0</span>
-
-
-                            </a>
-                            </li> *@
+                       
                             <li class="nav-item">
                                 <a href="/Cart/ViewCart">
                                     <button class="nav-cart-button">
@@ -154,7 +144,6 @@
                                 </a>
                             </li>
 
-                           @* <li class="nav-item"><button><i class="ti-shopping-cart"></i><span class="nav-shop__circle">3</span></button> </li>*@
 
                         </ul>
                         <ul class="nav navbar-nav menu_nav" style="margin: 0; display: flex; align-items: center; justify-content: flex-end;">
@@ -174,7 +163,7 @@
                                         <li class="nav-item">
                                             <a asp-route-id_User="@Id_userValue" class="nav-link" asp-controller="Account" asp-action="MyProfile">
                                                 <img src="~/UserImage/@AvatarUserValue" alt="Avatar" style="width: 25px; height: 25px; border-radius: 50%; object-fit: cover;">
-                                                My profile
+                                                Hồ sơ của tôi
                                             </a>
 
                                         </li>
@@ -184,7 +173,7 @@
                                                     <path fill-rule="evenodd" d="M10 3.5a.5.5 0 0 0-.5-.5h-8a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5v-2a.5.5 0 0 1 1 0v2A1.5 1.5 0 0 1 9.5 14h-8A1.5 1.5 0 0 1 0 12.5v-9A1.5 1.5 0 0 1 1.5 2h8A1.5 1.5 0 0 1 11 3.5v2a.5.5 0 0 1-1 0v-2z" />
                                                     <path fill-rule="evenodd" d="M4.146 8.354a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H14.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3z" />
                                                 </svg>
-                                                LogOut
+                                                Đăng xuất
                                             </a>
                                         </li>
                                             @if (isAdmin || IsStaff)
@@ -194,7 +183,7 @@
                                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-fill-gear" viewBox="0 0 16 16">
                                                         <path d="M11 5a3 3 0 1 1-6 0 3 3 0 0 1 6 0Zm-9 8c0 1 1 1 1 1h5.256A4.493 4.493 0 0 1 8 12.5a4.49 4.49 0 0 1 1.544-3.393C9.077 9.038 8.564 9 8 9c-5 0-6 3-6 4Zm9.886-3.54c.18-.613 1.048-.613 1.229 0l.043.148a.64.64 0 0 0 .921.382l.136-.074c.561-.306 1.175.308.87.869l-.075.136a.64.64 0 0 0 .382.92l.149.045c.612.18.612 1.048 0 1.229l-.15.043a.64.64 0 0 0-.38.921l.074.136c.305.561-.309 1.175-.87.87l-.136-.075a.64.64 0 0 0-.92.382l-.045.149c-.18.612-1.048.612-1.229 0l-.043-.15a.64.64 0 0 0-.921-.38l-.136.074c-.561.305-1.175-.309-.87-.87l.075-.136a.64.64 0 0 0-.382-.92l-.148-.045c-.613-.18-.613-1.048 0-1.229l.148-.043a.64.64 0 0 0 .382-.921l-.074-.136c-.306-.561.308-1.175.869-.87l.136.075a.64.64 0 0 0 .92-.382l.045-.148ZM14 12.5a1.5 1.5 0 1 0-3 0 1.5 1.5 0 0 0 3 0Z" />
                                                     </svg>
-                                                    Admin Page
+                                                    Trang quản trị
                                                 </a>
                                             </li>
                                             }
@@ -217,7 +206,7 @@
                                                     <path fill-rule="evenodd" d="M6 3.5a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-2a.5.5 0 0 0-1 0v2A1.5 1.5 0 0 0 6.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-8A1.5 1.5 0 0 0 5 3.5v2a.5.5 0 0 0 1 0v-2z" />
                                                     <path fill-rule="evenodd" d="M11.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H1.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z" />
                                                 </svg>
-                                                LogIn
+                                                Đăng nhập
                                             </a>
 
                                         </li>
@@ -359,12 +348,12 @@
     <script>
         document.getElementById('logoutButton').addEventListener('click', function () {
             Swal.fire({
-                title: 'Are you sure?',
+                title: 'Bạn có chắc không?',
                 text: 'Bạn có chắc muốn đăng xuất không!',
                 icon: 'warning',
                 showCancelButton: true,
-                confirmButtonText: 'Yes, logout!',
-                cancelButtonText: 'No, cancel',
+                confirmButtonText: 'Có, đăng xuất!',
+                cancelButtonText: 'Không',
             }).then((result) => {
                 if (result.isConfirmed) {
                     // Redirect to the logout URL

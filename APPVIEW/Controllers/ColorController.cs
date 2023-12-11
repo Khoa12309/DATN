@@ -93,8 +93,25 @@ namespace APPVIEW.Controllers
 
         public async Task<IActionResult> Delete(Guid id)
         {
-            await getapi.DeleteObj(id, "Color");
-            return RedirectToAction("GetList");
+
+            try
+            {
+               
+                if (await getapi.DeleteObj(id, "Color"))
+                {
+                    var lst = getapi.GetApi("Color").Find(c => c.Id == id);
+                    lst.Status = 0;
+                    await getapi.UpdateObj(lst, "Color");
+                }
+                return RedirectToAction("GetList");
+            }
+            catch (Exception ex)
+            {
+
+                _notyf.Error($"Lỗi:{ex.Message} ");
+                return View();
+            }
+
 
         }
     }

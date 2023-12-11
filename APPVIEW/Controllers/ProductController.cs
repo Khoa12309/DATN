@@ -79,8 +79,20 @@ namespace APPVIEW.Controllers
         {
             try
             {
-                await getapi.UpdateObj(obj, "Product");
-                return RedirectToAction("GetList");
+
+                var item = await getapi.UpdateObj(obj, "Product");
+                if (item != null)
+                {
+                    _notyf.Success("Edit Thành công");
+                    return RedirectToAction("GetList");
+                }
+                else
+                {
+                    _notyf.Warning("Không được để trống!");
+                    return View();
+                }
+
+
             }
             catch
             {
@@ -91,7 +103,12 @@ namespace APPVIEW.Controllers
 
         public async Task<IActionResult> Delete(Guid id)
         {
-            await getapi.DeleteObj(id, "Product");
+            if (await getapi.DeleteObj(id, "Product"))
+            {
+                var lst = getapi.GetApi("Product").Find(c => c.Id == id);
+                lst.Status = 0;
+                await getapi.UpdateObj(lst, "Product");
+            }
             return RedirectToAction("GetList");
 
         }

@@ -41,8 +41,8 @@ namespace APPVIEW.Controllers
             {
                 return View("GetList", searchResult);
             }
-
-            return NotFound("Voucher không tồn tại");
+            _notyf.Warning("Voucher không tồn tại");
+            return View();
         }
 
 
@@ -59,8 +59,19 @@ namespace APPVIEW.Controllers
         {
             try
             {
-              await  getapi.CreateObj(obj, "Voucher");
-                return RedirectToAction("GetList");
+
+                var item = getapi.CreateObj(obj, "Voucher").Result;
+                if (item != null)
+                {
+                    _notyf.Success("Thêm thành công!");
+                    return RedirectToAction("GetList");
+                }
+                else
+                {
+                    _notyf.Warning("Không được để trống!");
+                    return View();
+                }
+
             }
             catch
             {

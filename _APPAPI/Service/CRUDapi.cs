@@ -45,7 +45,16 @@ namespace _APPAPI.Service
         }
         public IEnumerable<T> GetAllItems()
         {
-            return _dbSet.ToList();           
+            try
+            {
+                return _dbSet.ToList();
+
+            }
+            catch (Exception)
+            {
+
+                return null;
+            }
         }
 
         public bool UpdateItem(T item)

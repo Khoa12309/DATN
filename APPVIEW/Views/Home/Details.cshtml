@@ -102,7 +102,7 @@
                                             {
                                                 lstS.Add(pd.Id_Size);
                                                 <div class="custom-control custom-radio custom-control-inline">
-                                                    <input type="radio" value="@item.Id" class="custom-control-input" id="@item.Id" name="size">
+                                                    <input type="radio" value="@item.Id" class="custom-control-input" asp-for=Id_Size id="@item.Id" name="size">
                                                     <label class="custom-control-label" for="@item.Id">@item.Name</label>
                                                 </div>
                                             }
@@ -377,7 +377,7 @@
     </div>
 </section>
 
-<script>
+ <script>
     $('body').on('click', '.button.primary-btn', function (e) {
         e.preventDefault();
         var id = $(this).data('product-id');
@@ -386,11 +386,14 @@
         if (quantityText != '') {
             quantity = parseInt(quantityText);
         }
+        var size = $("input[name='size']:checked").val();
+        var color = $("input[name='color']:checked").val();
+
 
         $.ajax({
             url: '/cart/AddToCart',
             type: 'POST',
-            data: { id: id, Soluong: quantity },
+          data: { id: id, Soluong: quantity, size: size, color:color},
             success: function (rs) {
                 if (rs.success) {
                     // Hiển thị thông báo thành công
@@ -421,7 +424,7 @@
         });
     });
 
-</script>
+</script> 
 <!--================ end related Product area =================-->
 <script>
     $(document).ready(function () {

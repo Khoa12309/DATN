@@ -20,6 +20,10 @@ using AspNetCore;
 using System.Reflection.Metadata;
 using System.Security.Principal;
 
+using DocumentFormat.OpenXml.Math;
+using DocumentFormat.OpenXml.Office2010.Excel;
+
+
 namespace APPVIEW.Controllers
 {
     [AllowAnonymous]
@@ -29,7 +33,7 @@ namespace APPVIEW.Controllers
         private readonly ILogger<HomeController> _logger;
         private Getapi<ProductDetail> getapi;
         private Getapi<Category> getapiCategory;
-        private Getapi<Color> getapiColor;
+        private Getapi<APPDATA.Models.Color> getapiColor;
         private Getapi<Image> getapiImg;
         private Getapi<Size> getapiSize;
         private Getapi<Supplier> getapiSupplier;
@@ -53,7 +57,7 @@ namespace APPVIEW.Controllers
             _logger = logger;
             getapi = new Getapi<ProductDetail>();
             getapiCategory = new Getapi<Category>();
-            getapiColor = new Getapi<Color>();
+            getapiColor= new Getapi<APPDATA.Models.Color>();
             getapiImg = new Getapi<Image>();
             getapiSize = new Getapi<Size>();
             getapiSupplier = new Getapi<Supplier>();
@@ -75,6 +79,41 @@ namespace APPVIEW.Controllers
 
         public IActionResult Index()
         {
+
+
+            if (User.Identity.IsAuthenticated)
+            {
+
+                var Uid = User.Claims.FirstOrDefault(c => c.Type == "Id").Value;
+                var acc = getapiAc.GetApi("Account").FirstOrDefault(c => c.Id.ToString() == Uid);
+                SessionService.SetObjToJson(HttpContext.Session, "Account", acc);
+            }
+           
+            var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
+            
+            if (account.Id == Guid.Empty)
+            {
+               
+                account = getapiAc.GetApi("Account").FirstOrDefault(c => c.Name == "khach k dang nhap");
+                var role = getapiRole.GetApi("Role").FirstOrDefault(c => c.name == "Customer");
+                if (account == null)
+                {                 
+                    account = new Account();
+                    account.Id = Guid.Empty;
+                    account.Status = 1;
+                    account.Name = "khach k dang nhap";
+                    account.Email = "";
+                    account.Password = "";
+                    account.Avatar = "";
+                    account.Create_date = DateTime.Now;
+                    account.Update_date = DateTime.Now;
+                    if (role!= null)
+                    {
+                        account.IdRole = role.id;
+                    }
+                    await getapiAc.CreateObj(account, "Account");
+                }
+            }
             var productDetails = getapi.GetApi("ProductDetails").Where(c => c.Status == 1 && c.Quantity > 0);
             var products = getapiProduct.GetApi("Product");
 
@@ -356,6 +395,33 @@ namespace APPVIEW.Controllers
 
         public async Task<IActionResult> DatHangN(Address obj, string pay, float phiship, float voucher, string vouchercode)
         {
+           
+            if (obj.Name==null)
+            {
+                _notyf.Warning("Tên không được để trống");
+                return RedirectToAction("checkout");
+            } 
+            if (obj.PhoneNumber==null)
+            {
+                _notyf.Warning("Số điện thoại không được để trống");
+                return RedirectToAction("checkout");
+            }  
+            if (obj.Province==null)
+            {
+                _notyf.Warning("Thành phố không được để trống");
+                return RedirectToAction("checkout");
+            } 
+            if (obj.District==null)
+            {
+                _notyf.Warning("Quận/huyện không được để trống");
+                return RedirectToAction("checkout");
+            }
+            if (obj.Ward==null)
+            {
+                _notyf.Warning("Phường/xã không được để trống");
+                return RedirectToAction("checkout");
+            } 
+
 
             var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
             if (account.Id == Guid.Empty)
@@ -399,11 +465,27 @@ namespace APPVIEW.Controllers
             }
 
 
-            await bills.CreateObj(bill, "Bill");
+          
 
             var procarrt = SessionService.GetObjFromSession(HttpContext.Session, "Cart");
-            if (procarrt != null)
+            if (procarrt.Count>0)
             {
+                await bills.CreateObj(bill, "Bill");
+            }
+            else
+            {
+                _notyf.Error("Lỗi");
+                return RedirectToAction("checkout");
+            }
+            var lpd = SessionService.GetObjFromSession(HttpContext.Session, "mpd");
+            if (lpd.Count>0)
+            {
+                procarrt.Clear();
+                procarrt = lpd;
+            }
+            if (procarrt.Count > 0)
+            {
+              
                 foreach (var item in procarrt)
                 {
                     var billct = new BillDetail();
@@ -457,23 +539,36 @@ namespace APPVIEW.Controllers
             }
             else
             {
-                var products = SessionService.GetObjFromSession(HttpContext.Session, "Cart");
 
-
-                foreach (var item in products)
+                var pp = SessionService.GetObjFromSession(HttpContext.Session, "Cart");
+               
+                foreach (var item in procarrt)
                 {
+
                     var productcartdetails = getapiCD.GetApi("CartDetails").FirstOrDefault(c => c.ProductDetail_ID == item.Id);
 
-                    var p = products.Find(c => c.Id == item.Id);
+                    var p = procarrt.Find(c => c.Id == item.Id);
 
                     if (productcartdetails != null)
                     {
                         await getapiCD.DeleteObj(productcartdetails.id, "CartDetails");
 
                     }
+                pp.RemoveAll(p => p.Id == item.Id);
                 }
-                products.Clear();
-                SessionService.SetObjToJson(HttpContext.Session, "Cart", products);
+
+                SessionService.Clearobj(HttpContext.Session, "mpd");
+              
+                SessionService.Clearobj(HttpContext.Session, "Cart");
+                SessionService.SetObjToJson(HttpContext.Session, "Cart", pp);
+                if (account.Name== "khach k dang nhap")
+                {
+                    _notyf.Success("Đặt hàng thành công");
+                    return RedirectToAction("Index");
+                }
+                _notyf.Success("Đặt hàng thành công");
+
+
                 return RedirectToAction("Thongtin");
             }
 
@@ -1138,129 +1233,153 @@ namespace APPVIEW.Controllers
             return View();
         }
 
-        public async Task<IActionResult> Checkout()
+       public async Task<IActionResult> Checkout( Guid? id)
+{
+    try
+    {
+        var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
+        if (User.Identity.IsAuthenticated)
         {
 
-            var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
-            if (!User.Identity.IsAuthenticated)
+            var Uid = User.Claims.FirstOrDefault(c => c.Type == "Id").Value;
+            account = getapiAc.GetApi("Account").FirstOrDefault(c => c.Id.ToString() == Uid);
+            SessionService.SetObjToJson(HttpContext.Session, "Account", account);
+        }
+
+        var client = new OnlineGatewayClient($"https://online-gateway.ghn.vn/shiip/public-api/master-data/province", "bdbbde2a-fec2-11ed-8a8c-6e4795e6d902");
+
+        // Gọi API để lấy danh sách các tỉnh/thành phố
+        var response = await client.GetProvincesAsync();
+        if (response.Code == 200) // Thành công
+        {
+            // Trả về danh sách các quận/huyện dưới dạng JSON
+            ViewBag.province = response.Data;
+        }
+
+        //// fee ship
+        var products = SessionService.GetObjFromSession(HttpContext.Session, "Cart");
+
+        if (id!=null)
+        {
+            
+           var p= products.FirstOrDefault(c => c.Id == id);
+           SessionService.Clearobj(HttpContext.Session, "mpd");
+          
+            var lpd = new List<ProductDetail>();
+            lpd.Add(p);
+            SessionService.SetObjToJson(HttpContext.Session, "mpd", lpd);
+            products.Clear();
+            products = lpd;
+        }
+
+        var can = 100;
+        if (products.Count != 0)
+        {
+            var sl = 0;
+            foreach (var item in products)
             {
-                return Redirect("~/Account/Login");
+                sl += item.Quantity;
             }
+            can = sl * 100;
+        }
 
-            var client = new OnlineGatewayClient($"https://online-gateway.ghn.vn/shiip/public-api/master-data/province", "bdbbde2a-fec2-11ed-8a8c-6e4795e6d902");
+        ViewBag.Product = products;
 
-            // Gọi API để lấy danh sách các tỉnh/thành phố
-            var response = await client.GetProvincesAsync();
-            if (response.Code == 200) // Thành công
+
+        var tt = 0;
+        // Lấy thông tin voucher từ TempData
+        var discountAmountString = TempData["DiscountAmount"] as string;
+        var voucherCode = TempData["VoucherCode"] as string;
+        var valueString = TempData["Value"] as string;
+
+        foreach (var item in ViewBag.Product)
+        {
+
+            tt += (item.Quantity * item.Price);
+        }
+        if (!string.IsNullOrEmpty(voucherCode))
+        {
+
+            if (double.TryParse(valueString, out var percentValue) && double.TryParse(discountAmountString, out var discountAmount))
             {
-                // Trả về danh sách các quận/huyện dưới dạng JSON
-                ViewBag.province = response.Data;
+                percentValue /= 100;
+
+                var discountValue = tt * percentValue;
+
+                discountValue = Math.Max(discountValue, 0);
+
+                var total = (double)tt - discountValue;
+
+                ViewBag.FirstDiscountAmount = discountAmount;
+                ViewBag.DiscountAmount = discountValue;
+                ViewBag.FirstValue = valueString;
+                ViewBag.Value = percentValue;
+                ViewBag.VoucherCode = voucherCode;
+
+                ViewBag.Total = total;
             }
+        }
+        ViewBag.TT = tt;
+        ViewBag.Total = tt;
 
-            //// fee ship
-            var products = SessionService.GetObjFromSession(HttpContext.Session, "Cart");
-            var can = 100;
-            if (products.Count != 0)
+
+        if (account.Id != Guid.Empty)
+        {
+
+            
+            var dc = getapiAddress.GetApi("Address").FirstOrDefault(c => c.AccountId == account.Id);
+
+            if (dc != null)
             {
-                var sl = 0;
-                foreach (var item in products)
+                var p = await province(dc.Province);
+                if (p != 0)
                 {
-                    sl += item.Quantity;
-                }
-                can = sl * 100;
-            }
-
-            ViewBag.Product = products;
-
-
-            var tt = 0;
-            // Lấy thông tin voucher từ TempData
-            var discountAmountString = TempData["DiscountAmount"] as string;
-            var voucherCode = TempData["VoucherCode"] as string;
-            var valueString = TempData["Value"] as string;
-
-            foreach (var item in ViewBag.Product)
-            {
-
-                tt += (item.Quantity * item.Price);
-            }
-            if (!string.IsNullOrEmpty(voucherCode))
-            {
-
-                if (double.TryParse(valueString, out var percentValue) && double.TryParse(discountAmountString, out var discountAmount))
-                {
-                    percentValue /= 100;
-
-                    var discountValue = tt * percentValue;
-
-                    discountValue = Math.Max(discountValue, 0);
-
-                    var total = (double)tt - discountValue;
-
-                    ViewBag.FirstDiscountAmount = discountAmount;
-                    ViewBag.DiscountAmount = discountValue;
-                    ViewBag.FirstValue = valueString;
-                    ViewBag.Value = percentValue;
-                    ViewBag.VoucherCode = voucherCode;
-
-                    ViewBag.Total = total;
-                }
-            }
-            ViewBag.TT = tt;
-            ViewBag.Total = tt;
-
-
-            if (account != null)
-            {
-
-                var Uid = User.Claims.FirstOrDefault(c => c.Type == "Id").Value;
-                var acc = getapiAc.GetApi("Account").FirstOrDefault(c => c.Id.ToString() == Uid);
-                SessionService.SetObjToJson(HttpContext.Session, "Account", acc);
-                var dc = getapiAddress.GetApi("Address").FirstOrDefault(c => c.AccountId.ToString() == Uid);
-
-                if (dc != null)
-                {
-                    var p = await province(dc.Province);
-                    if (p != 0)
+                    var d = await dis(dc.District, p);
+                    if (d != 0)
                     {
-                        var d = await dis(dc.District, p);
-                        if (d != 0)
+                        var w = await wad(dc.Ward, d);
+                        int sship = await getServiceShip(d);
+
+                        client = new OnlineGatewayClient($"https://online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/fee?service_id={sship}" + $"&insurance_value=100000&to_ward_code={w}" + $"&to_district_id={d}" + "&from_district_id=3440" + $"&weight={can}", "bdbbde2a-fec2-11ed-8a8c-6e4795e6d902");
+
+                        // Gọi API để lấy danh sách các tỉnh/thành phố
+
+                        var fee = await client.GetFeeshipAsync();
+
+                        //Kiểm tra kết quả trả về
+                        if (fee.Code == 200) // Thành công
                         {
-                            var w = await wad(dc.Ward, d);
-                            int sship = await getServiceShip(d);
-
-                            client = new OnlineGatewayClient($"https://online-gateway.ghn.vn/shiip/public-api/v2/shipping-order/fee?service_id={sship}" + $"&insurance_value=100000&to_ward_code={w}" + $"&to_district_id={d}" + "&from_district_id=3440" + $"&weight={can}", "bdbbde2a-fec2-11ed-8a8c-6e4795e6d902");
-
-                            // Gọi API để lấy danh sách các tỉnh/thành phố
-
-                            var fee = await client.GetFeeshipAsync();
-
-                            //Kiểm tra kết quả trả về
-                            if (fee.Code == 200) // Thành công
-                            {
-                                // Trả về danh sách các quận/huyện dưới dạng JSON
-                                ViewBag.fee = fee.Data.total;
-                            }
+                            // Trả về danh sách các quận/huyện dưới dạng JSON
+                            ViewBag.fee = fee.Data.total;
                         }
-
                     }
 
-
                 }
 
-                else
-                {
-                    ViewBag.fee = 0;
-                }
-                if (ViewBag.fee == null)
-                {
-                    ViewBag.fee = 0;
-                }
-                return View(dc);
+
             }
 
-            return View();
+            else
+            {
+                ViewBag.fee = 0;
+            }
+
+            return View(dc);
         }
+        if (ViewBag.fee == null)
+        {
+            ViewBag.fee = 0;
+        }
+        return View();
+    }
+    catch (Exception )
+    { 
+        _notyf.Error("Lỗi");
+        return View();
+      }
+   
+  
+}
 
         [HttpPost]
         public async Task<IActionResult> SaveVoucherForUser(Guid voucherId)
@@ -1520,6 +1639,7 @@ namespace APPVIEW.Controllers
                 else
                 {
                     ViewBag.Message = "Có lỗi xảy ra trong quá trình xử lý";
+
                 }
             }
 
