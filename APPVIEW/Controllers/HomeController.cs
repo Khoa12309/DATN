@@ -51,7 +51,7 @@ namespace APPVIEW.Controllers
         private Getapi<PaymentMethod> getapiPM;
         private Getapi<Role> getapiRole;
         private Getapi<VoucherForAcc> getapiVoucherAcc;
-        private Getapi<Role> getapiRole;
+        
         public INotyfService _notyf;
 
         private static readonly Random random = new Random();
