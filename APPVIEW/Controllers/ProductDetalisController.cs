@@ -77,12 +77,12 @@ namespace APPVIEW.Controllers
         [HttpGet]
         public async Task<IActionResult> Create()
         {
-            ViewBag.Category = getapiCategory.GetApi("Category").FirstOrDefault(c => c.Status == 1);
-            ViewBag.Color = getapiColor.GetApi("Color").FirstOrDefault(c => c.Status == 1);
-            ViewBag.Product = getapiProduct.GetApi("Product").FirstOrDefault(c => c.Status == 1);
-            ViewBag.Size = getapiSize.GetApi("Size").FirstOrDefault(c => c.Status == 1);
+            ViewBag.Category = getapiCategory.GetApi("Category").Where(c => c.Status == 1);
+            ViewBag.Color = getapiColor.GetApi("Color").Where(c => c.Status == 1);
+            ViewBag.Product = getapiProduct.GetApi("Product").Where(c => c.Status == 1);
+            ViewBag.Size = getapiSize.GetApi("Size").Where(c => c.Status == 1);
             ViewBag.Supplier = getapiSupplier.GetApi("Supplier");
-            ViewBag.Material = getapiMaterial.GetApi("Material").FirstOrDefault(c => c.Status == 1);
+            ViewBag.Material = getapiMaterial.GetApi("Material").Where(c => c.Status == 1);
             ViewBag.Image = getapiImg.GetApi("Image");
 
             return View();
@@ -178,12 +178,12 @@ namespace APPVIEW.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(Guid id)
         {
-            ViewBag.Category = getapiCategory.GetApi("Category").FirstOrDefault(c => c.Status == 1);
-            ViewBag.Color = getapiColor.GetApi("Color").FirstOrDefault(c => c.Status == 1);
-            ViewBag.Product = getapiProduct.GetApi("Product").FirstOrDefault(c => c.Status == 1);
-            ViewBag.Size = getapiSize.GetApi("Size").FirstOrDefault(c => c.Status == 1);
+            ViewBag.Category = getapiCategory.GetApi("Category").Where(c => c.Status == 1);
+            ViewBag.Color = getapiColor.GetApi("Color").Where(c => c.Status == 1);
+            ViewBag.Product = getapiProduct.GetApi("Product").Where(c => c.Status == 1);
+            ViewBag.Size = getapiSize.GetApi("Size").Where(c => c.Status == 1);
             ViewBag.Supplier = getapiSupplier.GetApi("Supplier");
-            ViewBag.Material = getapiMaterial.GetApi("Material").FirstOrDefault(c => c.Status == 1);
+            ViewBag.Material = getapiMaterial.GetApi("Material").Where(c => c.Status == 1);
             ViewBag.Image = getapiImg.GetApi("Image");
             var lst = getapi.GetApi("ProductDetails");
             return View(lst.Find(c => c.Id == id));

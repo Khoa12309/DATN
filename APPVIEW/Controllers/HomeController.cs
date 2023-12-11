@@ -81,10 +81,23 @@ namespace APPVIEW.Controllers
 
         public async Task<IActionResult> Index()
         {
+
+            if (User.Identity.IsAuthenticated)
+            {
+
+                var Uid = User.Claims.FirstOrDefault(c => c.Type == "Id").Value;
+                var acc = getapiAc.GetApi("Account").FirstOrDefault(c => c.Id.ToString() == Uid);
+                SessionService.SetObjToJson(HttpContext.Session, "Account", acc);
+            }
+
             var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
+           
             if (account.Id == Guid.Empty)
             {
+               
                 account = getapiAc.GetApi("Account").FirstOrDefault(c => c.Name == "khach k dang nhap");
+
+                await getapiAc.CreateObj(account, "Account");
                 if (account == null)
                 {
                     account = new Account();
