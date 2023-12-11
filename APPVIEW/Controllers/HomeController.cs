@@ -720,6 +720,24 @@ namespace APPVIEW.Controllers
                 await bills.DeleteObj(item.id, "Bill");
 
             }
+
+            var bill = bills.GetApi("Bill");
+            foreach (var item in bill) {
+               var y = billDetails.GetApi("BillDetail").Where(c => c.BIllId == item.id).ToList();
+
+                foreach (var item2 in y) {
+                    if (item2.ProductDetailID== null || item2.ProductDetailID == Guid.Empty) {
+                    
+                    
+                    
+                    
+                    
+                    }
+                
+                
+                }
+            
+            }
             var client = new OnlineGatewayClient($"https://online-gateway.ghn.vn/shiip/public-api/master-data/province", "bdbbde2a-fec2-11ed-8a8c-6e4795e6d902");
             // Gọi API để lấy danh sách các tỉnh/thành phố
             var response = await client.GetProvincesAsync();
@@ -890,7 +908,7 @@ namespace APPVIEW.Controllers
 
             return View(pro);
         }
-
+        
 
 
         [HttpPost]

@@ -1,10 +1,10 @@
-﻿@model IEnumerable<APPDATA.Models.Bill>
+﻿
 
 @{
     ViewData["Title"] = "ShowBill";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
-    @using APPDATA.Models;
-    var bill = ViewBag.viewbill;
+@using APPDATA.Models;
+    List<Bill> bill = ViewBag.viewbill;
     List<BillDetail> billct = ViewBag.viewbillct;
     List<ProductDetail> prdct = ViewBag.viewprdct;
     List<Product> prd = ViewBag.viewprd;
@@ -14,145 +14,20 @@
     int stt = 0;
 }
 
-<h1>ShowBill</h1>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
+
 <form asp-controller="QLBills" asp-action="ShowBill" class="row contact_form" method="post">
     <div class="row">
         <div class="col-md-3 form-group">
             <input type="text" class="form-control" name="search" placeholder="Nhập mã hóa đơn để tìm kiếm">
 
         </div>    <div class="col-md-2 form-group">
-            <button type="submit" class="btn btn-success">Shearch</button>
+            <button type="submit" class="btn btn-success">Tìm kiếm</button>
 
         </div>
     </div>
 </form>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-               Mã hóa Đơn
-            </th>
-            <th>
-                Trạng thái
-            </th>
-            <th>
-               Tên khách hàng 
-            </th>
-        
-            <th>
-               SDT 
-            </th>
-            <th>
-               Địa chỉ
-            </th>
-            <th>
-               Sản phẩm
-            </th>
-            <th>
-               Size 
-            </th>
-            <th>
-               Màu
-            </th>
-            <th>
-               Số lượng
-            </th>
-            <th>
-               Ngày tạo
-            </th>
-         
-          
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var itembill in bill) {
-            var account = acc.FirstOrDefault(c => c.Id == itembill.AccountId);
-            var userbillct = billct.FirstOrDefault(c => c.BIllId == itembill.id);
-            var pct = prdct.FirstOrDefault(c => c.Id == userbillct.ProductDetailID);
-            var pro = prd.FirstOrDefault(c => c.Id == pct.Id_Product);
-            var siz = size.FirstOrDefault(c => c.Id == pct.Id_Size);
-            var colo = color.FirstOrDefault(c => c.Id == pct.Id_Color);
-
-        <tr>
-            <td>
-                    @itembill.Code
-            </td>
-            <td>
-                    <span>
-                  @if (itembill.Status == 1)
-                        {
-
-                            <span>Chờ xác nhận</span>
-                        }
-                        else if (itembill.Status == 2)
-                        {
-
-                            <span>Đã xác nhận đơn hàng </span>
-                        }
-                        else if (itembill.Status == 3)
-                        {
-                            <span> Đang giao  </span>
-                        }
-                        else if (itembill.Status == 4)
-                        {
-                            <span>Đã giao </span>
-                        }
-                        else if (itembill.Status == 5)
-                        {
-                            <span>Thanh toán thành công </span>
-                        }
-                        else if (itembill.Status == 6)
-                        {
-                            <span>Thanh toán không thành công </span>
-                        }
-
-
-
-
-
-                    </span>
-            </td>
-            <td>
-                @account.Name
-            </td>
-            
-            <td>
-                    @itembill.PhoneNumber
-            </td>
-            <td>
-                    @itembill.Address
-            </td>
-            <td>
-               @pro.Name
-            </td>
-            <td>
-                @siz.Name
-            </td>
-            <td>
-                @colo.Name
-            </td>
-            <td>
-                @userbillct.Amount
-            </td>
-            <td>
-                @itembill.CreateDate
-            </td>
-            
-            <td>
-                    <button class="btn btn-danger"> @Html.ActionLink("Xác nhận đơn hàng ", "Xacnhan", new { id = itembill.id }, new { style = "color:white;" }) </button>
-            
-            </td>
-        </tr>
-}
-    </tbody>
-</table>
-
-
-@* <div class="card">
+<div class="card">
     <div class="card-header">
         <h5 class="mb-0">Suppliers</h5>
     </div>
@@ -166,38 +41,76 @@
                 <thead>
                     <tr>
                         <th>STT</th>
-                        <th>Code bill</th>
-                        <th>Name Customer</th>
-                        <th>Voucher</th>
-                        <th>Phone</th>
-                        <th>Address</th>
-                        <th>Prpdocts</th>
-                        <th>Size</th>
-                        <th>Color</th>
-                        <th>Quantity</th>
-                        <th>Status</th>
-                        <th>Create date</th>
-                        <th>Update date</th>
-                        <th>Actions</th>
+                        <th>Mã hóa đơn</th>
+                        <th>Tên khách hàng</th>
+
+                        <th>SDT</th>
+                        <th>Địa chỉ</th>
+                        <th>Tổng tiền</th>
+                        <th>Trạng thái</th>
+                        <th>Ngày tạo</th>
+
+                        <th>Hành động</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @if (Model != null && Model.Any())
+                    @if (bill != null || bill.Count() > 0)
                     {
-                        @foreach (var item in Model)
+                        @foreach (var itembill in bill)
                         {
+                            var account = acc.FirstOrDefault(c => c.Id == itembill.AccountId);
+                            var userbillct = billct.FirstOrDefault(c => c.BIllId == itembill.id);
+                            var pct = prdct.FirstOrDefault(c => c.Id == userbillct.ProductDetailID);
+                            var pro = prd.FirstOrDefault(c => c.Id == pct.Id_Product);
+                            var siz = size.FirstOrDefault(c => c.Id == pct.Id_Size);
+                            var colo = color.FirstOrDefault(c => c.Id == pct.Id_Color);
                             <tr>
                                 <td>@(stt += 1)</td>
-                                <td>@Html.DisplayFor(modelItem => item.Code)</td>
-                                <td>@Html.DisplayFor(modelItem => item.Code)</td>
+                                <td>@itembill.Code</td>
+
+                                @if (account.Name == "khach k dang nhap")
+
+                                {
+                                    <td>@itembill.Name</td>
+                                }
+                                else
+                                {
+                                    <td>@account.Name</td>
+
+                                }
+
                                 <td>
-                                    <span class="badge @(item.Status == 1 ? "badge rounded-pill bg-label-success" : "badge rounded-pill bg-label-danger")">
-                                        @(item.Status == 1 ? "Using" : "Not use")
-                                    </span>
+                                    @itembill.PhoneNumber
                                 </td>
                                 <td>
+                                    @itembill.Address
+                                </td>
+                                <td>
+                                    @itembill.TotalMoney
+                                </td>
+                                @if (itembill.Status == 1)
+                                {
+                                    <td>  Chờ xác nhận</td>
+
+                                }
+                                else if (itembill.Status == 2)
+                                {
+                                    <td>  Đã xác nhận đơn hàng</td>
+
+                                }
+                                else if (itembill.Status == 3)
+                                {
+                                    <td>Đang giao</td>
+                                }
+                                else if (itembill.Status == 4)
+                                {
+                                    <td>Đã giao</td>
+                                }
+
+
+                                <td>
                                     @{
-                                        DateTime createDate = item.CreateDate;
+                                        DateTime createDate = itembill.CreateDate;
                                         string formattedDate = createDate != DateTime.MinValue
                                         ? createDate.ToString("dd/MM/yyyy")
                                         : "Not changed";
@@ -206,12 +119,10 @@
                                 </td>
 
                                 <td>
-                                    <a href="@Url.Action("Edit", new { id = item.id  })" class="btn btn-info waves-effect waves-light">
-                                        <span class="mdi mdi-pencil-box-outline"></span>Edit
-                                    </a>
-                                    <a href="@Url.Action("Delete", new { id = item.id  })" class="btn btn-danger waves-effect waves-light">
-                                        <span class="mdi mdi-delete"></span>Delete
-                                    </a>
+                                    <button style="width:140px" class="btn btn-danger"> @Html.ActionLink("Giao hàng ", "GiaoHang", new { id = itembill.id }, new { style = "color:white;" }) </button>
+                                </td>
+                                <td>
+                                    <button style="width:140px" class="btn btn-danger"> @Html.ActionLink("Hủy Đơn ", "HuyDon2", new { id = itembill.id }, new { style = "color:white;" }) </button>
                                 </td>
 
                             </tr>
@@ -227,4 +138,4 @@
             </table>
         </div>
     </div>
-</div> *@
+</div>

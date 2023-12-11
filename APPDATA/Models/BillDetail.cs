@@ -9,7 +9,7 @@ namespace APPDATA.Models
     public class BillDetail
     {
         public Guid id { get; set; }
-        public Guid? ProductDetailID { get; set; }
+        public Guid  ProductDetailID { get; set; }
         public Guid? BIllId { get; set; }
         public int Amount { get; set; }
         public float Price { get; set; }

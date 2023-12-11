@@ -52,7 +52,7 @@ namespace APPVIEW.Controllers
         public INotyfService _notyf;
         private static readonly Random random = new Random();
         private string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-        public QLBillsConTroller(ILogger<QLBillsConTroller> logger,INotyfService notyf)
+        public QLBillsConTroller(ILogger<QLBillsConTroller> logger, INotyfService notyf)
         {
             _logger = logger;
             getapi = new Getapi<ProductDetail>();
@@ -93,7 +93,7 @@ namespace APPVIEW.Controllers
                 if (sl < 0)
                 {
                     _notyf.Warning("Mặt hàng này trong kho không đủ");
-                    return View();
+                    return RedirectToAction("ShowBill");
                 }
                 else
                 {
@@ -102,7 +102,7 @@ namespace APPVIEW.Controllers
                     await getapi.UpdateObj(prdct, "ProductDetails");
                     x.Status = 2;
                     await bills.UpdateObj(x, "Bill");
-                   
+
                 }
             }
 
@@ -118,6 +118,19 @@ namespace APPVIEW.Controllers
             return RedirectToAction("ShowBillXacNhan");
         }
         public async Task<IActionResult> HuyDon(Guid id)
+        {
+
+            var x = bills.GetApi("Bill").FirstOrDefault(c => c.id == id);
+            var y = billDetails.GetApi("BillDetail").Where(c => c.BIllId == id).ToList();
+            foreach (var item in y)
+            {
+                await billDetails.DeleteObj(item.id, "BillDetail");
+            }
+            await bills.DeleteObj(id, "Bill");
+            _notyf.Success("Đã xác nhận hủy đơn");
+            return RedirectToAction("DonHuy");
+        }
+        public async Task<IActionResult> HuyDon2(Guid id)
         {
 
             var x = bills.GetApi("Bill").FirstOrDefault(c => c.id == id);
@@ -222,7 +235,7 @@ namespace APPVIEW.Controllers
             {
                 return View(userBills);
             }
-           
+
 
         }
         public ActionResult ShowBillXacNhan(string search)
@@ -257,7 +270,7 @@ namespace APPVIEW.Controllers
 
 
 
-                    
+
                     return View(userBills);
                 }
             }
@@ -302,7 +315,7 @@ namespace APPVIEW.Controllers
             if (searchText != null)
             {
                 var products = getapi.GetApi("ProductDetails").Where(c => c.Quantity > 0 && c.Name.ToLower().Contains(searchText.ToLower().Trim())).ToList();
-                return Json(new { success = true, productct = products, size = size, color = color,img = Img });
+                return Json(new { success = true, productct = products, size = size, color = color, img = Img });
             }
 
             return Json(new { success = true, productct = prd, size = size, color = color, img = Img });
@@ -358,7 +371,7 @@ namespace APPVIEW.Controllers
             newbil.Type = "Tại Quầy";
             newbil.TotalMoney = tongtien;
             newbil.Status = 4;
-            newbil.PayDate = DateTime.Now;  
+            newbil.PayDate = DateTime.Now;
             await bills.CreateObj(newbil, "Bill");
             if (productId.Count == soluong.Count)
             {
@@ -400,7 +413,8 @@ namespace APPVIEW.Controllers
             return RedirectToAction("GenerateInvoice", new { billId = newbil.id, tenkh = tenkh });
         }
 
-        public string xulichuoi(string tenkh) {
+        public string xulichuoi(string tenkh)
+        {
 
             string normalizedString1 = tenkh.Normalize(NormalizationForm.FormD);
             StringBuilder stringBuilder = new StringBuilder();
@@ -447,7 +461,7 @@ namespace APPVIEW.Controllers
             var products = getapi.GetApi("ProductDetails").ToList();
 
             // Tạo file PDF
-       
+
 
             using (var ms = new MemoryStream())
             {
@@ -487,13 +501,13 @@ namespace APPVIEW.Controllers
                     var detailFont = FontFactory.GetFont("Arial", 8, Font.NORMAL);
                     var detailTable = new PdfPTable(7);
                     detailTable.WidthPercentage = 100;
-                    detailTable.SetWidths(new int[] { 1, 3, 1, 2, 2 ,1,2});
+                    detailTable.SetWidths(new int[] { 1, 3, 1, 2, 2, 1, 2 });
                     detailTable.SpacingBefore = 10f;
                     detailTable.SpacingAfter = 10f;
 
                     detailTable.AddCell(new Phrase("STT", detailFont));
-                    detailTable.AddCell(new Phrase("San Pham", detailFont));    
-                    detailTable.AddCell(new Phrase("Size", detailFont));    
+                    detailTable.AddCell(new Phrase("San Pham", detailFont));
+                    detailTable.AddCell(new Phrase("Size", detailFont));
                     detailTable.AddCell(new Phrase("Mau", detailFont));
                     detailTable.AddCell(new Phrase("Don Gia", detailFont));
                     detailTable.AddCell(new Phrase("So Luong", detailFont));
@@ -504,11 +518,11 @@ namespace APPVIEW.Controllers
                     {
 
                         var product = products.FirstOrDefault(p => p.Id == item.ProductDetailID);
-                        var size = getapiSize.GetApi("Size").FirstOrDefault(c=>c.Id==product.Id_Size);
-                        var color = getapiColor.GetApi("Color").FirstOrDefault(c=>c.Id==product.Id_Color);
+                        var size = getapiSize.GetApi("Size").FirstOrDefault(c => c.Id == product.Id_Size);
+                        var color = getapiColor.GetApi("Color").FirstOrDefault(c => c.Id == product.Id_Color);
                         detailTable.AddCell(new Phrase(stt.ToString(), detailFont));
-                        detailTable.AddCell(new Phrase(product.Name, detailFont));     
-                        detailTable.AddCell(new Phrase(size.Name, detailFont));     
+                        detailTable.AddCell(new Phrase(product.Name, detailFont));
+                        detailTable.AddCell(new Phrase(size.Name, detailFont));
                         detailTable.AddCell(new Phrase(xulichuoi(color.Name).Replace("Đ", "D").Replace("đ", "d"), detailFont));
                         detailTable.AddCell(new Phrase(product.Price.ToString("#,##0") + " VND", detailFont));
                         detailTable.AddCell(new Phrase(item.Amount.ToString(), detailFont));

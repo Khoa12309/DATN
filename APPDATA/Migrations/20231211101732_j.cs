@@ -1,10 +1,11 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
 namespace APPDATA.Migrations
 {
-    public partial class lan5673 : Migration
+    public partial class j : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
