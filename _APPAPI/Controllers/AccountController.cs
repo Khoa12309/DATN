@@ -34,7 +34,36 @@ namespace _APPAPI.Controllers
         [Route("Post")]
         [HttpPost]
         public bool addaccemty(Account obj)
-        {          
+        {
+
+            var checkRole = _context.Roles.Count();
+            if (checkRole == 0)
+            {
+                var customerRole = new Role()
+                {
+                    id = Guid.NewGuid(),
+                    name = "Customer",
+                    Status = 1
+                };
+                _context.Roles.Add(customerRole);
+
+                var adminRole = new Role()
+                {
+                    id = Guid.NewGuid(),
+                    name = "Admin",
+                    Status = 1
+                };
+                _context.Roles.Add(adminRole);
+
+                var staffRole = new Role()
+                {
+                    id = Guid.NewGuid(),
+                    name = "Staff",
+                    Status = 1
+                };
+                _context.Roles.Add(staffRole);
+                _context.SaveChangesAsync();
+            }
             return _crud.CreateItem(obj);
         }
 

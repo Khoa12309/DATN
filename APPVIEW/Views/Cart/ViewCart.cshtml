@@ -26,13 +26,13 @@
     </div>
 </section>
 <!-- ================ end banner area ================= -->
-@* @if (TempData["mess"] != null)
+@if (TempData["mess"] != null)
 {
     <div class="alert alert-warning">
         @TempData["mess"]
         <button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>
     </div>
-} *@
+}
 <!--================Cart Area =================-->
 <section class="cart_area">
     <div class="container">
@@ -42,7 +42,8 @@
                     <thead>
                         <tr>
                             <th scope="col">Images</th>
-                            <th scope="col">Name</th>                            
+                            <th scope="col">Name</th> 
+                           
                             <th scope="col">Price</th>
                             <th scope="col">Quantity</th>
                             <th scope="col">Size</th>
@@ -143,7 +144,8 @@
                                                             {
                                                             <option value="@Color.Id">@Color.Name</option>
                                                             }
-                                                
+
+                                                 
                                                         }                                                        
                                                     }                                                                                         
                                             </select>
@@ -155,7 +157,6 @@
 
                                         <td>
                                             <a class="btn btn-light" href="@Url.ActionLink("DeleteCartItem","Cart",new{id=Model[i].Id})"><i class="fa fa-trash"></i></a>
-                                            <a class="btn btn-light" href="@Url.ActionLink("checkout","home",new{id=Model[i].Id})"><i class="fa fa-bill"></i>Thanh toán</a>
                                         </td>
 
                                     </tr>

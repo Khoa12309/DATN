@@ -33,7 +33,7 @@ namespace APPVIEW.Controllers
         private readonly ILogger<HomeController> _logger;
         private Getapi<ProductDetail> getapi;
         private Getapi<Category> getapiCategory;
-        private Getapi<APPDATA.Models.Color> getapiColor;
+        private Getapi<Color> getapiColor;
         private Getapi<Image> getapiImg;
         private Getapi<Size> getapiSize;
         private Getapi<Supplier> getapiSupplier;
@@ -58,7 +58,7 @@ namespace APPVIEW.Controllers
             _logger = logger;
             getapi = new Getapi<ProductDetail>();
             getapiCategory = new Getapi<Category>();
-            getapiColor= new Getapi<APPDATA.Models.Color>();
+            getapiColor = new Getapi<Color>();
             getapiImg = new Getapi<Image>();
             getapiSize = new Getapi<Size>();
             getapiSupplier = new Getapi<Supplier>();
@@ -88,16 +88,17 @@ namespace APPVIEW.Controllers
                 var acc = getapiAc.GetApi("Account").FirstOrDefault(c => c.Id.ToString() == Uid);
                 SessionService.SetObjToJson(HttpContext.Session, "Account", acc);
             }
-           
+
             var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
-            
+           
             if (account.Id == Guid.Empty)
             {
                
                 account = getapiAc.GetApi("Account").FirstOrDefault(c => c.Name == "khach k dang nhap");
-                var role = getapiRole.GetApi("Role").FirstOrDefault(c => c.name == "Customer");
+
+                await getapiAc.CreateObj(account, "Account");
                 if (account == null)
-                {                 
+                {
                     account = new Account();
                     account.Id = Guid.Empty;
                     account.Status = 10;
@@ -107,10 +108,7 @@ namespace APPVIEW.Controllers
                     account.Avatar = "";
                     account.Create_date = DateTime.Now;
                     account.Update_date = DateTime.Now;
-                    if (role!= null)
-                    {
-                        account.IdRole = role.id;
-                    }
+                    account.IdRole = getapiRole.GetApi("Role").FirstOrDefault(c => c.name == "Customer").id;
                     await getapiAc.CreateObj(account, "Account");
                 }
             }
@@ -395,7 +393,6 @@ namespace APPVIEW.Controllers
 
         public async Task<IActionResult> DatHangN(Address obj, string pay, float phiship, float voucher, string vouchercode)
         {
-           
             if (obj.Name==null)
             {
                 _notyf.Warning("Tên không được để trống");
@@ -465,27 +462,11 @@ namespace APPVIEW.Controllers
             }
 
 
-          
+            await bills.CreateObj(bill, "Bill");
 
             var procarrt = SessionService.GetObjFromSession(HttpContext.Session, "Cart");
-            if (procarrt.Count>0)
+            if (procarrt != null)
             {
-                await bills.CreateObj(bill, "Bill");
-            }
-            else
-            {
-                _notyf.Error("Lỗi");
-                return RedirectToAction("checkout");
-            }
-            var lpd = SessionService.GetObjFromSession(HttpContext.Session, "mpd");
-            if (lpd.Count>0)
-            {
-                procarrt.Clear();
-                procarrt = lpd;
-            }
-            if (procarrt.Count > 0)
-            {
-              
                 foreach (var item in procarrt)
                 {
                     var billct = new BillDetail();
@@ -539,28 +520,23 @@ namespace APPVIEW.Controllers
             }
             else
             {
+                var products = SessionService.GetObjFromSession(HttpContext.Session, "Cart");
 
-                var pp = SessionService.GetObjFromSession(HttpContext.Session, "Cart");
-               
-                foreach (var item in procarrt)
+
+                foreach (var item in products)
                 {
-
                     var productcartdetails = getapiCD.GetApi("CartDetails").FirstOrDefault(c => c.ProductDetail_ID == item.Id);
 
-                    var p = procarrt.Find(c => c.Id == item.Id);
+                    var p = products.Find(c => c.Id == item.Id);
 
                     if (productcartdetails != null)
                     {
                         await getapiCD.DeleteObj(productcartdetails.id, "CartDetails");
 
                     }
-                pp.RemoveAll(p => p.Id == item.Id);
                 }
-
-                SessionService.Clearobj(HttpContext.Session, "mpd");
-              
-                SessionService.Clearobj(HttpContext.Session, "Cart");
-                SessionService.SetObjToJson(HttpContext.Session, "Cart", pp);
+                products.Clear();
+                SessionService.SetObjToJson(HttpContext.Session, "Cart", products);
                 if (account.Name== "khach k dang nhap")
                 {
                     _notyf.Success("Đặt hàng thành công");
