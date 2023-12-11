@@ -39,57 +39,51 @@ applyButtons.forEach(function (button) {
 });
 // Hàm thực hiện lưu voucher vào tài khoản
 function saveVoucherToAccount(voucherId) {
+    $.ajax({
+        url: `/Home/SaveVoucherForUser?voucherId=${voucherId}`,
+        type: 'POST',
+        contentType: 'application/json',
+        success: function (data) {
+            if (data.alreadyInAccount) {
+                alert('Voucher đã có trong tài khoản của bạn!');
+            } else {
+                console.log('Áp dụng thành công!');
+            }
+        },
+        error: function (xhr, status, error) {
+            console.error('Lỗi khi áp dụng:', error);
+        }
+    });
     //$.ajax({
     //    url: `/Home/SaveVoucherForUser?voucherId=${voucherId}`,
     //    type: 'POST',
     //    contentType: 'application/json',
-    //    success: function (data) {
-    //        console.log(data);
-    //        if (data.alreadyInAccount) {
-    //            alert('Phiếu giảm giá đã có trong tài khoản của bạn!');
+    //    success: function (rs) {
+    //        if (rs.success) {
+    //            // Hiển thị thông báo thành công
+    //            Swal.fire({
+    //                icon: 'success',
+    //                title: 'Lưu thành công!',
+    //                showConfirmButton: false,
+    //                position: 'bottom-right',
+    //                timer: 2000,
+    //                toast: true
+    //            });
+
+    //            // Cập nhật số lượng sản phẩm trong giỏ hàng
+    //            $('.nav-shop__circle').html(rs.count);
     //        } else {
-    //            alert('Lưu thành công!');
-    //        }
-    //    },
-    //    error: function (xhr, status, error) {
-    //        if (xhr.status === 401) {
-    //            console.error('Lỗi khi áp dụng: Người dùng chưa đăng nhập');
-    //        } else {
-    //            console.error('Lỗi khi áp dụng:', error);
+    //            // Hiển thị thông báo lỗi nếu cần
+    //            Swal.fire({
+    //                icon: 'error',
+    //                title: 'Lỗi',
+    //                text: 'Có lỗi xảy ra khi lưu phiếu giảm giá hoặc bạn chưa đăng nhập.',
+    //                showConfirmButton: false,
+    //                position: 'bottom-right',
+    //                timer: 2000,
+    //                toast: true
+    //            });
     //        }
     //    }
     //});
-    $.ajax({
-        url: "/Home/SaveVoucherForUser",
-        type: 'POST',
-        data: { voucherId: voucherId },
-        contentType: 'application/json',
-        success: function (rs) {
-            if (rs.success) {
-                // Hiển thị thông báo thành công
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Lưu thành công!',
-                    showConfirmButton: false,
-                    position: 'bottom-right',
-                    timer: 2000,
-                    toast: true
-                });
-
-                // Cập nhật số lượng sản phẩm trong giỏ hàng
-                $('.nav-shop__circle').html(rs.count);
-            } else {
-                // Hiển thị thông báo lỗi nếu cần
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Lỗi',
-                    text: 'Có lỗi xảy ra khi lưu phiếu giảm giá hoặc bạn chưa đăng nhập.',
-                    showConfirmButton: false,
-                    position: 'bottom-right',
-                    timer: 2000,
-                    toast: true
-                });
-            }
-        }
-    });
 };

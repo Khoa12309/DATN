@@ -44,11 +44,11 @@ namespace APPVIEW.Controllers
         private Getapi<PaymentMethodDetail> getapiPMD;
         private Getapi<PaymentMethod> getapiPM;
         private Getapi<VoucherForAcc> getapiVoucherAcc;
-
+        INotyfService _notyf;
         private static readonly Random random = new Random();
         private string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
-        public HomeController(ILogger<HomeController> logger)
+        public HomeController(ILogger<HomeController> logger, INotyfService notyf)
         {
             _logger = logger;
             getapi = new Getapi<ProductDetail>();
@@ -70,7 +70,7 @@ namespace APPVIEW.Controllers
 
             getapiPMD = new Getapi<PaymentMethodDetail>();
             getapiVoucherAcc = new Getapi<VoucherForAcc>();
-
+            _notyf = notyf;
         }
 
         public IActionResult Index()
@@ -140,7 +140,7 @@ namespace APPVIEW.Controllers
             ViewBag.size = getapiSize.GetApi("Size");
             ViewBag.color = getapiColor.GetApi("Color");
             var prdct = getapi.GetApi("ProductDetails").FirstOrDefault(c => c.Id_Product == id);
-            
+
             if (prdct != null)
             {
                 ViewBag.image = getapiImg.GetApi("Image").FirstOrDefault(c => c.IdProductdetail == prdct.Id);
@@ -199,9 +199,9 @@ namespace APPVIEW.Controllers
             var can = 100;
             ViewBag.huyen = 0;
             ViewBag.xa = 0;
-            
 
-            
+
+
             if (account != null)
             {
                 var dc = getapiAddress.GetApi("Address").FirstOrDefault(c => c.AccountId == account.Id);
@@ -1275,17 +1275,15 @@ namespace APPVIEW.Controllers
                 }
 
                 var voucher = getapiVoucher.GetApi("Voucher").FirstOrDefault(v => v.Id == voucherId);
+                var voucherAcc = getapiVoucherAcc.GetApi("VoucherForAcc").FirstOrDefault(v => v.Id_Voucher == voucherId && v.Id_Account == account.Id);
 
                 if (voucher != null)
                 {
-                    // Kiểm tra xem người dùng đã có phiếu giảm giá này chưa
-                    var existingVoucherAcc = getapiVoucherAcc.GetApi("VoucherForAcc").FirstOrDefault(v => v.Id_Voucher == voucherId && v.Id_Account == account.Id);
 
-                    if (existingVoucherAcc == null)
+                    if (voucher.Quantity > 0)
                     {
-                        if (voucher.Quantity > 0)
+                        if (voucherAcc == null)
                         {
-                            // Tạo mới một đối tượng VoucherForAcc và lưu nó vào cơ sở dữ liệu
                             var voucherForAcc = new VoucherForAcc()
                             {
                                 Id = Guid.NewGuid(),
@@ -1298,27 +1296,28 @@ namespace APPVIEW.Controllers
                                 EndDate = voucher.EndDate,
                                 Status = voucher.Status,
                             };
-
                             await getapiVoucherAcc.CreateObj(voucherForAcc, "VoucherForAcc");
-
                             voucher.Quantity--;
-
                             await getapiVoucher.UpdateObj(voucher, "Voucher");
-                            TempData["VoucherError"] = "Lưu thành công";
                         }
                         else
                         {
-                            TempData["VoucherError"] = "Chúc bạn may mắn lần sau";
+
+                            _notyf.Success("Voucher đã có trong tài khoản của bạn!");
                         }
+
+
                     }
                     else
                     {
-                        TempData["VoucherError"] = "Phiếu giảm giá đã có trong tài khoản của bạn.";
+
+                        _notyf.Warning("Chúc bạn may mắn lần sau!");
                     }
+
                 }
                 else
                 {
-                    TempData["VoucherError"] = "Phiếu giảm giá không hợp lệ";
+                    _notyf.Warning("Voucher không hợp lệ!");
                 }
             }
             catch (Exception ex)
@@ -1393,7 +1392,7 @@ namespace APPVIEW.Controllers
             }
         }
 
-        
+
 
         public async Task<IActionResult> Payment(Bill bill)
 
