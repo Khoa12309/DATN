@@ -838,7 +838,7 @@ namespace APPVIEW.Controllers
             ViewBag.Category = getapiCategory.GetApi("Category");
             ViewBag.Supplier = getapiSupplier.GetApi("Supplier");
             ViewBag.Material = getapiMaterial.GetApi("Material");
-
+            TempData["prodtId"] = pro.Id;
             return View(pro);
         }
 
@@ -1273,7 +1273,7 @@ namespace APPVIEW.Controllers
                 {
                     return RedirectToAction("Login", "Account");
                 }
-
+                var prodtId = TempData["prodtId"] as Guid?;
                 var voucher = getapiVoucher.GetApi("Voucher").FirstOrDefault(v => v.Id == voucherId);
                 var voucherAcc = getapiVoucherAcc.GetApi("VoucherForAcc").FirstOrDefault(v => v.Id_Voucher == voucherId && v.Id_Account == account.Id);
 
@@ -1299,11 +1299,12 @@ namespace APPVIEW.Controllers
                             await getapiVoucherAcc.CreateObj(voucherForAcc, "VoucherForAcc");
                             voucher.Quantity--;
                             await getapiVoucher.UpdateObj(voucher, "Voucher");
+                            _notyf.Success("Lưu phiếu gỉảm giá thành công!");
                         }
                         else
                         {
-
-                            _notyf.Success("Voucher đã có trong tài khoản của bạn!");
+                            _notyf.Success("Phiếu giảm giá đã có trong tài khoản của bạn!");
+                            return RedirectToAction("Details", new {id = prodtId});
                         }
 
 
@@ -1317,7 +1318,7 @@ namespace APPVIEW.Controllers
                 }
                 else
                 {
-                    _notyf.Warning("Voucher không hợp lệ!");
+                    _notyf.Warning("Phiếu giảm giá không hợp lệ!");
                 }
             }
             catch (Exception ex)

@@ -375,6 +375,7 @@
         });
     </script>
 
-    @RenderSection("scripts", false)
+    @await Component.InvokeAsync("Notyf")
+  @RenderSection("scripts", false)
 </body>
 </html>
