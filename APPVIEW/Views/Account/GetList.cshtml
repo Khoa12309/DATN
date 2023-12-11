@@ -32,27 +32,27 @@
         <div class="card-header row">
             <div class="col-md-3">
                 <select id="FilterTransaction" class="form-select text-capitalize" name="status">
-                    <option value=""> Select Status </option>
-                    <option value="2" class="text-capitalize">Blocked</option>
-                    <option value="1" class="text-capitalize">Active</option>
-                    <option value="0" class="text-capitalize">Inactive</option>
+                    <option value=""> Chọn trạng thái </option>
+                    <option value="2" class="text-capitalize">Đã khóa</option>
+                    <option value="1" class="text-capitalize">Hoạt động</option>
+                    <option value="0" class="text-capitalize">Chưa kích hoạt</option>
                 </select>
             </div>
             <div class="col-md-3">
                 <select id="UserRole" class="form-select text-capitalize" name="role">
-                    <option value=""> Select Role </option>
+                    <option value=""> Chọn quyền </option>
                     @foreach (var item in ViewBag.Roles)
                     {
                         <option value="@item.id">@item.name</option>
                     }
-                   
+
                 </select>
             </div>
             <div class="col-md-3">
                 <div id="DataTables_Table_0_filter" class="dataTables_filter">
                     <label><input type="search" class="form-control" placeholder="Search.." aria-controls="DataTables_Table_0" name="tk" /></label>
                 </div>
-            </div> 
+            </div>
             <div class="col-md-3">
                 <div id="DataTables_Table_0_filter" class="dataTables_filter">
                     <label><button class="btn btn-success mb-3" type="submit">Tìm kiếm</button></label>
@@ -60,9 +60,9 @@
             </div>
         </div>
     </form>
-  
+
     <div class="card-body">
-        <a class="btn btn-success mb-3" asp-controller="Account" asp-action="Create">Create New</a>
+        <a class="btn btn-success mb-3" asp-controller="Account" asp-action="Create">Tạo mới</a>
         @if (!string.IsNullOrEmpty(ViewData["ErrorMessage"] as string))
         {
             <div class="alert alert-warning alert-dismissible" role="alert">
@@ -83,14 +83,14 @@
                 <thead>
                     <tr>
                         <th>STT</th>
-                        <th>Name</th>
-                        <th>Email Address</th>
-                        <th>Role</th>
-                        <th>Avatar</th>
-                        <th>Create Date</th>
-                        <th>Update Date</th>
-                        <th>Status</th>
-                        <th>Actions</th>
+                        <th>Tên</th>
+                        <th>Ảnh đại diện</th>
+                        <th>Quyền</th>
+                        <th>Email</th>
+                        <th>Ngày tạo</th>
+                        <th>Ngày cập nhật</th>
+                        <th>Trạng thái</th>
+                        <th>Hành động</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -101,7 +101,7 @@
                             <tr>
                                 <td>@(stt += 1)</td>
                                 <td>@Html.DisplayFor(modelItem => item.Name)</td>
-                                <td>@Html.DisplayFor(modelItem => item.Email)</td>
+                                <td><img src="~/UserImage/@item.Avatar" alt="Avatar" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover;" /></td>
                                 <td>
                                     @if (item.IdRole.HasValue)
                                     {
@@ -125,14 +125,14 @@
                                     }
                                 </td>
                                 <td>
-                                    <img src="~/UserImage/@item.Avatar" alt="Avatar" style="width: 50px; height: 50px; border-radius: 50%; object-fit: cover;" />
+                                    @Html.DisplayFor(modelItem => item.Email)
                                 </td>
                                 <td>
                                     @{
                                         DateTime createDate = item.Create_date;
                                         string formattedDate = createDate != DateTime.MinValue
                                         ? createDate.ToString("dd/MM/yyyy")
-                                        : "Not changed";
+                                        : "Chưa thay đổi";
                                     }
                                     @formattedDate
                                 </td>
@@ -141,25 +141,25 @@
                                         DateTime updatedDate = item.Update_date;
                                         string formattedUpdateDate = updatedDate != DateTime.MinValue
                                         ? updatedDate.ToString("dd/MM/yyyy")
-                                        : "Not changed";
+                                        : "Chưa thay đổi";
                                     }
                                     @formattedUpdateDate
                                 </td>
                                 <td>
                                     @if (item.Status == 1)
                                     {
-                                        <span class="badge bg-label-success rounded-pill">Active</span>
+                                        <span class="badge bg-label-success rounded-pill">Hoạt động</span>
                                     }
                                     else if (item.Status == 0)
                                     {
-                                        <span class="badge bg-label-warning rounded-pill">InActive</span>
+                                        <span class="badge bg-label-warning rounded-pill">Chưa kích hoạt</span>
                                     }
                                     else if (item.Status == 2)
                                     {
-                                        <span class="badge rounded-pill bg-label-danger">Blocked</span>
+                                        <span class="badge rounded-pill bg-label-danger">Đã khóa</span>
                                     }
                                 </td>
-                                <td>                                  
+                                <td>
                                     <div class="d-inline-block text-nowrap">
                                         <button class="btn btn-sm btn-icon btn-text-secondary rounded-pill btn-icon dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
                                             <i class="mdi mdi-dots-vertical mdi-20px"></i>
@@ -167,15 +167,15 @@
                                         <div class="dropdown-menu dropdown-menu-end m-0">
                                             <a href="app-user-view-account.html" class="dropdown-item">
                                                 <i class="mdi mdi-eye-outline me-2"></i>
-                                                <span>View</span>
+                                                <span>Xem</span>
                                             </a>
                                             <a href="@Url.Action("Edit", new { id = item.Id })" class="dropdown-item">
                                                 <i class="mdi mdi-pencil-outline me-2"></i>
-                                                <span>Edit</span>
+                                                <span>Chỉnh sửa</span>
                                             </a>
                                             <a href="@Url.Action("Delete", new { id = item.Id })" class="dropdown-item delete-record">
-                                                <i class="mdi mdi-delete-outline me-2"></i>
-                                                <span>Delete</span>
+                                                <i class="mdi mdi-account-cancel me-2"></i>
+                                                <span>Khóa</span>
                                             </a>
                                         </div>
                                     </div>
@@ -186,7 +186,7 @@
                     else
                     {
                         <tr>
-                            <td colspan="10" class="text-center">No Data.</td>
+                            <td colspan="10" class="text-center">Không có dữ liệu.</td>
                         </tr>
                     }
                 </tbody>

@@ -1,5 +1,6 @@
 ﻿using APPDATA.Models;
 using APPVIEW.Services;
+using DocumentFormat.OpenXml.VariantTypes;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -12,16 +13,19 @@ namespace APPVIEW.Controllers
     {
         private Getapi<Image> getapi;
         private Getapi<ProductDetail> getapipd;
+        private Getapi<Product> getapip;
         public ImageController()
         {
             getapi = new Getapi<Image>();
             getapipd = new Getapi<ProductDetail>();
+            getapip = new Getapi<Product>();
         }
 
         public async Task<IActionResult> GetList()
         {
-            var obj = getapi.GetApi("Image");
-           
+
+            ViewBag.PD = await getapi.GetApia("ProductDetails");
+            var obj = getapi.GetApi("Image");          
             return View( obj);
         }
 
@@ -64,6 +68,28 @@ namespace APPVIEW.Controllers
                 return View();
             }
         }
+        //public async Task<IActionResult> Search(string searchTerm)
+        //{
+        //    var lstProduct = getapi.GetApi("Imdge").ToList();
+            
+
+        //    var pd= getapipd.GetApi("ProductDetails").GroupBy(c=>c.Name.ToLower().Contains(searchTerm.ToLower()));
+           
+
+
+        //    var searchResult = lstProduct.GroupBy()
+               
+        //        .ToList();
+
+        //    if (searchResult.Any())
+        //    {
+        //        return View("GetList", searchResult);
+        //    }
+            
+        //    return View("GetList");
+        //}
+
+
         [HttpGet]
 
 

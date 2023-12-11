@@ -115,16 +115,22 @@ namespace APPVIEW.Controllers
             var product = getapiPD.GetApi("ProductDetails").Find(c => c.Id == id);
             if (color != Guid.Empty && size != Guid.Empty)
             {
-                id = getapiProduct.GetApi("Product").Find(c => c.Id == product.Id_Product).Id;
-                product = getapiPD.GetApi("ProductDetails").FirstOrDefault(c => c.Id_Product == id && c.Id_Color == color && c.Id_Size == size);
+                var idp = getapiProduct.GetApi("Product").Find(c => c.Id == product.Id_Product).Id;
+                product = getapiPD.GetApi("ProductDetails").FirstOrDefault(c => c.Id_Product == idp && c.Id_Color == color && c.Id_Size == size);
                 if (product==null)
                 {
 
-                    _notyf.Warning("Màu hoặc kích thước bạn chọn không còn");
-                    TempData["mess"] = "Màu hoặc kích thước bạn chọn không còn";
+                    _notyf.Warning("Màu hoặc kích thước bạn chọn không còn");                 
                     return RedirectToAction("Details", "Home",new { id=id });
                 
                 }
+               
+            }
+            if (product.Quantity < Soluong)
+            {
+                _notyf.Warning("Số lượng sản phẩm còn " + product.Quantity.ToString());
+                return RedirectToAction("Details", "Home", new { id = id });
+
             }
             product.Quantity = Soluong;
             var cart = getapi.GetApi("Cart").FirstOrDefault(c => c.AccountId == account.Id);
@@ -206,15 +212,19 @@ namespace APPVIEW.Controllers
             var products = SessionService.GetObjFromSession(HttpContext.Session, "Cart");
             var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
             var cart = getapi.GetApi("Cart").FirstOrDefault(c => c.AccountId == account.Id);
-            var productcartdetails = getapiCartD.GetApi("CartDetails").FirstOrDefault(c => c.ProductDetail_ID == id&&c.CartId==cart.id);
+           
+            var productcartdetails = getapiCartD.GetApi("CartDetails").FirstOrDefault(c => c.ProductDetail_ID == id);
+            if (cart != null)
+            {
+               productcartdetails = getapiCartD.GetApi("CartDetails").FirstOrDefault(c => c.ProductDetail_ID == id && c.CartId == cart.id);
 
+            }
             var p = products.Find(c => c.Id == id);
             products.Remove(p);
             SessionService.SetObjToJson(HttpContext.Session, "Cart", products);
             if (productcartdetails !=null)
             {
              await   getapiCartD.DeleteObj(productcartdetails.id, "CartDetails");
-
             }
             return RedirectToAction("ViewCart");
         }

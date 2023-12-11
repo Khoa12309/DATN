@@ -3,6 +3,7 @@
 @{
 
     @using APPDATA.Models;
+    @using System.Globalization;
     ViewData["Title"] = "BanHangOff";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 
@@ -36,80 +37,80 @@
             <!-- Phần bên phải để hiển thị sản phẩm -->
             <div class="col-md-7">
                 <!-- Danh sách sản phẩm -->
-          
-                    <div class="card">
-                        <div class="card-header">
+
+                <div class="card">
+                    <div class="card-header">
 
 
-                            <span>Tìm Kiếm : </span>   <input type="text" id="timkiem" style="height:40px"> <br>
+                        <span>Tìm Kiếm : </span>   <input type="text" id="timkiem" style="height:40px"> <br>
 
 
-                        </div>
-                        <div class="card-body">
+                    </div>
+                    <div class="card-body">
                         <div class="row" id="divToUpdate">
-                                
-                                    @foreach (var item in Model)
-                                    {
+
+                            @foreach (var item in Model)
+                            {
 
 
-                                        <div class="col-md-6 col-lg-4 col-xl-3">
-                                            <div class="card text-center card-product">
-                                             
-                                                    <div class="card-product__img">
-                                                        @foreach (var img in ViewBag.Img)
-                                                        {
-                                                            if (img.IdProductdetail == item.Id)
-                                                            {
-                                                                <img class="card-img" src="~/images/@img.Name" alt="">
-                                                                break;
-                                                            }
+                                <div class="col-md-6 col-lg-4 col-xl-3">
+                                    <div class="card text-center card-product">
 
-                                                        }
+                                        <div class="card-product__img">
+                                            @foreach (var img in ViewBag.Img)
+                                            {
+                                                if (img.IdProductdetail == item.Id)
+                                                {
+                                                    <img class="card-img" src="~/images/@img.Name" alt="">
+                                                    break;
+                                                }
 
-
-
-                                                        <button class="btn btn-primary" style="margin-top:10px" data-id="@item.Id">Chọn sản phẩm</button>
-
-                                                    </div>
-                                                    <div class="card-body">
-
-                                                        <p style="text-align:left">
-                                                            Sản phẩm : @item.Name
-                                                        </p>
-                                                        @foreach (var size in ViewBag.size)
-                                                        {
-                                                            if (size.Id == item.Id_Size)
-                                                            {
-                                                                <p style="text-align:left">Sise : @size.Name</p>
-                                                                break;
-                                                            }
-
-                                                        }
-
-                                                        @foreach (var size in ViewBag.color)
-                                                        {
-                                                            if (size.Id == item.Id_Color)
-                                                            {
-                                                                <p style="text-align:left"> Màu: @size.Name</p>
-                                                                break;
-                                                            }
-
-                                                        }
-
-                                                        <p style="text-align:left">Giá : @item.Price</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                  
-
-                                    }
+                                            }
 
 
+
+                                            <button class="btn btn-primary" style="margin-top:10px" data-id="@item.Id">Chọn sản phẩm</button>
+
+                                        </div>
+                                        <div class="card-body">
+
+                                            <p style="text-align:left">
+                                                Sản phẩm : @item.Name
+                                            </p>
+                                            @foreach (var size in ViewBag.size)
+                                            {
+                                                if (size.Id == item.Id_Size)
+                                                {
+                                                    <p style="text-align:left">Sise : @size.Name</p>
+                                                    break;
+                                                }
+
+                                            }
+
+                                            @foreach (var size in ViewBag.color)
+                                            {
+                                                if (size.Id == item.Id_Color)
+                                                {
+                                                    <p style="text-align:left"> Màu: @size.Name</p>
+                                                    break;
+                                                }
+
+                                            }
+
+                                            <p style="text-align:left">Giá : @item.Price.ToString("C0", new CultureInfo("vi-VN"))</p>
+                                        </div>
+                                    </div>
                                 </div>
-                            </div>
+
+
+                            }
+
+
                         </div>
                     </div>
-           
+                </div>
+            </div>
+
 
 
 </body>
@@ -126,8 +127,8 @@
         event.preventDefault();
         const cardBody = document.querySelector('.card-body');
         const productId = $(this).attr('data-id');
-  
-      
+
+
         if (!chosenProducts[productId]) { // Kiểm tra nếu sản phẩm chưa được chọn
             chosenProducts[productId] = true; // Đánh dấu sản phẩm đã chọn
 
@@ -319,7 +320,7 @@
                         });
 
                         $('#divToUpdate').html(productsHTML);
-                       
+
                     }
                 }
             });
@@ -330,7 +331,7 @@
     document.addEventListener('DOMContentLoaded', function () {
         const productButtons = document.querySelectorAll('button[data-id]');
         const cardBody = document.querySelector('.card-body'); // Chọn phần tử chứa thông tin sản phẩm
-     // Biến để lưu tổng giá của các sản phẩm đã chọn
+        // Biến để lưu tổng giá của các sản phẩm đã chọn
         // Đối tượng để lưu trữ các sản phẩm đã chọn
 
         productButtons.forEach(button => {
