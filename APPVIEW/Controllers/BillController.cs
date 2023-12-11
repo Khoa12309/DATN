@@ -7,17 +7,75 @@ namespace APPVIEW.Controllers
     public class BillController : Controller
     {
         private Getapi<Bill> getapi;
+        private Getapi<Account> getapiacc;
         public BillController()
         {
             getapi = new Getapi<Bill>();
+            getapiacc = new Getapi<Account>();
         }
-
-        public async Task<IActionResult> GetList()
+  
+        public async Task<IActionResult> GetList(string searchTerm)
         {
-            var obj = getapi.GetApi("Bill");
-            return View(obj);
-        }
+            var obj = getapi.GetApi("Bill").Where(c=>c.Type!= "Tại Quầy");
+            ViewBag.account = getapiacc.GetApi("Account");
+            try
+            {
+                if (searchTerm != "" || searchTerm!= null)
+                {
+                    var ac = getapiacc.GetApi("Account").Where(c=>c.Name.ToLower().Contains(searchTerm.ToLower())); ;
+                    var tk = obj.Where(c=> c.Code.ToLower().Contains(searchTerm.ToLower()) || c.TotalMoney.ToString().Contains(searchTerm)).OrderByDescending(d => d.CreateDate).ToList();
+                 
+                    return View(tk);
+                }
+                else
+                {
 
+
+
+
+
+                    return View(obj);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return View(obj);
+            }
+            return View(obj);
+
+        }
+        public async Task<IActionResult> GetList2(string searchTerm)
+        {
+            var obj = getapi.GetApi("Bill").Where(c => c.Type == "Tại Quầy");
+            ViewBag.account = getapiacc.GetApi("Account");
+            try
+            {
+                if (searchTerm != "" || searchTerm != null)
+                {
+                    var ac = getapiacc.GetApi("Account").Where(c => c.Name.ToLower().Contains(searchTerm.ToLower())); ;
+                    var tk = obj.Where(c => c.Code.ToLower().Contains(searchTerm.ToLower()) || c.TotalMoney.ToString().Contains(searchTerm)).OrderByDescending(d => d.CreateDate).ToList();
+
+                    return View(tk);
+                }
+                else
+                {
+
+
+
+
+
+                    return View(obj);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return View(obj);
+            }
+            return View(obj);
+
+        }
         public async Task<IActionResult> Search(string searchTerm)
         {
             var lstBill = getapi.GetApi("Bill");
@@ -52,6 +110,7 @@ namespace APPVIEW.Controllers
             try
             {
                 getapi.CreateObj(obj, "Bill");
+                
                 return RedirectToAction("GetList");
             }
             catch

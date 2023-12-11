@@ -24,10 +24,15 @@ using System.Text;
 using static System.Net.Mime.MediaTypeNames;
 using System.Globalization;
 
+using APPVIEW.ViewModels;
+
+
+using AspNetCoreHero.ToastNotification.Abstractions;
+
 
 namespace APPVIEW.Controllers
 {
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,Staff")]
     public class QLBillsConTroller : Controller
     {
 
@@ -44,9 +49,10 @@ namespace APPVIEW.Controllers
         private Getapi<Bill> bills;
         private Getapi<BillDetail> billDetails;
         private Getapi<Account> _account;
+        public INotyfService _notyf;
         private static readonly Random random = new Random();
         private string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-        public QLBillsConTroller(ILogger<QLBillsConTroller> logger)
+        public QLBillsConTroller(ILogger<QLBillsConTroller> logger,INotyfService notyf)
         {
             _logger = logger;
             getapi = new Getapi<ProductDetail>();
@@ -60,7 +66,11 @@ namespace APPVIEW.Controllers
             bills = new Getapi<Bill>();
             billDetails = new Getapi<BillDetail>();
             _account = new Getapi<Account>();
-          
+
+
+
+            _notyf = notyf;
+
         }
 
         public ActionResult Index()
@@ -82,15 +92,17 @@ namespace APPVIEW.Controllers
 
                 if (sl < 0)
                 {
-
-                    return BadRequest("Mặt hàng này trong kho không đủ ");
+                    _notyf.Warning("Mặt hàng này trong kho không đủ");
+                    return View();
                 }
                 else
                 {
+                    _notyf.Success("Đã xác nhận đơn hàng!");
                     prdct.Quantity = sl;
                     await getapi.UpdateObj(prdct, "ProductDetails");
                     x.Status = 2;
                     await bills.UpdateObj(x, "Bill");
+                   
                 }
             }
 
@@ -102,11 +114,12 @@ namespace APPVIEW.Controllers
             var x = bills.GetApi("Bill").FirstOrDefault(c => c.id == id);
             x.Status = 3;
             await bills.UpdateObj(x, "Bill");
+            _notyf.Success("Đã xác nhận giao hàng");
             return RedirectToAction("ShowBillXacNhan");
         }
         public async Task<IActionResult> HuyDon(Guid id)
         {
-           
+
             var x = bills.GetApi("Bill").FirstOrDefault(c => c.id == id);
             var y = billDetails.GetApi("BillDetail").Where(c => c.BIllId == id).ToList();
             foreach (var item in y)
@@ -114,6 +127,7 @@ namespace APPVIEW.Controllers
                 await billDetails.DeleteObj(item.id, "BillDetail");
             }
             await bills.DeleteObj(id, "Bill");
+            _notyf.Success("Đã xác nhận hủy đơn");
             return RedirectToAction("DonHuy");
         }
 
@@ -122,7 +136,6 @@ namespace APPVIEW.Controllers
             var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
             var userBills = bills.GetApi("Bill").Where(c => c.Status == 1).OrderByDescending(d => d.CreateDate).ToList();
             ViewBag.viewbill = userBills;
-
 
             var billDetailsApi = billDetails.GetApi("BillDetail");
             var productDetailsApi = getapi.GetApi("ProductDetails");
@@ -158,7 +171,6 @@ namespace APPVIEW.Controllers
             {
                 return View(userBills);
             }
-            return View(userBills);
 
         }
 
@@ -201,7 +213,7 @@ namespace APPVIEW.Controllers
 
 
 
-
+                    _notyf.Information("Không tìm thấy đơn hàng!");
                     return View(userBills);
                 }
 
@@ -210,7 +222,7 @@ namespace APPVIEW.Controllers
             {
                 return View(userBills);
             }
-            return View(userBills);
+           
 
         }
         public ActionResult ShowBillXacNhan(string search)
@@ -245,7 +257,7 @@ namespace APPVIEW.Controllers
 
 
 
-
+                    
                     return View(userBills);
                 }
             }
@@ -260,7 +272,7 @@ namespace APPVIEW.Controllers
             return View(userBills);
         }
         [HttpPost]
-        public ActionResult ChosenProduct(Guid productId )
+        public ActionResult ChosenProduct(Guid productId)
         {
             var product = getapi.GetApi("ProductDetails").FirstOrDefault(c => c.Id == productId);
             List<ProductDetail> products = new List<ProductDetail>();
@@ -281,6 +293,20 @@ namespace APPVIEW.Controllers
 
             return Json(new { success = false });
         }
+        public ActionResult TimKiem(string searchText)
+        {
+            var size = getapiSize.GetApi("Size");
+            var color = getapiColor.GetApi("Color");
+            var Img = getapiImg.GetApi("Image");
+            var prd = getapi.GetApi("ProductDetails");
+            if (searchText != null)
+            {
+                var products = getapi.GetApi("ProductDetails").Where(c => c.Quantity > 0 && c.Name.ToLower().Contains(searchText.ToLower().Trim())).ToList();
+                return Json(new { success = true, productct = products, size = size, color = color,img = Img });
+            }
+
+            return Json(new { success = true, productct = prd, size = size, color = color, img = Img });
+        }
 
 
         public ActionResult BanHangOff(string inputValue)
@@ -295,16 +321,17 @@ namespace APPVIEW.Controllers
                     return View(getapi.GetApi("ProductDetails").Where(c => c.Quantity > 0 && c.Name.ToLower().Contains(inputValue.ToLower())).ToList());
                 }
             }
-            catch (Exception ex) {
+            catch (Exception ex)
+            {
 
                 return View(getapi.GetApi("ProductDetails").Where(c => c.Quantity > 0));
             }
-        
 
-         
-            return View(getapi.GetApi("ProductDetails").Where(c=>c.Quantity>0));
+
+
+            return View(getapi.GetApi("ProductDetails").Where(c => c.Quantity > 0));
         }
-   
+
 
         public string GenerateRandomString(int length)
         {
@@ -312,10 +339,11 @@ namespace APPVIEW.Controllers
               .Select(s => s[random.Next(s.Length)]).ToArray());
         }
         [HttpPost]
-        public async Task<IActionResult> CreateBill(List<Guid> productId, List<int> soluong, float tongtien , string tenkh)
+        public async Task<IActionResult> CreateBill(List<Guid> productId, List<int> soluong, float tongtien, string tenkh)
         {
             var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
-            if (account.Id == Guid.Empty) {
+            if (account.Id == Guid.Empty)
+            {
 
                 return Redirect("~/Account/Login");
             }
@@ -330,6 +358,7 @@ namespace APPVIEW.Controllers
             newbil.Type = "Tại Quầy";
             newbil.TotalMoney = tongtien;
             newbil.Status = 4;
+            newbil.PayDate = DateTime.Now;  
             await bills.CreateObj(newbil, "Bill");
             if (productId.Count == soluong.Count)
             {
@@ -351,8 +380,8 @@ namespace APPVIEW.Controllers
                             bil.ProductDetailID = item.Id;
                             await billDetails.CreateObj(bil, "BillDetail");
 
-                            item.Quantity = item.Quantity-quantity;
-                            await getapi.UpdateObj(item,"ProductDetails");
+                            item.Quantity = item.Quantity - quantity;
+                            await getapi.UpdateObj(item, "ProductDetails");
                         }
                     }
                 }
@@ -361,24 +390,18 @@ namespace APPVIEW.Controllers
             {
                 return RedirectToAction("BanHangOff");
             }
-            if (tenkh=="" || tenkh == null) {
+            if (tenkh == "" || tenkh == null)
+            {
 
 
                 tenkh = "Khong Luu Ten";
             }
-        
-            return RedirectToAction("GenerateInvoice", new { billId = newbil.id ,tenkh = tenkh});
-        }
- 
 
-public ActionResult GenerateInvoice(Guid billId , string tenkh)
-        {
-            // Lấy thông tin hóa đơn từ billId
-            var bill = bills.GetApi("Bill").FirstOrDefault(b => b.id == billId);
-            var billDetailss = billDetails.GetApi("BillDetail").Where(bd => bd.BIllId == billId).ToList();
-            var products = getapi.GetApi("ProductDetails").ToList();
-        
-            // Tạo file PDF
+            return RedirectToAction("GenerateInvoice", new { billId = newbil.id, tenkh = tenkh });
+        }
+
+        public string xulichuoi(string tenkh) {
+
             string normalizedString1 = tenkh.Normalize(NormalizationForm.FormD);
             StringBuilder stringBuilder = new StringBuilder();
 
@@ -411,7 +434,20 @@ public ActionResult GenerateInvoice(Guid billId , string tenkh)
                 }
             }
 
-             var ten = result.ToString().Trim();
+            var ten = result.ToString().Trim();
+
+            return ten;
+        }
+        public ActionResult GenerateInvoice(Guid billId, string tenkh)
+        {
+            // Lấy thông tin hóa đơn từ billId
+
+            var bill = bills.GetApi("Bill").FirstOrDefault(b => b.id == billId);
+            var billDetailss = billDetails.GetApi("BillDetail").Where(bd => bd.BIllId == billId).ToList();
+            var products = getapi.GetApi("ProductDetails").ToList();
+
+            // Tạo file PDF
+       
 
             using (var ms = new MemoryStream())
             {
@@ -422,15 +458,15 @@ public ActionResult GenerateInvoice(Guid billId , string tenkh)
 
                     // Tạo tiêu đề hóa đơn
                     var titleFont = FontFactory.GetFont("Arial", 16, Font.BOLD);
-                    var titleParagraph = new Paragraph("Hoa Don Ban Hang \n", titleFont);
+                    var titleParagraph = new Paragraph("Hoa Don Ban Hang Shop Super Fashion \n", titleFont);
                     titleParagraph.Alignment = Element.ALIGN_CENTER;
-                    document.Add(titleParagraph); 
+                    document.Add(titleParagraph);
                     var titleParagraph2 = new Paragraph("  ", titleFont);
                     titleParagraph2.Alignment = Element.ALIGN_CENTER;
                     document.Add(titleParagraph2);
 
                     // Tạo thông tin khách hàng và nhân viên
-                    var infoFont = FontFactory.GetFont("Arial", 12, iTextSharp.text.Font.NORMAL);
+                    var infoFont = FontFactory.GetFont("Arial", 10, iTextSharp.text.Font.NORMAL);
                     var infoTable = new PdfPTable(2);
                     infoTable.WidthPercentage = 100;
                     infoTable.SetWidths(new int[] { 1, 2 });
@@ -440,23 +476,25 @@ public ActionResult GenerateInvoice(Guid billId , string tenkh)
                     infoTable.AddCell(new Phrase("Ngay Tao :", infoFont));
                     infoTable.AddCell(new Phrase(bill.CreateDate.ToString("dd/MM/yyyy"), infoFont));
                     infoTable.AddCell(new Phrase("Ten Khach Hang :", infoFont));
-                    infoTable.AddCell(new Phrase(ten, infoFont));
-              
-           
-              
+                    infoTable.AddCell(new Phrase(xulichuoi(tenkh).Replace("Đ", "D").Replace("đ", "d"), infoFont));
+
+
+
 
                     document.Add(infoTable);
 
                     // Tạo bảng chi tiết hóa đơn
-                    var detailFont = FontFactory.GetFont("Arial", 10, Font.NORMAL);
-                    var detailTable = new PdfPTable(5);
+                    var detailFont = FontFactory.GetFont("Arial", 8, Font.NORMAL);
+                    var detailTable = new PdfPTable(7);
                     detailTable.WidthPercentage = 100;
-                    detailTable.SetWidths(new int[] { 1, 3, 2, 2, 2 });
+                    detailTable.SetWidths(new int[] { 1, 3, 1, 2, 2 ,1,2});
                     detailTable.SpacingBefore = 10f;
                     detailTable.SpacingAfter = 10f;
 
                     detailTable.AddCell(new Phrase("STT", detailFont));
-                    detailTable.AddCell(new Phrase("San Pham", detailFont));
+                    detailTable.AddCell(new Phrase("San Pham", detailFont));    
+                    detailTable.AddCell(new Phrase("Size", detailFont));    
+                    detailTable.AddCell(new Phrase("Mau", detailFont));
                     detailTable.AddCell(new Phrase("Don Gia", detailFont));
                     detailTable.AddCell(new Phrase("So Luong", detailFont));
                     detailTable.AddCell(new Phrase("Thanh Tien", detailFont));
@@ -464,15 +502,19 @@ public ActionResult GenerateInvoice(Guid billId , string tenkh)
                     int stt = 1;
                     foreach (var item in billDetailss)
                     {
-                       
-                            var product = products.FirstOrDefault(p => p.Id == item.ProductDetailID);
-                            detailTable.AddCell(new Phrase(stt.ToString(), detailFont));
-                            detailTable.AddCell(new Phrase(product.Name, detailFont));
-                            detailTable.AddCell(new Phrase(product.Price.ToString("#,##0") + " VND", detailFont));
-                            detailTable.AddCell(new Phrase(item.Amount.ToString(), detailFont));
-                            detailTable.AddCell(new Phrase((item.Price).ToString("#,##0") + " VND", detailFont));
-                            stt++;
-                       
+
+                        var product = products.FirstOrDefault(p => p.Id == item.ProductDetailID);
+                        var size = getapiSize.GetApi("Size").FirstOrDefault(c=>c.Id==product.Id_Size);
+                        var color = getapiColor.GetApi("Color").FirstOrDefault(c=>c.Id==product.Id_Color);
+                        detailTable.AddCell(new Phrase(stt.ToString(), detailFont));
+                        detailTable.AddCell(new Phrase(product.Name, detailFont));     
+                        detailTable.AddCell(new Phrase(size.Name, detailFont));     
+                        detailTable.AddCell(new Phrase(xulichuoi(color.Name).Replace("Đ", "D").Replace("đ", "d"), detailFont));
+                        detailTable.AddCell(new Phrase(product.Price.ToString("#,##0") + " VND", detailFont));
+                        detailTable.AddCell(new Phrase(item.Amount.ToString(), detailFont));
+                        detailTable.AddCell(new Phrase((item.Price).ToString("#,##0") + " VND", detailFont));
+                        stt++;
+
                     }
 
                     document.Add(detailTable);
@@ -486,21 +528,21 @@ public ActionResult GenerateInvoice(Guid billId , string tenkh)
                     var signFont = FontFactory.GetFont("Arial", 12, Font.ITALIC);
                     var signParagraph = new Paragraph("\n\nNguoi Lap Hoa Don\n(Ky Va Ghi Ro Ho Ten)", signFont); signParagraph.Alignment = Element.ALIGN_RIGHT; document.Add(signParagraph);
                     document.Close();
-                   
-                 
+
+
                 }
 
                 // Trả về file PDF
 
 
-                 RedirectToAction("index");
+                RedirectToAction("index");
                 return File(ms.ToArray(), "application/pdf", "HoaDon_" + bill.Code + ".pdf");
-            } 
-        
+            }
+
         }
 
-            // POST: QLBills/Delete/5
-            [HttpPost]
+        // POST: QLBills/Delete/5
+        [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int id, IFormCollection collection)
         {

@@ -119,33 +119,27 @@
 
                             <select name="size" class="form-select">
                                 <option value=""> Chọn Size</option>
-                                @foreach (var item in ViewBag.prd)
-                                {
-                                    @foreach (var size in ViewBag.size)
+                                 @foreach (var size in ViewBag.size)
                                     {
-                                        if (item.Id_Size == size.Id)
-                                        {
-                                            <option value="@item.Id_Size"> @size.Name</option>
+                                       
+                                            <option value="@size.Id"> @size.Name</option>
 
-                                        }
                                     }
-                                }
+                              
                             </select>
                         </div>
                         <div class="col-md-12 form-group">
                             <select id="color" name="color" class="form-select">
                                 <option value=""> Chọn Màu </option>
-                                @foreach (var item in ViewBag.prd)
-                                {
+                            
                                     @foreach (var color in ViewBag.color)
                                     {
-                                        if (item.Id_Color == color.Id)
-                                        {
-                                            <option value="@item.Id_Color"> @color.Name</option>
 
-                                        }
+                                    <option value="@color.Id"> @color.Name</option>
+
+                                       
                                     }
-                                }
+                                
                             </select>
 
                         </div>

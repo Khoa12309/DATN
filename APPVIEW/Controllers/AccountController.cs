@@ -39,8 +39,8 @@ namespace APPVIEW.Controllers
         private readonly ShoppingDB _context;
         private readonly SendEmailMessage _sendEmailMessage;
         private readonly ShoppingDB _dbContext;
-
-        public AccountController(HttpClient httpClient, ISendEmail sendEmail)
+        public INotyfService _notyf;
+        public AccountController(HttpClient httpClient, ISendEmail sendEmail, INotyfService notyf)
         {
             getapi = new Getapi<Account>();
             _httpClient = httpClient;
@@ -50,6 +50,7 @@ namespace APPVIEW.Controllers
             _context = new ShoppingDB();
             _sendEmailMessage = new SendEmailMessage();
             _dbContext = new ShoppingDB();
+            _notyf = notyf;
         }
 
         [Authorize(Roles = "Admin,Staff")]
@@ -65,46 +66,46 @@ namespace APPVIEW.Controllers
 
         }
         [HttpPost]
-        public async Task<IActionResult> GetList(int? page,string tk,string status ,Guid role)
+        public async Task<IActionResult> GetList(int? page, string tk, string status, Guid role)
         {
 
             ViewBag.Roles = GetListRole();
             var obj = getapi.GetApi("Account");
-            if (tk!=null)
+            if (tk != null)
             {
-               obj= obj.Where(c => c.Name.ToLower().Contains(tk.ToLower())||c.Email==tk).ToList();
+                obj = obj.Where(c => c.Name.ToLower().Contains(tk.ToLower()) || c.Email == tk).ToList();
 
             }
-            if (role!=Guid.Empty)
+            if (role != Guid.Empty)
             {
                 obj = obj.Where(c => c.IdRole == role).ToList();
             }
-            if (status!=null)
+            if (status != null)
             {
                 obj = obj.Where(c => c.Status.ToString() == status).ToList();
             }
             int pageSize = 8;
             int pageNumber = (page ?? 1);
             return View(obj.OrderByDescending(x => x.Id).ToPagedList(pageNumber, pageSize));
-            
+
         }
-        
+
         public async Task<IActionResult> Search(string tk, int? page)
         {
-            var lstAcc = getapi.GetApi("Account").Where(c=>c.Name.ToLower().Contains(tk.ToLower()));
+            var lstAcc = getapi.GetApi("Account").Where(c => c.Name.ToLower().Contains(tk.ToLower()));
 
             var searchResult = lstAcc
                 .Where(v =>
-                    
+
                     v.Name.ToLower().Contains(tk.ToLower())
                 )
                 .ToList();
 
-           
 
-             int pageSize = 8;
-                int pageNumber = (page ?? 1);
-                return RedirectToAction("Getlist", lstAcc.OrderByDescending(x => x.Id).ToPagedList(pageNumber, pageSize));
+
+            int pageSize = 8;
+            int pageNumber = (page ?? 1);
+            return RedirectToAction("Getlist", lstAcc.OrderByDescending(x => x.Id).ToPagedList(pageNumber, pageSize));
         }
 
 
@@ -226,8 +227,8 @@ namespace APPVIEW.Controllers
         }
         [HttpPost, AllowAnonymous]
 
-        public async Task<IActionResult> Login(LoginVm obj,string ReturnUrl)
-        { 
+        public async Task<IActionResult> Login(LoginVm obj, string ReturnUrl)
+        {
             ViewData["ReturnUrl"] = ReturnUrl;
             if (string.IsNullOrWhiteSpace(obj.Email) || string.IsNullOrWhiteSpace(obj.Password))
             {
@@ -340,10 +341,12 @@ namespace APPVIEW.Controllers
 
                 obj.Avatar = AddImg(imageFile);
                 await getapi.UpdateObj(obj, "Account");
+                _notyf.Success("Edit Sucsess");
                 return RedirectToAction("GetList");
             }
             catch
             {
+                _notyf.Error("Error");
                 return View();
             }
         }
@@ -362,6 +365,7 @@ namespace APPVIEW.Controllers
                     _context.Update(acc);
                     _context.Update(add);
                     await _context.SaveChangesAsync();
+                    _notyf.Success("Đã đổi trạng thái tài khoản thành công!");
                     return RedirectToAction(nameof(GetList));
                 }
                 acc.Status = 2;
@@ -370,9 +374,10 @@ namespace APPVIEW.Controllers
                 _context.Update(add);
                 await _context.SaveChangesAsync();
                 //_sendEmail.SendEmailAsync(acc.Email, "Khóa tài khoản", _sendEmailMessage.SendEmailBlock(acc.Name, acc.Email));
+                _notyf.Success($"Đã khóa tài khoản:{acc.Name}");
                 return RedirectToAction(nameof(GetList));
             }
-
+            _notyf.Error("Error");
             return View();
         }
         [HttpGet, Authorize(Roles = "Admin,Staff,Customer")]
@@ -386,7 +391,7 @@ namespace APPVIEW.Controllers
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
 
-            return Redirect("~/Account/Login");
+            return Redirect("~/Home/Index");
         }
 
         [HttpGet, Authorize(Roles = "Admin,Staff,Customer")]
@@ -499,8 +504,7 @@ namespace APPVIEW.Controllers
                 };
 
                 var responeseAcc = await getapi.UpdateObj(user, "Account");
-                var responeseAdd = await getapiAddress.UpdateObj(address, "Address");
-
+                var responeseAdd = await getapiAddress.UpdateObj(address, "Address");               
                 return Redirect($"~/Account/MyProfile?id_User={obj.AccountId}");
             }
             catch
@@ -637,6 +641,7 @@ namespace APPVIEW.Controllers
 
                 }
             }
+            _notyf.Error("Error");
             return View();
         }
         public IActionResult Create()
@@ -650,8 +655,8 @@ namespace APPVIEW.Controllers
 
             if (string.IsNullOrEmpty(obj.Email) || string.IsNullOrEmpty(obj.Name))
             {
-
-                ViewData["ErrorMessage"] = "Please enter your information.";
+               
+                _notyf.Warning("Không được để trống!");
                 return View("Create", obj);
 
             }
@@ -700,14 +705,15 @@ namespace APPVIEW.Controllers
 
                 string Subject = "Create account successfully";
                 _sendEmail.SendEmailAsync(obj.Email, Subject, _sendEmailMessage.SendEmail(obj.Name, obj.Email, obj.PhoneNumber));
-                ViewData["Sucsess"] = $"Create account for {obj.Name} successful and send email to {obj.Email}!";
+               
+                _notyf.Success($"Create account for {obj.Name} successful and send email to {obj.Email}!");
                 return Redirect("~/Account/GetList");
 
             }
             else
             {
                 var errorResponse = await responese.Content.ReadAsStringAsync();
-                ViewData["ErrorMessage"] = errorResponse;
+                _notyf.Error($"Error : {errorResponse} ");            
                 return View();
             }
 
@@ -721,6 +727,7 @@ namespace APPVIEW.Controllers
             var lst = getapi.GetApi("Account");
             if (lst != null)
             {
+               
                 return View(lst.Where(c => c.Status == 2 && c.IdRole == customer).ToList());
             }
             return View();
@@ -741,7 +748,7 @@ namespace APPVIEW.Controllers
 
 
         }
-  
+
 
     }
 }
