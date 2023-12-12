@@ -309,6 +309,7 @@ namespace APPVIEW.Controllers
             var x = bills.GetApi("Bill").FirstOrDefault(c => c.id == id);
             x.Status = 4;
             x.PayDate = DateTime.Now;
+            x.Type = "Đã nhận hàng và thanh toán";
             await bills.UpdateObj(x, "Bill");
             return RedirectToAction("Thongtin");
         }
@@ -1261,7 +1262,7 @@ namespace APPVIEW.Controllers
 
                 // Gọi API để lấy danh sách các tỉnh/thành phố
                 var response = await client.GetProvincesAsync();
-                if (response.Code == 200) // Thành công
+                if (response.Code == 200) // Thành côngnhan
                 {
                     // Trả về danh sách các quận/huyện dưới dạng JSON
                     ViewBag.province = response.Data;

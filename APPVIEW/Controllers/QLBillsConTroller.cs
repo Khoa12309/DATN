@@ -77,7 +77,21 @@ namespace APPVIEW.Controllers
         {
             return View();
         }
+        public IActionResult Chitiet(Guid id ) {
+            var bill = bills.GetApi("Bill").FirstOrDefault(c=>c.id == id);
+            if (bill != null) {
+                ViewBag.bil = bill;
+                var billct = billDetails.GetApi("BillDetail").Where(c=>c.BIllId==bill.id);
+                ViewBag.prd = getapi.GetApi("ProductDetails");
+                ViewBag.size = getapiSize.GetApi("Size");
+                ViewBag.color = getapiColor.GetApi("Color");
+                return View(billct);
+            }
 
+
+
+            return View();
+        }
 
 
         public async Task<IActionResult> Xacnhan(Guid id)
@@ -167,6 +181,7 @@ namespace APPVIEW.Controllers
                 {
                     var tk = bills.GetApi("Bill").Where(c => c.Status == 1 && c.Code.Contains(search)).OrderByDescending(d => d.CreateDate).ToList();
                     ViewBag.viewbill = tk;
+                 
                     return View(tk);
                 }
                 else
@@ -360,6 +375,13 @@ namespace APPVIEW.Controllers
 
                 return Redirect("~/Account/Login");
             }
+            if (tenkh == "" || tenkh == null)
+            {
+
+
+                tenkh = "Khong Luu Ten";
+            }
+
             var prdct = getapi.GetApi("ProductDetails").ToList();
             var billct = billDetails.GetApi("BillDetail");
             var bill = bills.GetApi("Bill");
@@ -372,6 +394,7 @@ namespace APPVIEW.Controllers
             newbil.TotalMoney = tongtien;
             newbil.Status = 4;
             newbil.PayDate = DateTime.Now;
+            newbil.Name = tenkh;
             await bills.CreateObj(newbil, "Bill");
             if (productId.Count == soluong.Count)
             {
@@ -403,14 +426,8 @@ namespace APPVIEW.Controllers
             {
                 return RedirectToAction("BanHangOff");
             }
-            if (tenkh == "" || tenkh == null)
-            {
-
-
-                tenkh = "Khong Luu Ten";
-            }
-
-            return RedirectToAction("GenerateInvoice", new { billId = newbil.id, tenkh = tenkh });
+      
+            return RedirectToAction("GenerateInvoice", new { billId = newbil.id, tenkh = newbil.Name });
         }
 
         public string xulichuoi(string tenkh)
@@ -472,7 +489,7 @@ namespace APPVIEW.Controllers
 
                     // Tạo tiêu đề hóa đơn
                     var titleFont = FontFactory.GetFont("Arial", 16, Font.BOLD);
-                    var titleParagraph = new Paragraph("Hoa Don Ban Hang Shop Super Fashion \n", titleFont);
+                    var titleParagraph = new Paragraph("Hoa Đơn Ban Hang Shop Super Fashion \n", titleFont);
                     titleParagraph.Alignment = Element.ALIGN_CENTER;
                     document.Add(titleParagraph);
                     var titleParagraph2 = new Paragraph("  ", titleFont);
@@ -554,7 +571,61 @@ namespace APPVIEW.Controllers
             }
 
         }
+        public ActionResult ShowBillDaNhan(string search)
+        {
 
+            var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
+            var userBills = bills.GetApi("Bill").Where(c => c.Status == 2).OrderByDescending(d => d.CreateDate).ToList();
+            var billDetailsApi = billDetails.GetApi("BillDetail");
+            var productDetailsApi = getapi.GetApi("ProductDetails");
+            var productsApi = getapiProduct.GetApi("Product");
+
+
+            ViewBag.viewbillct = billDetailsApi;
+            ViewBag.viewprdct = productDetailsApi;
+            ViewBag.viewprd = productsApi;
+            ViewBag.sizee = getapiSize.GetApi("Size");
+            ViewBag.acc = _account.GetApi("Account");
+            ViewBag.Collor = getapiColor.GetApi("Color");
+            ViewBag.viewbill = userBills;
+            try
+            {
+
+                if (search != "")
+                {
+                    var tk = bills.GetApi("Bill").Where(c => c.Status == 2 && c.Code.Contains(search)).OrderByDescending(d => d.CreateDate).ToList();
+                    ViewBag.viewbill = tk;
+                    return View(tk);
+                }
+                else
+                {
+                    ViewBag.viewbill = userBills;
+
+
+
+
+                    return View(userBills);
+                }
+            }
+            catch (Exception ex)
+            {
+
+
+                return View(userBills);
+
+            }
+
+            return View(userBills);
+        }
+        public async Task<IActionResult> Nhanhang(Guid id)
+        {
+            var x = bills.GetApi("Bill").FirstOrDefault(c => c.id == id);
+            x.Status = 4;
+            x.PayDate = DateTime.Now;
+            x.Type = "Đã nhận hàng và thanh toán";
+            await bills.UpdateObj(x, "Bill");
+            return RedirectToAction("ShowBillDaNhan");
+        }
         // POST: QLBills/Delete/5
         [HttpPost]
         [ValidateAntiForgeryToken]

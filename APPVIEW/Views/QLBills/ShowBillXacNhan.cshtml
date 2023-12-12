@@ -1,5 +1,4 @@
-﻿@model IEnumerable<APPDATA.Models.Bill>
-
+﻿
 @{
     ViewData["Title"] = "ShowBillXacNhan";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
@@ -139,13 +138,9 @@
 
 <div class="card">
     <div class="card-header">
-        <h5 class="mb-0">Suppliers</h5>
     </div>
     <div class="card-body">
-        <a class="btn btn-success waves-effect waves-light" asp-action="Create">
-            <span class="mdi mdi-plus-thick">Create new</span>
-        </a>
-
+       
         <div class="table-responsive">
             <table class="table table-hover">
                 <thead>
@@ -156,11 +151,10 @@
 
                         <th>SDT</th>
                         <th>Địa chỉ</th>
-
+                        <th>Tổng tiền</th>
                         <th>Trạng thái</th>
                         <th>Ngày tạo</th>
 
-                        <th>Hành động</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -195,26 +189,29 @@
                                 <td>
                                     @itembill.Address
                                 </td>
+                                <td>
+                                    @itembill.TotalMoney
+                                </td>
                                 @if (itembill.Status == 1)
                                 {
-                                    <td>  Chờ xác nhận</td>
+                                    <td>  Chờ xác nhận + @itembill.Type</td>
 
                                 }
                                 else if (itembill.Status == 2)
                                 {
-                                    <td>  Đã xác nhận đơn hàng</td>
+                                    <td>  Đã xác nhận đơn hàng + @itembill.Type</td>
 
                                 }
                                 else if (itembill.Status == 3)
                                 {
-                                    <td>Đang giao</td>
+                                    <td>Đang giao + @itembill.Type</td>
                                 }
                                 else if (itembill.Status == 4)
                                 {
-                                    <td>Đã giao</td>
+                                    <td>Đã nhận và thanh toán</td>
                                 }
 
-                           
+
                                 <td>
                                     @{
                                         DateTime createDate = itembill.CreateDate;
@@ -226,10 +223,11 @@
                                 </td>
 
                                 <td>
-                                    <button style="width:140px" class="btn btn-danger"> @Html.ActionLink("Giao hàng ", "GiaoHang", new { id = itembill.id }, new { style = "color:white;" }) </button>
-                                </td>   
+                                    <button style="width:140px" class="btn btn-danger"> @Html.ActionLink("Giao Hàng", "GiaoHang", new { id = itembill.id }, new { style = "color:white;" }) </button>
+                                </td>
+                              
                                 <td>
-                                    <button style="width:140px" class="btn btn-danger"> @Html.ActionLink("Hủy Đơn ", "HuyDon2", new { id = itembill.id }, new { style = "color:white;" }) </button>
+                                    <button style="width:140px" class="btn btn-danger"> @Html.ActionLink("Chi Tiết ", "Chitiet", new { id = itembill.id }, new { style = "color:white;" }) </button>
                                 </td>
 
                             </tr>
@@ -246,3 +244,5 @@
         </div>
     </div>
 </div>
+
+
