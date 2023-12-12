@@ -347,6 +347,13 @@ namespace APPVIEW.Controllers
 
                 return Redirect("~/Account/Login");
             }
+            if (tenkh == "" || tenkh == null)
+            {
+
+
+                tenkh = "Khong Luu Ten";
+            }
+
             var prdct = getapi.GetApi("ProductDetails").ToList();
             var billct = billDetails.GetApi("BillDetail");
             var bill = bills.GetApi("Bill");
@@ -358,6 +365,7 @@ namespace APPVIEW.Controllers
             newbil.Type = "Tại Quầy";
             newbil.TotalMoney = tongtien;
             newbil.Status = 4;
+            newbil.Name = tenkh;
             newbil.PayDate = DateTime.Now;  
             await bills.CreateObj(newbil, "Bill");
             if (productId.Count == soluong.Count)
@@ -390,14 +398,8 @@ namespace APPVIEW.Controllers
             {
                 return RedirectToAction("BanHangOff");
             }
-            if (tenkh == "" || tenkh == null)
-            {
-
-
-                tenkh = "Khong Luu Ten";
-            }
-
-            return RedirectToAction("GenerateInvoice", new { billId = newbil.id, tenkh = tenkh });
+           
+            return RedirectToAction("GenerateInvoice", new { billId = newbil.id, tenkh = newbil.Name });
         }
 
         public string xulichuoi(string tenkh) {
