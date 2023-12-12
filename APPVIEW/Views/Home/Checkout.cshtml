@@ -297,6 +297,9 @@
 
     //chọn phường
     inputdis.onchange = function () {
+      
+        inputward.value = ""; 
+        $("#wardSelect").empty();
         // Lấy giá trị được chọn trong thẻ select
         var district = 0;
         lward.splice(0, ldistrict.length);
@@ -344,6 +347,7 @@
 
     var t = 0;
     inputward.onchange = function () {
+       
         // Lấy giá trị được chọn trong thẻ select
         var district = 0;
         var ward = 0
