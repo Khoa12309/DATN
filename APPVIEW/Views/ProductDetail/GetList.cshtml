@@ -1,5 +1,6 @@
 ﻿@model X.PagedList.IPagedList<APPDATA.Models.ProductDetail>
 @using System.Globalization;
+@using APPDATA.Models;
 @using X.PagedList.Web.Common
 @using X.PagedList
 @using X.PagedList.Mvc.Core
@@ -20,42 +21,30 @@
         <a class="btn btn-success waves-effect waves-light" asp-action="Create">
             <span class="mdi mdi-plus-thick">Create new</span>
         </a>
-      <form asp-controller="productdetail" asp-action="getlist" class="row contact_form" method="post">
-    <div class="col-md-5 form-group" style="margin-right:50px">
-        <input type="text" class="form-control" name="tk" placeholder="Nhập tên sản phẩm để tìm kiếm">
-        <button type="submit" style="background-color:brown ; color:black">Search</button>
-    </div>
-      @*<div class="input-group mb-3">
-            <input type="text" name="tk" class="form-control" placeholder="Tìm kiếm" aria-label="Tìm kiếm" aria-describedby="button-addon2">
-            <button class="btn btn-outline-secondary" type="submit" id="button-addon2"><i class="fas fa-search"></i>Tìm kiếm</button>
-        </div>*@
-    </form>
+        <form asp-controller="productdetail" asp-action="getlist" class="row contact_form" method="post">
+            <div class="col-md-5 form-group" style="margin-right:50px">
+                <input type="text" class="form-control" name="tk" placeholder="Nhập tên sản phẩm để tìm kiếm">
+                <button type="submit" style="background-color:brown ; color:black">Search</button>
+            </div>
+
+        </form>
         <div class="table-responsive">
             <table class="table table-hover">
                 <thead>
                     <tr>
                         <th>STT</th>
-                        <th>Name</th>
-                        <th>IMG</th>
-                        <th>Category</th>
-                        <th>Size</th>
-                        <th>Material</th>
-                        <th>Color</th>
-                        <th>Supplier</th>
-                        <th>Quantity</th>
-                        <th> Price</th>
-                        <th> Status</th>
-                        <th>Create_date </th>
-                        <th> Update_date </th>
-@*                        <th>
-                            Create_by
-                        </th>
-                        <th>
-                            Update_by
-                        </th>*@
-
-
-                        <th>Actions</th>
+                        <th>Sản phẩm</th>
+                        <th>Thể loại</th>
+                        <th>Kích cỡ</th>
+                        <th>Chất liệu</th>
+                        <th>Màu sắc</th>
+                        <th>Nhà cung cấp</th>
+                        <th>Số lượng</th>
+                        <th> Giá</th>
+                        <th> Trạng thái</th>
+                        <th>Ngày tạo </th>
+                        <th> Ngày cập nhật </th>
+                        <th>Hành động</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -66,30 +55,66 @@
                             <tr>
                                 <td>
                                     @(
-                            stt += 1
-                            )
+                                        stt += 1
+                                        )
                                 </td>
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Name)
-                                </td>
-                                <td>
-                                    @foreach (var obj in ViewBag.Image)
+                                <td class="sorting_1">
+                                    @foreach (var obj in ViewBag.Image as List<Image>)
                                     {
                                         if (item.Id == obj.IdProductdetail)
                                         {
-                                            <img src="~/images/@obj.Name" alt="Fjords" width="90px" height="90px">
+                                            <div class="d-flex justify-content-start align-items-center product-name">
+                                                <div class="avatar-wrapper me-3">
+                                                    <div class="avatar rounded-2 bg-label-secondary">
+                                                        <img src="~/images/@obj.Name" alt="Sản phẩm-9" class="rounded-2">
+
+                                                    </div>
+                                                </div>
+                                                <div class="d-flex flex-column">
+                                                    <span class="text-nowrap text-heading fw-medium">@item.Name</span>
+                                                    <small class="text-truncate d-none d-sm-block">@Html.Raw(Html.Encode(item.Desciption).Substring(0, 50))...</small>
+                                                </div>
+                                            </div>
+
                                             break;
                                         }
                                     }
                                 </td>
                                 <td>
-                                    @foreach (var obj in ViewBag.Category)
+                                    @foreach (var obj in ViewBag.Category as List<Category>)
                                     {
                                         if (item.Id_Category == obj.Id)
                                         {
-                                            <p>
-                                                @obj.Name
-                                            </p>
+                                            if (obj.Name.Contains("Áo"))
+                                            {
+                                                <h6 class="text-truncate d-flex align-items-center mb-0">
+                                                    <span class="avatar-sm rounded-circle d-flex justify-content-center align-items-center bg-label-info me-2">
+                                                        <i class="mdi mdi-tshirt-crew-outline"></i>
+                                                    </span>
+                                                    <font>@obj.Name</font>
+                                                </h6>
+                                            }
+                                            else if (obj.Name.Contains("Quần"))
+                                            {
+                                                <h6 class="text-truncate d-flex align-items-center mb-0">
+                                                    <span class="avatar-sm rounded-circle d-flex justify-content-center align-items-center bg-label-warning me-2">
+                                                      <img src="~/images/swimsuit.png" width="15px" height="20px" />
+
+                                                    </span>
+                                                    <font>@obj.Name</font>
+                                                </h6>
+                                            }
+                                            else
+                                            {
+                                                <h6 class="text-truncate d-flex align-items-center mb-0">
+                                                    <span class="avatar-sm rounded-circle d-flex justify-content-center align-items-center bg-label-secondary me-2">
+                                                        <i class="mdi mdi-help-circle-outline"></i>
+                                                    </span>
+                                                    <font>@obj.Name</font>
+                                                </h6>
+                                            }
+
+
                                         }
                                     }
                                 </td>
@@ -174,15 +199,6 @@
                                     }
                                     @formattedUpdateDate
                                 </td>
-@*                                <td>
-                                    @Html.DisplayFor(modelItem => item.Create_by)
-                                </td>
-
-                                <td>
-                                    @Html.DisplayFor(modelItem => item.Update_by)
-                                </td>*@
-
-
 
                                 <td>
                                     <div class="d-inline-block text-nowrap">

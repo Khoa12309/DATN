@@ -62,6 +62,29 @@ namespace APPVIEW.Controllers
                 ViewBag.Roles = GetListRole();
                 // Nếu là Admin, hiển thị tất cả các tài khoản
                 var obj = getapi.GetApi("Account");
+                var cusRoleId = _dbContext.Roles.FirstOrDefault(c => c.name == "Customer")?.id;
+                var staffId = _dbContext.Roles.FirstOrDefault(c => c.name == "Staff")?.id;
+                var adminId = _dbContext.Roles.FirstOrDefault(c => c.name == "Admin")?.id;
+                if (cusRoleId != null && staffId != null && adminId != null)
+                {
+
+
+                    // Đếm số lượng khách hàng đã đăng ký trong tháng này
+                    ViewBag.CountUser = await _dbContext.Accounts
+                        .Where(c => c.Status != 2 && c.IdRole == cusRoleId)
+                        .CountAsync();
+                    ViewBag.CountActive = await _dbContext.Accounts
+                        .Where(c => c.Status == 1 && c.IdRole == cusRoleId)
+                        .CountAsync();
+                    ViewBag.CountInActive = await _dbContext.Accounts
+                        .Where(c => c.Status == 0 && c.IdRole == cusRoleId)
+                        .CountAsync();
+                    ViewBag.CountBlocked = await _dbContext.Accounts
+                    .Where(c => c.Status == 2 && c.IdRole == cusRoleId)
+                    .CountAsync();
+
+                    ViewBag.CountRole = await _dbContext.Roles.Where(c => c.Status == 1).CountAsync();
+                }               
                 int pageSize = 8;
                 int pageNumber = page ?? 1;
                 return View(obj.Where(c => c.Status != 2).ToPagedList(pageNumber, pageSize));
@@ -88,11 +111,11 @@ namespace APPVIEW.Controllers
             if (User.IsInRole("Staff"))
             {
                 ViewBag.Roles = GetListRole();
-                var Cusrole = GetListRole().FirstOrDefault(c => c.name == "Customer"&&c.Status==1).id;
+                var Cusrole = GetListRole().FirstOrDefault(c => c.name == "Customer" && c.Status == 1).id;
                 var obj = getapi.GetApi("Account");
                 if (tk != null)
                 {
-                    obj = obj.Where(c => c.Name.ToLower().Contains(tk.ToLower()) || c.Email == tk &&c.IdRole==Cusrole).ToList();
+                    obj = obj.Where(c => c.Name.ToLower().Contains(tk.ToLower()) || c.Email == tk && c.IdRole == Cusrole).ToList();
 
                 }
                 if (role != Guid.Empty)
@@ -318,10 +341,15 @@ namespace APPVIEW.Controllers
                 var jwt = handler.ReadJwtToken(loginResult.AccessToken);
 
                 bool checkRoleAdmin = false;
+                bool checkRoleStaff = false;
                 var checkRoles = jwt.Claims.FirstOrDefault(c => c.Type == "role")?.Value;
                 if (checkRoles.StartsWith("Adm"))
                 {
                     checkRoleAdmin = true;
+                }
+                else if (checkRoles.StartsWith("Sta"))
+                {
+                    checkRoleStaff = true;
                 }
                 else
                 {
@@ -378,6 +406,10 @@ namespace APPVIEW.Controllers
                     return Redirect(!string.IsNullOrEmpty(ViewData["ReturnUrl"]?.ToString()) ? ViewData["ReturnUrl"].ToString() : "~/Admin/Admin/Index");
 
                 }
+                else if (checkRoleStaff = true)
+                {
+                    return Redirect(!string.IsNullOrEmpty(ViewData["ReturnUrl"]?.ToString()) ? ViewData["ReturnUrl"].ToString() : "~/Admin/Admin/Index");
+                }
                 else
                 {
                     return Redirect(!string.IsNullOrEmpty(ViewData["ReturnUrl"]?.ToString()) ? ViewData["ReturnUrl"].ToString() : "~/Home/Index");
@@ -387,7 +419,7 @@ namespace APPVIEW.Controllers
 
             }
 
-            ViewData["ErrorMessage"] = "Email or password wrong.";
+            ViewData["ErrorMessage"] = "Email hoặc mật khẩu đã sai vui lòng nhập lại.";
             return View("Login", obj);
 
         }
@@ -721,8 +753,8 @@ namespace APPVIEW.Controllers
             return View();
         }
         public IActionResult Create()
-        {
-            ViewBag.ListRole = GetListRole();
+        {           
+            ViewBag.ListRole = GetListRole().Where(c => c.Status != 0).ToList();
             return View();
         }
         [HttpPost, Authorize(Roles = "Admin")]

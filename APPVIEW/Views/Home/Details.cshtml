@@ -102,7 +102,7 @@
                                             {
                                                 lstS.Add(pd.Id_Size);
                                                 <div class="custom-control custom-radio custom-control-inline">
-                                                    <input type="radio" value="@item.Id" class="custom-control-input" id="@item.Id" name="size">
+                                                    <input type="radio" value="@item.Id" class="custom-control-input" data-color-id="@item.Id" name="size">
                                                     <label class="custom-control-label" for="@item.Id">@item.Name</label>
                                                 </div>
                                             }
@@ -126,7 +126,7 @@
                                             {
                                                 lstC.Add(pd.Id_Color);
                                                 <div class="custom-control custom-radio custom-control-inline">
-                                                    <input type="radio" value="@item.Id" class="custom-control-input" id="@item.Id" name="color">
+                                                    <input type="radio" value="@item.Id" class="custom-control-input" data-color-id="@item.Id" name="color">
                                                     <label class="custom-control-label" for="@item.Id">@item.Name</label>
                                                 </div>
                                             }

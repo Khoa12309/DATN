@@ -95,15 +95,15 @@ namespace APPVIEW.Controllers
             if (account.Id == Guid.Empty)
             {
                
-                account = getapiAc.GetApi("Account").FirstOrDefault(c => c.Name == "khach k dang nhap");
+                account = getapiAc.GetApi("Account").FirstOrDefault(c => c.Name == "Khách lạ");
 
                 await getapiAc.CreateObj(account, "Account");
                 if (account == null)
                 {
                     account = new Account();
                     account.Id = Guid.Empty;
-                    account.Status = 1;
-                    account.Name = "khach k dang nhap";
+                    account.Status = 3;
+                    account.Name = "Khách lạ";
                     account.Email = "";
                     account.Password = "";
                     account.Avatar = "";
@@ -1326,9 +1326,9 @@ namespace APPVIEW.Controllers
                 }
                 return View();
             }
-            catch (Exception )
+            catch (Exception ex )
             { 
-                _notyf.Error("Lỗi");
+                _notyf.Error($"Lỗi:{ex.Message}");
                 return View();
               }
            
