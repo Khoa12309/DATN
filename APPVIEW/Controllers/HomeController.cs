@@ -109,7 +109,7 @@ namespace APPVIEW.Controllers
                 {                 
                     account = new Account();
                     account.Id = Guid.Empty;
-                    account.Status = 10;
+                    account.Status = 3;
                     account.Name = "khach k dang nhap";
                     account.Email = "";
                     account.Password = "";
@@ -316,6 +316,7 @@ namespace APPVIEW.Controllers
             var x = bills.GetApi("Bill").FirstOrDefault(c => c.id == id);
             x.Status = 4;
             x.PayDate = DateTime.Now;
+            x.Type = "Đã nhận hàng và thanh toán";
             await bills.UpdateObj(x, "Bill");
             return RedirectToAction("Thongtin");
         }
@@ -792,6 +793,24 @@ namespace APPVIEW.Controllers
                 await bills.DeleteObj(item.id, "Bill");
 
             }
+
+            var bill = bills.GetApi("Bill");
+            foreach (var item in bill) {
+               var y = billDetails.GetApi("BillDetail").Where(c => c.BIllId == item.id).ToList();
+
+                foreach (var item2 in y) {
+                    if (item2.ProductDetailID== null || item2.ProductDetailID == Guid.Empty) {
+                    
+                    
+                    
+                    
+                    
+                    }
+                
+                
+                }
+            
+            }
             var client = new OnlineGatewayClient($"https://online-gateway.ghn.vn/shiip/public-api/master-data/province", "bdbbde2a-fec2-11ed-8a8c-6e4795e6d902");
             // Gọi API để lấy danh sách các tỉnh/thành phố
             var response = await client.GetProvincesAsync();
@@ -964,7 +983,7 @@ namespace APPVIEW.Controllers
             TempData["prodtId"] = pro.Id;
             return View(pro);
         }
-
+        
 
 
         [HttpPost]
@@ -1278,7 +1297,7 @@ namespace APPVIEW.Controllers
 
                 // Gọi API để lấy danh sách các tỉnh/thành phố
                 var response = await client.GetProvincesAsync();
-                if (response.Code == 200) // Thành công
+                if (response.Code == 200) // Thành côngnhan
                 {
                     // Trả về danh sách các quận/huyện dưới dạng JSON
                     ViewBag.province = response.Data;
