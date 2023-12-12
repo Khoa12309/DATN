@@ -51,7 +51,7 @@
 
         .navbar {
             background: rgba(255, 255, 255, 0.9); /* Màu nền với độ trong suốt */
-            backdrop-filter: blur(400px); /* Giảm mức độ làm mờ */
+            backdrop-filter: blur(60px); /* Giảm mức độ làm mờ */
             position: fixed; /* Đặt navbar ở vị trí cố định */
             width: 100%; /* Navbar chiếm toàn bộ chiều rộng của trang */
             z-index: 1000; /* Z-index để đảm bảo navbar hiển thị phía trên nền */
@@ -86,21 +86,16 @@
                     <div class="collapse navbar-collapse offset" id="navbarSupportedContent">
                         <ul class="nav navbar-nav menu_nav ml-auto mr-auto">
                             <li class="nav-item active"><a class="nav-link" asp-action="Index" asp-controller="Home">Trang chủ</a></li>
-                            <li class="nav-item submenu dropdown">
-                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                                   aria-expanded="false">Shop</a>
-                                <ul class="dropdown-menu">
-                                    <li class="nav-item"><a class="nav-link" asp-action="Shop" asp-controller="Home">Danh mục cửa hàng</a></li>
-                                    <li class="nav-item"><a class="nav-link" href="cart.html">Shopping Cart</a></li>
-                                </ul>
+
+                            <li class="nav-item active">
+                                <a  class="nav-link" asp-action="Shop" asp-controller="Home">Sản Phẩm</a>
+                              @*  <ul class="dropdown-menu">
+                                    <li class="nav-item"><a class="nav-link" >Sản Phẩm</a></li>
+                                </ul>*@
+
                             </li>
-                            <li class="nav-item submenu dropdown">
-                                <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true"
-                                   aria-expanded="false">Blog</a>
-                                <ul class="dropdown-menu">
-                                    <li class="nav-item"><a class="nav-link" href="blog.html">Blog</a></li>
-                                    <li class="nav-item"><a class="nav-link" href="single-blog.html">Blog Details</a></li>
-                                </ul>
+                            <li class="nav-item">
+                                <a class="nav-link" asp-action="Gioithieu" asp-controller="Home">Giới Thiệu</a>
                             </li>
                             <li class="nav-item"><a class="nav-link" asp-action="Contact" asp-controller="Home">Liên hệ</a></li>
                         </ul>
@@ -115,9 +110,10 @@
                                 <form action="/home/Shop" method="post">
                                     <div class="input-group">
                                         <input type="text" name="sortOrder" class="form-control" placeholder="Search" aria-label="Recipient's username" aria-describedby="basic-addon2">
-                                        <div class="input-group-append">
-                                            <input type="submit" value="Search" class="btn btn-outline-secondary">
-                                        </div>
+                                         <button type="submit" class="btn btn-primary" data-mdb-ripple-init>
+                                                <i class="fas fa-search"></i>
+                                            </button>
+                            
                                     </div>
                                     <input name="__RequestVerificationToken" type="hidden" value="CfDJ8CnR_TcGempMiDo_giSawHBHDIQQzoKN8iv-INfhDVVg9-UkdZadOhYA_UGkaMWJjsRCjlEqQov5oiwqnviDeixyKxyI3YMUwa0bjfBtEi5csLE89F2RRy83vsBrcYqy7Jee6YmUfvcAHTAYO8KDeDw">
                                 </form>
@@ -132,14 +128,14 @@
                                         @{
 
                                             var procarrt = SessionService.GetObjFromSession(Context.Session, "Cart");
-                                          
-                                                <div id="reload" class="cart-count">
-                                                    <div class="nav-shop__circle">@procarrt.Count</div>
-                                                </div>
-                                                                                    
+
+                                            <div id="reload" class="cart-count">
+                                                <div class="nav-shop__circle">@procarrt.Count</div>
+                                            </div>
+
 
                                         }
-                                        
+
                                     </button>
                                 </a>
                             </li>
@@ -173,7 +169,7 @@
                                                     <path fill-rule="evenodd" d="M10 3.5a.5.5 0 0 0-.5-.5h-8a.5.5 0 0 0-.5.5v9a.5.5 0 0 0 .5.5h8a.5.5 0 0 0 .5-.5v-2a.5.5 0 0 1 1 0v2A1.5 1.5 0 0 1 9.5 14h-8A1.5 1.5 0 0 1 0 12.5v-9A1.5 1.5 0 0 1 1.5 2h8A1.5 1.5 0 0 1 11 3.5v2a.5.5 0 0 1-1 0v-2z" />
                                                     <path fill-rule="evenodd" d="M4.146 8.354a.5.5 0 0 1 0-.708l3-3a.5.5 0 1 1 .708.708L5.707 7.5H14.5a.5.5 0 0 1 0 1H5.707l2.147 2.146a.5.5 0 0 1-.708.708l-3-3z" />
                                                 </svg>
-                                                Đăng xuất
+                                                Đăng Xuất
                                             </a>
                                         </li>
                                             @if (isAdmin || IsStaff)
@@ -187,8 +183,11 @@
                                                 </a>
                                             </li>
                                             }
-                                        <li class="nav-item"><a class="nav-link" asp-action="Thongtin" asp-controller="Home">Đơn hàng</a></li>
-                                        <li class="nav-item"><a class="nav-link" asp-action="ApplyDiscount" asp-controller="Home">Kho voucher</a></li>
+                                        <li class="nav-item"><a class="nav-link" asp-action="Thongtin" asp-controller="Home"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-truck" viewBox="0 0 16 16">
+                                                    <path d="M0 3.5A1.5 1.5 0 0 1 1.5 2h9A1.5 1.5 0 0 1 12 3.5V5h1.02a1.5 1.5 0 0 1 1.17.563l1.481 1.85a1.5 1.5 0 0 1 .329.938V10.5a1.5 1.5 0 0 1-1.5 1.5H14a2 2 0 1 1-4 0H5a2 2 0 1 1-3.998-.085A1.5 1.5 0 0 1 0 10.5zm1.294 7.456A1.999 1.999 0 0 1 4.732 11h5.536a2.01 2.01 0 0 1 .732-.732V3.5a.5.5 0 0 0-.5-.5h-9a.5.5 0 0 0-.5.5v7a.5.5 0 0 0 .294.456M12 10a2 2 0 0 1 1.732 1h.768a.5.5 0 0 0 .5-.5V8.35a.5.5 0 0 0-.11-.312l-1.48-1.85A.5.5 0 0 0 13.02 6H12zm-9 1a1 1 0 1 0 0 2 1 1 0 0 0 0-2m9 0a1 1 0 1 0 0 2 1 1 0 0 0 0-2" />
+                                                </svg> Đơn hàng</a></li>
+                                        <li class="nav-item"><a class="nav-link" asp-action="YourVouchers" asp-controller="Home">Kho voucher</a></li>
+
                                     </ul>
                                     }
                                     else
@@ -206,7 +205,9 @@
                                                     <path fill-rule="evenodd" d="M6 3.5a.5.5 0 0 1 .5-.5h8a.5.5 0 0 1 .5.5v9a.5.5 0 0 1-.5.5h-8a.5.5 0 0 1-.5-.5v-2a.5.5 0 0 0-1 0v2A1.5 1.5 0 0 0 6.5 14h8a1.5 1.5 0 0 0 1.5-1.5v-9A1.5 1.5 0 0 0 14.5 2h-8A1.5 1.5 0 0 0 5 3.5v2a.5.5 0 0 0 1 0v-2z" />
                                                     <path fill-rule="evenodd" d="M11.854 8.354a.5.5 0 0 0 0-.708l-3-3a.5.5 0 1 0-.708.708L10.293 7.5H1.5a.5.5 0 0 0 0 1h8.793l-2.147 2.146a.5.5 0 0 0 .708.708l3-3z" />
                                                 </svg>
-                                                Đăng nhập
+
+                                                Đăng Nhập
+
                                             </a>
 
                                         </li>
@@ -346,7 +347,7 @@
     <script src="~/js/sty.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        document.getElementById('logoutButton').addEventListener('click', function () {
+        document.getElementById('logoutButton').addEventListener('click', function() {
             Swal.fire({
                 title: 'Bạn có chắc không?',
                 text: 'Bạn có chắc muốn đăng xuất không!',

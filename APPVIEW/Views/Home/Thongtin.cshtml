@@ -2,7 +2,7 @@
     ViewData["Title"] = "Thongtin";
     Layout = "~/Views/Shared/_LayoutWeb.cshtml";
     @using APPDATA.Models;
-@using System.Globalization;
+    @using System.Globalization;
     List<Bill> bill = ViewBag.viewbill;
     List<BillDetail> billct = ViewBag.viewbillct;
     List<ProductDetail> prdct = ViewBag.viewprdct;
@@ -152,7 +152,10 @@
                                    
                                     <tr>
                                         <td>
-                                            <img src="~/images/@img.Name" style="width: 100px; height:auto" alt="">
+                                            @if(@img.Name!=null){
+                                                 <img src="~/images/@img.Name" style="width: 100px; height:auto" alt="">
+                                            }
+                                           
                                         </td>
                                         <td>
                                             <p><h5>@pro.Name<h5></p>

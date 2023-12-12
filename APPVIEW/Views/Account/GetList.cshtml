@@ -60,6 +60,93 @@
             </div>
         </div>
     </form>
+    <div class="row g-4 mb-4">
+        <div class="col-sm-6 col-xl-3">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div class="me-1">
+                            <p class="text-heading mb-2">Người dùng</p>
+                            <div class="d-flex align-items-center">
+                                <h4 class="mb-2 me-1 display-6">@ViewBag.CountActive</h4>
+                                @* <p class="text-success mb-2">(+29%)</p >*@
+                            </div>
+                           @*  <p class="mb-0">Tổng người dùng</p> *@
+                        </div>
+                        <div class="avatar">
+                            <div class="avatar-initial bg-label-primary rounded">
+                                <div class="mdi mdi-account-outline mdi-24px"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div class="me-1">
+                            <p class="text-heading mb-2">Đã khóa</p>
+                            <div class="d-flex align-items-center">
+                                <h4 class="mb-2 me-1 display-6">@ViewBag.CountBlocked</h4>
+                                @* <p class="text-success mb-2">(+18%)</p> *@
+                            </div>
+                           @*  <p class="mb-0">Last week analytics</p> *@
+                        </div>
+                        <div class="avatar">
+                            <div class="avatar-initial bg-label-danger rounded">
+                                <div class="mdi mdi-account-cancel-outline mdi-24px scaleX-n1"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div class="me-1">
+                            <p class="text-heading mb-2">Đã kích hoạt</p>
+                            <div class="d-flex align-items-center">
+                                <h4 class="mb-2 me-1 display-6">@ViewBag.CountActive</h4>
+                               @*  <p class="text-danger mb-2">(-14%)</p> *@
+                            </div>
+                            @* <p class="mb-0">Last week analytics</p> *@
+                        </div>
+                        <div class="avatar">
+                            <div class="avatar-initial bg-label-success rounded">
+                                <div class="mdi mdi-account-check-outline mdi-24px"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div class="me-1">
+                            <p class="text-heading mb-2">Chưa kích hoạt</p>
+                            <div class="d-flex align-items-center">
+                                <h4 class="mb-2 me-1 display-6">@ViewBag.CountInActive</h4>
+                               @*  <p class="text-success mb-2">(+42%)</p> *@
+                            </div>
+                           @*  <p class="mb-0">Last week analytics</p> *@
+                        </div>
+                        <div class="avatar">
+                            <div class="avatar-initial bg-label-warning rounded">
+                                <div class="mdi mdi-account-alert-outline mdi-24px"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
 
     <div class="card-body">
         <a class="btn btn-success mb-3" asp-controller="Account" asp-action="Create">Tạo mới</a>
