@@ -44,8 +44,8 @@ namespace APPVIEW.Controllers
             {
                 return View("GetList", searchResult);
             }
-
-            return NotFound("Voucher không tồn tại");
+            _notyf.Warning("Voucher không tồn tại");
+            return View();
         }
 
 
@@ -62,7 +62,7 @@ namespace APPVIEW.Controllers
         {
             try
             {
-                 var item = getapi.CreateObj(obj, "Voucher").Result;
+                var item = getapi.CreateObj(obj, "Voucher").Result;
                 if (item != null)
                 {
                     _notyf.Success("Thêm thành công!");
@@ -88,7 +88,7 @@ namespace APPVIEW.Controllers
             var lst = getapi.GetApi("Voucher");
             return View(lst.Find(c => c.Id == id));
         }
-
+         
 
         [HttpPost]
         public async Task<IActionResult> Edit(Voucher obj)
@@ -119,7 +119,7 @@ namespace APPVIEW.Controllers
 
             await getapi.DeleteObj(id, "Voucher");
             return RedirectToAction("GetList");
-
+             
         }
     }
 }

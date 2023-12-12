@@ -95,7 +95,7 @@ namespace APPVIEW.Controllers
         {
             try
             {
-                var item = getapi.UpdateObj(obj, "Product").Result;
+                var item = await getapi.UpdateObj(obj, "Product");
                 if (item != null)
                 {
                     _notyf.Success("Edit Thành công");
@@ -117,7 +117,12 @@ namespace APPVIEW.Controllers
 
         public async Task<IActionResult> Delete(Guid id)
         {
-            await getapi.DeleteObj(id, "Product");
+            if (await getapi.DeleteObj(id, "Product"))
+            {
+                var lst = getapi.GetApi("Product").Find(c => c.Id == id);
+                lst.Status = 0;
+                await getapi.UpdateObj(lst, "Product");
+            }
             return RedirectToAction("GetList");
 
         }

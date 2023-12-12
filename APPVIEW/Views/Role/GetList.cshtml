@@ -1,4 +1,4 @@
-﻿@model IEnumerable<APPDATA.Models.Role>
+@model IEnumerable<APPDATA.Models.Role>
 
 @{
     ViewData["Title"] = "Roles-List";
@@ -6,27 +6,20 @@
     int stt = 0;
 }
 
-<form asp-action="Search" method="get" class="form-inline">
-    <input placeholder="Role Search" type="text" name="searchTerm" id="searchTerm" /><button>Tìm</button>
-</form>
-
 <div class="card">
     <div class="card-header">
         <h5 class="mb-0">Roles</h5>
     </div>
     <div class="card-body">
-        <a class="btn btn-success waves-effect waves-light" asp-action="Create">
-            <span class="mdi mdi-plus-thick">Create new</span>
-        </a>
 
         <div class="table-responsive">
             <table class="table table-hover">
                 <thead>
                     <tr>
                         <th>STT</th>
-                        <th>Name role</th>
-                        <th>Status</th>
-                        <th>Actions</th>
+                        <th>Tên Role</th>
+                        <th>Trạng thái</th>
+                        <th>Hành động</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -56,16 +49,13 @@
                                 </td>
                                 <td>
                                     <span class="badge @(item.Status == 1 ? "badge rounded-pill bg-label-success" : "badge rounded-pill bg-label-danger")">
-                                        @(item.Status == 1 ? "Using" : "Not use")
+                                        @(item.Status == 1 ? "Hoạt động" : "Không dùng")
                                     </span>
                                 </td>
 
                                 <td>
                                     <a href="@Url.Action("Edit", new { id = item.id })" class="btn btn-info waves-effect waves-light">
-                                        <span class="mdi mdi-pencil-box-outline"></span>Edit
-                                    </a>
-                                    <a href="@Url.Action("Delete", new { id = item.id })" class="btn btn-danger waves-effect waves-light">
-                                        <span class="mdi mdi-delete"></span>Delete
+                                        <span class="mdi mdi-pencil-box-outline"></span>Sửa
                                     </a>
                                 </td>
                             </tr>

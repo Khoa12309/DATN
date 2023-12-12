@@ -5,76 +5,97 @@
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Create</h1>
-
-<h4>Voucher</h4>
-<hr />
 <div class="row">
-    <div class="col-md-4">
-        <form asp-action="Create">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <div class="form-group">
-                <label asp-for="Value" class="control-label"></label>
-                <input asp-for="Value" class="form-control" />
-                <span asp-validation-for="Value" class="text-danger"></span>
+    <div class="col-xxl">
+        <div class="card mb-4">
+            <div class="card-header d-flex align-items-center justify-content-between">
+                <h5 class="mb-0">Create a Voucher</h5>
+
             </div>
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
+            <div class="card-body">
+                <form asp-action="Create" method="post">
+                    <div class="row mb-3">
+                        <label asp-for="Value" class="col-sm-2 col-form-label">Value</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" asp-for="Value" placeholder="Enter value of Voucher" />
+                            <span asp-validation-for="Value" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label asp-for="Name" class="col-sm-2 col-form-label">Name</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" asp-for="Name" placeholder="Enter name of Voucher" />
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label asp-for="Code" class="col-sm-2 col-form-label">Code</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" asp-for="Code" placeholder="Enter code of Voucher" />
+                            <span asp-validation-for="Code" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label asp-for="DiscountAmount" class="col-sm-2 col-form-label">Maximum Discount Amount</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" asp-for="DiscountAmount" placeholder="Enter maximum discount amount of Voucher" />
+                            <span asp-validation-for="DiscountAmount" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label asp-for="Quantity" class="col-sm-2 col-form-label">Quantity</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" asp-for="Quantity" placeholder="Enter quantity of Voucher" />
+                            <span asp-validation-for="Quantity" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label asp-for="StartDate" class="col-sm-2 col-form-label">StartDate</label>
+                        <div class="col-sm-10">
+                            <input asp-for="StartDate" class="form-control" />
+                            <span asp-validation-for="StartDate" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label asp-for="EndDate" class="col-sm-2 col-form-label">EndDate</label>
+                        <div class="col-sm-10">
+                            <input class="form-control" asp-for="EndDate"/>
+                            <span asp-validation-for="EndDate" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="row mb-3">
+                        <label asp-for="Status" class="col-sm-2 col-form-label">Status</label>
+                        <div class="col-sm-10 offset-sm-2">
+                            <div class="form-check">
+                                <input asp-for="Status" name="status" class="form-check-input" checked type="radio" value="1" id="defaultRadio1" />
+                                <label class="form-check-label" asp-for="Status"> Use </label>
+                            </div>
+                            <div class="form-check">
+                                <input asp-for="Status" name="status" class="form-check-input"  type="radio" value="0" id="defaultRadio2" />
+                                <label class="form-check-label" for="defaultRadio2"> Not Use </label>
+                            </div>
+                            <span asp-validation-for="Status" class="text-danger"></span>
+                        </div>
+                    </div>
+                    <div class="row justify-content-end">
+                        <div class="col-sm-10">
+                            <button type="submit" class="btn btn-primary">
+                                <span class="mdi mdi-check-outline"></span> Submit
+                            </button>
+                            <div class="btn-group ms-2">
+                                <a href="#" class="btn btn-danger waves-effect waves-light" onclick="goBack()">
+                                    <span class="mdi mdi-close"></span> Cancel
+                                </a>
+                                <script>
+                                    function goBack() {
+                                        window.history.back();
+                                    }
+                                </script>
+                            </div>
+                        </div>
+                    </div>
+                </form>
             </div>
-            <div class="form-group">
-                <label asp-for="Code" class="control-label"></label>
-                <input asp-for="Code" class="form-control" />
-                <span asp-validation-for="Code" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Quantity" class="control-label"></label>
-                <input asp-for="Quantity" class="form-control" />
-                <span asp-validation-for="Quantity" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Status" class="control-label"></label>
-                <input asp-for="Status" class="form-control" />
-                <span asp-validation-for="Status" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="DiscountAmount" class="control-label"></label>
-                <input asp-for="DiscountAmount" class="form-control" />
-                <span asp-validation-for="DiscountAmount" class="text-danger"></span>
-            </div>
-            @*<div class="form-group">
-                <label asp-for="Create_date" class="control-label"></label>
-                <input asp-for="Create_date" class="form-control" />
-                <span asp-validation-for="Create_date" class="text-danger"></span>
-                </div>
-                <div class="form-group">
-                <label asp-for="Update_date" class="control-label"></label>
-                <input asp-for="Update_date" class="form-control" />
-                <span asp-validation-for="Update_date" class="text-danger"></span>
-                </div>*@
-            <div class="form-group">
-                <label asp-for="StartDate" class="control-label"></label>
-                <input asp-for="StartDate" class="form-control" />
-                <span asp-validation-for="StartDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="EndDate" class="control-label"></label>
-                <input asp-for="EndDate" class="form-control" />
-                <span asp-validation-for="EndDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-primary" />
-            </div>
-        </form>
+        </div>
     </div>
 </div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
-@*@section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
-    }
-*@

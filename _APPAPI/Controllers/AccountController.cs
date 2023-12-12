@@ -31,6 +31,12 @@ namespace _APPAPI.Controllers
         {
             return _crud.GetAllItems().ToList();
         }
+        [Route("Post")]
+        [HttpPost]
+        public bool addaccemty(Account obj)
+        {          
+            return _crud.CreateItem(obj);
+        }
         [Route("Register")]
         [HttpPost]
         public bool Create(Account obj)

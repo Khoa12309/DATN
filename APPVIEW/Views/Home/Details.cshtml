@@ -87,6 +87,7 @@
         <button type="button" class="close" data-dismiss="alert"><span>&times;</span></button>
     </div>
 }
+
 <!--================Single Product Area =================-->
 <div class="col-xs-12 col-sm-12 col-md-12 hidden-xs hidden-sm">
     <ol class="breadcrumb">
@@ -122,7 +123,8 @@
                                 @foreach (var vc in ViewBag.Voucher)
                                 {
                                     <li class="voucher-item" style="background: #F5F5F5; border-radius: 5px; color: #FF6A6A">
-                                        <a>Mã: @vc.Code - Giảm: @vc.Value% - Max: @vc.DiscountAmount.ToString("C0", new CultureInfo("vi-VN"))</a>
+
+                                        <a>Tên: @vc.Name - Giảm: @vc.Value% - Max: @vc.DiscountAmount.ToString("C0", new CultureInfo("vi-VN"))</a>
                                         <input type="hidden" name="voucherId" value="@vc.Id" />
                                         <input type="submit" value="+" class="btn btn-light addVoucherButton" data-voucher-id="@vc.Id" style="margin-left: 5px; color: #FF6A6A" />
 
@@ -160,6 +162,7 @@
                                                     lstS.Add(pd.Id_Size);
                                                                         <option value="@item.Id" id="size">@item.Name</option>
                                                 }
+
                                             }
                                         }
                                     }
@@ -216,13 +219,13 @@
                    aria-selected="false">Description</a>
             </li>
             @*<li class="nav-item">
-            <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact"
-            aria-selected="false">Comments</a>
-            </li>
-            <li class="nav-item">
-            <a class="nav-link " id="review-tab" data-toggle="tab" href="#review" role="tab" aria-controls="review"
-            aria-selected="false">Reviews</a>
-            </li>*@
+                <a class="nav-link" id="contact-tab" data-toggle="tab" href="#contact" role="tab" aria-controls="contact"
+                aria-selected="false">Comments</a>
+                </li>
+                <li class="nav-item">
+                <a class="nav-link " id="review-tab" data-toggle="tab" href="#review" role="tab" aria-controls="review"
+                aria-selected="false">Reviews</a>
+                </li>*@
         </ul>
         <div class="tab-content" id="myTabContent">
             <div class="tab-pane fade" id="home" role="tabpanel" aria-labelledby="home-tab">
@@ -453,10 +456,10 @@
             }
         </div>
     </div>
- </section>*@
+</section>*@
+ <script>
+    $('body').on('click', '.button.primary-btn', function (e) {
 
-<script>
-    $('body').on('click', '.button.primary-btn', function(e) {
         e.preventDefault();
         var id = $(this).data('product-id');
         var quantity = parseInt(document.getElementById('sst').value);
@@ -464,12 +467,16 @@
         if (quantityText != '') {
             quantity = parseInt(quantityText);
         }
+        var size = $("input[name='size']:checked").val();
+        var color = $("input[name='color']:checked").val();
+
 
         $.ajax({
             url: '/cart/AddToCart',
             type: 'POST',
-            data: { id: id, Soluong: quantity },
-            success: function(rs) {
+          data: { id: id, Soluong: quantity, size: size, color:color},
+            success: function (rs) {
+
                 if (rs.success) {
                     // Hiển thị thông báo thành công
                     Swal.fire({
@@ -499,10 +506,12 @@
         });
     });
 
-</script>
+</script> 
 <!--================ end related Product area =================-->
 <script>
-    $(document).ready(function() {
+
+    $(document).ready(function () {
+
         $(".s_Product_carousel").owlCarousel({
             items: 1,
             loop: true,
@@ -513,3 +522,6 @@
         });
     });
 </script>
+
+
+

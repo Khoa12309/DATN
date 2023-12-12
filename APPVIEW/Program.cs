@@ -57,7 +57,6 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-app.UseNotyf();
 app.UseRouting();
 app.UseAuthentication();
 
