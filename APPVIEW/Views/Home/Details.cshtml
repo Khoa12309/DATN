@@ -5,23 +5,80 @@
     ViewData["Title"] = "Details";
     Layout = "~/Views/Shared/_LayoutWeb.cshtml";
 }
-
+<style>
+        .ten{
+        font-family: GeometricExtraBold;
+        font-size: 30px;
+        text-transform: uppercase;
+        line-height: 1.4em;
+        margin-bottom: 40px
+        }
+        h4{
+          margin-top: 0;
+        /* font-family: GeometricExtraBold; */
+        font-weight: normal;
+        color: #000;
+        margin-bottom: 10px;
+        }
+        h5{
+                margin-top: 50px;
+        }
+        #card{
+            margin-left: 50px;
+            margin-top: -75px;
+        }
+        .row{
+            margin-left: 0px;
+            list-style: none;
+        }
+        .Size{
+           width: 200px;
+        }
+        #size{
+            width: 200px;
+        }
+        .mau{
+            width: 200px;
+        }
+        #mau{
+            width: 200px;
+        }
+        #sl{
+            width: 200px;
+        }
+        #btn{
+                font-size: 20px;
+                margin-left: -10px;
+                margin-top: 30px;
+        }
+        .separator {
+        margin: 0 10px; /* Điều chỉnh margin nếu cần thiết cho khoảng cách */
+        height: 1px;   /* Điều chỉnh chiều cao nếu cần thiết cho đường ngăn cách */
+        background-color: #ccc; /* Điều chỉnh màu nền cho phần ngăn cách */
+        flex-grow: 0; /* Điều này là tùy chọn và phụ thuộc vào bố cục của bạn */
+        list-style: none;
+        }
+         .nice-select .list{
+        width:200px;
+        }
+        #img{
+       border: 3px solid #ccc;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      margin-bottom: 30px;
+      
+        }
+      /*  #img img{
+            width:500px;
+            height:auto;
+        }*/
+        .owl-carousel{
+              width:500px;
+            height:auto;
+        }
+</style>
 <!-- ================ start banner area ================= -->
-<section class="blog-banner-area" id="blog">
-    <div class="container h-100">
-        <div class="blog-banner">
-            <div class="text-center">
-                <h1>Shop Single</h1>
-                <nav aria-label="breadcrumb" class="banner-breadcrumb">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="#">Home</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Shop Single</li>
-                    </ol>
-                </nav>
-            </div>
-        </div>
-    </div>
-</section>
 <!-- ================ end banner area ================= -->
 @if (TempData["mess"] != null)
 {
@@ -32,11 +89,14 @@
 }
 
 <!--================Single Product Area =================-->
+<div class="col-xs-12 col-sm-12 col-md-12 hidden-xs hidden-sm">
+    <ol class="breadcrumb">
+    </ol>
+</div>
 <div class="product_image_area">
     <div class="container">
         <div class="row s_product_inner">
             <div class="col-lg-6">
-
                 <div class="owl-carousel owl-theme s_Product_carousel  carousel slide autoplay ">
 
                     @{
@@ -49,16 +109,12 @@
                         {
                             if (img.IdProductdetail == pd.Id)
                             {
-                                <div class="single-prd-item">
+                                <div class="row" id="img">
                                     <img class="img-fluid" src="~/images/@img.Name" alt="@img.Name">
                                 </div>
                             }
                         }
                     }
-                    <!-- Một ảnh mẫu nếu không có ảnh nào -->
-                    <div class="single-prd-item">
-                        <img class="img-fluid" src="img/category/s-p1.jpg" alt="">
-                    </div>
                 </div>
                 <div class="voucher-container" style="margin-top: 15px">
                     <div class="voucher-list">
@@ -71,6 +127,7 @@
                                         <a>Tên: @vc.Name - Giảm: @vc.Value% - Max: @vc.DiscountAmount.ToString("C0", new CultureInfo("vi-VN"))</a>
                                         <input type="hidden" name="voucherId" value="@vc.Id" />
                                         <input type="submit" value="+" class="btn btn-light addVoucherButton" data-voucher-id="@vc.Id" style="margin-left: 5px; color: #FF6A6A" />
+
                                     </li>
                                 }
                             </ul>
@@ -78,69 +135,71 @@
                     </div>
                 </div>
             </div>
-            <div class="col-lg-5 offset-lg-1">
+
+            <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5 prd-detail-right" id="card">
                 <form asp-action="AddToCart" asp-controller="Cart">
                     <input hidden name="id" value="@Model.Id" />
                     <div class="s_product_text">
-                        <h3>@Model.Name</h3>
-                        <h2>@Model.Price.ToString("C0", new CultureInfo("vi-VN"))</h2>
-                        <p>@Model.Desciption</p>
-                        <ul class="list">
+                        <h4 class="ten">@Model.Name</h4>
+                        <h2 style="color:#f15e2c">@Model.Price.ToString("C0", new CultureInfo("vi-VN"))</h2>
+                        <div class="row">
                             <li>
-                                Sizes:
-                                @{
-                                    var lstS = new List<Guid>();
-                                    foreach (var pd in ViewBag.lspd)
-                                    {
-                                        if (lstS.Any(c => c == pd.Id_Size))
+                                <h5>SIZE</h5>
+                                <select class="Size">
+
+                                    @{
+                                        var lstS = new List<Guid>();
+                                        foreach (var pd in ViewBag.lspd)
                                         {
-                                            continue;
-                                        }
-                                        foreach (var item in ViewBag.Size)
-                                        {
-                                            if (pd.Id_Size == item.Id)
+                                            if (lstS.Any(c => c == pd.Id_Size))
                                             {
-                                                lstS.Add(pd.Id_Size);
-                                                <div class="custom-control custom-radio custom-control-inline">
-                                                    <input type="radio" value="@item.Id" class="custom-control-input" asp-for=Id_Size id="@item.Id" name="size">
-                                                    <label class="custom-control-label" for="@item.Id">@item.Name</label>
-                                                </div>
+                                                continue;
+                                            }
+                                            foreach (var item in ViewBag.Size)
+                                            {
+                                                if (pd.Id_Size == item.Id)
+                                                {
+                                                    lstS.Add(pd.Id_Size);
+                                                                        <option value="@item.Id" id="size">@item.Name</option>
+                                                }
+
                                             }
                                         }
                                     }
-                                }
+                                </select>
                             </li>
+                            <li class="separator"></li>
                             <li>
-                                Colors:
-                                @{
-                                    var lstC = new List<Guid>();
-                                    foreach (var pd in ViewBag.lspd)
-                                    {
-                                        if (lstC.Any(c => c == pd.Id_Color))
+                                <h5>MÀU SẮC</h5>
+                                <select class="mau">
+                                    @{
+                                        var lstC = new List<Guid>();
+                                        foreach (var pd in ViewBag.lspd)
                                         {
-                                            continue;
-                                        }
-                                        foreach (var item in ViewBag.Color)
-                                        {
-                                            if (pd.Id_Color == item.Id)
+                                            if (lstC.Any(c => c == pd.Id_Color))
                                             {
-                                                lstC.Add(pd.Id_Color);
-                                                <div class="custom-control custom-radio custom-control-inline">
-                                                    <input type="radio" value="@item.Id" class="custom-control-input" id="@item.Id" name="color">
-                                                    <label class="custom-control-label" for="@item.Id">@item.Name</label>
-                                                </div>
+                                                continue;
+                                            }
+                                            foreach (var item in ViewBag.Color)
+                                            {
+                                                if (pd.Id_Color == item.Id)
+                                                {
+                                                    lstC.Add(pd.Id_Color);
+                                                                        <option selected value="@item.Id" id="mau">@item.Name</option>
+
+                                                }
                                             }
                                         }
                                     }
-                                }
+                                </select>
                             </li>
-                        </ul>
-                        <div class="product_count">
-                            <label for="Soluong">Quantity:</label>
-                            <input type="number" id="sst" size="2" value="1" title="Quantity:" class="input-text qty" min="0" max="@Model.Quantity" name="Soluong">
                         </div>
-                        <button type="submit" data-product-id="@Model.Id" class="button primary-btn">Add to Cart</button>
+                        <h5>SỐ LƯỢNG</h5>
+                        <div class="product_count" id="sl">
+                            <input type="number" id="sst" size="2" value="1" title="Quantity:" style="width:200px;height:40px" class="input-text qty" min="1" max="@Model.Quantity" name="Soluong">
+                        </div>
                     </div>
+                    <button type="submit" data-product-id="@Model.Id" class="button primary-btn" id="btn">Thêm vào giỏ hàng</button>
                 </form>
             </div>
         </div>
@@ -316,11 +375,11 @@
                                 <td>
                                     <h5>Description</h5>
                                 </td>
-                                <td>
+                                @*    <td>
 
-                                    <h5>@Model.Desciption</h5>
+                                <h5>@Model.Desciption</h5>
 
-                                </td>
+                                </td>*@
                             </tr>
 
                         </tbody>
@@ -331,9 +390,31 @@
         </div>
     </div>
 </section>
+<section class="bg-light border-top py-4">
+    <div class="container">
+        <div class="row gx-4">
+            <div class="col-lg-8 mb-4">
+                <div class="border rounded-2 px-3 py-2 bg-white">
+                    <!-- Pills navs -->
+                    <h3>MÔ TẢ SẢN PHẨM</h3>
+                    <!-- Pills navs -->
+                    <!-- Pills content -->
+                    <div class="tab-content" id="ex1-content">
+                        <div class="tab-pane fade show active" id="ex1-pills-1" role="tabpanel" aria-labelledby="ex1-tab-1">
+                            <p>
+                                @Model.Desciption
+                            </p>
+                        </div>
+                    </div>
+                    <!-- Pills content -->
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
 <!--================End Product Description Area =================-->
 <!--================ Start related Product area =================-->
-<section class="related-product-area section-margin--small mt-0">
+@*<section class="related-product-area section-margin--small mt-0">
     <div class="container">
         <div class="section-intro pb-60px">
             <p>Popular Item in the market</p>
@@ -375,10 +456,10 @@
             }
         </div>
     </div>
-</section>
-
+</section>*@
  <script>
     $('body').on('click', '.button.primary-btn', function (e) {
+
         e.preventDefault();
         var id = $(this).data('product-id');
         var quantity = parseInt(document.getElementById('sst').value);
@@ -395,6 +476,7 @@
             type: 'POST',
           data: { id: id, Soluong: quantity, size: size, color:color},
             success: function (rs) {
+
                 if (rs.success) {
                     // Hiển thị thông báo thành công
                     Swal.fire({
@@ -427,7 +509,9 @@
 </script> 
 <!--================ end related Product area =================-->
 <script>
+
     $(document).ready(function () {
+
         $(".s_Product_carousel").owlCarousel({
             items: 1,
             loop: true,
@@ -438,3 +522,6 @@
         });
     });
 </script>
+
+
+

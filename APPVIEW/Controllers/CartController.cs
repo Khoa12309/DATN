@@ -212,14 +212,16 @@ namespace APPVIEW.Controllers
             }
             var products = SessionService.GetObjFromSession(HttpContext.Session, "Cart");
             var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
+            
             var cart = getapi.GetApi("Cart").FirstOrDefault(c => c.AccountId == account.Id);
-           
+
             var productcartdetails = getapiCartD.GetApi("CartDetails").FirstOrDefault(c => c.ProductDetail_ID == id);
             if (cart != null)
             {
-               productcartdetails = getapiCartD.GetApi("CartDetails").FirstOrDefault(c => c.ProductDetail_ID == id && c.CartId == cart.id);
+                productcartdetails = getapiCartD.GetApi("CartDetails").FirstOrDefault(c => c.ProductDetail_ID == id && c.CartId == cart.id);
 
             }
+
             var p = products.Find(c => c.Id == id);
             products.Remove(p);
             SessionService.SetObjToJson(HttpContext.Session, "Cart", products);
