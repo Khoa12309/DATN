@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace APPDATA.Migrations
 {
     [DbContext(typeof(ShoppingDB))]
-    [Migration("20231209120204_one")]
-    partial class one
+    [Migration("20231210051238_Migrations")]
+    partial class Migrations
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

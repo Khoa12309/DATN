@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace APPDATA.Migrations
 {
-    public partial class Mydb : Migration
+    public partial class Migrations : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -138,10 +138,11 @@ namespace APPDATA.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    AccountId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     Value = table.Column<int>(type: "int", nullable: false),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Code = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ReduceForm = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Quantity = table.Column<int>(type: "int", nullable: false),
                     Status = table.Column<int>(type: "int", nullable: false),
                     DiscountAmount = table.Column<double>(type: "float", nullable: false),
                     Create_date = table.Column<DateTime>(type: "datetime2", nullable: false),
@@ -236,6 +237,30 @@ namespace APPDATA.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "AccountVoucher",
+                columns: table => new
+                {
+                    AccountsId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    VoucherId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_AccountVoucher", x => new { x.AccountsId, x.VoucherId });
+                    table.ForeignKey(
+                        name: "FK_AccountVoucher_Accounts_AccountsId",
+                        column: x => x.AccountsId,
+                        principalTable: "Accounts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_AccountVoucher_Vouchers_VoucherId",
+                        column: x => x.VoucherId,
+                        principalTable: "Vouchers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Address",
                 columns: table => new
                 {
@@ -259,42 +284,6 @@ namespace APPDATA.Migrations
                         name: "FK_Address_Accounts_AccountId",
                         column: x => x.AccountId,
                         principalTable: "Accounts",
-                        principalColumn: "Id");
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Bills",
-                columns: table => new
-                {
-                    id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    AccountId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    Voucherid = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    Code = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    ShipFee = table.Column<float>(type: "real", nullable: true),
-                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Address = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    TotalMoney = table.Column<float>(type: "real", nullable: true),
-                    MoneyReduce = table.Column<float>(type: "real", nullable: true),
-                    Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    CreateBy = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    UpdateBy = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    PayDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    ShipDate = table.Column<DateTime>(type: "datetime2", nullable: true),
-                    Status = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Bills", x => x.id);
-                    table.ForeignKey(
-                        name: "FK_Bills_Accounts_AccountId",
-                        column: x => x.AccountId,
-                        principalTable: "Accounts",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Bills_Vouchers_Voucherid",
-                        column: x => x.Voucherid,
-                        principalTable: "Vouchers",
                         principalColumn: "Id");
                 });
 
@@ -365,6 +354,37 @@ namespace APPDATA.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "VoucherForAccs",
+                columns: table => new
+                {
+                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    Id_Account = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Id_Voucher = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Code = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Value = table.Column<int>(type: "int", nullable: false),
+                    DiscountAmount = table.Column<double>(type: "float", nullable: false),
+                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_VoucherForAccs", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_VoucherForAccs_Accounts_Id_Account",
+                        column: x => x.Id_Account,
+                        principalTable: "Accounts",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_VoucherForAccs_Vouchers_Id_Voucher",
+                        column: x => x.Id_Voucher,
+                        principalTable: "Vouchers",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Images",
                 columns: table => new
                 {
@@ -382,6 +402,73 @@ namespace APPDATA.Migrations
                         name: "FK_Images_ProductDetails_IdProductdetail",
                         column: x => x.IdProductdetail,
                         principalTable: "ProductDetails",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CartDetails",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    CartId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    ProductDetail_ID = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    Quantity = table.Column<int>(type: "int", nullable: false),
+                    Price = table.Column<double>(type: "float", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CartDetails", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_CartDetails_Carts_CartId",
+                        column: x => x.CartId,
+                        principalTable: "Carts",
+                        principalColumn: "id");
+                    table.ForeignKey(
+                        name: "FK_CartDetails_ProductDetails_ProductDetail_ID",
+                        column: x => x.ProductDetail_ID,
+                        principalTable: "ProductDetails",
+                        principalColumn: "Id");
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Bills",
+                columns: table => new
+                {
+                    id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    AccountId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    Voucherid = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
+                    Code = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ShipFee = table.Column<float>(type: "real", nullable: true),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Address = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TotalMoney = table.Column<float>(type: "real", nullable: true),
+                    MoneyReduce = table.Column<float>(type: "real", nullable: true),
+                    Type = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CreateDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreateBy = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    UpdateBy = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    PayDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    ShipDate = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    VoucherForAccId = table.Column<Guid>(type: "uniqueidentifier", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Bills", x => x.id);
+                    table.ForeignKey(
+                        name: "FK_Bills_Accounts_AccountId",
+                        column: x => x.AccountId,
+                        principalTable: "Accounts",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Bills_VoucherForAccs_VoucherForAccId",
+                        column: x => x.VoucherForAccId,
+                        principalTable: "VoucherForAccs",
+                        principalColumn: "Id");
+                    table.ForeignKey(
+                        name: "FK_Bills_Vouchers_Voucherid",
+                        column: x => x.Voucherid,
+                        principalTable: "Vouchers",
                         principalColumn: "Id");
                 });
 
@@ -460,35 +547,15 @@ namespace APPDATA.Migrations
                         principalColumn: "id");
                 });
 
-            migrationBuilder.CreateTable(
-                name: "CartDetails",
-                columns: table => new
-                {
-                    id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
-                    CartId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    ProductDetail_ID = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
-                    Quantity = table.Column<int>(type: "int", nullable: false),
-                    Price = table.Column<double>(type: "float", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CartDetails", x => x.id);
-                    table.ForeignKey(
-                        name: "FK_CartDetails_Carts_CartId",
-                        column: x => x.CartId,
-                        principalTable: "Carts",
-                        principalColumn: "id");
-                    table.ForeignKey(
-                        name: "FK_CartDetails_ProductDetails_ProductDetail_ID",
-                        column: x => x.ProductDetail_ID,
-                        principalTable: "ProductDetails",
-                        principalColumn: "Id");
-                });
-
             migrationBuilder.CreateIndex(
                 name: "IX_Accounts_IdRole",
                 table: "Accounts",
                 column: "IdRole");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_AccountVoucher_VoucherId",
+                table: "AccountVoucher",
+                column: "VoucherId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Address_AccountId",
@@ -514,6 +581,11 @@ namespace APPDATA.Migrations
                 name: "IX_Bills_AccountId",
                 table: "Bills",
                 column: "AccountId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Bills_VoucherForAccId",
+                table: "Bills",
+                column: "VoucherForAccId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Bills_Voucherid",
@@ -589,10 +661,23 @@ namespace APPDATA.Migrations
                 name: "IX_RefreshTokens_UserId",
                 table: "RefreshTokens",
                 column: "UserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_VoucherForAccs_Id_Account",
+                table: "VoucherForAccs",
+                column: "Id_Account");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_VoucherForAccs_Id_Voucher",
+                table: "VoucherForAccs",
+                column: "Id_Voucher");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "AccountVoucher");
+
             migrationBuilder.DropTable(
                 name: "Address");
 
@@ -646,6 +731,9 @@ namespace APPDATA.Migrations
 
             migrationBuilder.DropTable(
                 name: "Suppliers");
+
+            migrationBuilder.DropTable(
+                name: "VoucherForAccs");
 
             migrationBuilder.DropTable(
                 name: "Accounts");

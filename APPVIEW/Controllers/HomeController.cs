@@ -19,6 +19,7 @@ using Org.BouncyCastle.Tsp;
 using AspNetCore;
 using System.Reflection.Metadata;
 using System.Security.Principal;
+using X.PagedList;
 
 namespace APPVIEW.Controllers
 {
@@ -76,7 +77,10 @@ namespace APPVIEW.Controllers
 
 
         }
-
+        public IActionResult Gioithieu()
+        {
+            return View();
+        }
         public IActionResult Index()
         {
             var productDetails = getapi.GetApi("ProductDetails").Where(c => c.Status == 1 && c.Quantity > 0);
@@ -585,7 +589,6 @@ namespace APPVIEW.Controllers
 
             if (User.Identity.IsAuthenticated)
             {
-
                 var Uid = User.Claims.FirstOrDefault(c => c.Type == "Id").Value;
                 var acc = getapiAc.GetApi("Account").FirstOrDefault(c => c.Id.ToString() == Uid);
                 SessionService.SetObjToJson(HttpContext.Session, "Account", acc);
@@ -639,8 +642,10 @@ namespace APPVIEW.Controllers
             return View();
         }
 
-        public IActionResult Shop(string sortOrder)
+        public IActionResult Shop(string sortOrder,int?page)
         {
+            int pageSize = 6;
+            int pageNumber = (page ?? 1);
             var img = getapiImg.GetApi("Image");
             var productDetails = getapi.GetApi("ProductDetails").Where(c => c.Status == 1 && c.Quantity > 0).ToList();
             ViewBag.size = getapiSize.GetApi("Size");
@@ -669,7 +674,7 @@ namespace APPVIEW.Controllers
                         break;
                 }
 
-                ViewBag.Products = productsWithImages;
+                ViewBag.Products = productsWithImages.OrderByDescending(x => x.ProductDetail.Id).ToPagedList(pageNumber, pageSize);
             }
             catch (Exception ex)
             {
@@ -677,7 +682,7 @@ namespace APPVIEW.Controllers
                 _logger.LogError($"Error in Shop action: {ex.Message}");
             }
 
-            return View();
+            return View(productDetails.OrderByDescending(x => x.Id).ToPagedList(pageNumber, pageSize));
         }
 
         [HttpPost]

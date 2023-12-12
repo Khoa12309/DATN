@@ -3,6 +3,7 @@
 @{
 
     @using APPDATA.Models;
+@using System.Globalization
     ViewData["Title"] = "BanHangOff";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 
@@ -60,7 +61,7 @@
                                                         {
                                                             if (img.IdProductdetail == item.Id)
                                                             {
-                                                                <img class="card-img" src="~/images/@img.Name" alt="">
+                                                                <img class="card-img" style="width:150p;height:200px" src="~/images/@img.Name" alt="">
                                                                 break;
                                                             }
 
@@ -73,7 +74,7 @@
                                                     </div>
                                                     <div class="card-body">
 
-                                                        <p style="text-align:left">
+                                                        <p style="text-align:left;display: inline-block;width: 700px">
                                                             Sản phẩm : @item.Name
                                                         </p>
                                                         @foreach (var size in ViewBag.size)
@@ -281,7 +282,7 @@
                             var imgHTML = '';
                             imgs.forEach(function (img) {
                                 if (img.idProductdetail == item.id) {
-                                    imgHTML = '<img class="card-img" src="/images/' + img.name + '" alt="">';
+                                    imgHTML = '<img class="card-img"  style="width:150p;height:200px" src="/images/' + img.name + '" alt="">';
                                     return false;
                                 }
                             });
@@ -308,9 +309,9 @@
                                 '<button class="btn btn-primary" style="margin-top:10px" data-id="' + item.id + '">Chọn sản phẩm</button>' +
                                 '</div>' +
                                 '<div class="card-body">' +
-                                '<p style="text-align:left">Sản phẩm: ' + item.name + '</p>' +
+                                '<p style="text-align:left;display: inline-block;width: 700px">Sản phẩm: ' + item.name + '</p>' +
                                 sizeHTML + colorHTML +
-                                '<p style="text-align:left">Giá: ' + item.price + '</p>' +
+                                '<p style="text-align:left">Giá: ' + item.price+ '</p>' +
                                 '</div>' +
                                 '</div>' +
                                 '</div>';

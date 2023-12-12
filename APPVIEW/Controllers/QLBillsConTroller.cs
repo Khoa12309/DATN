@@ -298,10 +298,10 @@ namespace APPVIEW.Controllers
             var size = getapiSize.GetApi("Size");
             var color = getapiColor.GetApi("Color");
             var Img = getapiImg.GetApi("Image");
-            var prd = getapi.GetApi("ProductDetails");
+            var prd = getapi.GetApi("ProductDetails").Where(c => c.Quantity > 0 && c.Status != 0);
             if (searchText != null)
             {
-                var products = getapi.GetApi("ProductDetails").Where(c => c.Quantity > 0 && c.Name.ToLower().Contains(searchText.ToLower().Trim())).ToList();
+                var products = getapi.GetApi("ProductDetails").Where(c => c.Quantity > 0 && c.Status != 0 && c.Name.ToLower().Contains(searchText.ToLower().Trim())).ToList();
                 return Json(new { success = true, productct = products, size = size, color = color,img = Img });
             }
 
@@ -318,18 +318,18 @@ namespace APPVIEW.Controllers
             {
                 if (inputValue != "")
                 {
-                    return View(getapi.GetApi("ProductDetails").Where(c => c.Quantity > 0 && c.Name.ToLower().Contains(inputValue.ToLower())).ToList());
+                    return View(getapi.GetApi("ProductDetails").Where(c => c.Quantity > 0 && c.Status!=0 && c.Name.ToLower().Contains(inputValue.ToLower())).ToList());
                 }
             }
             catch (Exception ex)
             {
 
-                return View(getapi.GetApi("ProductDetails").Where(c => c.Quantity > 0));
+                return View(getapi.GetApi("ProductDetails").Where(c => c.Quantity > 0 && c.Status != 0));
             }
 
 
 
-            return View(getapi.GetApi("ProductDetails").Where(c => c.Quantity > 0));
+            return View(getapi.GetApi("ProductDetails").Where(c => c.Quantity > 0 && c.Status != 0));
         }
 
 
