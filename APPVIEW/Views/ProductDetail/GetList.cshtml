@@ -72,10 +72,9 @@
                                                 </div>
                                                 <div class="d-flex flex-column">
                                                     <span class="text-nowrap text-heading fw-medium">@item.Name</span>
-                                                    <small class="text-truncate d-none d-sm-block">@Html.Raw(Html.Encode(item.Desciption).Substring(0, 50))...</small>
+                                                    @* <small class="text-truncate d-none d-sm-block">@Html.Raw(Html.Encode(item.Desciption).Substring(0, 50))...</small> *@
                                                 </div>
                                             </div>
-
                                             break;
                                         }
                                     }

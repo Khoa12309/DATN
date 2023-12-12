@@ -384,6 +384,7 @@
                 document.getElementById("fee").value = data.total;
                 document.getElementById("tShip").value = parseFloat(data.total) + parseFloat(document.getElementById("tShip").value);
 
+
             })
             .catch(error => {
                 // Xử lý lỗi
@@ -411,4 +412,24 @@
             window.location.href = "@Url.Action("Checkout", "Home")";
         }
     }
+    function formatToVND(value) {
+        return value.toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
+    }
+
+    let moneyInput = document.getElementById('tShip');
+
+    // Thêm sự kiện 'input' để định dạng giá trị ngay khi người dùng nhập liệu
+    moneyInput.addEventListener('input', function () {
+        // Lấy giá trị nhập vào từ input
+        let inputValue = parseFloat(moneyInput.value);
+
+        // Kiểm tra xem giá trị nhập vào có phải là một số hợp lệ hay không
+        if (!isNaN(inputValue)) {
+            // Nếu là số hợp lệ, định dạng giá trị và gán lại vào input
+            moneyInput.value = formatToVND(inputValue);
+        } else {
+            // Nếu không phải số hợp lệ, xóa giá trị trong input
+            moneyInput.value = '';
+        }
+    });
 </script>

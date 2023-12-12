@@ -1,9 +1,8 @@
 ﻿
-
 @{
-    ViewData["Title"] = "ShowBill";
+    ViewData["Title"] = "ShowBillDaNhan";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
-@using APPDATA.Models;
+    @using APPDATA.Models;
     List<Bill> bill = ViewBag.viewbill;
     List<BillDetail> billct = ViewBag.viewbillct;
     List<ProductDetail> prdct = ViewBag.viewprdct;
@@ -29,10 +28,9 @@
 </form>
 <div class="card">
     <div class="card-header">
-    
     </div>
     <div class="card-body">
-  
+     
         <div class="table-responsive">
             <table class="table table-hover">
                 <thead>
@@ -47,7 +45,7 @@
                         <th>Trạng thái</th>
                         <th>Ngày tạo</th>
 
-             
+                
                     </tr>
                 </thead>
                 <tbody>
@@ -87,17 +85,17 @@
                                 </td>
                                 @if (itembill.Status == 1)
                                 {
-                                    <td>  Chờ xác nhận</td>
+                                    <td>  Chờ xác nhận + @itembill.Type</td>
 
                                 }
                                 else if (itembill.Status == 2)
                                 {
-                                    <td>  Đã xác nhận đơn hàng</td>
+                                    <td>  Đã xác nhận đơn hàng + @itembill.Type</td>
 
                                 }
                                 else if (itembill.Status == 3)
                                 {
-                                    <td>Đang giao</td>
+                                    <td>Đang giao + @itembill.Type</td>
                                 }
                                 else if (itembill.Status == 4)
                                 {
@@ -116,11 +114,10 @@
                                 </td>
 
                                 <td>
-                                    <button style="width:140px" class="btn btn-danger"> @Html.ActionLink("Xác Nhận", "XacNhan", new { id = itembill.id }, new { style = "color:white;" }) </button>
+                                    <button style="width:140px" class="btn btn-danger"> @Html.ActionLink("Đã Nhận", "NhanHang", new { id = itembill.id }, new { style = "color:white;" }) </button>
                                 </td>
+                             
                                 <td>
-                                    <button style="width:140px" class="btn btn-danger"> @Html.ActionLink("Hủy Đơn ", "HuyDon2", new { id = itembill.id }, new { style = "color:white;" }) </button>
-                                </td>  <td>
                                     <button style="width:140px" class="btn btn-danger"> @Html.ActionLink("Chi Tiết ", "Chitiet", new { id = itembill.id }, new { style = "color:white;" }) </button>
                                 </td>
 
@@ -138,3 +135,6 @@
         </div>
     </div>
 </div>
+
+
+

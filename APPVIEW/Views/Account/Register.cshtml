@@ -250,3 +250,44 @@
     <script async defer src="https://buttons.github.io/buttons.js"></script>
   </body>
 </html>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var phoneNumberInput = document.getElementById('phone');
+
+        // Thêm sự kiện input để kiểm tra và xóa các kí tự không hợp lệ
+        phoneNumberInput.addEventListener('input', function () {
+            var inputValue = phoneNumberInput.value;
+
+            // Loại bỏ kí tự không phải số từ giá trị nhập vào
+            var cleanedValue = inputValue.replace(/[^0-9+]/g, '');
+
+            // Giới hạn chiều dài tối đa là 10 kí tự
+            cleanedValue = cleanedValue.slice(0, 10);
+
+            // Cập nhật giá trị của ô nhập số điện thoại
+            phoneNumberInput.value = cleanedValue;
+        });
+
+        // Thêm sự kiện blur để kiểm tra số điện thoại khi mất focus
+        phoneNumberInput.addEventListener('blur', function () {
+            validatePhoneNumber(phoneNumberInput.value);
+        });
+
+        function validatePhoneNumber(phoneNumber) {
+            // Biểu thức chính quy cho số điện thoại (ví dụ: +84-123-456-7890)
+            var phoneRegex = /^\+?[0-9]{1,4}-?[0-9]{3,4}-?[0-9]{4,}$/;
+
+            if (phoneRegex.test(phoneNumber)) {
+                console.log('Số điện thoại hợp lệ');
+            } else {
+                // Kiểm tra chiều dài của số điện thoại
+                if (phoneNumber.length < 10) {
+                    // Hiển thị thông báo khi số điện thoại có ít hơn 10 kí tự
+                    alert('Số điện thoại phải có ít nhất 10 kí tự.');
+                } else {
+                    console.log('Số điện thoại không hợp lệ');
+                }
+            }
+        }
+    });
+</script>
