@@ -5,10 +5,98 @@
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
     int stt = 0;
 }
-
+@{
+    var startDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).ToString("dd/MM/yyyy");
+}
 <div class="card">
     <div class="card-header">
         <h5 class="mb-0">Roles</h5>
+    </div>
+    <div class="row g-4 mb-4">
+        <div class="col-sm-6 col-xl-3">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div class="me-1">
+                            <p class="text-heading mb-2" _msttexthash="76531" _msthash="269">Người dùng</p>
+                            <div class="d-flex align-items-center">
+                                <h4 class="mb-2 me-1 display-6" _msttexthash="38025" _msthash="270">@ViewBag.CountUser</h4>
+                               @*  <p class="text-success mb-2" _msttexthash="33059" _msthash="271">(+29%)</p> *@
+                            </div>                           
+                        </div>
+                        <div class="avatar">
+                            <div class="avatar-initial bg-label-primary rounded">
+                                <div class="mdi mdi-account-outline mdi-24px"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div class="me-1">
+                            <p class="text-heading mb-2" _msttexthash="3212274" _msthash="273">Nhân viên</p>
+                            <div class="d-flex align-items-center">
+                                <h4 class="mb-2 me-1 display-6" _msttexthash="30394" _msthash="274">@ViewBag.CountStaff</h4>
+                              @*   <p class="text-success mb-2" _msttexthash="32812" _msthash="275">(+18%)</p> *@
+                            </div>
+                           @*  <p class="mb-0" _msttexthash="4419883" _msthash="276">Phân tích tuần trước</p> *@
+                        </div>
+                        <div class="avatar">
+                            <div class="avatar-initial bg-label-danger rounded">
+                                <div class="mdi mdi-cog-outline mdi-24px scaleX-n1"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div class="me-1">
+                            <p class="text-heading mb-2" _msttexthash="6397274" _msthash="277">Admin</p>
+                            <div class="d-flex align-items-center">
+                                <h4 class="mb-2 me-1 display-6" _msttexthash="38025" _msthash="278">@ViewBag.CountAdmin</h4>
+                               @*  <p class="text-danger mb-2" _msttexthash="32500" _msthash="279">(-14%)</p> *@
+                            </div>
+                           @*  <p class="mb-0" _msttexthash="4419883" _msthash="280">Phân tích tuần trước</p> *@
+                        </div>
+                        <div class="avatar">
+                            <div class="avatar-initial bg-label-success rounded">
+                                <div class="mdi mdi-account-check-outline mdi-24px"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div class="me-1">
+                            <p class="text-heading mb-2" _msttexthash="6278103" _msthash="281">Tổng số Role đang dùng</p>
+                            <div class="d-flex align-items-center">
+                                <h4 class="mb-2 me-1 display-6" _msttexthash="16289" _msthash="282">@ViewBag.CountRole</h4>
+                               @*  <p class="text-success mb-2" _msttexthash="32383" _msthash="283">(+42%)</p> *@
+                            </div>
+                           @*  <p class="mb-0" _msttexthash="4419883" _msthash="284">Phân tích tuần trước</p> *@
+                        </div>
+                        <div class="avatar">
+                            <div class="avatar-initial bg-label-warning rounded">
+                                <div class="mdi mdi-account-search mdi-24px"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
     <div class="card-body">
 

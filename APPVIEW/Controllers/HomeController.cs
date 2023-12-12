@@ -101,8 +101,10 @@ namespace APPVIEW.Controllers
             if (account.Id == Guid.Empty)
             {
                
+
                 account = getapiAc.GetApi("Account").FirstOrDefault(c => c.Name == "khach k dang nhap");
                 var role = getapiRole.GetApi("Role").FirstOrDefault(c => c.name == "Customer");
+
                 if (account == null)
                 {                 
                     account = new Account();
@@ -1407,9 +1409,9 @@ namespace APPVIEW.Controllers
                 }
                 return View();
             }
-            catch (Exception )
+            catch (Exception ex )
             { 
-                _notyf.Error("Lỗi");
+                _notyf.Error($"Lỗi:{ex.Message}");
                 return View();
               }
            

@@ -157,11 +157,13 @@
                                             }
                                             foreach (var item in ViewBag.Size)
                                             {
+
                                                 if (pd.Id_Size == item.Id)
                                                 {
                                                     lstS.Add(pd.Id_Size);
                                                     <option value="@item.Id" id="size">@item.Name</option>
                                                 }
+
 
                                             }
                                         }
@@ -182,12 +184,14 @@
                                             }
                                             foreach (var item in ViewBag.Color)
                                             {
+
                                                 if (pd.Id_Color == item.Id)
                                                 {
                                                     lstC.Add(pd.Id_Color);
                                                     <option selected value="@item.Id" id="mau">@item.Name</option>
 
                                                 }
+
                                             }
                                         }
                                     }
