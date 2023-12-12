@@ -406,7 +406,7 @@ namespace APPVIEW.Controllers
                     return Redirect(!string.IsNullOrEmpty(ViewData["ReturnUrl"]?.ToString()) ? ViewData["ReturnUrl"].ToString() : "~/Admin/Admin/Index");
 
                 }
-                else if (checkRoleStaff = true)
+                else if (checkRoleStaff == true)
                 {
                     return Redirect(!string.IsNullOrEmpty(ViewData["ReturnUrl"]?.ToString()) ? ViewData["ReturnUrl"].ToString() : "~/Admin/Admin/Index");
                 }
@@ -436,8 +436,10 @@ namespace APPVIEW.Controllers
         {
             try
             {
-
-                obj.Avatar = AddImg(imageFile);
+                if (imageFile != null)
+                {
+                    obj.Avatar = AddImg(imageFile);
+                }              
                 await getapi.UpdateObj(obj, "Account");
                 _notyf.Success("Edit Sucsess");
                 return RedirectToAction("GetList");
@@ -576,10 +578,10 @@ namespace APPVIEW.Controllers
                     }
                 }
                 var user = new Account();
+                user.Email = obj.Email;
                 if (imageFile != null)
                 {
                     user.Id = obj.AccountId;
-                    user.Email = obj.Email;
                     user.Name = obj.Name;
                     user.Password = obj.Password;
                     user.IdRole = obj.Id_Role;
