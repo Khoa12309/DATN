@@ -19,8 +19,9 @@ using Org.BouncyCastle.Tsp;
 using AspNetCore;
 using System.Reflection.Metadata;
 using System.Security.Principal;
+using X.PagedList;
 using DocumentFormat.OpenXml.Math;
-
+using DocumentFormat.OpenXml.Office2010.Excel;
 namespace APPVIEW.Controllers
 {
     [AllowAnonymous]
@@ -30,7 +31,7 @@ namespace APPVIEW.Controllers
         private readonly ILogger<HomeController> _logger;
         private Getapi<ProductDetail> getapi;
         private Getapi<Category> getapiCategory;
-        private Getapi<Color> getapiColor;
+        private Getapi<APPDATA.Models.Color> getapiColor;
         private Getapi<Image> getapiImg;
         private Getapi<Size> getapiSize;
         private Getapi<Supplier> getapiSupplier;
@@ -44,8 +45,9 @@ namespace APPVIEW.Controllers
         private Getapi<CartDetail> getapiCD;
         private Getapi<PaymentMethodDetail> getapiPMD;
         private Getapi<PaymentMethod> getapiPM;
-        private Getapi<VoucherForAcc> getapiVoucherAcc;
         private Getapi<Role> getapiRole;
+        private Getapi<VoucherForAcc> getapiVoucherAcc;
+        
         public INotyfService _notyf;
 
         private static readonly Random random = new Random();
@@ -56,7 +58,7 @@ namespace APPVIEW.Controllers
             _logger = logger;
             getapi = new Getapi<ProductDetail>();
             getapiCategory = new Getapi<Category>();
-            getapiColor = new Getapi<Color>();
+            getapiColor= new Getapi<APPDATA.Models.Color>();
             getapiImg = new Getapi<Image>();
             getapiSize = new Getapi<Size>();
             getapiSupplier = new Getapi<Supplier>();
@@ -78,8 +80,12 @@ namespace APPVIEW.Controllers
 
 
         }
-
+        public IActionResult Gioithieu()
+        {
+            return View();
+        }
         public async Task<IActionResult> Index()
+
         {
 
             if (User.Identity.IsAuthenticated)
@@ -89,27 +95,31 @@ namespace APPVIEW.Controllers
                 var acc = getapiAc.GetApi("Account").FirstOrDefault(c => c.Id.ToString() == Uid);
                 SessionService.SetObjToJson(HttpContext.Session, "Account", acc);
             }
-
-            var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
            
+            var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
+            
             if (account.Id == Guid.Empty)
             {
                
-                account = getapiAc.GetApi("Account").FirstOrDefault(c => c.Name == "Khách lạ");
 
-                await getapiAc.CreateObj(account, "Account");
+                account = getapiAc.GetApi("Account").FirstOrDefault(c => c.Name == "khach k dang nhap");
+                var role = getapiRole.GetApi("Role").FirstOrDefault(c => c.name == "Customer");
+
                 if (account == null)
-                {
+                {                 
                     account = new Account();
                     account.Id = Guid.Empty;
-                    account.Status = 3;
-                    account.Name = "Khách lạ";
+                    account.Status = 10;
+                    account.Name = "khach k dang nhap";
                     account.Email = "";
                     account.Password = "";
                     account.Avatar = "";
                     account.Create_date = DateTime.Now;
                     account.Update_date = DateTime.Now;
-                    account.IdRole = getapiRole.GetApi("Role").FirstOrDefault(c => c.name == "Customer").id;
+                    if (role!= null)
+                    {
+                        account.IdRole = role.id;
+                    }
                     await getapiAc.CreateObj(account, "Account");
                 }
             }
@@ -124,7 +134,7 @@ namespace APPVIEW.Controllers
 
             ViewBag.Img = getapiImg.GetApi("Image");
 
-            return View(productJoin);
+            return View(productJoin); 
         }
         [HttpGet]
         public async Task<IActionResult> Search(string searchTerm)
@@ -140,18 +150,18 @@ namespace APPVIEW.Controllers
 
             if (searchResult.Any())
             {
-                return View("Index", searchResult);
+                return View("Index", searchResult); 
             }
 
             return NotFound("Voucher không tồn tại");
-
+             
         }
 
         public async Task<IActionResult> ViewBill(Guid id)
         {
 
             var productDetails = getapi.GetApi("ProductDetails");
-            var products = getapiProduct.GetApi("Product");
+            var products = getapiProduct.GetApi("Product");  
 
             var productJoin = productDetails.Join(products, ct => ct.Id_Product, s => s.Id, (ct, s) => new { ct, s })
                                     .Select(cs => new { cs.s.Id, cs.s.Name, cs.ct.Price })
@@ -393,31 +403,34 @@ namespace APPVIEW.Controllers
 
         public async Task<IActionResult> DatHangN(Address obj, string pay, float phiship, float voucher, string vouchercode)
         {
+           
             if (obj.Name==null)
             {
                 _notyf.Warning("Tên không được để trống");
-                return RedirectToAction("checkout");
+                return RedirectToAction("checkout", new { obj = obj });
             } 
             if (obj.PhoneNumber==null)
             {
                 _notyf.Warning("Số điện thoại không được để trống");
-                return RedirectToAction("checkout");
+                return RedirectToAction("checkout", new { obj = obj });
             }  
             if (obj.Province==null)
             {
+
                 _notyf.Warning("Thành phố không được để trống");
-                return RedirectToAction("checkout");
+                return RedirectToAction("checkout", new { obj = obj });
             } 
             if (obj.District==null)
             {
                 _notyf.Warning("Quận/huyện không được để trống");
-                return RedirectToAction("checkout");
+                return RedirectToAction("checkout", new { obj = obj });
             }
             if (obj.Ward==null)
             {
                 _notyf.Warning("Phường/xã không được để trống");
-                return RedirectToAction("checkout");
+                return RedirectToAction("checkout", new { obj = obj });
             } 
+
 
             var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
             if (account.Id == Guid.Empty)
@@ -425,9 +438,33 @@ namespace APPVIEW.Controllers
                 account = getapiAc.GetApi("Account").FirstOrDefault(c => c.Name == "khach k dang nhap");
               
             }
+
+            if (obj != null)
+            {
+                var p = Convert.ToInt32(obj.Province);
+                if (p != 0)
+                {
+                    var d = await dis(obj.District, p);
+                    if (d != 0)
+                    {
+                        var w = await wad(obj.Ward, d);
+                        if (w == 0) // Thành công
+                        {
+                            // Trả về danh sách các quận/huyện dưới dạng JSON
+                            _notyf.Warning("Phường/xã không đúng");
+                            return RedirectToAction("checkout", new { obj = obj });
+
+                        }
+                    }
+                    else
+                    {
+                        _notyf.Warning("Quận/huyện không đúng");
+                        return RedirectToAction("checkout", new { obj = obj });
+                    }
+                }
+            }
+
             var client = new OnlineGatewayClient($"https://online-gateway.ghn.vn/shiip/public-api/master-data/province", "bdbbde2a-fec2-11ed-8a8c-6e4795e6d902");
-
-
 
             // Gọi API để lấy danh sách các tỉnh/thành phố
             var response = await client.GetProvincesAsync();
@@ -461,11 +498,27 @@ namespace APPVIEW.Controllers
             }
 
 
-            await bills.CreateObj(bill, "Bill");
+          
 
             var procarrt = SessionService.GetObjFromSession(HttpContext.Session, "Cart");
-            if (procarrt != null)
+            if (procarrt.Count>0)
             {
+                await bills.CreateObj(bill, "Bill");
+            }
+            else
+            {
+                _notyf.Error("Lỗi");
+                return RedirectToAction("checkout");
+            }
+            var lpd = SessionService.GetObjFromSession(HttpContext.Session, "mpd");
+            if (lpd.Count>0)
+            {
+                procarrt.Clear();
+                procarrt = lpd;
+            }
+            if (procarrt.Count > 0)
+            {
+              
                 foreach (var item in procarrt)
                 {
                     var billct = new BillDetail();
@@ -519,29 +572,35 @@ namespace APPVIEW.Controllers
             }
             else
             {
-                var products = SessionService.GetObjFromSession(HttpContext.Session, "Cart");
 
-
-                foreach (var item in products)
+                var pp = SessionService.GetObjFromSession(HttpContext.Session, "Cart");
+               
+                foreach (var item in procarrt)
                 {
+
                     var productcartdetails = getapiCD.GetApi("CartDetails").FirstOrDefault(c => c.ProductDetail_ID == item.Id);
 
-                    var p = products.Find(c => c.Id == item.Id);
+                    var p = procarrt.Find(c => c.Id == item.Id);
 
                     if (productcartdetails != null)
                     {
                         await getapiCD.DeleteObj(productcartdetails.id, "CartDetails");
 
                     }
+                pp.RemoveAll(p => p.Id == item.Id);
                 }
-                products.Clear();
-                SessionService.SetObjToJson(HttpContext.Session, "Cart", products);
+
+                SessionService.Clearobj(HttpContext.Session, "mpd");
+              
+                SessionService.Clearobj(HttpContext.Session, "Cart");
+                SessionService.SetObjToJson(HttpContext.Session, "Cart", pp);
                 if (account.Name== "khach k dang nhap")
                 {
                     _notyf.Success("Đặt hàng thành công");
                     return RedirectToAction("Index");
                 }
                 _notyf.Success("Đặt hàng thành công");
+
 
                 return RedirectToAction("Thongtin");
             }
@@ -654,7 +713,7 @@ namespace APPVIEW.Controllers
                 billct.Price = soluong * x.Price;
                 billct.Status = 1;
                 await billDetails.CreateObj(billct, "BillDetail");
-                bill.TotalMoney = billct.Price + ship;
+                bill.TotalMoney = 0;
                 await bills.UpdateObj(bill, "Bill");
 
             }
@@ -712,7 +771,6 @@ namespace APPVIEW.Controllers
 
             if (User.Identity.IsAuthenticated)
             {
-
                 var Uid = User.Claims.FirstOrDefault(c => c.Type == "Id").Value;
                 var acc = getapiAc.GetApi("Account").FirstOrDefault(c => c.Id.ToString() == Uid);
                 SessionService.SetObjToJson(HttpContext.Session, "Account", acc);
@@ -766,8 +824,10 @@ namespace APPVIEW.Controllers
             return View();
         }
 
-        public IActionResult Shop(string sortOrder)
+        public IActionResult Shop(string sortOrder,int?page)
         {
+            int pageSize = 6;
+            int pageNumber = (page ?? 1);
             var img = getapiImg.GetApi("Image");
             var productDetails = getapi.GetApi("ProductDetails").Where(c => c.Status == 1 && c.Quantity > 0).ToList();
             ViewBag.size = getapiSize.GetApi("Size");
@@ -796,7 +856,7 @@ namespace APPVIEW.Controllers
                         break;
                 }
 
-                ViewBag.Products = productsWithImages;
+                ViewBag.Products = productsWithImages.OrderByDescending(x => x.ProductDetail.Id).ToPagedList(pageNumber, pageSize);
             }
             catch (Exception ex)
             {
@@ -804,7 +864,7 @@ namespace APPVIEW.Controllers
                 _logger.LogError($"Error in Shop action: {ex.Message}");
             }
 
-            return View();
+            return View(productDetails.OrderByDescending(x => x.Id).ToPagedList(pageNumber, pageSize));
         }
 
         [HttpPost]
@@ -901,7 +961,7 @@ namespace APPVIEW.Controllers
             ViewBag.Category = getapiCategory.GetApi("Category");
             ViewBag.Supplier = getapiSupplier.GetApi("Supplier");
             ViewBag.Material = getapiMaterial.GetApi("Material");
-
+            TempData["prodtId"] = pro.Id;
             return View(pro);
         }
 
@@ -1062,7 +1122,7 @@ namespace APPVIEW.Controllers
 
                 foreach (var item in response.Data)
                 {
-                    if (item.NameExtension.Any(c => c.Contains(ten))||item.DistrictName.ToLower().Contains(ten.ToLower()))
+                    if (item.NameExtension.Any(c => c.Contains(ten))||item.DistrictName.ToLower() == ten.ToLower())
                     {
                         return item.DistrictID;
                     }
@@ -1201,7 +1261,7 @@ namespace APPVIEW.Controllers
             return View();
         }
 
-        public async Task<IActionResult> Checkout()
+        public async Task<IActionResult> Checkout( Guid? id)
         {
             try
             {
@@ -1226,6 +1286,20 @@ namespace APPVIEW.Controllers
 
                 //// fee ship
                 var products = SessionService.GetObjFromSession(HttpContext.Session, "Cart");
+
+                if (id!=null)
+                {
+                    
+                   var p= products.FirstOrDefault(c => c.Id == id);
+                   SessionService.Clearobj(HttpContext.Session, "mpd");
+                  
+                    var lpd = new List<ProductDetail>();
+                    lpd.Add(p);
+                    SessionService.SetObjToJson(HttpContext.Session, "mpd", lpd);
+                    products.Clear();
+                    products = lpd;
+                }
+
                 var can = 100;
                 if (products.Count != 0)
                 {
@@ -1306,6 +1380,15 @@ namespace APPVIEW.Controllers
                                     // Trả về danh sách các quận/huyện dưới dạng JSON
                                     ViewBag.fee = fee.Data.total;
                                 }
+                                else
+                                {
+                                    _notyf.Warning("Phường/xã không đúng");
+                                    return View(dc);
+                                }
+                            }
+                            else {
+                                _notyf.Warning("Quận/huyện không đúng");
+                                return View(dc);
                             }
 
                         }
@@ -1346,15 +1429,14 @@ namespace APPVIEW.Controllers
                 {
                     return RedirectToAction("Login", "Account");
                 }
-
+                var prodtId = TempData["prodtId"] as Guid?;
                 var voucher = getapiVoucher.GetApi("Voucher").FirstOrDefault(v => v.Id == voucherId);
+                var voucherAcc = getapiVoucherAcc.GetApi("VoucherForAcc").FirstOrDefault(v => v.Id_Voucher == voucherId && v.Id_Account == account.Id);
 
                 if (voucher != null)
                 {
-                    // Kiểm tra xem người dùng đã có phiếu giảm giá này chưa
-                    var existingVoucherAcc = getapiVoucherAcc.GetApi("VoucherForAcc").FirstOrDefault(v => v.Id_Voucher == voucherId && v.Id_Account == account.Id);
 
-                    if (existingVoucherAcc == null)
+                    if (voucherAcc == null)
                     {
                         if (voucher.Quantity > 0)
                         {
@@ -1377,28 +1459,23 @@ namespace APPVIEW.Controllers
                             voucher.Quantity--;
 
                             await getapiVoucher.UpdateObj(voucher, "Voucher");
-                            TempData["VoucherError"] = "Lưu thành công";
+                            _notyf.Success("Lưu phiếu gỉảm giá thành công!");
                         }
                         else
                         {
-                            TempData["VoucherError"] = "Chúc bạn may mắn lần sau";
+                            _notyf.Warning("Chúc bạn may mắn lần sau!");
                         }
                     }
                     else
                     {
-                        TempData["VoucherError"] = "Phiếu giảm giá đã có trong tài khoản của bạn.";                     
-                        _notyf.Success("Voucher đã có trong tài khoản của bạn!");
+                        _notyf.Success("Phiếu giảm giá đã có trong tài khoản của bạn!");
+                        return RedirectToAction("Details", new { id = prodtId });
 
                     }
                 }
                 else
                 {
-
-                    TempData["VoucherError"] = "Phiếu giảm giá không hợp lệ";
-
-                   
-                    _notyf.Warning("Chúc bạn may mắn lần sau!");
-
+                    _notyf.Warning("Phiếu giảm giá không hợp lệ!");
                 }
             }
             catch (Exception ex)
@@ -1410,7 +1487,42 @@ namespace APPVIEW.Controllers
             }
             return RedirectToAction("Details", "Home");
         }
+        [HttpGet]
+        public async Task<IActionResult> YourVouchers()
+        {
 
+            try
+            {
+                // Lấy thông tin tài khoản từ session
+                var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
+
+                if (account == null || account.Id == Guid.Empty)
+                {
+                    // Xử lý trường hợp người dùng chưa đăng nhập
+                    return RedirectToAction("Login", "Account");
+                }
+                else
+                {
+                    // Lấy danh sách voucher cho tài khoản
+                    var voucherAcc = getapiVoucherAcc.GetApi("VoucherForAcc").Where(c => c.Id_Account == account.Id && c.Status == 1).ToList();
+
+                    if (voucherAcc != null && voucherAcc.Any())
+                    {
+                        return View(voucherAcc);
+                    }
+                    else
+                    {
+                        return View();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Xử lý nếu có lỗi xảy ra
+                return StatusCode(500, new { ErrorMessage = $"Lỗi viewáy chủ nội bộ: {ex.Message}" });
+            }
+
+        }
         [HttpGet]
         public async Task<IActionResult> ApplyDiscount()
         {

@@ -88,7 +88,7 @@ namespace APPVIEW.Controllers
             var lst = getapi.GetApi("Voucher");
             return View(lst.Find(c => c.Id == id));
         }
-
+         
 
         [HttpPost]
         public async Task<IActionResult> Edit(Voucher obj)
@@ -119,7 +119,7 @@ namespace APPVIEW.Controllers
 
             await getapi.DeleteObj(id, "Voucher");
             return RedirectToAction("GetList");
-
+             
         }
     }
 }
