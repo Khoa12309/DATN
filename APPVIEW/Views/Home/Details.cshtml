@@ -124,7 +124,7 @@
                                 {
                                     <li class="voucher-item" style="background: #F5F5F5; border-radius: 5px; color: #FF6A6A">
 
-                                        <a>Tên: @vc.Name - Giảm: @vc.Value% - Max: @vc.DiscountAmount.ToString("C0", new CultureInfo("vi-VN"))</a>
+                                        <a>Mã: @vc.Code - Giảm: @vc.Value% - Max: @vc.DiscountAmount.ToString("C0", new CultureInfo("vi-VN"))</a>
                                         <input type="hidden" name="voucherId" value="@vc.Id" />
                                         <input type="submit" value="+" class="btn btn-light addVoucherButton" data-voucher-id="@vc.Id" style="margin-left: 5px; color: #FF6A6A" />
 
