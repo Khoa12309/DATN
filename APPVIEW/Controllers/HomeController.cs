@@ -1430,15 +1430,14 @@ namespace APPVIEW.Controllers
                 {
                     return RedirectToAction("Login", "Account");
                 }
-
+                var prodtId = TempData["prodtId"] as Guid?;
                 var voucher = getapiVoucher.GetApi("Voucher").FirstOrDefault(v => v.Id == voucherId);
+                var voucherAcc = getapiVoucherAcc.GetApi("VoucherForAcc").FirstOrDefault(v => v.Id_Voucher == voucherId && v.Id_Account == account.Id);
 
                 if (voucher != null)
                 {
-                    // Kiểm tra xem người dùng đã có phiếu giảm giá này chưa
-                    var existingVoucherAcc = getapiVoucherAcc.GetApi("VoucherForAcc").FirstOrDefault(v => v.Id_Voucher == voucherId && v.Id_Account == account.Id);
 
-                    if (existingVoucherAcc == null)
+                    if (voucherAcc == null)
                     {
                         if (voucher.Quantity > 0)
                         {
@@ -1461,28 +1460,23 @@ namespace APPVIEW.Controllers
                             voucher.Quantity--;
 
                             await getapiVoucher.UpdateObj(voucher, "Voucher");
-                            TempData["VoucherError"] = "Lưu thành công";
+                            _notyf.Success("Lưu phiếu gỉảm giá thành công!");
                         }
                         else
                         {
-                            TempData["VoucherError"] = "Chúc bạn may mắn lần sau";
+                            _notyf.Warning("Chúc bạn may mắn lần sau!");
                         }
                     }
                     else
                     {
-                        TempData["VoucherError"] = "Phiếu giảm giá đã có trong tài khoản của bạn.";                     
-                        _notyf.Success("Voucher đã có trong tài khoản của bạn!");
+                        _notyf.Success("Phiếu giảm giá đã có trong tài khoản của bạn!");
+                        return RedirectToAction("Details", new { id = prodtId });
 
                     }
                 }
                 else
                 {
-
-                    TempData["VoucherError"] = "Phiếu giảm giá không hợp lệ";
-
-                   
-                    _notyf.Warning("Chúc bạn may mắn lần sau!");
-
+                    _notyf.Warning("Phiếu giảm giá không hợp lệ!");
                 }
             }
             catch (Exception ex)
@@ -1494,7 +1488,42 @@ namespace APPVIEW.Controllers
             }
             return RedirectToAction("Details", "Home");
         }
+        [HttpGet]
+        public async Task<IActionResult> YourVouchers()
+        {
 
+            try
+            {
+                // Lấy thông tin tài khoản từ session
+                var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
+
+                if (account == null || account.Id == Guid.Empty)
+                {
+                    // Xử lý trường hợp người dùng chưa đăng nhập
+                    return RedirectToAction("Login", "Account");
+                }
+                else
+                {
+                    // Lấy danh sách voucher cho tài khoản
+                    var voucherAcc = getapiVoucherAcc.GetApi("VoucherForAcc").Where(c => c.Id_Account == account.Id && c.Status == 1).ToList();
+
+                    if (voucherAcc != null && voucherAcc.Any())
+                    {
+                        return View(voucherAcc);
+                    }
+                    else
+                    {
+                        return View();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Xử lý nếu có lỗi xảy ra
+                return StatusCode(500, new { ErrorMessage = $"Lỗi viewáy chủ nội bộ: {ex.Message}" });
+            }
+
+        }
         [HttpGet]
         public async Task<IActionResult> ApplyDiscount()
         {
