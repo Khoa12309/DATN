@@ -322,12 +322,9 @@
 
                                         {
                                             <button style="background-color:royalblue ; border-radius:12px ; border:none"> @Html.ActionLink("Đổi thông tin nhận hàng", "UpdateAddress", new { id = itembill.id }, new { style = "color:black;" }) </button>
-                                        }
-                                        @if (itembill.Status == 1 || itembill.Status == 2)
-
-                                        {
                                             <button style="background-color:royalblue ; border-radius:12px ; border:none"> @Html.ActionLink("Hủy đơn", "HuyDon", new { id = itembill.id }, new { style = "color:black;" }) </button>
                                         }
+    
                                         @if (itembill.Status == 3)
 
                                         {

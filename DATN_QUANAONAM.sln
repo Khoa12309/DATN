@@ -15,6 +15,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "APPVIEW", "APPVIEW\APPVIEW.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "APPDATA", "APPDATA\APPDATA.csproj", "{E8A8ED7F-B1B3-4854-8F36-DAFA68EDFB3F}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Font", "Font", "{52AC9785-1282-41B8-B02B-857947690439}"
+	ProjectSection(SolutionItems) = preProject
+		..\..\..\Downloads\DM_Sans\DMSans-Italic-VariableFont_opsz,wght.ttf = ..\..\..\Downloads\DM_Sans\DMSans-Italic-VariableFont_opsz,wght.ttf
+		..\..\..\Downloads\DM_Sans\DMSans-VariableFont_opsz,wght.ttf = ..\..\..\Downloads\DM_Sans\DMSans-VariableFont_opsz,wght.ttf
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,6 +47,7 @@ Global
 		{2F039A2B-00AB-42D0-9047-7DA854FBDC90} = {8D472E12-2FC5-4126-A6EE-AE83FD409EDC}
 		{7AE260B1-FD15-4402-AD14-1482876D4651} = {0F9BDEAC-DD3C-4FD6-BE20-C6BF72DD33CF}
 		{E8A8ED7F-B1B3-4854-8F36-DAFA68EDFB3F} = {5DD708B3-1088-4CEB-9B7B-320F3254C729}
+		{52AC9785-1282-41B8-B02B-857947690439} = {0F9BDEAC-DD3C-4FD6-BE20-C6BF72DD33CF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {36066DAF-054E-4271-B5F6-466F606EB979}
