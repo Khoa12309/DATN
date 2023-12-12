@@ -1,0 +1,111 @@
+﻿@using System.Globalization;
+@model IEnumerable<APPDATA.Models.VoucherForAcc>
+@{
+    ViewData["Title"] = "Your Voucher";
+    Layout = "~/Views/Shared/_LayoutWeb.cshtml";
+}
+<style>
+    .coupon .kanan {
+        border-left: 1px dashed #000000;
+        width: 40% !important;
+        position: relative;
+    }
+
+        .coupon .kanan .info::after,
+        .coupon .kanan .info::before {
+            content: "";
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: #ffffff;
+            border-radius: 100%;
+        }
+
+        .coupon .kanan .info::before {
+            top: -10px;
+            left: -10px;
+        }
+
+        .coupon .kanan .info::after {
+            bottom: -10px;
+            left: -10px;
+        }
+
+    .coupon .time {
+        font-size: 1.6rem;
+    }
+
+    .actionShop {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #dc3545;
+        color: #fff;
+        text-decoration: none;
+        border-radius: 5px;
+        transition: background-color 0.3s ease;
+    }
+
+        .actionShop:hover {
+            background-color: #c82333;
+        }
+</style>
+<section class="blog-banner-area" id="category">
+    <div class="container h-100">
+        <div class="blog-banner">
+            <div class="text-center">
+                <h1>Kho Voucher</h1>
+                @*<nav aria-label="breadcrumb" class="banner-breadcrumb">
+                    <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="~/home/index">Home</a></li>
+                    <li class="breadcrumb-item active" aria-current="page">Checkout</li>
+                    </ol>
+                    </nav>*@
+            </div>
+        </div>
+    </div>
+</section>
+<div class="container my-5">
+    @if (Model == null || !Model.Any())
+    {
+        <h4 style="text-align: center;">Không có voucher nào trong tài khoản của bạn</h4>
+    }
+    else
+    {
+        <form id="voucherForm" class="row">
+            @foreach (var voucher in Model)
+            {
+                <div class="col-sm-6">
+                    <div class="coupon bg-white rounded mb-3 d-flex justify-content-between">
+                        <div class="tengah py-3 d-flex w-100 justify-content-start p-3"
+                     style="background: #f2f2f2; border-radius: 5px">
+                            <div>
+                                <span class="badge badge-success">@voucher.Code</span>
+                                <h4 class="text-muted mb-0">@voucher.Name</h4>
+                                <p class="text-muted mb-0">Giảm: @voucher.Value%</p>
+                                <p class="text-muted mb-0">Tối đa: @voucher.DiscountAmount.ToString("C0", new CultureInfo("vi-VN"))</p>
+                            </div>
+                        </div>
+
+                        <div class="kanan" style="background: #f2f2f2; border-radius: 5px">
+                            <div class="info m-3 d-flex align-items-center">
+                                <div class="w-100">
+                                    <div class="block">
+                                        <span class="time font-weight-light">
+                                            <p style="color: red; font-size: 12px">
+                                                HSD: @voucher.EndDate.ToString("dd-MM-yyyy HH:mm")
+                                            </p>
+                                        </span>
+                                    </div>
+                                    <a class="actionShop" href="~/Home/Shop">Sử dụng</a>
+
+                                    @*<input type="hidden" name="selectedVoucher" value="@voucher.Code" />*@
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            }
+        </form>
+
+    }
+</div>

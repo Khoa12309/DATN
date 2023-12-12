@@ -6,7 +6,29 @@
 
     List<Image> Img = ViewBag.Img;
 }
+<style>
+    #card {
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      margin-bottom: 30px;
+  
+ 
+    }
+    #card img {
+      border-bottom: 1px solid #ccc;
+    }
+    .card-product__title {
+    text-transform: uppercase;
+       font-family: 'Roboto', sans-serif;
+    font-size: 18px; /* Điều chỉnh kích thước font theo ý muốn */
+    font-weight: normal; /* Chọn độ đậm nhẹ của chữ */
+    color: #333;
+}
 
+
+</style>
 <section class="hero-banner">
     <div class="container">
         <div class="row no-gutters align-items-center pt-60px">
@@ -26,6 +48,7 @@
         </div>
     </div>
 </section>
+    
 <section class="section-margin mt-0">
     <div class="owl-carousel owl-theme hero-carousel">
         <div class="hero-carousel__slide">
@@ -51,13 +74,12 @@
         </div>
     </div>
 </section>
-<section class="section-margin calc-60px">
+<section class="section-margin calc-60px" >
     <div class="container">
         <div class="section-intro pb-60px">
-            <p>Popular Item in the market</p>
-            <h2>Trending <span class="section-intro__style">Product</span></h2>
+            <h2>Sản phẩm  <span class="section-intro__style">bán chạy</span></h2>
         </div>
-        <div class="row">
+        <div class="row" >
             @{
                 var lstpr = new List<Guid>();
                 var ht = 0;
@@ -74,7 +96,7 @@
                     continue;
                 }
                 lstpr.Add(item.Id_Product);
-                <div class="col-md-6 col-lg-4 col-xl-3">
+                <div class="col-md-6 col-lg-4 col-xl-3"  id="card">
                     <div class="card text-center card-product">
                         <div class="card-product__img">
                             @foreach (var img in Img)
@@ -82,7 +104,7 @@
                                 if (img.IdProductdetail == item.Id)
                                 {
                                     <img class="card-img" src="~/images/@img.Name" width="150px" height="250px"
-                                         alt="">
+                             alt="">
                                     break;
                                 }
 
@@ -95,18 +117,14 @@
                                         <i class="ti-shopping-cart"></i>
                                     </button>
                                 </li>
-
-                                <li><button><i class="ti-heart"></i></button></li>
-
                                 <li><button> @Html.ActionLink("Mua ngay", "ViewBill", new { id = item.Id_Product }, new { style = "color:black;" })</button></li>
 
                             </ul>
                         </div>
                         <div class="card-body">
-                            <p>Accessories</p>
 
-                            <h4 class="card-product__title"><a href="single-product.html">@item.Name</a></h4>
-                            <p class="card-product__price"> @item.Price.ToString("C0", new CultureInfo("vi-VN"))</p>
+                            <h4 class="card-product__title">@item.Name</h4>
+                            <p class="card-product__price" style="color:#f15e2c"> @item.Price.ToString("C0", new CultureInfo("vi-VN"))</p>
 
                         </div>
                     </div>
@@ -197,7 +215,7 @@
 </section>
 
 <script>
-    $('body').on('click', '.buy-btn', function (e) {
+    $('body').on('click', '.buy-btn', function(e) {
         e.preventDefault();
         var id = $(this).data('product-id');
         var quantity = 1;
@@ -210,7 +228,7 @@
             url: '/cart/AddToCart',
             type: 'POST',
             data: { id: id, Soluong: quantity },
-            success: function (rs) {
+            success: function(rs) {
                 if (rs.success) {
                     // Hiển thị thông báo thành công
                     Swal.fire({
@@ -239,6 +257,5 @@
             }
         });
     });
-
 </script>
 

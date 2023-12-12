@@ -298,10 +298,10 @@ namespace APPVIEW.Controllers
             var size = getapiSize.GetApi("Size");
             var color = getapiColor.GetApi("Color");
             var Img = getapiImg.GetApi("Image");
-            var prd = getapi.GetApi("ProductDetails");
+            var prd = getapi.GetApi("ProductDetails").Where(c => c.Quantity > 0 && c.Status != 0);
             if (searchText != null)
             {
-                var products = getapi.GetApi("ProductDetails").Where(c => c.Quantity > 0 && c.Name.ToLower().Contains(searchText.ToLower().Trim())).ToList();
+                var products = getapi.GetApi("ProductDetails").Where(c => c.Quantity > 0 && c.Status != 0 && c.Name.ToLower().Contains(searchText.ToLower().Trim())).ToList();
                 return Json(new { success = true, productct = products, size = size, color = color,img = Img });
             }
 
@@ -318,18 +318,18 @@ namespace APPVIEW.Controllers
             {
                 if (inputValue != "")
                 {
-                    return View(getapi.GetApi("ProductDetails").Where(c => c.Quantity > 0 && c.Name.ToLower().Contains(inputValue.ToLower())).ToList());
+                    return View(getapi.GetApi("ProductDetails").Where(c => c.Quantity > 0 && c.Status!=0 && c.Name.ToLower().Contains(inputValue.ToLower())).ToList());
                 }
             }
             catch (Exception ex)
             {
 
-                return View(getapi.GetApi("ProductDetails").Where(c => c.Quantity > 0));
+                return View(getapi.GetApi("ProductDetails").Where(c => c.Quantity > 0 && c.Status != 0));
             }
 
 
 
-            return View(getapi.GetApi("ProductDetails").Where(c => c.Quantity > 0));
+            return View(getapi.GetApi("ProductDetails").Where(c => c.Quantity > 0 && c.Status != 0));
         }
 
 
@@ -347,6 +347,13 @@ namespace APPVIEW.Controllers
 
                 return Redirect("~/Account/Login");
             }
+            if (tenkh == "" || tenkh == null)
+            {
+
+
+                tenkh = "Khong Luu Ten";
+            }
+
             var prdct = getapi.GetApi("ProductDetails").ToList();
             var billct = billDetails.GetApi("BillDetail");
             var bill = bills.GetApi("Bill");
@@ -358,6 +365,7 @@ namespace APPVIEW.Controllers
             newbil.Type = "Tại Quầy";
             newbil.TotalMoney = tongtien;
             newbil.Status = 4;
+            newbil.Name = tenkh;
             newbil.PayDate = DateTime.Now;  
             await bills.CreateObj(newbil, "Bill");
             if (productId.Count == soluong.Count)
@@ -390,14 +398,8 @@ namespace APPVIEW.Controllers
             {
                 return RedirectToAction("BanHangOff");
             }
-            if (tenkh == "" || tenkh == null)
-            {
-
-
-                tenkh = "Khong Luu Ten";
-            }
-
-            return RedirectToAction("GenerateInvoice", new { billId = newbil.id, tenkh = tenkh });
+           
+            return RedirectToAction("GenerateInvoice", new { billId = newbil.id, tenkh = newbil.Name });
         }
 
         public string xulichuoi(string tenkh) {
@@ -541,8 +543,8 @@ namespace APPVIEW.Controllers
 
         }
 
-        // POST: QLBills/Delete/5
-        [HttpPost]
+            // POST: QLBills/Delete/5
+            [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Delete(int id, IFormCollection collection)
         {
