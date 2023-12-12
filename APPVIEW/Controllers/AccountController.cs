@@ -406,7 +406,7 @@ namespace APPVIEW.Controllers
                     return Redirect(!string.IsNullOrEmpty(ViewData["ReturnUrl"]?.ToString()) ? ViewData["ReturnUrl"].ToString() : "~/Admin/Admin/Index");
 
                 }
-                else if (checkRoleStaff = true)
+                else if (checkRoleStaff == true)
                 {
                     return Redirect(!string.IsNullOrEmpty(ViewData["ReturnUrl"]?.ToString()) ? ViewData["ReturnUrl"].ToString() : "~/Admin/Admin/Index");
                 }

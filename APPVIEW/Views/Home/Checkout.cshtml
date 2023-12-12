@@ -261,7 +261,12 @@
         $("#wardSelect").empty();
         inputdis.value = "";
         inputward.value = "";
-        document.getElementById("tShip").value = parseFloat(document.getElementById("tShip").value) - parseFloat(document.getElementById("feeship").value);
+        if (document.getElementById("tShip").value!=0) {
+            document.getElementById("tShip").value = parseFloat(document.getElementById("tShip").value) - parseFloat(document.getElementById("feeship").value);
+        }
+        else{
+            document.getElementById("tShip").value = 0;
+        }
         document.getElementById("feeship").value = 0;
         // Sử dụng fetch() để gửi một request GET đến /Home/GetUsers
         fetch("/Home/district", {

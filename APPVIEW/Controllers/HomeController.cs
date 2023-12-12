@@ -1413,7 +1413,7 @@ namespace APPVIEW.Controllers
             { 
                 _notyf.Error($"Lỗi:{ex.Message}");
                 return View();
-              }
+            }
            
           
         }
@@ -1670,13 +1670,14 @@ namespace APPVIEW.Controllers
 
         public async Task<IActionResult> PaymentConfirm(Guid id)
         {
+            var Bill = bills.GetApi("Bill").FirstOrDefault(c => c.id == id);
             if (Request.QueryString.Value != null)
             {
 
                 string hashSecret = "UGHKKYGUTTLWWTQOJBECDFAMDHZDBLWW"; //Chuỗi bí mật
                 var vnpayData = Request.Query;
                 PayLib pay = new PayLib();
-                var Bill = bills.GetApi("Bill").FirstOrDefault(c => c.id == id);
+                
                 var account = getapiAc.GetApi("Account").FirstOrDefault(c => c.Id == Bill.AccountId).Name;
 
                 //lấy toàn bộ dữ liệu được trả về
@@ -1762,6 +1763,13 @@ namespace APPVIEW.Controllers
                     }
                     else
                     {
+                       
+                        var billd = billDetails.GetApi("BillDetail").Where(c => c.BIllId == id);
+                        foreach (var item in billd)
+                        {
+                            await billDetails.DeleteObj(item.id, "BillDetail");
+                        }
+                        await bills.DeleteObj(id, "Bill");
                         //Thanh toán không thành công. Mã lỗi: vnp_ResponseCode
                         ViewBag.Message = "Có lỗi xảy ra trong quá trình xử lý hóa đơn " + orderId + " | Mã giao dịch: " + vnpayTranId + " | Mã lỗi: " + vnp_ResponseCode;
                         _notyf.Error("Đặt hàng thất bại");
@@ -1770,16 +1778,18 @@ namespace APPVIEW.Controllers
                             return RedirectToAction("Index");
                         }
                     }
+                    return RedirectToAction("checkout");
                 }
                 else
                 {
+                    await bills.DeleteObj(id, "Bill");
                     _notyf.Error("Đặt hàng thất bại");
                     if (account == "khach k dang nhap")
                     {
                         return RedirectToAction("Index");
                     }
                     ViewBag.Message = "Có lỗi xảy ra trong quá trình xử lý";
-                     
+                    return RedirectToAction("Index");
                 }
             }
             return RedirectToAction("thongtin");
