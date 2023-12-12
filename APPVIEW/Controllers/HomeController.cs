@@ -1259,7 +1259,7 @@ namespace APPVIEW.Controllers
             return View();
         }
 
-        public async Task<IActionResult> Checkout( Guid? id,Address obj)
+        public async Task<IActionResult> Checkout( Guid? id)
         {
             try
             {
@@ -1354,10 +1354,7 @@ namespace APPVIEW.Controllers
 
                     
                     var dc = getapiAddress.GetApi("Address").FirstOrDefault(c => c.AccountId == account.Id);
-                    if (obj!=null)
-                    {
-                        dc = obj;
-                    }
+
                     if (dc != null)
                     {
                         var p = await province(dc.Province);
