@@ -3,9 +3,7 @@
 @{
 
     @using APPDATA.Models;
-
-@using System.Globalization
-
+    @using System.Globalization
     ViewData["Title"] = "BanHangOff";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 
@@ -51,17 +49,10 @@
                     <div class="card-body">
                         <div class="row" id="divToUpdate">
 
-                                        <div class="col-md-6 col-lg-4 col-xl-3">
-                                            <div class="card text-center card-product">
-                                             
-                                                    <div class="card-product__img">
-                                                        @foreach (var img in ViewBag.Img)
-                                                        {
-                                                            if (img.IdProductdetail == item.Id)
-                                                            {
-                                                                <img class="card-img" style="width:150p;height:200px" src="~/images/@img.Name" alt="">
-                                                                break;
-                                                            }
+                            @foreach (var item in Model)
+                            {
+
+
                                 <div class="col-md-6 col-lg-4 col-xl-3">
                                     <div class="card text-center card-product">
 
@@ -70,22 +61,12 @@
                                             {
                                                 if (img.IdProductdetail == item.Id)
                                                 {
-                                                    <img class="card-img" src="~/images/@img.Name" alt="">
+                                                    <img class="card-img" style="width:150p;height:200px" src="~/images/@img.Name" alt="">
                                                     break;
                                                 }
 
                                             }
 
-                                                        <p style="text-align:left;display: inline-block;width: 700px">
-                                                            Sản phẩm : @item.Name
-                                                        </p>
-                                                        @foreach (var size in ViewBag.size)
-                                                        {
-                                                            if (size.Id == item.Id_Size)
-                                                            {
-                                                                <p style="text-align:left">Sise : @size.Name</p>
-                                                                break;
-                                                            }
 
 
                                             <button class="btn btn-primary" style="margin-top:10px" data-id="@item.Id">Chọn sản phẩm</button>
@@ -93,7 +74,7 @@
                                         </div>
                                         <div class="card-body">
 
-                                            <p style="text-align:left">
+                                            <p style="text-align:left;display: inline-block;width: 700px">
                                                 Sản phẩm : @item.Name
                                             </p>
                                             @foreach (var size in ViewBag.size)
@@ -116,7 +97,7 @@
 
                                             }
 
-                                            <p style="text-align:left">Giá : @item.Price.ToString("C0", new CultureInfo("vi-VN"))</p>
+                                            <p style="text-align:left">Giá : @item.Price</p>
                                         </div>
                                     </div>
                                 </div>
@@ -330,7 +311,7 @@
                                 '<div class="card-body">' +
                                 '<p style="text-align:left;display: inline-block;width: 700px">Sản phẩm: ' + item.name + '</p>' +
                                 sizeHTML + colorHTML +
-                                '<p style="text-align:left">Giá: ' + item.price+ '</p>' +
+                                '<p style="text-align:left">Giá: ' + item.price + '</p>' +
                                 '</div>' +
                                 '</div>' +
                                 '</div>';
