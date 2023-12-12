@@ -145,7 +145,7 @@
                         <div class="row">
                             <li>
                                 <h5>SIZE</h5>
-                                <select class="Size">
+                                <select class="Size" id="size" asp-for="Id_Size">
 
                                     @{
                                         var lstS = new List<Guid>();
@@ -160,7 +160,7 @@
                                                 if (pd.Id_Size == item.Id)
                                                 {
                                                     lstS.Add(pd.Id_Size);
-                                                                        <option value="@item.Id" id="size">@item.Name</option>
+                                                    <option value="@item.Id" id="size">@item.Name</option>
                                                 }
 
                                             }
@@ -171,7 +171,7 @@
                             <li class="separator"></li>
                             <li>
                                 <h5>MÀU SẮC</h5>
-                                <select class="mau">
+                                <select class="mau" id="color" asp-for="Id_Color">
                                     @{
                                         var lstC = new List<Guid>();
                                         foreach (var pd in ViewBag.lspd)
@@ -185,7 +185,7 @@
                                                 if (pd.Id_Color == item.Id)
                                                 {
                                                     lstC.Add(pd.Id_Color);
-                                                                        <option selected value="@item.Id" id="mau">@item.Name</option>
+                                                    <option selected value="@item.Id" id="mau">@item.Name</option>
 
                                                 }
                                             }
@@ -467,8 +467,8 @@
         if (quantityText != '') {
             quantity = parseInt(quantityText);
         }
-        var size = $("input[name='size']:checked").val();
-        var color = $("input[name='color']:checked").val();
+        var size = $("select[id='size']").val();
+        var color = $("select[id='color']").val();
 
 
         $.ajax({
