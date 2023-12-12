@@ -109,7 +109,7 @@ namespace APPVIEW.Controllers
                 {                 
                     account = new Account();
                     account.Id = Guid.Empty;
-                    account.Status = 10;
+                    account.Status = 3;
                     account.Name = "khach k dang nhap";
                     account.Email = "";
                     account.Password = "";
