@@ -44,7 +44,6 @@ namespace APPDATA.Migrations
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<string>("Avatar")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("Create_date")
@@ -153,7 +152,6 @@ namespace APPDATA.Migrations
                         .HasColumnType("real");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("PayDate")
@@ -216,7 +214,7 @@ namespace APPDATA.Migrations
                     b.Property<float>("Price")
                         .HasColumnType("real");
 
-                    b.Property<Guid?>("ProductDetailID")
+                    b.Property<Guid>("ProductDetailID")
                         .HasColumnType("uniqueidentifier");
 
                     b.Property<int>("Status")
@@ -876,7 +874,9 @@ namespace APPDATA.Migrations
 
                     b.HasOne("APPDATA.Models.ProductDetail", "ProductDetails")
                         .WithMany("BillDetails")
-                        .HasForeignKey("ProductDetailID");
+                        .HasForeignKey("ProductDetailID")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Bill");
 

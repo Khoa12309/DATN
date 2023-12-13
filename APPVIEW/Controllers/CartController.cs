@@ -3,6 +3,7 @@ using APPDATA.Migrations;
 using APPDATA.Models;
 using APPVIEW.Services;
 using AspNetCoreHero.ToastNotification.Abstractions;
+using DocumentFormat.OpenXml.Office2010.Excel;
 using Microsoft.AspNetCore.Mvc;
 
 using System.Net.WebSockets;
@@ -17,7 +18,7 @@ namespace APPVIEW.Controllers
         private Getapi<ProductDetail> getapiPD;
         private Getapi<CartDetail> getapiCartD;
         private Getapi<Image> getapiImg;
-        private Getapi<Color> getapiColor;
+        private Getapi<APPDATA.Models.Color> getapiColor;
         private Getapi<Size> getapiSize;
         private Getapi<Account> getapiAc;
 
@@ -28,7 +29,7 @@ namespace APPVIEW.Controllers
             getapiPD = new Getapi<ProductDetail>();
             getapiCartD = new Getapi<CartDetail>();
             getapiImg = new Getapi<Image>();
-            getapiColor = new Getapi<Color>();
+            getapiColor = new Getapi<APPDATA.Models.Color>();
             getapiSize = new Getapi<Size>();
             getapiAc = new Getapi<Account>();
             _notyf = notyf;
@@ -321,11 +322,13 @@ namespace APPVIEW.Controllers
 
                   
                     TempData["mess"] = "Sản Phẩm " + item.Name + " không còn màu hoặc kích thước bạn chọn ";
+                    _notyf.Warning("Màu hoặc kích thước bạn chọn không còn");
                     return RedirectToAction("viewcart");
                 }
                 if (product.Quantity<item.Quantity)
                 {
-                    TempData["mess"] ="Sản Phẩm "+ item.Name + " chỉ còn  " + item.Quantity;
+                    _notyf.Warning("Số lượng sản phẩm chỉ còn "+product.Quantity.ToString());
+
                     return RedirectToAction("viewcart");
                 }
 
@@ -333,7 +336,12 @@ namespace APPVIEW.Controllers
                 var products = SessionService.GetObjFromSession(HttpContext.Session, "Cart");
                 var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
                 var cart = getapi.GetApi("Cart").FirstOrDefault(c => c.AccountId == account.Id);
-                var productcartdetails = getapiCartD.GetApi("CartDetails").FirstOrDefault(c => c.ProductDetail_ID == item.Id&& c.CartId == cart.id);
+                var productcartdetails = getapiCartD.GetApi("CartDetails").FirstOrDefault(c => c.ProductDetail_ID == item.Id);
+                if (cart != null)
+                {
+                    productcartdetails = getapiCartD.GetApi("CartDetails").FirstOrDefault(c => c.ProductDetail_ID == item.Id && c.CartId == cart.id);
+
+                }
                 var p = products.Find(c => c.Id == item.Id);
                 products.Remove(p);
                 SessionService.SetObjToJson(HttpContext.Session, "Cart", products);
