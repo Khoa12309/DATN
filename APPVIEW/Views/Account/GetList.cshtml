@@ -43,8 +43,20 @@
                     <option value=""> Chọn quyền </option>
                     @foreach (var item in ViewBag.Roles)
                     {
-                        <option value="@item.id">@item.name</option>
+                        @if (item != null)
+                        {
+                            <option value="@item.id">@item.name</option>
+                        }
+                        else
+                        {
+                            <option value=""> Chọn quyền </option>
+                            <option value=""> Không có dữ liệu </option>
+                        }
+
                     }
+
+
+
 
                 </select>
             </div>
@@ -71,7 +83,7 @@
                                 <h4 class="mb-2 me-1 display-6">@ViewBag.CountActive</h4>
                                 @* <p class="text-success mb-2">(+29%)</p >*@
                             </div>
-                           @*  <p class="mb-0">Tổng người dùng</p> *@
+                            @*  <p class="mb-0">Tổng người dùng</p> *@
                         </div>
                         <div class="avatar">
                             <div class="avatar-initial bg-label-primary rounded">
@@ -92,7 +104,7 @@
                                 <h4 class="mb-2 me-1 display-6">@ViewBag.CountBlocked</h4>
                                 @* <p class="text-success mb-2">(+18%)</p> *@
                             </div>
-                           @*  <p class="mb-0">Last week analytics</p> *@
+                            @*  <p class="mb-0">Last week analytics</p> *@
                         </div>
                         <div class="avatar">
                             <div class="avatar-initial bg-label-danger rounded">
@@ -111,7 +123,7 @@
                             <p class="text-heading mb-2">Đã kích hoạt</p>
                             <div class="d-flex align-items-center">
                                 <h4 class="mb-2 me-1 display-6">@ViewBag.CountActive</h4>
-                               @*  <p class="text-danger mb-2">(-14%)</p> *@
+                                @*  <p class="text-danger mb-2">(-14%)</p> *@
                             </div>
                             @* <p class="mb-0">Last week analytics</p> *@
                         </div>
@@ -132,9 +144,9 @@
                             <p class="text-heading mb-2">Chưa kích hoạt</p>
                             <div class="d-flex align-items-center">
                                 <h4 class="mb-2 me-1 display-6">@ViewBag.CountInActive</h4>
-                               @*  <p class="text-success mb-2">(+42%)</p> *@
+                                @*  <p class="text-success mb-2">(+42%)</p> *@
                             </div>
-                           @*  <p class="mb-0">Last week analytics</p> *@
+                            @*  <p class="mb-0">Last week analytics</p> *@
                         </div>
                         <div class="avatar">
                             <div class="avatar-initial bg-label-warning rounded">
@@ -166,7 +178,7 @@
             </div>
         }
         <div class="table-responsive">
-            <table class="table table-hover">
+            <table class="table table-hover table-sm">
                 <thead>
                     <tr>
                         <th>STT</th>
@@ -183,8 +195,13 @@
                 <tbody>
                     @if (Model != null && Model.Any())
                     {
+
                         @foreach (var item in Model)
                         {
+                            var nameClaim = User.FindFirst("Name");
+
+                            bool isCurrentUser = nameClaim != null && nameClaim.Value == item.Name;
+
                             <tr>
                                 <td>@(stt += 1)</td>
                                 <td>@Html.DisplayFor(modelItem => item.Name)</td>
@@ -212,17 +229,17 @@
                                     }
                                 </td>
                                 <td>
-                                    @Html.DisplayFor(modelItem => item.Email)
-                                </td>
-                                <td>
-                                    @{
-                                        DateTime createDate = item.Create_date;
-                                        string formattedDate = createDate != DateTime.MinValue
-                                        ? createDate.ToString("dd/MM/yyyy")
-                                        : "Chưa thay đổi";
+
+                                    @if (isCurrentUser)
+                                    {
+                                        <span class="badge bg-primary rounded-pill">@Html.DisplayFor(modelItem => item.Email)</span>
                                     }
-                                    @formattedDate
+                                    else
+                                    {
+                                        @item.Email
+                                    }
                                 </td>
+                                <td>@item.Create_date.ToString("dd/MM/yyyy")</td>
                                 <td>
                                     @{
                                         DateTime updatedDate = item.Update_date;
@@ -247,12 +264,13 @@
                                     }
                                 </td>
                                 <td>
+
                                     <div class="d-inline-block text-nowrap">
                                         <button class="btn btn-sm btn-icon btn-text-secondary rounded-pill btn-icon dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
                                             <i class="mdi mdi-dots-vertical mdi-20px"></i>
                                         </button>
                                         <div class="dropdown-menu dropdown-menu-end m-0">
-                                            <a href="app-user-view-account.html" class="dropdown-item">
+                                            <a href=" @Url.Action("AccountDetails", new { id = item.Id })" class="dropdown-item ">
                                                 <i class="mdi mdi-eye-outline me-2"></i>
                                                 <span>Xem</span>
                                             </a>
@@ -260,12 +278,15 @@
                                                 <i class="mdi mdi-pencil-outline me-2"></i>
                                                 <span>Chỉnh sửa</span>
                                             </a>
-                                            <a href="@Url.Action("Delete", new { id = item.Id })" class="dropdown-item delete-record">
+                                            <a href="@Url.Action("Delete", new { id = item.Id })" class="dropdown-item delete-record @(isCurrentUser ? "disabled" : "")">
                                                 <i class="mdi mdi-account-cancel me-2"></i>
                                                 <span>Khóa</span>
                                             </a>
                                         </div>
                                     </div>
+
+
+
                                 </td>
                             </tr>
                         }

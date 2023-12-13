@@ -401,7 +401,7 @@ namespace APPVIEW.Controllers
         // Sử dụng:
         // Tạo chuỗi có độ dài 8 ký tự
 
-
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> DatHangN(Address obj, string pay, float phiship, float voucher, string vouchercode)
         {
            
@@ -480,7 +480,7 @@ namespace APPVIEW.Controllers
             bill.id = Guid.NewGuid();
             bill.Name = obj.Name;
             bill.AccountId = account.Id;
-            bill.Code = GenerateRandomString(8);
+            bill.Code ="HD"+GenerateRandomString(6);
             bill.PhoneNumber = obj.PhoneNumber;
             bill.Address = obj.Province + "-" + obj.District + "-" + obj.Ward + "-" + obj.SpecificAddress;
             bill.CreateBy = DateTime.Now;
@@ -1280,10 +1280,16 @@ namespace APPVIEW.Controllers
             return View();
         }
 
+       
         public async Task<IActionResult> Checkout( Guid? id)
         {
             try
             {
+                if (User.IsInRole("Admin") || User.IsInRole("Staff"))
+                {
+                    _notyf.Warning("Quản trị viên không được phép mua hàng.");
+                    return RedirectToAction("Index", "Home"); // Hoặc điều hướng đến trang chính của ứng dụng
+                }
                 var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
                 if (User.Identity.IsAuthenticated)
                 {
@@ -1292,6 +1298,7 @@ namespace APPVIEW.Controllers
                     account = getapiAc.GetApi("Account").FirstOrDefault(c => c.Id.ToString() == Uid);
                     SessionService.SetObjToJson(HttpContext.Session, "Account", account);
                 }
+               
 
                 var client = new OnlineGatewayClient($"https://online-gateway.ghn.vn/shiip/public-api/master-data/province", "bdbbde2a-fec2-11ed-8a8c-6e4795e6d902");
 
