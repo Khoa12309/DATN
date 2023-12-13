@@ -3,9 +3,9 @@ using APPDATA.Migrations;
 using APPDATA.Models;
 using APPVIEW.Services;
 using AspNetCoreHero.ToastNotification.Abstractions;
+using Microsoft.AspNetCore.Authorization;
 using DocumentFormat.OpenXml.Office2010.Excel;
 using Microsoft.AspNetCore.Mvc;
-
 using System.Net.WebSockets;
 
 namespace APPVIEW.Controllers
@@ -102,10 +102,16 @@ namespace APPVIEW.Controllers
 
         }
 
-
+       
         public async Task<IActionResult> AddToCart(Guid id, int Soluong, Guid color, Guid size)
         {
+            if (User.IsInRole("Admin") || User.IsInRole("Staff"))
+            {
+                _notyf.Warning("Quản trị viên không được phép mua hàng.");
+                return RedirectToAction("Index", "Home"); // Hoặc điều hướng đến trang chính của ứng dụng
+            }
             loadcart();
+
             if (User.Identity.IsAuthenticated)
             {
 

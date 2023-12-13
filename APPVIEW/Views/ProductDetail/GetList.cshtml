@@ -72,7 +72,17 @@
                                                 </div>
                                                 <div class="d-flex flex-column">
                                                     <span class="text-nowrap text-heading fw-medium">@item.Name</span>
-                                                    @* <small class="text-truncate d-none d-sm-block">@Html.Raw(Html.Encode(item.Desciption).Substring(0, 50))...</small> *@
+                                                    <small class="text-truncate d-none d-sm-block">
+                                                        @if (!string.IsNullOrEmpty(item.Desciption) && item.Desciption.Length > 50)
+                                                        {
+                                                            @Html.Raw(Html.Encode(item.Desciption.Substring(0, 50)) + "...")
+                                                        }
+                                                        else
+                                                        {
+                                                            @Html.Raw(Html.Encode(item.Desciption))
+                                                        }
+                                                    </small>
+
                                                 </div>
                                             </div>
                                             break;
@@ -97,7 +107,7 @@
                                             {
                                                 <h6 class="text-truncate d-flex align-items-center mb-0">
                                                     <span class="avatar-sm rounded-circle d-flex justify-content-center align-items-center bg-label-warning me-2">
-                                                      <img src="~/images/swimsuit.png" width="15px" height="20px" />
+                                                      <img src="~/images/icon/swimsuit.png" width="15px" height="20px" />
 
                                                     </span>
                                                     <font>@obj.Name</font>

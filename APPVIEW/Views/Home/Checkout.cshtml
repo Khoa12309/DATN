@@ -3,7 +3,7 @@
 @{
     ViewData["Title"] = "Checkout";
     Layout = "~/Views/Shared/_LayoutWeb.cshtml";
-    
+
 }
 <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 
@@ -36,7 +36,7 @@
             <div class="check_title">
                 <h2>Have a coupon? <a href="#">Click here to enter your code</a></h2>
             </div>
-           @* <input type="text" placeholder="Enter coupon code">*@
+            @* <input type="text" placeholder="Enter coupon code">*@
             <a class="button button-coupon" asp-action="ApplyDiscount">Apply Coupon</a>
         </div>
         <div class="billing_details">
@@ -51,7 +51,7 @@
                             <span class="placeholder" data-placeholder="Fullname" placeholder="Fullname"></span>
                         </div>
                         <div class="col-md-6 form-group p_star">
-                            <input type="text" class="form-control" placeholder="Phonenumber" max="10" id="last" asp-for="@Model.PhoneNumber" required> 
+                            <input type="text" class="form-control" placeholder="Phonenumber" max="10" id="phone" asp-for="@Model.PhoneNumber" required>
                             <span class="placeholder" data-placeholder="Phonenumber"></span>
                         </div>
 
@@ -124,9 +124,9 @@
 
                             }
                         </ul>
-                     
 
-                    
+
+
                         <ul class="list list_2">
                             <li><a href="#">Subtotal <span>@ViewBag.TT.ToString("C0", new CultureInfo("vi-VN"))</span></a></li>
                             @if (ViewBag.Value != null)
@@ -153,21 +153,25 @@
                                 {
 
                                     <li>
+
                                         <a  href="#">Số tiền giảm:<span>@ViewBag.FirstDiscountAmount.ToString("C0", new CultureInfo("vi-VN"))</span></a>
                                       <a  href="#">
+
                                             Total
                                             <span>
                                                 <input readonly style="height:30px; width:80px; border: none; outline: none; background-color:#e8f0f2;" value="@(totalll+ViewBag.fee)" id="tShip" /> VND
                                             </span>
                                         </a>
+
                                     </li>
 
 
                                 }
                                 else
                                 {
-                                    
+
                                     <li>
+
                                         <a  href="#">Số tiền giảm:<span>@ViewBag.DiscountAmount.ToString("C0", new CultureInfo("vi-VN"))</span></a>
                                         @*<a  href="#">
                                             Total
@@ -182,15 +186,15 @@
                             }
                             else
                             {
-                               <li>
+                                <li>
                                     @* <a href="#">
-                                        Total
-                                        <span>
-                                            @((Convert.ToDecimal(ViewBag.TT) + Convert.ToDecimal(ViewBag.fee)).ToString("C0", new CultureInfo("vi-VN")))
-                                        </span>
-                                    </a> *@
-                                    <a  href="#">Total <span> <input readonly style="height:30px; width:80px; border: none; outline: none; background-color:#e8f0f2;" value="@(ViewBag.TT+ViewBag.fee)" id="tShip" /> VND</span></a>
-                                    </li>
+                                Total
+                                <span>
+                                @((Convert.ToDecimal(ViewBag.TT) + Convert.ToDecimal(ViewBag.fee)).ToString("C0", new CultureInfo("vi-VN")))
+                                </span>
+                                </a> *@
+                                    <a href="#">Total <span> <input readonly style="height:30px; width:80px; border: none; outline: none; background-color:#e8f0f2;" value="@(ViewBag.TT+ViewBag.fee)" id="tShip" /> VND</span></a>
+                                </li>
 
                             }
                         </ul>
@@ -233,7 +237,7 @@
 </section>
 <!--================End Checkout Area =================-->
 <script>
-     
+
     // Lấy tham chiếu đến thẻ select bằng id
     var select = document.getElementById("countrySelect");
     var selectDistrict = document.getElementById("districtSelect");
@@ -298,8 +302,8 @@
 
     //chọn phường
     inputdis.onchange = function () {
-      
-        inputward.value = ""; 
+
+        inputward.value = "";
         $("#wardSelect").empty();
         // Lấy giá trị được chọn trong thẻ select
         var district = 0;
@@ -348,7 +352,7 @@
 
     var t = 0;
     inputward.onchange = function () {
-       
+
         // Lấy giá trị được chọn trong thẻ select
         var district = 0;
         var ward = 0
@@ -433,4 +437,48 @@
             moneyInput.value = '';
         }
     });
+    document.addEventListener('DOMContentLoaded', function () {
+        var phoneNumberInput = document.getElementById('phone');
+
+        // Thêm sự kiện input để kiểm tra và xóa các kí tự không hợp lệ
+        phoneNumberInput.addEventListener('input', function () {
+            var inputValue = phoneNumberInput.value;
+
+            // Loại bỏ kí tự không phải số từ giá trị nhập vào
+            var cleanedValue = inputValue.replace(/[^0-9+]/g, '');
+
+            // Giới hạn chiều dài tối đa là 10 kí tự
+            cleanedValue = cleanedValue.slice(0, 10);
+
+            // Cập nhật giá trị của ô nhập số điện thoại
+            phoneNumberInput.value = cleanedValue;
+        });
+
+        // Thêm sự kiện blur để kiểm tra số điện thoại khi mất focus
+        phoneNumberInput.addEventListener('blur', function () {
+            validatePhoneNumber(phoneNumberInput.value);
+        });
+
+        function validatePhoneNumber(phoneNumber) {
+            // Biểu thức chính quy cho số điện thoại (ví dụ: +84-123-456-7890)
+            var phoneRegex = /^\+?[0-9]{1,4}-?[0-9]{3,4}-?[0-9]{4,}$/;
+
+            if (phoneRegex.test(phoneNumber) && phoneNumber.startsWith('0')) {
+                console.log('Số điện thoại hợp lệ');
+            } else {
+                // Kiểm tra chiều dài của số điện thoại
+                if (phoneNumber.length < 10) {
+                    // Hiển thị thông báo khi số điện thoại có ít hơn 10 kí tự
+                    alert('Số điện thoại phải có ít nhất 10 kí tự.');
+                } else if (!phoneNumber.startsWith('0')) {
+                    // Hiển thị thông báo khi số điện thoại không bắt đầu bằng số 0
+                    alert('Số điện thoại phải bắt đầu bằng số 0.');
+                } else {
+                    console.log('Số điện thoại không hợp lệ');
+                }
+            }
+        }
+    });
+
+
 </script>
