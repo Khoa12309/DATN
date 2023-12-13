@@ -31,11 +31,11 @@
                     <div class="row mb-3">
                         <div class="col-sm-10 offset-sm-2">
                             <div class="form-check">
-                                <input asp-for="Status" name="status" class="form-check-input" type="radio" value="1" id="defaultRadio1" />
+                                <input asp-for="Status" name="status" class="form-check-input" type="radio" value="1" id="defaultRadio1" checked />
                                 <label class="form-check-label" asp-for="Status"> Use </label>
                             </div>
                             <div class="form-check">
-                                <input asp-for="Status" name="status" class="form-check-input" type="radio" value="0" id="defaultRadio2" checked />
+                                <input asp-for="Status" name="status" class="form-check-input" type="radio" value="0" id="defaultRadio2"  />
                                 <label class="form-check-label" for="defaultRadio2"> Not Use </label>
                             </div>
                             <span asp-validation-for="Status" class="text-danger"></span>

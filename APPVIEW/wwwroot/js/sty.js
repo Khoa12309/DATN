@@ -43,15 +43,30 @@ function saveVoucherToAccount(voucherId) {
         url: `/Home/SaveVoucherForUser?voucherId=${voucherId}`,
         type: 'POST',
         contentType: 'application/json',
-        success: function (data) {
-            if (data.alreadyInAccount) {
-                alert('Voucher đã có trong tài khoản của bạn!');
+        success: function (rs) {
+            if (rs.success) {
+                // Hiển thị thông báo thành công
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Thành công!',
+                    text: 'Lưu thành công vào tài khoản',
+                    showConfirmButton: false,
+                    position: 'bottom-right',
+                    timer: 2000,
+                    toast: true
+                });
             } else {
-                console.log('Áp dụng thành công!');
+                // Hiển thị thông báo lỗi nếu cần
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Lỗi',
+                    text: 'Phiếu giảm giá đã có trong tài khoản của bạn',
+                    showConfirmButton: false,
+                    position: 'bottom-right',
+                    timer: 2000,
+                    toast: true
+                });
             }
-        },
-        error: function (xhr, status, error) {
-            console.error('Lỗi khi áp dụng:', error);
         }
     });
 };

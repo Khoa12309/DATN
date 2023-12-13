@@ -1,0 +1,148 @@
+﻿@model IEnumerable<APPDATA.Models.Bill>
+@{
+    ViewData["Title"] = "HoaDonTaiQuay";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+
+
+
+
+
+<div class="row">
+
+
+
+    <form asp-action="GetList2" class="row contact_form" method="post" style="margin-bottom:20px">
+        <div class="col-md-2 form-group">
+            <input style="300px" type="text" id="searchTerm" class="form-control" name="searchTerm" placeholder="Nhập mã hóa đơn để tìm kiếm">
+
+
+
+        </div>
+        <div class="col-md-2 form-group">
+            <button type="submit" class="btn btn-success">Shearch</button>
+
+        </div>
+        <div class="col-md-2 form-group">
+            <input style="300px" type="date" id="searchTerm" class="form-control" name="start">
+
+
+        </div> <div class="col-md-2 form-group">
+            <input style="300px" type="date" id="searchTerm" class="form-control" name="end">
+
+        </div>
+        <div class="col-md-1 form-group">
+            <button type="submit" class="btn btn-success">Lọc</button>
+        </div>
+    </form>
+
+
+
+</div>
+
+
+
+
+<table class="table">
+    <thead>
+        <tr>
+
+            <th>
+                <span>Người tạo hóa đơn</span>
+            </th>
+
+            <th>
+                @Html.DisplayNameFor(model => model.Code)
+            </th>
+
+            <th>
+                @Html.DisplayNameFor(model => model.TotalMoney)
+            </th>
+
+            <th>
+                @Html.DisplayNameFor(model => model.Type)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CreateDate)
+            </th>
+
+            <th>
+                @Html.DisplayNameFor(model => model.PayDate)
+            </th>
+
+            <th>
+                @Html.DisplayNameFor(model => model.Status)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+
+                <td>
+                    @foreach (var acc in ViewBag.account)
+                    {
+
+                        if (acc.Id == item.AccountId)
+                        {
+                            <span>@acc.Name</span>
+                            break;
+
+                        }
+                    }
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.Code)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.TotalMoney)
+                </td>
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.Type)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.CreateDate)
+                </td>
+
+
+                <td>
+                    @Html.DisplayFor(modelItem => item.PayDate)
+                </td>
+
+                <td>
+                    @if (item.Status == 1)
+                    {
+
+                        <span>Chờ xác nhận</span>
+                    }
+                    else if (item.Status == 2)
+                    {
+
+                        <span>Đã xác nhận đơn hàng </span>
+                    }
+                    else if (item.Status == 3)
+                    {
+                        <span> Đang giao  </span>
+                    }
+                    else if (item.Status == 4)
+                    {
+                        <span>Đã Thanh Toán </span>
+                    }
+                    else if (item.Status == 0)
+                    {
+                        <span>Chờ hủy </span>
+                    }
+
+                </td>
+
+            </tr>
+        }
+    </tbody>
+</table>
+

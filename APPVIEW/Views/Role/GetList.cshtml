@@ -1,70 +1,113 @@
-﻿@model IEnumerable<APPDATA.Models.Role>
+@model IEnumerable<APPDATA.Models.Role>
 
 @{
     ViewData["Title"] = "Roles-List";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
     int stt = 0;
 }
-
-<form asp-action="Search" method="get" class="form-inline">
-    <input placeholder="Role Search" type="text" name="searchTerm" id="searchTerm" /><button>Tìm</button>
-</form>
-
+@{
+    var startDate = new DateTime(DateTime.Now.Year, DateTime.Now.Month, 1).ToString("dd/MM/yyyy");
+}
 <div class="card">
     <div class="card-header">
         <h5 class="mb-0">Roles</h5>
     </div>
-    <div class="card-body">
-        <a class="btn btn-success waves-effect waves-light" asp-action="Create">
-            <span class="mdi mdi-plus-thick">Create new</span>
-        </a>
-        <div class="col-lg-4 col-md-6">
-            <small class="text-light fw-medium mb-3">Enable backdrop (default)</small>
-            <div class="mt-3">
-                <button class="btn btn-primary"
-                        type="button"
-                        data-bs-toggle="offcanvas"
-                        data-bs-target="#offcanvasBackdrop"
-                        aria-controls="offcanvasBackdrop">
-                    Enable backdrop
-                </button>
-                <div class="offcanvas offcanvas-end"
-                     tabindex="-1"
-                     id="offcanvasBackdrop"
-                     aria-labelledby="offcanvasBackdropLabel">
-                    <div class="offcanvas-header">
-                        <h5 id="offcanvasBackdropLabel" class="offcanvas-title">Enable backdrop</h5>
-                        <button type="button"
-                                class="btn-close text-reset"
-                                data-bs-dismiss="offcanvas"
-                                aria-label="Close"></button>
-                    </div>
-                    <div class="offcanvas-body my-auto mx-0 flex-grow-0">
-                        <p class="text-center">
-                            Lorem ipsum, or lipsum as it is sometimes known, is dummy text used in laying out print,
-                            graphic or web designs. The passage is attributed to an unknown typesetter in the 15th
-                            century who is thought to have scrambled parts of Cicero's De Finibus Bonorum et Malorum
-                            for use in a type specimen book.
-                        </p>
-                        <button type="button" class="btn btn-primary mb-2 d-grid w-100">Continue</button>
-                        <button type="button"
-                                class="btn btn-outline-secondary d-grid w-100"
-                                data-bs-dismiss="offcanvas">
-                            Cancel
-                        </button>
+    <div class="row g-4 mb-4">
+        <div class="col-sm-6 col-xl-3">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div class="me-1">
+                            <p class="text-heading mb-2" _msttexthash="76531" _msthash="269">Người dùng</p>
+                            <div class="d-flex align-items-center">
+                                <h4 class="mb-2 me-1 display-6" _msttexthash="38025" _msthash="270">@ViewBag.CountUser</h4>
+                               @*  <p class="text-success mb-2" _msttexthash="33059" _msthash="271">(+29%)</p> *@
+                            </div>                           
+                        </div>
+                        <div class="avatar">
+                            <div class="avatar-initial bg-label-primary rounded">
+                                <div class="mdi mdi-account-outline mdi-24px"></div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div class="me-1">
+                            <p class="text-heading mb-2" _msttexthash="3212274" _msthash="273">Nhân viên</p>
+                            <div class="d-flex align-items-center">
+                                <h4 class="mb-2 me-1 display-6" _msttexthash="30394" _msthash="274">@ViewBag.CountStaff</h4>
+                              @*   <p class="text-success mb-2" _msttexthash="32812" _msthash="275">(+18%)</p> *@
+                            </div>
+                           @*  <p class="mb-0" _msttexthash="4419883" _msthash="276">Phân tích tuần trước</p> *@
+                        </div>
+                        <div class="avatar">
+                            <div class="avatar-initial bg-label-danger rounded">
+                                <div class="mdi mdi-cog-outline mdi-24px scaleX-n1"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div class="me-1">
+                            <p class="text-heading mb-2" _msttexthash="6397274" _msthash="277">Admin</p>
+                            <div class="d-flex align-items-center">
+                                <h4 class="mb-2 me-1 display-6" _msttexthash="38025" _msthash="278">@ViewBag.CountAdmin</h4>
+                               @*  <p class="text-danger mb-2" _msttexthash="32500" _msthash="279">(-14%)</p> *@
+                            </div>
+                           @*  <p class="mb-0" _msttexthash="4419883" _msthash="280">Phân tích tuần trước</p> *@
+                        </div>
+                        <div class="avatar">
+                            <div class="avatar-initial bg-label-success rounded">
+                                <div class="mdi mdi-account-check-outline mdi-24px"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-6 col-xl-3">
+            <div class="card">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div class="me-1">
+                            <p class="text-heading mb-2" _msttexthash="6278103" _msthash="281">Tổng số Role đang dùng</p>
+                            <div class="d-flex align-items-center">
+                                <h4 class="mb-2 me-1 display-6" _msttexthash="16289" _msthash="282">@ViewBag.CountRole</h4>
+                               @*  <p class="text-success mb-2" _msttexthash="32383" _msthash="283">(+42%)</p> *@
+                            </div>
+                           @*  <p class="mb-0" _msttexthash="4419883" _msthash="284">Phân tích tuần trước</p> *@
+                        </div>
+                        <div class="avatar">
+                            <div class="avatar-initial bg-label-warning rounded">
+                                <div class="mdi mdi-account-search mdi-24px"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="card-body">
 
         <div class="table-responsive">
             <table class="table table-hover">
                 <thead>
                     <tr>
                         <th>STT</th>
-                        <th>Name role</th>
-                        <th>Status</th>
-                        <th>Actions</th>
+                        <th>Tên Role</th>
+                        <th>Trạng thái</th>
+                        <th>Hành động</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -94,16 +137,13 @@
                                 </td>
                                 <td>
                                     <span class="badge @(item.Status == 1 ? "badge rounded-pill bg-label-success" : "badge rounded-pill bg-label-danger")">
-                                        @(item.Status == 1 ? "Using" : "Not use")
+                                        @(item.Status == 1 ? "Hoạt động" : "Không dùng")
                                     </span>
                                 </td>
 
                                 <td>
                                     <a href="@Url.Action("Edit", new { id = item.id })" class="btn btn-info waves-effect waves-light">
-                                        <span class="mdi mdi-pencil-box-outline"></span>Edit
-                                    </a>
-                                    <a href="@Url.Action("Delete", new { id = item.id })" class="btn btn-danger waves-effect waves-light">
-                                        <span class="mdi mdi-delete"></span>Delete
+                                        <span class="mdi mdi-pencil-box-outline"></span>Sửa
                                     </a>
                                 </td>
                             </tr>

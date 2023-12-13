@@ -1,5 +1,6 @@
 ﻿using APPDATA.Models;
 using APPVIEW.Services;
+using AspNetCoreHero.ToastNotification.Abstractions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Data;
@@ -10,8 +11,10 @@ namespace APPVIEW.Controllers
     public class MaterialController : Controller
     {
         private Getapi<Material> getapi;
-        public MaterialController()
+        public INotyfService _notyf;
+        public MaterialController(INotyfService notyf)
         {
+            _notyf = notyf;
             getapi = new Getapi<Material>();
         }
 
@@ -39,7 +42,8 @@ namespace APPVIEW.Controllers
                 return View("GetList", searchResult);
             }
 
-            return NotFound("Material không tồn tại");
+            _notyf.Information("Material không tồn tại");
+            return View();
         }
 
         [HttpGet]
@@ -54,11 +58,21 @@ namespace APPVIEW.Controllers
         {
             try
             {
-               await getapi.CreateObj(obj, "Material");
-                return RedirectToAction("GetList");
+                var item = getapi.CreateObj(obj, "Material").Result;
+                if (item != null)
+                {
+                    _notyf.Success("Thêm thành công!");
+                    return RedirectToAction("GetList");
+                }
+                else
+                {
+                    _notyf.Warning("Không được để trống!");
+                    return View();
+                }
             }
             catch
             {
+                _notyf.Error("Lỗi!");
                 return View();
             }
         }
@@ -78,11 +92,21 @@ namespace APPVIEW.Controllers
         {
             try
             {
-             await   getapi.UpdateObj(obj, "Material");
-                return RedirectToAction("GetList");
+                var item = getapi.UpdateObj(obj, "Material").Result;
+                if (item != null)
+                {
+                    _notyf.Success("Edit thành công!");
+                    return RedirectToAction("GetList");
+                }
+                else
+                {
+                    _notyf.Warning("Không được để trống!");
+                    return View();
+                }
             }
             catch
             {
+                _notyf.Error("Lỗi!");
                 return View();
             }
         }
@@ -90,8 +114,22 @@ namespace APPVIEW.Controllers
 
         public async Task<IActionResult> Delete(Guid id)
         {
-           await getapi.DeleteObj(id, "Material");
-            return RedirectToAction("GetList");
+            try
+            {
+                if (await getapi.DeleteObj(id, "Material"))
+                {
+                    var lst = getapi.GetApi("Material").Find(c => c.Id == id);
+                    lst.Status = 0;
+                    await getapi.UpdateObj(lst, "Material");
+                }
+                _notyf.Success("Đã xóa");
+                return RedirectToAction("GetList");
+            }
+            catch (Exception ex)
+            {
+                _notyf.Error($"Lỗi: {ex.Message}");
+                return View();
+            }
 
         }
     }

@@ -13,18 +13,13 @@
     List<Account> acc = ViewBag.acc;
 }
 
-<h1>ShowBill</h1>
-
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
 <form asp-controller="QLBills" asp-action="ShowBill" class="row contact_form" method="post">
     <div class="row">
         <div class="col-md-3 form-group">
             <input type="text" class="form-control" name="search" placeholder="Nhập mã hóa đơn để tìm kiếm">
 
         </div>    <div class="col-md-2 form-group">
-            <button type="submit" class="btn btn-success">Shearch</button>
+            <button type="submit" class="btn btn-success">Tìm kiếm</button>
 
         </div>
     </div>
@@ -41,9 +36,7 @@
             <th>
                 Tên khách hàng
             </th>
-            <th>
-                Voucher
-            </th>
+          
             <th>
                 SDT
             </th>
@@ -83,50 +76,48 @@
                 <td>
                     @itembill.Code
                 </td>
+
+                @if (itembill.Status == 1)
+                {
+                    <td>  Chờ xác nhận</td>
+
+                }
+                else if (itembill.Status == 2)
+                {
+                    <td>  Đã xác nhận đơn hàng</td>
+
+                }
+                else if (itembill.Status == 3)
+                {
+                    <td>Đang giao</td>
+                }
+                else if (itembill.Status == 4)
+                {
+                    <td>Đã giao</td>
+                }
+
+
+
+
+
+
+
+
                 <td>
-                    <span>
-                        @if (itembill.Status == 1)
-                        {
+                    @if (account.Name == "khach k dang nhap")
 
-                            <span>Chờ xác nhận</span>
-                        }
-                        else if (itembill.Status == 2)
-                        {
-                            <span>Đã xác nhận đơn hàng </span>
-                        }
-                        else if (itembill.Status == 3)
-                        {
-                            <span> Đang giao  </span>
-                        }
-                        else if (itembill.Status == 4)
-                        {
-                            <span>Đã giao </span>
-                        }
-                        else if (itembill.Status == 5)
-                        {
-                            <span>Thanh toán thành công </span>
-                        }
-                        else if (itembill.Status == 6)
-                        {
-                            <span>Thanh toán không thành công </span>
-                        }
-                        else if (itembill.Status == 0)
-                        {
-                            <span>Đơn chờ hủy </span>
-                        }
+                    {
+                        @itembill.Name
+                    }
+                    else
+                    {
+                        @account.Name
 
-
-
-
-
-                    </span>
+                    }
                 </td>
-                <td>
-                    @account.Name
-                </td>
-                <td>
-                    @itembill.Voucherid
-                </td>
+
+       
+            
                 <td>
                     @itembill.PhoneNumber
                 </td>

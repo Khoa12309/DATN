@@ -1,4 +1,4 @@
-﻿using APPDATA.Models;
+using APPDATA.Models;
 using APPVIEW.Services;
 using APPVIEW.ViewModels;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -39,8 +39,8 @@ namespace APPVIEW.Controllers
         private readonly ShoppingDB _context;
         private readonly SendEmailMessage _sendEmailMessage;
         private readonly ShoppingDB _dbContext;
-
-        public AccountController(HttpClient httpClient, ISendEmail sendEmail)
+        public INotyfService _notyf;
+        public AccountController(HttpClient httpClient, ISendEmail sendEmail, INotyfService notyf)
         {
             getapi = new Getapi<Account>();
             _httpClient = httpClient;
@@ -50,62 +50,152 @@ namespace APPVIEW.Controllers
             _context = new ShoppingDB();
             _sendEmailMessage = new SendEmailMessage();
             _dbContext = new ShoppingDB();
+            _notyf = notyf;
         }
 
         [Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> GetList(int? page)
 
         {
-            ViewBag.Roles = GetListRole();
-            var obj = getapi.GetApi("Account");
+            if (User.IsInRole("Admin"))
+            {
+                ViewBag.Roles = GetListRole();
+                // Nếu là Admin, hiển thị tất cả các tài khoản
+                var obj = getapi.GetApi("Account");
+                var cusRoleId = _dbContext.Roles.FirstOrDefault(c => c.name == "Customer")?.id;
+                var staffId = _dbContext.Roles.FirstOrDefault(c => c.name == "Staff")?.id;
+                var adminId = _dbContext.Roles.FirstOrDefault(c => c.name == "Admin")?.id;
+                if (cusRoleId != null && staffId != null && adminId != null)
+                {
 
-            int pageSize = 8;
-            int pageNumber = (page ?? 1);
-            return View(obj.OrderByDescending(x => x.Id).ToPagedList(pageNumber, pageSize));
+
+                    // Đếm số lượng khách hàng đã đăng ký trong tháng này
+                    ViewBag.CountUser = await _dbContext.Accounts
+                        .Where(c => c.Status != 2 && c.IdRole == cusRoleId)
+                        .CountAsync();
+                    ViewBag.CountActive = await _dbContext.Accounts
+                        .Where(c => c.Status == 1 && c.IdRole == cusRoleId)
+                        .CountAsync();
+                    ViewBag.CountInActive = await _dbContext.Accounts
+                        .Where(c => c.Status == 0 && c.IdRole == cusRoleId)
+                        .CountAsync();
+                    ViewBag.CountBlocked = await _dbContext.Accounts
+                    .Where(c => c.Status == 2 && c.IdRole == cusRoleId)
+                    .CountAsync();
+
+                    ViewBag.CountRole = await _dbContext.Roles.Where(c => c.Status == 1).CountAsync();
+                }               
+                int pageSize = 8;
+                int pageNumber = page ?? 1;
+                return View(obj.Where(c => c.Status != 2).ToPagedList(pageNumber, pageSize));
+            }
+            else if (User.IsInRole("Staff"))
+            {
+                ViewBag.Roles = GetListRole();
+                var CustomerRole = GetListRole().FirstOrDefault(c => c.name == "Customer").id;
+
+                // Nếu là Staff, chỉ hiển thị tài khoản Customer
+                var obj = getapi.GetApi("Account").Where(c => c.IdRole == CustomerRole);
+                int pageSize = 8;
+                int pageNumber = page ?? 1;
+                return View(obj.Where(c => c.Status != 2).ToPagedList(pageNumber, pageSize));
+            }
+
+            return View();
+
 
         }
         [HttpPost]
-        public async Task<IActionResult> GetList(int? page,string tk,string status ,Guid role)
+        public async Task<IActionResult> GetList(int? page, string tk, string status, Guid role)
         {
+            if (User.IsInRole("Staff"))
+            {
+                ViewBag.Roles = GetListRole();
+                var Cusrole = GetListRole().FirstOrDefault(c => c.name == "Customer" && c.Status == 1).id;
+                var obj = getapi.GetApi("Account");
+                if (tk != null)
+                {
+                    obj = obj.Where(c => c.Name.ToLower().Contains(tk.ToLower()) || c.Email == tk && c.IdRole == Cusrole).ToList();
 
-            ViewBag.Roles = GetListRole();
-            var obj = getapi.GetApi("Account");
-            if (tk!=null)
+                }
+                if (role != Guid.Empty)
+                {
+                    obj = obj.Where(c => c.IdRole == role).ToList();
+                }
+                if (status != null)
+                {
+                    obj = obj.Where(c => c.Status.ToString() == status).ToList();
+                }
+                int pageSize = 8;
+                int pageNumber = (page ?? 1);
+                return View(obj.Where(c => c.Status != 2).ToPagedList(pageNumber, pageSize));
+            }
+            else
             {
-               obj= obj.Where(c => c.Name.ToLower().Contains(tk.ToLower())||c.Email==tk).ToList();
+                ViewBag.Roles = GetListRole();
+                var obj = getapi.GetApi("Account");
+                if (tk != null)
+                {
+                    obj = obj.Where(c => c.Name.ToLower().Contains(tk.ToLower()) || c.Email == tk).ToList();
 
+                }
+                if (role != Guid.Empty)
+                {
+                    obj = obj.Where(c => c.IdRole == role).ToList();
+                }
+                if (status != null)
+                {
+                    obj = obj.Where(c => c.Status.ToString() == status).ToList();
+                }
+                int pageSize = 8;
+                int pageNumber = (page ?? 1);
+                return View(obj.OrderByDescending(x => x.Id).ToPagedList(pageNumber, pageSize));
             }
-            if (role!=Guid.Empty)
-            {
-                obj = obj.Where(c => c.IdRole == role).ToList();
-            }
-            if (status!=null)
-            {
-                obj = obj.Where(c => c.Status.ToString() == status).ToList();
-            }
-            int pageSize = 8;
-            int pageNumber = (page ?? 1);
-            return View(obj.OrderByDescending(x => x.Id).ToPagedList(pageNumber, pageSize));
-            
+
+
         }
-        
+
         public async Task<IActionResult> Search(string tk, int? page)
         {
-            var lstAcc = getapi.GetApi("Account").Where(c=>c.Name.ToLower().Contains(tk.ToLower()));
+            // Kiểm tra vai trò của người dùng
+            if (User.IsInRole("Staff"))
+            {
+                // Lấy ID của vai trò "Customer"
+                Guid customerRoleId = GetListRole().FirstOrDefault(c => c.name == "Customer").id;
 
-            var searchResult = lstAcc
-                .Where(v =>
-                    
-                    v.Name.ToLower().Contains(tk.ToLower())
-                )
-                .ToList();
+                // Lấy danh sách tài khoản chỉ có vai trò "Customer"
+                var lstAcc = getapi.GetApi("Account").Where(c => c.Name.ToLower().Contains(tk.ToLower()) && c.IdRole == customerRoleId);
 
-           
+                if (lstAcc.Any())
+                {
+                    var searchResult = lstAcc
+                        .Where(v => v.Name.ToLower().Contains(tk.ToLower()))
+                        .ToList();
+                }
+                else
+                {
+                    _notyf.Warning("Không có dữ liệu");
+                }
 
-             int pageSize = 8;
-                int pageNumber = (page ?? 1);
+                int pageSize = 8;
+                int pageNumber = page ?? 1;
                 return RedirectToAction("Getlist", lstAcc.OrderByDescending(x => x.Id).ToPagedList(pageNumber, pageSize));
+            }
+            else
+            {
+                // Nếu không phải Staff, tìm kiếm tất cả các tài khoản
+                var lstAcc = getapi.GetApi("Account").Where(c => c.Name.ToLower().Contains(tk.ToLower()));
+
+                var searchResult = lstAcc
+                    .Where(v => v.Name.ToLower().Contains(tk.ToLower()))
+                    .ToList();
+
+                int pageSize = 8;
+                int pageNumber = page ?? 1;
+                return RedirectToAction("Getlist", lstAcc.OrderByDescending(x => x.Id).ToPagedList(pageNumber, pageSize));
+            }
         }
+
 
 
         [AllowAnonymous]
@@ -119,12 +209,12 @@ namespace APPVIEW.Controllers
 
         public async Task<IActionResult> Register(RegisterVm obj)
         {
-            var checkEmail = await _context.Accounts.SingleOrDefaultAsync(c => c.Email == obj.Email);
-            var checkPhone = await _context.Address.SingleOrDefaultAsync(c => c.PhoneNumber == obj.PhoneNumber);
+            var checkEmail = await _context.Accounts.FirstOrDefaultAsync(c => c.Email == obj.Email);
+            var checkPhone = await _context.Address.FirstOrDefaultAsync(c => c.PhoneNumber == obj.PhoneNumber);
             if (string.IsNullOrEmpty(obj.Email) || string.IsNullOrEmpty(obj.Name) || string.IsNullOrEmpty(obj.ConfirmPassword))
             {
 
-                ViewData["ErrorMessage"] = "Please enter your information.";
+                ViewData["ErrorMessage"] = "Vui lòng nhập số tài khoản.";
                 return View("Register", obj);
 
             }
@@ -159,7 +249,7 @@ namespace APPVIEW.Controllers
                 District = "N/A",
                 PhoneNumber = obj.PhoneNumber,
                 Description = "N/A",
-                Name = obj.Email,
+                Name = obj.Name,
                 Province = "N/A",
                 DefaultAddress = "N/A",
                 SpecificAddress = "N/A"
@@ -226,8 +316,8 @@ namespace APPVIEW.Controllers
         }
         [HttpPost, AllowAnonymous]
 
-        public async Task<IActionResult> Login(LoginVm obj,string ReturnUrl)
-        { 
+        public async Task<IActionResult> Login(LoginVm obj, string ReturnUrl)
+        {
             ViewData["ReturnUrl"] = ReturnUrl;
             if (string.IsNullOrWhiteSpace(obj.Email) || string.IsNullOrWhiteSpace(obj.Password))
             {
@@ -251,10 +341,15 @@ namespace APPVIEW.Controllers
                 var jwt = handler.ReadJwtToken(loginResult.AccessToken);
 
                 bool checkRoleAdmin = false;
+                bool checkRoleStaff = false;
                 var checkRoles = jwt.Claims.FirstOrDefault(c => c.Type == "role")?.Value;
                 if (checkRoles.StartsWith("Adm"))
                 {
                     checkRoleAdmin = true;
+                }
+                else if (checkRoles.StartsWith("Sta"))
+                {
+                    checkRoleStaff = true;
                 }
                 else
                 {
@@ -311,6 +406,10 @@ namespace APPVIEW.Controllers
                     return Redirect(!string.IsNullOrEmpty(ViewData["ReturnUrl"]?.ToString()) ? ViewData["ReturnUrl"].ToString() : "~/Admin/Admin/Index");
 
                 }
+                else if (checkRoleStaff == true)
+                {
+                    return Redirect(!string.IsNullOrEmpty(ViewData["ReturnUrl"]?.ToString()) ? ViewData["ReturnUrl"].ToString() : "~/Admin/Admin/Index");
+                }
                 else
                 {
                     return Redirect(!string.IsNullOrEmpty(ViewData["ReturnUrl"]?.ToString()) ? ViewData["ReturnUrl"].ToString() : "~/Home/Index");
@@ -320,7 +419,7 @@ namespace APPVIEW.Controllers
 
             }
 
-            ViewData["ErrorMessage"] = "Email or password wrong.";
+            ViewData["ErrorMessage"] = "Email hoặc mật khẩu đã sai vui lòng nhập lại.";
             return View("Login", obj);
 
         }
@@ -337,18 +436,22 @@ namespace APPVIEW.Controllers
         {
             try
             {
-
-                obj.Avatar = AddImg(imageFile);
+                if (imageFile != null)
+                {
+                    obj.Avatar = AddImg(imageFile);
+                }              
                 await getapi.UpdateObj(obj, "Account");
+                _notyf.Success("Edit Sucsess");
                 return RedirectToAction("GetList");
             }
             catch
             {
+                _notyf.Error("Error");
                 return View();
             }
         }
 
-        [Authorize(Roles = "Admin")]
+        [Authorize(Roles = "Admin,Staff")]
         public async Task<IActionResult> Delete(Guid id)
         {
             var acc = await _context.Accounts.FirstOrDefaultAsync(a => a.Id == id);
@@ -362,6 +465,7 @@ namespace APPVIEW.Controllers
                     _context.Update(acc);
                     _context.Update(add);
                     await _context.SaveChangesAsync();
+                    _notyf.Success("Đã đổi trạng thái tài khoản thành công!");
                     return RedirectToAction(nameof(GetList));
                 }
                 acc.Status = 2;
@@ -370,9 +474,10 @@ namespace APPVIEW.Controllers
                 _context.Update(add);
                 await _context.SaveChangesAsync();
                 //_sendEmail.SendEmailAsync(acc.Email, "Khóa tài khoản", _sendEmailMessage.SendEmailBlock(acc.Name, acc.Email));
+                _notyf.Success($"Đã khóa tài khoản:{acc.Name}");
                 return RedirectToAction(nameof(GetList));
             }
-
+            _notyf.Error("Error");
             return View();
         }
         [HttpGet, Authorize(Roles = "Admin,Staff,Customer")]
@@ -386,7 +491,7 @@ namespace APPVIEW.Controllers
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
 
 
-            return Redirect("~/Account/Login");
+            return Redirect("~/Home/Index");
         }
 
         [HttpGet, Authorize(Roles = "Admin,Staff,Customer")]
@@ -473,10 +578,10 @@ namespace APPVIEW.Controllers
                     }
                 }
                 var user = new Account();
+                user.Email = obj.Email;
                 if (imageFile != null)
                 {
                     user.Id = obj.AccountId;
-                    user.Email = obj.Email;
                     user.Name = obj.Name;
                     user.Password = obj.Password;
                     user.IdRole = obj.Id_Role;
@@ -500,7 +605,6 @@ namespace APPVIEW.Controllers
 
                 var responeseAcc = await getapi.UpdateObj(user, "Account");
                 var responeseAdd = await getapiAddress.UpdateObj(address, "Address");
-
                 return Redirect($"~/Account/MyProfile?id_User={obj.AccountId}");
             }
             catch
@@ -510,8 +614,18 @@ namespace APPVIEW.Controllers
         }
         public List<Role> GetListRole()
         {
-            var obj = _getapiRole.GetApi("Role");
-            return obj;
+            if (User.IsInRole("Staff"))
+            {
+                var obj = _getapiRole.GetApi("Role");
+                return obj.Where(c => c.name != "Admin" && c.name != "Staff").ToList();
+            }
+            else
+            {
+                var obj = _getapiRole.GetApi("Role");
+                return obj;
+            }
+
+
         }
         public IActionResult ForgotPassword()
         {
@@ -637,11 +751,12 @@ namespace APPVIEW.Controllers
 
                 }
             }
+            _notyf.Error("Error");
             return View();
         }
         public IActionResult Create()
-        {
-            ViewBag.ListRole = GetListRole();
+        {           
+            ViewBag.ListRole = GetListRole().Where(c => c.Status != 0).ToList();
             return View();
         }
         [HttpPost, Authorize(Roles = "Admin")]
@@ -651,7 +766,7 @@ namespace APPVIEW.Controllers
             if (string.IsNullOrEmpty(obj.Email) || string.IsNullOrEmpty(obj.Name))
             {
 
-                ViewData["ErrorMessage"] = "Please enter your information.";
+                _notyf.Warning("Không được để trống!");
                 return View("Create", obj);
 
             }
@@ -698,50 +813,50 @@ namespace APPVIEW.Controllers
             if (responese.IsSuccessStatusCode && responeseAdress.IsSuccessStatusCode)
             {
 
-                string Subject = "Create account successfully";
-                _sendEmail.SendEmailAsync(obj.Email, Subject, _sendEmailMessage.SendEmail(obj.Name, obj.Email, obj.PhoneNumber));
-                ViewData["Sucsess"] = $"Create account for {obj.Name} successful and send email to {obj.Email}!";
+                //string Subject = "Create account successfully";
+                //_sendEmail.SendEmailAsync(obj.Email, Subject, _sendEmailMessage.SendEmail(obj.Name, obj.Email, obj.PhoneNumber));
+
+                _notyf.Success($"Create account for {obj.Name} successful and send email to {obj.Email}!");
                 return Redirect("~/Account/GetList");
 
             }
             else
             {
                 var errorResponse = await responese.Content.ReadAsStringAsync();
-                ViewData["ErrorMessage"] = errorResponse;
+                _notyf.Error($"Error : {errorResponse} ");
                 return View();
             }
 
         }
         [HttpGet, Authorize(Roles = "Staff,Admin")]
-        public async Task<IActionResult> AccountBlockedCustomer()
-        {
-
-            Guid customer = _context.Roles.FirstOrDefault(c => c.name == "Customer").id;
-            ViewBag.Roles = GetListRole();
-            var lst = getapi.GetApi("Account");
-            if (lst != null)
-            {
-                return View(lst.Where(c => c.Status == 2 && c.IdRole == customer).ToList());
-            }
-            return View();
-
-
-        }
-        [HttpGet, Authorize(Roles = "Staff,Admin")]
         public async Task<IActionResult> AccountBlockedAll()
         {
-
-            ViewBag.Roles = GetListRole();
-            var lst = getapi.GetApi("Account");
-            if (lst != null)
+            if (User.IsInRole("Staff"))
             {
-                return View(lst.Where(c => c.Status == 2).ToList());
+                ViewBag.Roles = GetListRole();
+                Guid customer = _context.Roles.FirstOrDefault(c => c.name == "Customer").id;
+                var lst = getapi.GetApi("Account");
+                if (lst != null)
+                {
+                    return View(lst.Where(c => c.Status == 2 && c.IdRole == customer).ToList());
+                }
+                return View();
             }
-            return View();
+            else
+            {
+                ViewBag.Roles = GetListRole();
+                var lst = getapi.GetApi("Account");
+                if (lst != null)
+                {
+                    return View(lst.Where(c => c.Status == 2).ToList());
+                }
+                return View();
+            }
+
 
 
         }
-  
+
 
     }
 }

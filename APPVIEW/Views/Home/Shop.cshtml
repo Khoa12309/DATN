@@ -1,5 +1,9 @@
 ﻿@using APPDATA.Models
 @using Newtonsoft.Json
+@model X.PagedList.IPagedList<APPDATA.Models.ProductDetail>
+@using X.PagedList.Web.Common
+@using X.PagedList
+@using X.PagedList.Mvc.Core
 @using System.Globalization;
 @{
     ViewData["Title"] = "Shop";
@@ -22,7 +26,6 @@
         </div>
     </div>
 </section>
-
 <section class="section-margin--small mb-5">
     <div class="container">
         <div class="row">
@@ -111,7 +114,7 @@
             <div class="col-xl-9 col-lg-8 col-md-7">
                 <!-- Start Filter Bar -->
                 <div class="filter-bar d-flex flex-wrap align-items-center">
-                    <div class="sorting mr-auto">
+               @*     <div class="sorting mr-auto">
                         <select id="showProducts">
                             <option value="12">Show 12</option>
                             <option value="24">Show 24</option>
@@ -119,7 +122,7 @@
                             <option value="48">Show 48</option>
                             <option value="60">Show 60</option>
                         </select>
-                    </div>
+                    </div>*@
                     <div class="sorting mr-auto">
                         <form asp-action="Shop">
 
@@ -195,6 +198,20 @@
         </div>
     </div>
 </section>
+<div>
+    @Html.PagedListPager(Model, page => Url.Action("Shop", new {page = page, sort=ViewBag.sort}), new PagedListRenderOptions()
+    {
+    ActiveLiElementClass = "active",
+    PageClasses = new[]{ "page-link"},
+    LiElementClasses=new[] { "page-item"},
+    UlElementClasses = new[] { "pagination","justify-content-center", "mt-3", "size" },
+    LinkToNextPageFormat = "Next",
+    LinkToPreviousPageFormat = "Previous",
+    MaximumPageNumbersToDisplay = 6,
+    DisplayLinkToPreviousPage = PagedListDisplayMode.Always,
+    DisplayLinkToNextPage = PagedListDisplayMode.Always
+    })
+</div>
 <!-- ================ category section end ================= -->	
 <script>
     document.addEventListener("DOMContentLoaded", function () {

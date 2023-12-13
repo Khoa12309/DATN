@@ -31,6 +31,12 @@ namespace _APPAPI.Controllers
         {
             return _crud.GetAllItems().ToList();
         }
+        [Route("Post")]
+        [HttpPost]
+        public bool addaccemty(Account obj)
+        {          
+            return _crud.CreateItem(obj);
+        }
         [Route("Register")]
         [HttpPost]
         public bool Create(Account obj)
@@ -48,7 +54,7 @@ namespace _APPAPI.Controllers
                     Status = 1
                 };
                 _context.Roles.Add(customerRole);
-                _context.SaveChangesAsync();
+               
                 var adminRole = new Role()
                 {
                     id = Guid.NewGuid(),
@@ -56,7 +62,7 @@ namespace _APPAPI.Controllers
                     Status = 1
                 };
                 _context.Roles.Add(adminRole);
-                _context.SaveChangesAsync();
+               
                 var staffRole = new Role()
                 {
                     id = Guid.NewGuid(),
@@ -91,7 +97,10 @@ namespace _APPAPI.Controllers
             Account item = _crud.GetAllItems().FirstOrDefault(c => c.Id == obj.Id);
 
             item.Update_date = DateTime.Now;
-            item.Avatar = obj.Avatar;
+            if (obj.Avatar!=null)
+            {
+                item.Avatar = obj.Avatar;
+            }
             item.Email = obj.Email;
             item.Password = obj.Password;
             item.IdRole = obj.IdRole;

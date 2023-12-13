@@ -2,6 +2,7 @@
     ViewData["Title"] = "Thongtin";
     Layout = "~/Views/Shared/_LayoutWeb.cshtml";
     @using APPDATA.Models;
+    @using System.Globalization;
     List<Bill> bill = ViewBag.viewbill;
     List<BillDetail> billct = ViewBag.viewbillct;
     List<ProductDetail> prdct = ViewBag.viewprdct;
@@ -151,7 +152,10 @@
                                    
                                     <tr>
                                         <td>
-                                            <img src="~/images/@img.Name" style="width: 100px; height:auto" alt="">
+                                            @if(@img.Name!=null){
+                                                 <img src="~/images/@img.Name" style="width: 100px; height:auto" alt="">
+                                            }
+                                           
                                         </td>
                                         <td>
                                             <p><h5>@pro.Name<h5></p>
@@ -166,7 +170,7 @@
                                             <p>@colo.Name</p>
                                         </td>
                                         <td>
-                                            <h5>@bil.Price</h5>
+                                            <h5>@bil.Price.ToString("C0", new CultureInfo("vi-VN"))</h5>
                                         </td>
 
                                     </tr>
@@ -193,7 +197,7 @@
                                                 {
                                                     <span>Mã: @vouchers.Code</span> <br></br>
                                                     <span>Giảm: @vouchers.Value%</span> <br></br>
-                                                    <span>Giảm tối đa: @vouchers.DiscountAmount VND</span>
+                                                    <span>Giảm tối đa: @vouchers.DiscountAmount.ToString("C0", new CultureInfo("vi-VN"))</span>
                                                 }
                                                 else
                                                 {
@@ -215,7 +219,7 @@
                                         <h5></h5>
                                     </td>
                                     <td>
-                                        <h5>@itembill.ShipFee</h5>
+                                        <h5>@string.Format(new CultureInfo("vi-VN"), "{0:C0}", itembill.ShipFee)</h5>
                                     </td>
                                 </tr>
                                 <tr>
@@ -304,35 +308,31 @@
                                             {
                                                 itembill.TotalMoney = (priceProd - priceXpercent) + itembill.ShipFee;
                                             }
-                                            <h5><span>@itembill.TotalMoney</span></h5>
+                                            <h5><span>@itembill.TotalMoney@string.Format(new CultureInfo("vi-VN"), "{0:C0}", itembill.TotalMoney)</span></h5>
                                         }
                                         else
                                         {
-                                            <p>@itembill.TotalMoney</p>
+                                            <p>@string.Format(new CultureInfo("vi-VN"), "{0:C0}", itembill.TotalMoney)</p>
                                         }
                                     </td>
                                 </tr>
                                 <tr>
                                     <td>
                                         @if (itembill.Status == 1 )
-
                                         {
                                             <button style="background-color:royalblue ; border-radius:12px ; border:none"> @Html.ActionLink("Đổi thông tin nhận hàng", "UpdateAddress", new { id = itembill.id }, new { style = "color:black;" }) </button>
+
                                         }
                                         @if (itembill.Status == 1 || itembill.Status == 2)
-
                                         {
+
                                             <button style="background-color:royalblue ; border-radius:12px ; border:none"> @Html.ActionLink("Hủy đơn", "HuyDon", new { id = itembill.id }, new { style = "color:black;" }) </button>
                                         }
+    
                                         @if (itembill.Status == 3)
-
                                         {
-
                                             <button style="background-color:royalblue ;border-radius:20px;border:none"> @Html.ActionLink("Đã nhận hàng", "Nhanhang", new { id = itembill.id }, new { style = "color:black;" }) </button>
-
-
                                         }
-
                                     </td>
                                     <td>
                                     </td>
@@ -349,9 +349,6 @@
 
 
 
-
-
     </body>
-
 
 }

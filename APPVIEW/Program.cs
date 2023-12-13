@@ -38,9 +38,9 @@ builder.Services.AddScoped<INotyfService, NotyfService>();
 // Add Notyf // Đây là thông báo
 builder.Services.AddNotyf(config =>
 {
-    config.DurationInSeconds = 5;
+    config.DurationInSeconds = 3;
     config.IsDismissable = true;
-    config.Position = NotyfPosition.TopLeft;
+    config.Position = NotyfPosition.TopRight;
 });
 
 var app = builder.Build();
@@ -57,7 +57,6 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-app.UseNotyf();
 app.UseRouting();
 app.UseAuthentication();
 

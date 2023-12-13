@@ -1,5 +1,6 @@
 ﻿using APPDATA.Models;
 using APPVIEW.Services;
+using AspNetCoreHero.ToastNotification.Abstractions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,8 +11,10 @@ namespace APPVIEW.Controllers
     {
         private Getapi<Voucher> getapi;
         private Getapi<Category> getapiCategory;
-        public VoucherController()
+        public INotyfService _notyf;
+        public VoucherController(INotyfService notyf)
         {
+            _notyf = notyf;
             getapi = new Getapi<Voucher>();
             getapiCategory = new Getapi<Category>();
         }
@@ -41,8 +44,8 @@ namespace APPVIEW.Controllers
             {
                 return View("GetList", searchResult);
             }
-
-            return NotFound("Voucher không tồn tại");
+            _notyf.Warning("Voucher không tồn tại");
+            return View();
         }
 
 
@@ -59,8 +62,17 @@ namespace APPVIEW.Controllers
         {
             try
             {
-              await  getapi.CreateObj(obj, "Voucher");
-                return RedirectToAction("GetList");
+                var item = getapi.CreateObj(obj, "Voucher").Result;
+                if (item != null)
+                {
+                    _notyf.Success("Thêm thành công!");
+                    return RedirectToAction("GetList");
+                }
+                else
+                {
+                    _notyf.Warning("Không được để trống!");
+                    return View();
+                }
             }
             catch
             {
@@ -76,15 +88,24 @@ namespace APPVIEW.Controllers
             var lst = getapi.GetApi("Voucher");
             return View(lst.Find(c => c.Id == id));
         }
-
+         
 
         [HttpPost]
         public async Task<IActionResult> Edit(Voucher obj)
         {
             try
             {
-               await getapi.UpdateObj(obj, "Voucher");
-                return RedirectToAction("GetList");
+                var item = getapi.UpdateObj(obj, "Voucher").Result;
+                if (item != null)
+                {
+                    _notyf.Success("Edit thành công!");
+                    return RedirectToAction("GetList");
+                }
+                else
+                {
+                    _notyf.Warning("Không được để trống!");
+                    return View();
+                }
             }
             catch
             {
@@ -96,9 +117,9 @@ namespace APPVIEW.Controllers
         public async Task<IActionResult> Delete(Guid id)
         {
 
-           await getapi.DeleteObj(id, "Voucher");
+            await getapi.DeleteObj(id, "Voucher");
             return RedirectToAction("GetList");
-
+             
         }
     }
 }

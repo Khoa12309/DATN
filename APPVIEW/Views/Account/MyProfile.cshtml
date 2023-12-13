@@ -8,22 +8,15 @@
     string Id_userValue = IdUser?.Value;
 
 }
-<style>
-
-    .nice-select form-select open{
-        max-height: 210px; /* Set the max height based on the height of 5 options */
-        overflow-y: auto; /* Add a scrollbar if needed */
-    }
-</style>
 <section class="blog-banner-area" id="category">
     <div class="container h-100">
         <div class="blog-banner">
             <div class="text-center">
-                <h1>My Profile</h1>
+                <h1>Hồ sơ của Tôi</h1>
                 <nav aria-label="breadcrumb" class="banner-breadcrumb">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="#">Home</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">My Profile</li>
+                        <li class="breadcrumb-item"><a href="#">Trang chủ</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Hồ sơ của Tôi</li>
                     </ol>
                 </nav>
             </div>
@@ -31,55 +24,59 @@
     </div>
 </section>
 <div class="container mt-5">
-   
 
     <div class="row mt-3">
         <div class="col-md-4 border-right">
             <div class="d-flex flex-column align-items-center text-center p-3 py-5">
                 <div class="position-relative">
-                    <img class="rounded-circle mt-3 mb-3" width="150px" src="~/UserImage/@Model.Avatar" alt="User Avatar">
+                    <img class="rounded-circle mt-3 mb-3" width="150px" src="~/UserImage/@Model.Avatar" alt="Ảnh đại diện của Người dùng">
                 </div>
                 <span class="font-weight-bold">@Model.Name</span>
                 <span class="text-black-50">@Model.Email</span>
             </div>
         </div>
+        <style>
 
+            .nice-select .list{
+                width: 300px;
+            }
+        </style>
         <div class="col-md-8">
             <div class="p-3 py-5">
-                <h4 class="text-right mb-4">My Profile</h4>
+                <h4 class="text-right mb-4">Hồ sơ của Tôi</h4>
 
                 <form asp-action="MyProfile" id="profileForm" enctype="multipart/form-data" method="post">
                     <div class="mb-3">
-                        <label asp-for=Name class="labels">Name</label>
-                        <input asp-for=Name type="text" class="form-control" placeholder="Enter your name" value="@Model.Name">
+                        <label asp-for=Name class="labels">Tên</label>
+                        <input asp-for=Name type="text" class="form-control" placeholder="Nhập tên của bạn" value="@Model.Name">
                     </div>
                     <div hidden class="mb-3">
-                        <label hidden asp-for=Id class="labels">Name</label>
-                        <input hidden asp-for=Id type="text" class="form-control" placeholder="Enter your name" value="@Model.Id">
+                        <label hidden asp-for=Id class="labels">Tên</label>
+                        <input hidden asp-for=Id type="text" class="form-control" placeholder="Nhập tên của bạn" value="@Model.Id">
                     </div>
                     <div hidden class="mb-3">
-                        <label hidden asp-for=Id_Role class="labels">Name</label>
-                        <input hidden asp-for=Id_Role type="text" class="form-control" placeholder="Enter your name" value="@Model.Id_Role">
+                        <label hidden asp-for=Id_Role class="labels">Tên</label>
+                        <input hidden asp-for=Id_Role type="text" class="form-control" placeholder="Nhập tên của bạn" value="@Model.Id_Role">
                     </div>
                     <div hidden class="mb-3">
-                        <label hidden asp-for=AccountId class="labels">Name</label>
-                        <input hidden asp-for=AccountId type="text" class="form-control" placeholder="Enter your name" value="@Model.AccountId">
+                        <label hidden asp-for=AccountId class="labels">Tên</label>
+                        <input hidden asp-for=AccountId type="text" class="form-control" placeholder="Nhập tên của bạn" value="@Model.AccountId">
                     </div>
                     <div class="mb-3">
                         <label asp-for=Email class="labels">Email</label>
-                        <input asp-for=Email type="email" class="form-control" placeholder="Enter your email" value="@Model.Email">
+                        <input asp-for=Email type="email" class="form-control" placeholder="Nhập địa chỉ email của bạn" value="@Model.Email">
                     </div>
                     <div hidden class="mb-3">
-                        <label asp-for=Password hidden class="labels">Password</label>
-                        <input asp-for=Password hidden type="password" class="form-control" placeholder="Enter your Password" value="@Model.Password">
+                        <label asp-for=Password hidden class="labels">Mật khẩu</label>
+                        <input asp-for=Password hidden type="password" class="form-control" placeholder="Nhập mật khẩu của bạn" value="@Model.Password">
                     </div>
                     <div class="mb-3">
-                        <label asp-for="PhoneNumber" class="labels">Phone Number</label>
-                        <input asp-for=PhoneNumber type="text" class="form-control" placeholder="Enter your phone number" value="@Model.PhoneNumber">
+                        <label asp-for="PhoneNumber" class="labels">Số điện thoại</label>
+                        <input asp-for=PhoneNumber type="text" class="form-control" placeholder="Nhập số điện thoại của bạn" value="@Model.PhoneNumber">
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-2">
-                            <label asp-for="Province" class="labels">Province</label>
+                            <label asp-for="Province" class="labels">Tỉnh/Thành phố</label>
                             <select class="form-select" size="5" aria-label="Size 5 select example" id="countrySelect" asp-for="Province">
                                 @foreach (var item in ViewBag.province)
                                 {
@@ -93,62 +90,58 @@
                                     }
                                 }
                             </select>
-
-
-                        </div> <div class="col-md-4">
-                            <label asp-for=District class="labels">District</label>
-                            @*   <input asp-for=District type="text" class="form-control" placeholder="Enter your District" value="@Model.District">*@
-                            <input list="districtSelect" class="form-control" id="district" placeholder="chọn quận huyện" asp-for="District">
-
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for=District class="labels">Quận/Huyện</label>
+                            @*   <input asp-for=District type="text" class="form-control" placeholder="Nhập quận/huyện của bạn" value="@Model.District">*@
+                            <input list="districtSelect" class="form-control" id="district" placeholder="Chọn quận/huyện" asp-for="District">
                             <datalist id="districtSelect">
                             </datalist>
                         </div>
                         <div class="col-md-4">
-                            <label asp-for=Ward class="labels">Ward</label>
-                            @* <input asp-for=Ward type="text" class="form-control" placeholder="Enter your Ward" value="@Model.Ward">*@
-                            <input list="wardSelect" class="form-control" id="ward" placeholder="chọn phường xã" asp-for="Ward">
+                            <label asp-for=Ward class="labels">Phường/Xã</label>
+                            @* <input asp-for=Ward type="text" class="form-control" placeholder="Nhập phường/xã của bạn" value="@Model.Ward">*@
+                            <input list="wardSelect" class="form-control" id="ward" placeholder="Chọn phường/xã" asp-for="Ward">
                             <datalist id="wardSelect">
                             </datalist>
                         </div>
                     </div>
                     <div class="row mb-3">
                         <div class="col-md-6">
-                            <label asp-for=SpecificAddress class="labels">Specific Address</label>
-                            <input asp-for=SpecificAddress type="text" class="form-control" placeholder="Enter your Specific Address" value="@Model.SpecificAddress">
+                            <label asp-for=SpecificAddress class="labels">Địa chỉ cụ thể</label>
+                            <input asp-for=SpecificAddress type="text" class="form-control" placeholder="Nhập địa chỉ cụ thể của bạn" value="@Model.SpecificAddress">
                         </div>
                         <div class="col-md-6">
-                            <label asp-for=DefaultAddress class="labels">Default Address</label>
-                            <input asp-for=DefaultAddress type="text" class="form-control" placeholder="Enter your Default Address" value="@Model.DefaultAddress">
+                            <label asp-for=DefaultAddress class="labels">Địa chỉ mặc định</label>
+                            <input asp-for=DefaultAddress type="text" class="form-control" placeholder="Nhập địa chỉ mặc định của bạn" value="@Model.DefaultAddress">
                         </div>
                     </div>
                     <div class="row mb-3">
-
                         <div class="col-md-6">
-                            <label asp-for=Avatar class="labels">Avatar</label>
+                            <label asp-for=Avatar class="labels">Ảnh đại diện</label>
                             <input asp-for="Avatar" class="form-control" type="file" name="imageFile" />
                         </div>
                         <div class="col-md-6">
-                            <label asp-for=Description class="labels">Description</label>
+                            <label asp-for=Description class="labels">Mô tả</label>
                             <input asp-for="Description" class="form-control" value="@Model.Description" />
                         </div>
                     </div>
                     <div class="text-center">
                         <div class="hover">
-                            <div class="btn-group" role="group" aria-label="Profile actions" style="gap:10px">
-                                <button type="submit" value="submit" class="button button-register-login w-60">Save change</button>
-                                <a class="button button-register-login w-60" href="~/Account/ChangePassword">Change password</a>
+
+
+                            <div class="btn-group" role="group" aria-label="Hành động trên Hồ sơ" style="gap:10px">
+                                <button type="submit" value="submit" class="button button-register-login w-60">Lưu thay đổi</button>
+                                <a class="button button-register-login w-60" href="~/Account/ChangePassword">Đổi mật khẩu</a>
                             </div>
                         </div>
-
                     </div>
-
-
                 </form>
             </div>
         </div>
     </div>
 </div>
-
+```
 
 <script>
     // Lắng nghe sự kiện submit của form

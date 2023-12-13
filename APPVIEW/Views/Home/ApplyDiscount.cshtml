@@ -1,4 +1,5 @@
-﻿@model IEnumerable<APPDATA.Models.VoucherForAcc>
+﻿@using System.Globalization;
+@model IEnumerable<APPDATA.Models.VoucherForAcc>
 @{
     ViewData["Title"] = "Your Voucher";
     Layout = "~/Views/Shared/_LayoutWeb.cshtml";
@@ -36,8 +37,22 @@
 
     
 </style>
+<section class="blog-banner-area" id="category">
+    <div class="container h-100">
+        <div class="blog-banner">
+            <div class="text-center">
+                <h1>Vouchers của bạn</h1>
+                @*<nav aria-label="breadcrumb" class="banner-breadcrumb">
+                    <ol class="breadcrumb">
+                        <li class="breadcrumb-item"><a href="~/home/index">Home</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Checkout</li>
+                    </ol>
+                </nav>*@
+            </div>
+        </div>
+    </div>
+</section>
 <div class="container my-5">
-    <h2 style="text-align: center; margin-bottom: 20px">Your Voucher</h2>
     @if (Model == null || !Model.Any())
     {
         <h4 style="text-align: center;">Không có voucher nào trong tài khoản của bạn</h4>
@@ -56,7 +71,7 @@
                                 <span class="badge badge-success">@voucher.Code</span>
                                 <h4 class="text-muted mb-0">@voucher.Name</h4>
                                 <p class="text-muted mb-0">Giảm: @voucher.Value%</p>
-                                <p class="text-muted mb-0">Tối đa: @voucher.DiscountAmount VND</p>
+                                <p class="text-muted mb-0">Tối đa: @voucher.DiscountAmount.ToString("C0", new CultureInfo("vi-VN"))</p>
                             </div>
                         </div>
 
@@ -70,7 +85,7 @@
                                             </p>
                                         </span>
                                     </div>
-                                    <input type="submit" value="Apply" class="btn btn-sm btn-outline-danger btn-block apply-btn" data-code="@voucher.Code" />
+                                    <input type="submit" value="Sử dụng" class="btn btn-sm btn-outline-danger btn-block apply-btn" data-code="@voucher.Code" />
                                     <input type="hidden" name="selectedVoucher" value="@voucher.Code" />
                                 </div>
                             </div>
