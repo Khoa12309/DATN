@@ -274,12 +274,9 @@
                                             }
                                             else if (itembill.Status == 5)
                                             {
-                                                <span>Thanh toán thành công </span>
+                                                <span>Đơn chờ hủy </span>
                                             }
-                                            else if (itembill.Status == 6)
-                                            {
-                                                <span>Thanh toán không thành công </span>
-                                            }
+
                                             else if (itembill.Status == 0)
                                             {
                                                 <span>Đơn chờ hủy </span>
@@ -319,21 +316,22 @@
                                 <tr>
                                     <td>
                                         @if (itembill.Status == 1 )
-
                                         {
                                             <button style="background-color:royalblue ; border-radius:12px ; border:none"> @Html.ActionLink("Đổi thông tin nhận hàng", "UpdateAddress", new { id = itembill.id }, new { style = "color:black;" }) </button>
-                                            <button style="background-color:royalblue ; border-radius:12px ; border:none"> @Html.ActionLink("Hủy đơn", "HuyDon", new { id = itembill.id }, new { style = "color:black;" }) </button>
+
+                                
                                         }
-    
-                                        @if (itembill.Status == 3)
+                                        @if(itembill.Status == 1 || itembill.Status == 2)
 
                                         {
 
-                                            <button style="background-color:royalblue ;border-radius:20px;border:none"> @Html.ActionLink("Đã nhận hàng", "Nhanhang", new { id = itembill.id }, new { style = "color:black;" }) </button>
-
-
+                                            <button style="background-color:royalblue ; border-radius:12px ; border:none"> @Html.ActionLink("Hủy đơn", "HuyDon", new { id = itembill.id }, new { style = "color:black;" }) </button>
                                         }
 
+                                        @if (itembill.Status == 3)
+                                        {
+                                            <button style="background-color:royalblue ;border-radius:20px;border:none"> @Html.ActionLink("Đã nhận hàng", "Nhanhang", new { id = itembill.id }, new { style = "color:black;" }) </button>
+                                        }
                                     </td>
                                     <td>
                                     </td>
@@ -350,9 +348,6 @@
 
 
 
-
-
     </body>
-
 
 }
