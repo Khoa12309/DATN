@@ -1424,6 +1424,8 @@ namespace APPVIEW.Controllers
 
                             await getapiVoucher.UpdateObj(voucher, "Voucher");
                             _notyf.Success("Lưu phiếu gỉảm giá thành công!");
+
+                            return Json(new { success = true });
                         }
                         else
                         {
@@ -1433,7 +1435,7 @@ namespace APPVIEW.Controllers
                     else
                     {
                         _notyf.Success("Phiếu giảm giá đã có trong tài khoản của bạn!");
-                        return RedirectToAction("Details", new { id = prodtId });
+                        return Json(new { success = false });
 
                     }
                 }
