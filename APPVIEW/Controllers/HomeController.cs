@@ -487,7 +487,6 @@ namespace APPVIEW.Controllers
             bill.CreateDate = DateTime.Now;
             bill.UpdateBy = DateTime.Now;
             bill.ShipFee = phiship;
-            bill.PayDate = DateTime.Now;
             bill.TotalMoney = 0;
             bill.Status = 1;
             bill.PayDate = DateTime.Now;
@@ -1401,11 +1400,17 @@ namespace APPVIEW.Controllers
                                 }
                                 else
                                 {
+                                    ViewBag.fee=0; 
+                                    ViewBag.TT = tt;
+                                    ViewBag.Total = tt;
                                     _notyf.Warning("Phường/xã không đúng");
                                     return View(dc);
                                 }
                             }
                             else {
+                                ViewBag.fee = 0;
+                                ViewBag.TT = tt;
+                                ViewBag.Total = tt;
                                 _notyf.Warning("Quận/huyện không đúng");
                                 return View(dc);
                             }
