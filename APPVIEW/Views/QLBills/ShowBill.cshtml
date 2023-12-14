@@ -119,8 +119,12 @@
                                     <button style="width:140px" class="btn btn-danger"> @Html.ActionLink("Xác Nhận", "XacNhan", new { id = itembill.id }, new { style = "color:white;" }) </button>
                                 </td>
                                 <td>
-                                    <button style="width:140px" class="btn btn-danger"> @Html.ActionLink("Hủy Đơn ", "HuyDon", new { id = itembill.id }, new { style = "color:white;" }) </button>
-                                </td>  <td>
+                                    <button data-itemid="@itembill.id" style="width:140px" class="btn btn-danger cancel-button">
+                                        <a href="@Url.Action("HuyDon", new { id = itembill.id })" style="color:white;">Hủy Đơn</a>
+                                    </button>
+                                </td>
+
+                                <td>
                                     <button style="width:140px" class="btn btn-danger"> @Html.ActionLink("Chi Tiết ", "Chitiet", new { id = itembill.id }, new { style = "color:white;" }) </button>
                                 </td>
 
@@ -138,3 +142,23 @@
         </div>
     </div>
 </div>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var cancelButtons = document.querySelectorAll('.cancel-button');
+
+        cancelButtons.forEach(function (cancelButton) {
+            cancelButton.addEventListener("click", function (event) {
+                event.preventDefault();
+                var itemId = this.getAttribute('data-itemid');
+                var confirmation = confirm("Bạn có chắc chắn muốn hủy đơn này không?");
+
+                if (confirmation) {
+                    // Chuyển hướng đến action HuyDon nếu xác nhận
+                    window.location.href = '@Url.Action("HuyDon", "QLBills")?id=' + itemId;
+                } else {
+                    // Không làm gì nếu hủy
+                }
+            });
+        });
+    });
+</script>
