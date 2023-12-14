@@ -240,7 +240,7 @@ namespace APPVIEW.Controllers
                 SessionService.SetObjToJson(HttpContext.Session, "Account", acc);
             }
             var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
-            var userBills = bills.GetApi("Bill").Where(c => c.Status == 0).OrderByDescending(d => d.CreateDate).ToList();
+            var userBills = bills.GetApi("Bill").Where(c => c.Status == 0|| c.Status==5).OrderByDescending(d => d.CreateDate).ToList();
             ViewBag.viewbill = userBills;
 
 
@@ -257,7 +257,7 @@ namespace APPVIEW.Controllers
             {
                 if (search != "")
                 {
-                    var tk = bills.GetApi("Bill").Where(c => c.Status == 0 && c.Code.Contains(search)).OrderByDescending(d => d.CreateDate).ToList();
+                    var tk = bills.GetApi("Bill").Where(c => c.Status == 0||c.Status==5 && c.Code.Contains(search)).OrderByDescending(d => d.CreateDate).ToList();
                     ViewBag.viewbill = tk;
                     return View(tk);
                 }
