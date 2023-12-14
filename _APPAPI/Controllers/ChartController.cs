@@ -2,6 +2,8 @@
 using APPDATA.Models;
 using ClosedXML.Excel;
 using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
+using DocumentFormat.OpenXml.Spreadsheet;
+using DocumentFormat.OpenXml.Wordprocessing;
 using MailKit.Search;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -10,6 +12,7 @@ using Newtonsoft.Json;
 using OfficeOpenXml;
 using Org.BouncyCastle.Asn1.Ocsp;
 using System.Globalization;
+using static _APPAPI.Controllers.ChartController;
 
 namespace _APPAPI.Controllers
 {
@@ -108,6 +111,37 @@ namespace _APPAPI.Controllers
                 return BadRequest(new { error = ex.Message });
             }
         }
+        [HttpGet("DatePicker")]
+        public IActionResult StatisticsByDatePicker(DateTime startDate, DateTime endDate)
+        {
+            try
+            {
+                var data = _context.Bills
+                    .Where(b => b.PayDate.HasValue && b.PayDate >= startDate && b.PayDate <= endDate && b.Status == 4)
+                    .GroupBy(b => b.PayDate.Value.Date)  // Nhóm hóa đơn theo tháng
+                    .Select(group => new
+                    {
+                        Dates = group.Key,
+                        Moneys = group.Sum(b => b.TotalMoney)
+                    })
+                    .OrderBy(item => item.Dates)
+                    .ToList();
+
+                // Chuyển đổi dữ liệu thành định dạng phù hợp cho biểu đồ
+                var chartData = new
+                {
+                    labels = data.Select(item => item.Dates),
+                    values = data.Select(item => item.Moneys),
+                    label = "Doanh Thu trong năm"
+                };
+
+                return Ok(chartData);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+        }
 
         private ApiData GetDataFromApi(string apiUrl)
         {
@@ -147,18 +181,16 @@ namespace _APPAPI.Controllers
             public string Label { get; set; }
         }
         [HttpGet("ExportDataToExcel/{label}")]
-        public IActionResult ExportDataToExcel(string label)
+        public IActionResult ExportDataToExcel(string label, DateTime? startDate = null, DateTime? endDate = null)
         {
             try
             {
-
                 // Tạo một tệp Excel
                 var excelPackage = new ExcelPackage();
                 var worksheet = excelPackage.Workbook.Worksheets.Add("ChartData");
-                // Gọi API để lấy dữ liệu
-                var apiData = GetDataFromApi($"https://localhost:7042/api/Chart/2023");
                 string fileName = "";
-                //var apiData = GetDataFromApi($"https://localhost:7042/api/Chart/2023");
+                ApiData apiData = null;  // Đặt biến ở ngoài để tránh xung đột
+
                 if (label == "yearly")
                 {
                     fileName = "_Doanh_thu_2023";
@@ -175,8 +207,21 @@ namespace _APPAPI.Controllers
                     worksheet.Cells["B1"].Value = "Ngày";
                     worksheet.Cells["C1"].Value = "Doanh thu";
                 }
-                // Điền dữ liệu vào tệp Excel từ dữ liệu API
+                else if (label == "DatePicker")
+                {
+                    fileName = "_Doanh_thu_datepicker";
+                    apiData = GetDataFromApi($"https://localhost:7042/api/Chart/DatePicker?startDate={startDate}&endDate={endDate}");
+                    worksheet.Cells["A1"].Value = "STT";
+                    worksheet.Cells["B1"].Value = "Ngày";
+                    worksheet.Cells["C1"].Value = "Doanh thu";
+                }
+                else
+                {
+                    // Xử lý trường hợp không hỗ trợ
+                    return BadRequest(new { error = "Invalid label specified" });
+                }
 
+                // Điền dữ liệu vào tệp Excel từ dữ liệu API
 
                 for (int i = 0; i < apiData.Labels.Count; i++)
                 {

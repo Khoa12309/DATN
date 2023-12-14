@@ -94,34 +94,48 @@
                 </div>
             </div>
         </div>
-      <div class="col-xl-12 col-md-12">
-            <div class="card">
-                <div class="card-header">
-                    <div class="d-flex justify-content-between">
-                        <h3 class="mb-1">Thống kê</h3>
-                        <!-- Dropdown for selecting chart type -->
-                        <div class="dropdown">
-                            <select id="chartTypeDropdown" class="form-control" style="width: 100%">
-                                <option value="yearly" selected>Năm nay</option>
-                                <option value="weekly" >7 ngày qua</option>
-                                <!-- Add other chart types if needed -->
-                            </select>
+          <div class="col-xl-12 col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex justify-content-between">
+                            <h3 class="mb-1">Doanh thu</h3>
+                            <!-- Dropdown for selecting chart type -->
+                            <div class="dropdown">
+                                <select id="chartTypeDropdown" class="form-control" style="width: 100%">
+                                    <option value="yearly" >Năm nay</option>
+                                    <option value="weekly" >7 ngày qua</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div style="display: flex; justify-content: center; align-items: center;">
+                            <!-- Thêm ô input cho startdate -->
+                            <div style="margin-right: 10px;">
+                                <label for="startDate">Ngày bắt đầu:</label>
+                            <input type="text" class="form-control" id="startDate" placeholder="dd/mm/yyyy" oninput="formatDate(this)">
+                            </div>
+
+                            <!-- Thêm ô input cho enddate -->
+                            <div>
+                                <label for="endDate">Ngày kết thúc:</label>
+                            <input type="text" class="form-control" id="endDate" placeholder="dd/mm/yyyy" oninput="formatDate(this)">
+                            </div>
+                        </div>
+                        <!-- Nút xác nhận -->
+                        <button value="datepicker" onclick="fetchAndDrawChart()">Xác nhận</button>
+
+                        <!-- Button to export data to Excel -->
+                        <div style="float: right; margin-top:10px;">
+                            <button id="exportBtn" class="btn btn-primary" onclick="exportToExcel()">Export to Excel</button>
                         </div>
                     </div>
-                    <!-- Button to export data to Excel -->
-                    <div style="float: right; margin-top:10px;">
-                        <button id="exportBtn" class="btn btn-primary" onclick="exportToExcel()">Export to Excel</button>
-
+                    <div class="card-body">
+                        <div id="container">
+                            <!-- Canvas for the selected chart type -->
+                            <canvas id="selectedChart" height="90"></canvas>
+                        </div>
                     </div>
                 </div>
-                <div class="card-body">
-                    <div id="container">
-                        <!-- Canvas for the selected chart type -->
-                        <canvas id="selectedChart" height="90"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>
+           </div>
         <!--/ Chart -->
 
         <!-- Top 5 danh sách sản phẩm -->
@@ -166,16 +180,19 @@
         <!--/ Top 5 danh sách sản phẩm -->
 
         <!--/Script xử lí -->
-
         <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <!-- Thư viện Bootstrap-datepicker -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/locales/bootstrap-datepicker.vi.min.js"></script>
 
         <script>
             let yearlyChart;
             var weeklyChart;
             var trendingProductsChart;
             var currentChart = "yearly";
-            console.log("dèalut: " + currentChart);
+            var PickDateChart;
             // Danh sách sản phẩm
             $(document).ready(
                 sortBy('quantity'));
@@ -224,6 +241,56 @@
                         console.error('Error fetching data:', error);
                     }
                 });
+            }
+
+            function formatDate(input) {
+                // Hàm để định dạng ngày tháng (có thể thêm xử lý định dạng ở đây nếu cần)
+            }
+
+            function fetchAndDrawChart() {
+                // Lấy giá trị từ ô input cho startdate và enddate
+                var startDate = document.getElementById('startDate').value;
+                var endDate = document.getElementById('endDate').value;
+
+                // Gọi API với tham số là startDate và endDate
+                fetch(`https://localhost:7042/api/Chart/DatePicker?startDate=${startDate}&endDate=${endDate}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        var ctx = document.getElementById('selectedChart').getContext('2d');
+                        if (yearlyChart) {
+                            yearlyChart.destroy()
+                        }
+                        if(weeklyChart){
+                            weeklyChart.destroy()
+                        }
+                        if (PickDateChart) {
+                            PickDateChart.destroy()
+                        }
+                        currentChart = "DatePicker";
+                        console.log(currentChart);
+                        // Tạo biểu đồ
+                        PickDateChart = new Chart(ctx, {
+                            type: 'line',
+                            data: {
+                                labels: data.labels,
+                                datasets: [{
+                                    label: data.label,
+                                    data: data.values,
+                                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                    borderColor: 'rgba(75, 192, 192, 1)',
+                                    borderWidth: 1
+                                }]
+                            },
+                            options: {
+                                scales: {
+                                    y: {
+                                        beginAtZero: true
+                                    }
+                                }
+                            }
+                        });
+                    })
+                    .catch(error => console.error('Error:', error));
             }
 
             $(document).ready(function () {
@@ -301,7 +368,10 @@
                    
                     // Hủy bỏ biểu đồ hiện tại nếu có
                     if (yearlyChart) {
-                        yearlyChart.destroy();
+                        yearlyChart.destroy()
+                    }
+                    if (PickDateChart) {
+                        PickDateChart.destroy()
                     }
 
                     // Gọi hàm vẽ biểu đồ tương ứng dựa trên loại đã chọn
@@ -315,15 +385,20 @@
                         console.log(currentChart);
                         DrawLast7DayChart();
                     }
-
                 });
 
                 // Hàm vẽ biểu đồ với dữ liệu từ API
                 function DrawChart(data) {
 
                     // Hủy bỏ biểu đồ hiện tại nếu có
+                    if (yearlyChart) {
+                        yearlyChart.destroy()
+                    }
                     if (weeklyChart) {
-                        weeklyChart.destroy();
+                        weeklyChart.destroy()
+                    }
+                    if (PickDateChart) {
+                        PickDateChart.destroy()
                     }
                     const ctx = document.getElementById('selectedChart').getContext('2d');
                     // Mảng chứa giá trị của 12 tháng
@@ -376,13 +451,18 @@
                     });
                 }
                 function Last7DayChart(data) {
-                    // var currentDay = new Date('12/7/2023');
                     var currentDay = new Date();
 
                     const ctx = document.getElementById('selectedChart').getContext('2d');
                     // Hủy bỏ biểu đồ hiện tại nếu có
                     if (yearlyChart) {
-                        yearlyChart.destroy();
+                        yearlyChart.destroy()
+                    }
+                    if (weeklyChart) {
+                        weeklyChart.destroy()
+                    }
+                    if (PickDateChart) {
+                        PickDateChart.destroy()
                     }
 
                     // Mảng chứa giá trị của 7 ngày gần nhất
@@ -410,7 +490,7 @@
                     data.values.forEach(
                         function (value, index) {
                             // 25/11
-                            var day = data.labels[index]; // 11/25/2023 hoặc 1/12/2023 hoặc 12/01/2023
+                            var day = data.labels[index];
                             var daydate;
 
                             // Kiểm tra định dạng dd/mm/yyyy
@@ -541,16 +621,37 @@
                         })
                         .catch(error => console.error('Error fetching customer data:', error));
                 };
+
             });
+
             function exportToExcel() {
                 if (confirm("Tải về file Excel?")) {
-                    var last = currentChart;
-                    window.location.href = "https://localhost:7042/api/Chart/ExportDataToExcel/" + last;
+                    var url = "https://localhost:7042/api/Chart/ExportDataToExcel/" + currentChart;
+
+                    // Kiểm tra nếu là DatePicker thì lấy giá trị startDate và endDate từ các phần tử HTML
+                    if (currentChart === "DatePicker") {
+                        var startDateElement = document.getElementById("startDate");
+                        var endDateElement = document.getElementById("endDate");
+
+                        // Kiểm tra xem phần tử có tồn tại không
+                        if (startDateElement && endDateElement) {
+                            var startDateValue = startDateElement.value;
+                            var endDateValue = endDateElement.value;
+
+                            // Thêm tham số startDate và endDate vào đường dẫn
+                            url += `?startDate=${encodeURIComponent(startDateValue)}&endDate=${encodeURIComponent(endDateValue)}`;
+                        } else {
+                            console.error("Không tìm thấy phần tử HTML");
+                            return;
+                        }
+                    }
+
+                    // Chuyển hướng đến đường dẫn đã tạo
+                    window.location.href = url;
                 }
             }
+
         </script>
     </div>
 
 </div>
-
-
