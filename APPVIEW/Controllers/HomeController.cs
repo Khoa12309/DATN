@@ -638,9 +638,6 @@ namespace APPVIEW.Controllers
 
             var idsanphamcthitiet = getapi.GetApi("ProductDetails")
                 .FirstOrDefault(c => c.Id_Product == Guid.Parse(productId) && c.Id_Size == Guid.Parse(size) && c.Id_Color == Guid.Parse(color));
-
-
-
             // Trả về dữ liệu dưới dạng JSON
             return Json(new { success = true, idsanphamcthitiet = idsanphamcthitiet });
         }
@@ -648,7 +645,6 @@ namespace APPVIEW.Controllers
         public async Task<IActionResult> DatHang(Guid size, Guid color, Guid productId, int soluong, string sdt, float ship, int province, string district, string ward, string diachict, string pay)
 
         {
-
             var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
             var obj = getapiAddress.GetApi("Address").FirstOrDefault(c => c.AccountId == account.Id);
 
@@ -900,13 +896,6 @@ namespace APPVIEW.Controllers
                 var filterProductsWithImages = getapi.GetApi("ProductDetails")
                     .Join(img, pd => pd.Id, pi => pi.IdProductdetail, (pd, pi) => new { ProductDetail = pd, Image = pi })
                     .ToList();
-                //var filterProductsWithImages = getapi.GetApi("ProductDetails")
-                //   .Join(img, pd => pd.Id, pi => pi.IdProductdetail, (pd, pi) => new { ProductDetail = pd, Image = pi })
-                //   .Select(cs => new { cs.ProductDetail.Id, cs.Image.Name, cs.ProductDetail.Id_Product, cs.ProductDetail.Price, cs.ProductDetail.Id_Color, cs.ProductDetail.Id_Size, nap = cs.ProductDetail.Name })
-                //   .ToList();
-                //Console.WriteLine("Original Products Count: " + filterProductsWithImages.Count);
-
-                // Áp dụng bộ lọc
                 if (filter.Colors != null && filter.Colors.Count > 0 && !filter.Colors.Contains("all"))
                 {
                     filterProductsWithImages = filterProductsWithImages
@@ -919,15 +908,13 @@ namespace APPVIEW.Controllers
                     filterProductsWithImages = filterProductsWithImages
                         .Where(p => filter.Sizes.Contains(p.ProductDetail.Id_Size.ToString()))
                         .ToList();
-
-                    //Console.WriteLine("Filtered Products Count: " + filterProductsWithImages.Count);
-                    //Console.WriteLine("Selected Sizes: " + string.Join(", ", filter.Sizes));
-                    //foreach (var product in filterProductsWithImages)
-                    //{
-                    //    var sizeName = product.ProductDetail.Size?.Name ?? "null";
-                    //}
                 }
-
+                //if (filter.Category != null && filter.Category.Count > 0 && !filter.Category.Contains("all"))
+                //{
+                //    filterProductsWithImages = filterProductsWithImages
+                //        .Where(p => filter.Category.Contains(p.ProductDetail.Id_Category.ToString()))
+                //        .ToList();
+                //}
                 if (filter.PriceRanges != null && filter.PriceRanges.Count > 0 && !filter.PriceRanges.Contains("all"))
                 {
                     List<PriceRange> priceRanges = new List<PriceRange>();
@@ -1306,11 +1293,9 @@ namespace APPVIEW.Controllers
                 var response = await client.GetProvincesAsync();
                 if (response.Code == 200) // Thành côngnhan
                 {
-                    // Trả về danh sách các quận/huyện dưới dạng JSON
                     ViewBag.province = response.Data;
                 }
 
-                //// fee ship
                 var products = SessionService.GetObjFromSession(HttpContext.Session, "Cart");
 
                 if (id!=null)

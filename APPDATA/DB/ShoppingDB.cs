@@ -17,11 +17,14 @@ namespace APPDATA.DB
         public ShoppingDB(DbContextOptions<ShoppingDB> options) : base(options) { }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-
         {
+<<<<<<< HEAD
             optionsBuilder.UseSqlServer(@"Data Source=DUNGNGUYEN\SQLEXPRESS;Initial Catalog=DATN_SD49u;Integrated Security=True");
 
 
+=======
+            optionsBuilder.UseSqlServer(@"Data Source=LAPTOP-N6FK027M\SQLEXPRESS;Initial Catalog=DATN4;Integrated Security=True");
+>>>>>>> master
         }
 
 

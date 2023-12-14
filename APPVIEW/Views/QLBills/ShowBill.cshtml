@@ -161,3 +161,23 @@
         </div>
     </div>
 </div>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var cancelButtons = document.querySelectorAll('.cancel-button');
+
+        cancelButtons.forEach(function (cancelButton) {
+            cancelButton.addEventListener("click", function (event) {
+                event.preventDefault();
+                var itemId = this.getAttribute('data-itemid');
+                var confirmation = confirm("Bạn có chắc chắn muốn hủy đơn này không?");
+
+                if (confirmation) {
+                    // Chuyển hướng đến action HuyDon nếu xác nhận
+                    window.location.href = '@Url.Action("HuyDon", "QLBills")?id=' + itemId;
+                } else {
+                    // Không làm gì nếu hủy
+                }
+            });
+        });
+    });
+</script>

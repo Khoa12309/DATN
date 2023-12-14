@@ -23,12 +23,11 @@
                 <ul class="card-product__imgOverlay">
                     <li><button><i class="ti-search"></i></button></li>
                     <li><button><i class="ti-shopping-cart"></i></button></li>
-                    <li><button><i class="ti-heart"></i></button></li>
                 </ul>
             </div>
             <div class="card-body">
                 <h4 class="card-product__title"><a href="#">@product.ProductDetail.Name</a></h4>
-                <p class="card-product__price">@product.ProductDetail.Price.ToString("C0", new CultureInfo("vi-VN"))</p>
+                <p class="card-product__price" style="color:#f15e2c">@product.ProductDetail.Price.ToString("C0", new CultureInfo("vi-VN"))</p>
             </div>
         </div>
     </div>

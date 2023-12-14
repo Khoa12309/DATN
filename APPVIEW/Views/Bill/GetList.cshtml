@@ -1,115 +1,153 @@
 ﻿@model IEnumerable<APPDATA.Models.Bill>
 @{
-    ViewData["Title"] = "Hóa đơn onlile";
+    ViewData["Title"] = "HoaDonOnl";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
-    int stt = 0;
 }
 
-<div class="card">
-    <div class="card-header">
-        <h5 class="mb-0">Đơn hàng trực tuyến</h5>
+
+
+
+
+
+
+<form asp-action="GetList" class="row contact_form" method="post" style="margin-bottom:20px">
+    <div class="col-md-2 form-group">
+        <input style="300px" type="text" id="searchTerm" class="form-control" name="searchTerm" placeholder="Nhập mã hóa đơn để tìm kiếm">
+
+
+
     </div>
-    <div class="card-body">
-      
+    <div class="col-md-2 form-group">
+        <button type="submit" class="btn btn-success">Shearch</button>
 
-        <form asp-action="GetList" method="post" class="form-inline">
+    </div>
+    <div class="col-md-2 form-group">
+        <input style="300px" type="date" id="searchTerm" class="form-control" name="start">
 
-            <div class="card-header row">
 
-                <div class="col-md-3">
-                    <div id="DataTables_Table_0_filter" class="dataTables_filter">
-                        <label><input type="search" class="form-control" placeholder="Search.." aria-controls="DataTables_Table_0" name="searchTerm" /></label>
-                    </div>
-                </div>
-                <div class="col-md-3">
-                    <div id="DataTables_Table_0_filter" class="dataTables_filter">
-                        <label><button class="btn btn-success mb-3" type="submit">Tìm kiếm</button></label>
-                    </div>
-                </div>
-            </div>
-        </form>
-        <div class="table-responsive">
-            <table class="table table-hover table-striped">
-                <thead>
-                    <tr>
-                        <th>STT</th>
-                        <th>Tên</th>
-                        <th>Mã Hóa đơn </th>
-                        <th>Phí ship</th>
-                        <th>Số điện thoại</th>
-                        <th>Địa chỉ</th>
-                        <th>Tổng tiền</th>
-                        <th>Kiểu </th>
-                        <th>Ngày tạo</th>
-                        <th>Ngày thanh toán</th>
-                        <th>Trạng thái</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @if (Model != null && Model.Any())
+    </div> <div class="col-md-2 form-group">
+        <input style="300px" type="date" id="searchTerm" class="form-control" name="end">
+
+    </div>
+    <div class="col-md-1 form-group">
+        <button type="submit" class="btn btn-success">Lọc</button>
+    </div>
+</form>
+<table class="table">
+    <thead>
+        <tr>
+         
+            <th>
+            <span>Tên Khách Hàng</span>
+            </th>
+     
+            <th>
+                @Html.DisplayNameFor(model => model.Code)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.ShipFee)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PhoneNumber)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Address)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.TotalMoney)
+            </th>
+         
+            <th>
+                @Html.DisplayNameFor(model => model.Type)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.CreateDate)
+            </th>
+        
+            <th>
+                @Html.DisplayNameFor(model => model.PayDate)
+            </th>
+       
+            <th>
+                @Html.DisplayNameFor(model => model.Status)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            
+            <td>
+                    @foreach(var acc in ViewBag.account)
                     {
 
-                        foreach (var item in Model)
+                        if (acc.Id == item.AccountId)
                         {
-                            <tr>
-                                <td>@(stt += 1)</td>
-                                <td>
-                                    @foreach (var acc in ViewBag.account)
-                                    {
+                            <span>@acc.Name</span>
+                            break;
 
-                                        if (acc.Id == item.AccountId)
-                                        {
-                                            <span>@acc.Name</span>
-                                            break;
-
-                                        }
-                                    }
-                                </td>
-                                <td>@Html.DisplayFor(modelItem => item.Code)</td>
-                                <td>@Html.DisplayFor(modelItem => item.ShipFee)</td>
-                                <td>@Html.DisplayFor(modelItem => item.PhoneNumber)</td>
-                                <td>@Html.DisplayFor(modelItem => item.Address)</td>
-                                <td>@Html.DisplayFor(modelItem => item.TotalMoney)</td>
-                                <td>@item.Type</td>
-                                <td>@item.CreateDate</td>
-                                <td>@item.PayDate</td>
-                                <td>
-                                    @if (item.Status == 1)
-                                    {
-
-                                        <span>Chờ xác nhận</span>
-                                    }
-                                    else if (item.Status == 2)
-                                    {
-
-                                        <span>Đã xác nhận đơn hàng </span>
-                                    }
-                                    else if (item.Status == 3)
-                                    {
-                                        <span> Đang giao  </span>
-                                    }
-                                    else if (item.Status == 4)
-                                    {
-                                        <span>Đã nhận hàng và thanh toán </span>
-                                    }
-                                    else if (item.Status == 0)
-                                    {
-                                        <span>Chờ hủy </span>
-                                    }
-                                </td>
-                    
-                            </tr>
                         }
                     }
-                    else
+                </td>
+        
+            <td>
+                @Html.DisplayFor(modelItem => item.Code)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.ShipFee)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.PhoneNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Address)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.TotalMoney)
+            </td>
+       
+            <td>
+                @Html.DisplayFor(modelItem => item.Type)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.CreateDate)
+            </td>
+         
+         
+            <td>
+                @Html.DisplayFor(modelItem => item.PayDate)
+            </td>
+         
+            <td>
+                    @if (item.Status == 1)
                     {
-                        <tr>
-                            <td colspan="10" class="text-center">Không có dữ liệu.</td>
-                        </tr>
+
+                        <span>Chờ xác nhận</span>
                     }
-                </tbody>
-            </table>
-        </div>
-    </div>
-</div>
+                    else if (item.Status == 2)
+                    {
+
+                        <span>Đã xác nhận đơn hàng </span>
+                    }
+                    else if (item.Status == 3)
+                    {
+                        <span> Đang giao  </span>
+                    }
+                    else if (item.Status == 4)
+                    {
+                        <span>Đã nhận hàng và thanh toán </span>
+                    }
+                    else if (item.Status == 0)
+                    {
+                        <span>Chờ hủy </span>
+                    }
+
+
+            </td>
+          
+        </tr>
+}
+    </tbody>
+</table>
 
