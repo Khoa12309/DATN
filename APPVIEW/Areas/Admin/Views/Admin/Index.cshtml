@@ -6,29 +6,35 @@
 
 <div class="container-xxl flex-grow-1 container-p-y">
     <div class="row gy-4">
-        <!-- Transactions -->
-    @*    <div class="col-lg-12">
+        <!-- Chart -->
+        <div class="col-lg-12">
+
             <div class="card">
                 <div class="card-header">
                     <div class="d-flex align-items-center justify-content-between">
-                        <h5 class="card-title m-0 me-2">Transactions</h5>
+                        <h5 class="card-title m-0 me-2">Tổng quan</h5>
                         <div class="dropdown">
                             <button class="btn p-0"
                                     type="button"
                                     id="transactionID"
                                     data-bs-toggle="dropdown"
                                     aria-haspopup="true"
-                                    aria-expanded="false">
+                                    aria-expanded="false"
+                                    style="visibility:hidden">
                                 <i class="mdi mdi-dots-vertical mdi-24px"></i>
                             </button>
-                            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="transactionID">
+                            <div class="dropdown-menu dropdown-menu-end" aria-labelledby="transactionID" >
                                 <a class="dropdown-item" href="javascript:void(0);">Refresh</a>
                                 <a class="dropdown-item" href="javascript:void(0);">Share</a>
                                 <a class="dropdown-item" href="javascript:void(0);">Update</a>
                             </div>
                         </div>
                     </div>
-                    <p class="mt-3"><span class="fw-medium">Total 48.5% growth</span> 😎 this month</p>
+
+                    <p class="mt-3">
+                        <span class="fw-medium">Doanh thu </span>
+                        <span id="growth" style="font-weight: bold"></span> so với tháng trước!
+                    </p>
                 </div>
                 <div class="card-body">
                     <div class="row g-3">
@@ -40,8 +46,8 @@
                                     </div>
                                 </div>
                                 <div class="ms-3">
-                                    <div class="small mb-1">Sales</div>
-                                    <h5 class="mb-0">245k</h5>
+                                    <div class="small mb-1">Hoá đơn đã thanh toán</div>
+                                    <h5 class="mb-0" id="billCount">Loading...</h5>
                                 </div>
                             </div>
                         </div>
@@ -53,8 +59,8 @@
                                     </div>
                                 </div>
                                 <div class="ms-3">
-                                    <div class="small mb-1">Customers</div>
-                                    <h5 class="mb-0">12.5k</h5>
+                                    <div class="small mb-1">Số khách hàng</div>
+                                    <h5 class="mb-0" id="customerCount">Loading...</h5>
                                 </div>
                             </div>
                         </div>
@@ -66,8 +72,8 @@
                                     </div>
                                 </div>
                                 <div class="ms-3">
-                                    <div class="small mb-1">Product</div>
-                                    <h5 class="mb-0">1.54k</h5>
+                                    <div class="small mb-1">Số lượng sản phẩm đã bán</div>
+                                    <h5 class="mb-0" id="products">Loading...</h5>
                                 </div>
                             </div>
                         </div>
@@ -79,80 +85,65 @@
                                     </div>
                                 </div>
                                 <div class="ms-3">
-                                    <div class="small mb-1">Revenue</div>
-                                    <h5 class="mb-0">$88k</h5>
+                                    <div class="small mb-1">Doanh thu</div>
+                                    <h5 class="mb-0" id="revenues">Loading...</h5>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>*@
-      @*  <div class="col-xl-12 col-md-12">
-            <div class="card">
-                <div class="card-header">
-                    <div class="d-flex justify-content-between">
-                        <h5 class="mb-1">Trending Products</h5>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <div id="container">*@
-                        @* <canvas id="trendingProductsChart"></canvas> *@
-                      @*  <canvas id="weeklyChartview"></canvas>
-                    </div>
-                </div>
-            </div>
-        </div>*@
-        <!--/ Transactions -->
-        <!-- Weekly Overview Chart -->
-        <div class="col-xl-6 col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    <div class="d-flex justify-content-between">
-                        <h5 class="mb-1">Weekly Overview</h5>
-                    </div>
-                </div>
-                <div class="card-body">
-                    <div id="container">
-                        <canvas id="weeklyChart"></canvas>
-                    </div>
-
-                </div>
-            </div>
         </div>
+          <div class="col-xl-12 col-md-12">
+                <div class="card">
+                    <div class="card-header">
+                        <div class="d-flex justify-content-between">
+                            <h3 class="mb-1">Doanh thu</h3>
+                            <!-- Dropdown for selecting chart type -->
+                            <div class="dropdown">
+                                <select id="chartTypeDropdown" class="form-control" style="width: 100%">
+                                    <option value="yearly" >Năm nay</option>
+                                    <option value="weekly" >7 ngày qua</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div style="display: flex; justify-content: center; align-items: center;">
+                            <!-- Thêm ô input cho startdate -->
+                            <div style="margin-right: 10px;">
+                                <label for="startDate">Ngày bắt đầu:</label>
+                            <input type="date" class="form-control" id="startDate" placeholder="dd/mm/yyyy" oninput="formatDate(this)">
+                            </div>
 
+                            <!-- Thêm ô input cho enddate -->
+                            <div>
+                                <label for="endDate">Ngày kết thúc:</label>
+                            <input type="date" class="form-control" id="endDate" placeholder="dd/mm/yyyy" oninput="formatDate(this)">
+                            </div>
+                        </div>
+                        <!-- Nút xác nhận -->
+                        <button value="datepicker" onclick="fetchAndDrawChart()">Xác nhận</button>
 
-        <!--/ Weekly Overview Chart -->
-        <!-- Total Earnings -->
-
-        <div class="col-xl-6 col-md-6">
-            <div class="card">
-                <div class="card-header">
-                    <div class="d-flex justify-content-between">
-                        <h5 class="mb-1">Total Earnings Chart</h5>
-                        <div class="dropdown">
-                            <select id="select" class="form-control" style="width: 100%">
-                                @for (int year = DateTime.Now.Year; year >= 2015; year--)
-                                {
-                                    <option value="@year">@year</option>
-                                }
-                            </select>
+                        <!-- Button to export data to Excel -->
+                        <div style="float: right; margin-top:10px;">
+                            <button id="exportBtn" class="btn btn-primary" onclick="exportToExcel()">Export to Excel</button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div id="container">
+                            <!-- Canvas for the selected chart type -->
+                            <canvas id="selectedChart" height="90"></canvas>
                         </div>
                     </div>
                 </div>
-                <div class="card-body">
-                    <div class="container">
-                        <canvas id="revenueChart"></canvas>
-                    </div>  
-                </div>
-            </div>
-        </div>
-        <!-- Sales by Countries -->
+           </div>
+        <!--/ Chart -->
+
+        <!-- Top 5 danh sách sản phẩm -->
         <!-- Thêm ID để dễ dàng truy cập thông qua JavaScript -->
-        <div class="col-xl-6 col-md-6">
+        <div class="col-xl-12 col-md-12">
             <div class="card">
                 <div class="card-header d-flex align-items-center justify-content-between">
-                    <h5 class="card-title m-0 me-2">Top Trending</h5>
+                    <h5 class="card-title m-0 me-2">Top 5 sản phẩm bán chạy</h5>
                     <div class="dropdown">
                         <button class="btn p-0"
                                 type="button"
@@ -163,8 +154,8 @@
                             <i class="mdi mdi-dots-vertical mdi-24px"></i>
                         </button>
                         <div class="dropdown-menu dropdown-menu-end" aria-labelledby="saleStatus">
-                            <a class="dropdown-item" href="javascript:void(0);" onclick="sortBy('quantity')">By quantity</a>
-                            <a class="dropdown-item" href="javascript:void(0);" onclick="sortBy('earnings')">By money</a>
+                            <a class="dropdown-item" onclick="sortBy('quantity')">Theo số lượng</a>
+                            <a class="dropdown-item" onclick="sortBy('earnings')">Theo tổng tiền</a>
                         </div>
                     </div>
                 </div>
@@ -174,10 +165,10 @@
                         <table class="table" id="productTable">
                             <thead>
                                 <tr>
-                                    <th>Image Product</th>
-                                    <th>Product Name</th>
-                                    <th>Quantity Sold</th>
-                                    <th>Total Earnings</th>
+                                    <th>Ảnh</th>
+                                    <th>Tên sản phẩm</th>
+                                    <th>Đã bán(chiếc)</th>
+                                    <th>Doanh thu</th>
                                 </tr>
                             </thead>
                             <tbody></tbody>
@@ -186,239 +177,230 @@
                 </div>
             </div>
         </div>
-        <!--/ Sales by Countries -->
-        <!-- Deposit / Withdraw -->
-        <div class="col-xl-8" style="visibility:hidden">
-            <div class="card h-100">
-                <div class="card-body row g-2">
-                    <div class="col-12 col-md-6 card-separator pe-0 pe-md-3">
-                        <div class="d-flex justify-content-between align-items-center flex-wrap mb-4">
-                            <h5 class="m-0 me-2">Deposit</h5>
-                            <a class="fw-medium" href="javascript:void(0);">View all</a>
-                        </div>
-                        <div class="pt-2">
-                            <ul class="p-0 m-0">
-                                <li class="d-flex mb-4 align-items-center pb-2">
-                                    <div class="flex-shrink-0 me-3">
-                                        <img src="../assets/img/icons/payments/gumroad.png"
-                                             class="img-fluid"
-                                             alt="gumroad"
-                                             height="30"
-                                             width="30" />
-                                    </div>
-                                    <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
-                                        <div class="me-2">
-                                            <h6 class="mb-0">Gumroad Account</h6>
-                                            <small>Sell UI Kit</small>
-                                        </div>
-                                        <h6 class="text-success mb-0">+$4,650</h6>
-                                    </div>
-                                </li>
-                                <li class="d-flex mb-4 align-items-center pb-2">
-                                    <div class="flex-shrink-0 me-3">
-                                        <img src="../assets/img/icons/payments/mastercard-2.png"
-                                             class="img-fluid"
-                                             alt="mastercard"
-                                             height="30"
-                                             width="30" />
-                                    </div>
-                                    <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
-                                        <div class="me-2">
-                                            <h6 class="mb-0">Mastercard</h6>
-                                            <small>Wallet deposit</small>
-                                        </div>
-                                        <h6 class="text-success mb-0">+$92,705</h6>
-                                    </div>
-                                </li>
-                                <li class="d-flex mb-4 align-items-center pb-2">
-                                    <div class="flex-shrink-0 me-3">
-                                        <img src="../assets/img/icons/payments/stripes.png"
-                                             class="img-fluid"
-                                             alt="stripes"
-                                             height="30"
-                                             width="30" />
-                                    </div>
-                                    <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
-                                        <div class="me-2">
-                                            <h6 class="mb-0">Stripe Account</h6>
-                                            <small>iOS Application</small>
-                                        </div>
-                                        <h6 class="text-success mb-0">+$957</h6>
-                                    </div>
-                                </li>
-                                <li class="d-flex mb-4 align-items-center pb-2">
-                                    <div class="flex-shrink-0 me-3">
-                                        <img src="../assets/img/icons/payments/american-bank.png"
-                                             class="img-fluid"
-                                             alt="american"
-                                             height="30"
-                                             width="30" />
-                                    </div>
-                                    <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
-                                        <div class="me-2">
-                                            <h6 class="mb-0">American Bank</h6>
-                                            <small>Bank Transfer</small>
-                                        </div>
-                                        <h6 class="text-success mb-0">+$6,837</h6>
-                                    </div>
-                                </li>
-                                <li class="d-flex align-items-center">
-                                    <div class="flex-shrink-0 me-3">
-                                        <img src="../assets/img/icons/payments/citi.png"
-                                             class="img-fluid"
-                                             alt="citi"
-                                             height="30"
-                                             width="30" />
-                                    </div>
-                                    <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
-                                        <div class="me-2">
-                                            <h6 class="mb-0">Bank Account</h6>
-                                            <small>Wallet deposit</small>
-                                        </div>
-                                        <h6 class="text-success mb-0">+$446</h6>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                    <div class="col-12 col-md-6 ps-0 ps-md-3 mt-3 mt-md-2">
-                        <div class="d-flex justify-content-between align-items-center flex-wrap mb-4">
-                            <h5 class="m-0 me-2">Withdraw</h5>
-                            <a class="fw-medium" href="javascript:void(0);">View all</a>
-                        </div>
-                        <div class="pt-2">
-                            <ul class="p-0 m-0">
-                                <li class="d-flex mb-4 align-items-center pb-2">
-                                    <div class="flex-shrink-0 me-3">
-                                        <img src="../assets/img/icons/brands/google.png"
-                                             class="img-fluid"
-                                             alt="google"
-                                             height="30"
-                                             width="30" />
-                                    </div>
-                                    <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
-                                        <div class="me-2">
-                                            <h6 class="mb-0">Google Adsense</h6>
-                                            <small>Paypal deposit</small>
-                                        </div>
-                                        <h6 class="text-danger mb-0">-$145</h6>
-                                    </div>
-                                </li>
-                                <li class="d-flex mb-4 align-items-center pb-2">
-                                    <div class="flex-shrink-0 me-3">
-                                        <img src="../assets/img/icons/brands/github.png"
-                                             class="img-fluid"
-                                             alt="github"
-                                             height="30"
-                                             width="30" />
-                                    </div>
-                                    <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
-                                        <div class="me-2">
-                                            <h6 class="mb-0">Github Enterprise</h6>
-                                            <small>Security &amp; compliance</small>
-                                        </div>
-                                        <h6 class="text-danger mb-0">-$1870</h6>
-                                    </div>
-                                </li>
-                                <li class="d-flex mb-4 align-items-center pb-2">
-                                    <div class="flex-shrink-0 me-3">
-                                        <img src="../assets/img/icons/brands/slack.png"
-                                             class="img-fluid"
-                                             alt="slack"
-                                             height="30"
-                                             width="30" />
-                                    </div>
-                                    <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
-                                        <div class="me-2">
-                                            <h6 class="mb-0">Upgrade Slack Plan</h6>
-                                            <small>Debit card deposit</small>
-                                        </div>
-                                        <h6 class="text-danger mb-0">$450</h6>
-                                    </div>
-                                </li>
-                                <li class="d-flex mb-4 align-items-center pb-2">
-                                    <div class="flex-shrink-0 me-3">
-                                        <img src="../assets/img/icons/payments/digital-ocean.png"
-                                             class="img-fluid"
-                                             alt="digital"
-                                             height="30"
-                                             width="30" />
-                                    </div>
-                                    <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
-                                        <div class="me-2">
-                                            <h6 class="mb-0">Digital Ocean</h6>
-                                            <small>Cloud Hosting</small>
-                                        </div>
-                                        <h6 class="text-danger mb-0">-$540</h6>
-                                    </div>
-                                </li>
-                                <li class="d-flex align-items-center">
-                                    <div class="flex-shrink-0 me-3">
-                                        <img src="../assets/img/icons/brands/aws.png"
-                                             class="img-fluid"
-                                             alt="aws"
-                                             height="30"
-                                             width="30" />
-                                    </div>
-                                    <div class="d-flex w-100 flex-wrap align-items-center justify-content-between gap-2">
-                                        <div class="me-2">
-                                            <h6 class="mb-0">AWS Account</h6>
-                                            <small>Choosing a Cloud Platform</small>
-                                        </div>
-                                        <h6 class="text-danger mb-0">-$21</h6>
-                                    </div>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-        <!-- Deposit / Withdraw -->
+        <!--/ Top 5 danh sách sản phẩm -->
 
         <!--/Script xử lí -->
-
         <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+        <!-- Thư viện Bootstrap-datepicker -->
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/locales/bootstrap-datepicker.vi.min.js"></script>
 
         <script>
             let yearlyChart;
             var weeklyChart;
             var trendingProductsChart;
+            var currentChart = "yearly";
+            var PickDateChart;
+            // Danh sách sản phẩm
+            $(document).ready(
+                sortBy('quantity'));
+
+            function sortBy(option) {
+                // Gọi API với tùy chọn sắp xếp tương ứng
+                var apiUrl = 'https://localhost:7042/api/Chart/SoldProductsByMonth?sortBy=' + option;
+
+                $.ajax({
+                    url: apiUrl,
+                    method: 'GET',
+                    success: function (data) {
+                        // Kiểm tra dữ liệu trong console log
+                        // console.log(data);
+
+                        // Xử lý dữ liệu và cập nhật HTML
+                        var tableBody = $('#productTable tbody');
+                        tableBody.empty();
+
+                        // Kiểm tra cấu trúc dữ liệu để xác định tên thuộc tính
+                        var productNameKey = 'ProductName';
+                        var quantitySoldKey = 'QuantitySold';
+                        var totalEarningsKey = 'TotalEarnings';
+                        var imageProductKey = 'ProductImage';
+
+                        // Sử dụng $.each để lặp qua mảng dữ liệu
+                        $.each(data.labels, function (index, productName) {
+                            var quantitySold = data.quantities[index];
+                            var totalEarnings = data.earnings[index];
+                            var imageProduct = data.images[index];
+
+                            // Hiển thị thông tin sản phẩm trong bảng
+                            var row = '<tr>' +
+                                '<td style="width: 150px; height: 150px; overflow: hidden;">' +
+                                '<img src="/images/' + imageProduct.trim() + '" style="width: 100%; height: auto;  object-position: 0 0;" alt="Product Image">' +
+                                '</td>' +
+                                '<td>' + productName + '</td>' +
+                                '<td>' + quantitySold + '</td>' +
+                                '<td>' + parseFloat(totalEarnings).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' }) + '</td>' +
+                                '</tr>';
+                            tableBody.append(row);
+                        });
+                    },
+                    error: function (error) {
+                        // Xử lý lỗi nếu có
+                        console.error('Error fetching data:', error);
+                    }
+                });
+            }
+
+            function formatDate(input) {
+                // Hàm để định dạng ngày tháng (có thể thêm xử lý định dạng ở đây nếu cần)
+            }
+
+            function fetchAndDrawChart() {
+                // Lấy giá trị từ ô input cho startdate và enddate
+                var startDate = document.getElementById('startDate').value;
+                var endDate = document.getElementById('endDate').value;
+
+                // Gọi API với tham số là startDate và endDate
+                fetch(`https://localhost:7042/api/Chart/DatePicker?startDate=${startDate}&endDate=${endDate}`)
+                    .then(response => response.json())
+                    .then(data => {
+                        var ctx = document.getElementById('selectedChart').getContext('2d');
+                        if (yearlyChart) {
+                            yearlyChart.destroy()
+                        }
+                        if(weeklyChart){
+                            weeklyChart.destroy()
+                        }
+                        if (PickDateChart) {
+                            PickDateChart.destroy()
+                        }
+                        currentChart = "DatePicker";
+                        console.log(currentChart);
+                        // Tạo biểu đồ
+                        PickDateChart = new Chart(ctx, {
+                            type: 'line',
+                            data: {
+                                labels: data.labels,
+                                datasets: [{
+                                    label: data.label,
+                                    data: data.values,
+                                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                    borderColor: 'rgba(75, 192, 192, 1)',
+                                    borderWidth: 1
+                                }]
+                            },
+                            options: {
+                                scales: {
+                                    y: {
+                                        beginAtZero: true
+                                    }
+                                }
+                            }
+                        });
+                    })
+                    .catch(error => console.error('Error:', error));
+            }
 
             $(document).ready(function () {
-                // Khởi tạo biểu đồ ban đầu
+                // growth
 
-                // Mặc định chọn năm hiện tại
-                var currentYear = new Date().getFullYear();
+                function growthToLastMonth(data) {
+                    const gr = document.getElementById('growth');
+                    const lastindex = data.values.length - 1;
 
-                // var currentDay = new Date();
+                    if (lastindex >= 1) {
+                        const growthRate = ((data.values[lastindex] / data.values[lastindex - 1]) - 1) * 100;
+                        const roundedGrowth = Math.round(growthRate * 100) / 100; // Làm tròn 2 chữ số sau dấu phẩy
 
+                        if (roundedGrowth < 0) {
+                            gr.innerHTML = ` giảm ${-roundedGrowth}% `;
+                            gr.style.color = 'red'; // Màu đỏ
+                        } else if (roundedGrowth > 0) {
+                            gr.innerHTML = `tăng ${roundedGrowth}% `;
+                            gr.style.color = 'green'; // Màu xanh lá
+                        } else {
+                            gr.innerHTML = 'giữ nguyên'; // Giữ nguyên giá trị là '0%'
+                            gr.style.color = 'orange'; // Màu vàng
+                        }
 
-                $('#select').val(currentYear);
+                    } else if (lastindex === 0) {
+                        const growthRate = data.values[lastindex] * 100;
+                        const roundedGrowth = Math.round(growthRate * 100) / 100;
 
-                if (yearlyChart) {
-                    yearlyChart.destroy();
+                        if (roundedGrowth < 0) {
+                            gr.innerHTML = `giảm ${-roundedGrowth}% `;
+                            gr.style.color = 'red'; // Màu đỏ
+                        } else if (roundedGrowth > 0) {
+                            gr.innerHTML = `tăng ${roundedGrowth}% `;
+                            gr.style.color = 'green'; // Màu xanh lá
+                        } else {
+                            gr.innerHTML = 'giữ nguyên'; // Giữ nguyên giá trị là '0%'
+                            gr.style.color = 'orange'; // Màu vàng
+                        }
+
+                    } else {
+                        gr.innerHTML = 'giữ nguyên'; // Giữ nguyên giá trị là '0%'
+                        gr.style.color = 'orange'; // Màu vàng
+                    }
                 }
 
-                // Gọi hàm vẽ biểu đồ khi trang web được tải
+                function DrawChartForYear() {
+                    $.ajax({
+                        url: 'https://localhost:7042/api/Chart/2023',
+                        method: 'GET',
+                        dataType: 'json',
+                        success: function (data) {
+                            if (data && data.values && data.label) {
+                                growthToLastMonth(data);
+                            } else {
+                                console.error('Invalid data received from API');
+                            }
+                        },
+                        error: function (error) {
+                            console.error('Error fetching data:', error);
+                        }
+                    });
+                }
+                // Mặc định chọn năm hiện tại
+                var currentYear = new Date().getFullYear();
                 DrawChartForYear(currentYear);
-                DrawWeeklyOverviewChart();
-                DrawTrendingProducts();
-                // Gọi hàm vẽ biểu đồ khi có sự kiện thay đổi năm
-                $('#select').on('change', function () {
-                    var selectedYear = $(this).val();
-                    DrawChartForYear(selectedYear);
+                GetCustomer();
+                GetProducts();
+                GetRevenues();
+                GetBills();
+                var currentDay = new Date();
+
+                // Sự kiện thay đổi của dropdown
+                $('#chartTypeDropdown').on('change', function () {
+                    var selectedChartType = $(this).val();
+                   
+                    // Hủy bỏ biểu đồ hiện tại nếu có
+                    if (yearlyChart) {
+                        yearlyChart.destroy()
+                    }
+                    if (PickDateChart) {
+                        PickDateChart.destroy()
+                    }
+
+                    // Gọi hàm vẽ biểu đồ tương ứng dựa trên loại đã chọn
+                    if (selectedChartType === 'yearly') {
+                        var selectedYear = $('#select').val();
+                        currentChart = "yearly";
+                        console.log(currentChart);
+                        DrawChartForYear(selectedYear);
+                    } else if (selectedChartType === 'weekly') {
+                        currentChart = "weekly";
+                        console.log(currentChart);
+                        DrawLast7DayChart();
+                    }
                 });
 
                 // Hàm vẽ biểu đồ với dữ liệu từ API
                 function DrawChart(data) {
 
-                    // Xoá bảng cữ  (nếu tồn tại)
+                    // Hủy bỏ biểu đồ hiện tại nếu có
                     if (yearlyChart) {
-                        yearlyChart.destroy();
+                        yearlyChart.destroy()
                     }
-                    const ctx = document.getElementById('revenueChart').getContext('2d');
+                    if (weeklyChart) {
+                        weeklyChart.destroy()
+                    }
+                    if (PickDateChart) {
+                        PickDateChart.destroy()
+                    }
+                    const ctx = document.getElementById('selectedChart').getContext('2d');
                     // Mảng chứa giá trị của 12 tháng
                     var monthsData = new Array(12).fill(0);
 
@@ -449,20 +431,16 @@
                         }
                     });
                 }
-
-
                 // Hàm gọi API và vẽ biểu đồ cho năm được chọn
-                function DrawChartForYear(selectedYear) {
-                    // Gửi yêu cầu Ajax để lấy dữ liệu
+                function DrawChartForYear() {
                     $.ajax({
-                        url: 'https://localhost:7042/api/Chart/' + selectedYear,
+                        url: 'https://localhost:7042/api/Chart/2023',
                         method: 'GET',
                         dataType: 'json',
                         success: function (data) {
-                            // console.log(data);
-                            // Nếu có dữ liệu từ API, gọi hàm để vẽ biểu đồ
                             if (data && data.values && data.label) {
                                 DrawChart(data);
+                                growthToLastMonth(data);
                             } else {
                                 console.error('Invalid data received from API');
                             }
@@ -472,15 +450,19 @@
                         }
                     });
                 }
-
-
-                function DrawWeeklyChart(data) {
-                    // var currentDay = new Date('12/7/2023');
+                function Last7DayChart(data) {
                     var currentDay = new Date();
 
-                    const ctx = document.getElementById('weeklyChart').getContext('2d');
+                    const ctx = document.getElementById('selectedChart').getContext('2d');
+                    // Hủy bỏ biểu đồ hiện tại nếu có
+                    if (yearlyChart) {
+                        yearlyChart.destroy()
+                    }
                     if (weeklyChart) {
-                        weeklyChart.destroy();
+                        weeklyChart.destroy()
+                    }
+                    if (PickDateChart) {
+                        PickDateChart.destroy()
                     }
 
                     // Mảng chứa giá trị của 7 ngày gần nhất
@@ -508,7 +490,7 @@
                     data.values.forEach(
                         function (value, index) {
                             // 25/11
-                            var day = data.labels[index]; // 11/25/2023 hoặc 1/12/2023 hoặc 12/01/2023
+                            var day = data.labels[index];
                             var daydate;
 
                             // Kiểm tra định dạng dd/mm/yyyy
@@ -568,17 +550,15 @@
                         }
                     });
                 }
-
-                function DrawWeeklyOverviewChart() {
+                // Hàm vẽ biểu đồ hàng tuần
+                function DrawLast7DayChart() {
                     $.ajax({
                         url: 'https://localhost:7042/api/Chart/weekly',
                         method: 'GET',
                         dataType: 'json',
                         success: function (data) {
-                            // console.log(data);
                             if (data && data.labels && data.values && data.label) {
-                                DrawWeeklyChart(data);
-
+                                Last7DayChart(data);
                             } else {
                                 console.error('Invalid data received from API');
                             }
@@ -588,149 +568,90 @@
                         }
                     });
                 }
+                function GetCustomer() {
+                    // Gọi API sử dụng Fetch API
+                    fetch('https://localhost:7042/api/Chart/Customers/Count')
+                        .then(response => response.json())
+                        .then(data => {
+                            var customerCountElement = document.getElementById('customerCount');
 
-                //Top 5 product
-                function DrawTrendingProductsChart(data) {
-                    var currentDay = new Date();
-
-                    const ctx = document.getElementById('weeklyChartview').getContext('2d');
-
-                    if (trendingProductsChart) {
-                        trendingProductsChart.destroy();
-                    }
-
-                    // Mảng chứa dữ liệu của 15 ngày gần nhất cho mỗi sản phẩm
-                    var datasets = [];
-                    var dayData = new Array(15).fill(0);
-
-                    // Mảng chứa nhãn của 15 ngày gần nhất với định dạng ngày/tháng
-                    var labels = [];
-                    for (var i = 14; i >= 0; i--) {
-                        var date = new Date(currentDay);
-                        date.setDate(currentDay.getDate() - i);
-
-                        var day = date.getDate();
-                        var month = date.getMonth() + 1;
-
-                        // Định dạng ngày và tháng thành "dd/mm" và thêm vào mảng labels
-                        var formattedDate = `${day < 10 ? '0' : ''}${day}/${month < 10 ? '0' : ''}${month}`;
-                        labels.push(formattedDate);
-                    }
-
-                    // Ánh xạ dữ liệu từ API vào mảng của 15 ngày gần nhất cho mỗi sản phẩm
-                    data.datasets.forEach(function (dataset) {
-                        var productData = new Array(15).fill(0);
-
-                        dataset.data.forEach(function (value, index) {
-                            productData[index] = value;
-                        });
-
-                        datasets.push({
-                            label: dataset.label,
-                            data: productData,
-                            borderWidth: 1,
-                            borderColor: getRandomColor(), // Màu sắc ngẫu nhiên cho mỗi đường biểu đồ
-                        });
-                    });
-
-                    trendingProductsChart = new Chart(ctx, {
-                        type: 'line',
-                        data: {
-                            labels: labels,
-                            datasets: datasets,
-                        },
-                        options: {
-                            scales: {
-                                y: {
-                                    beginAtZero: true
-                                }
+                            // Kiểm tra xem phần tử có tồn tại không
+                            if (customerCountElement) {
+                                customerCountElement.innerText = data.count;
                             }
-                        }
-                    });
-                }
+                        })
+                        .catch(error => console.error('Error fetching customer data:', error));
+                };
+                function GetProducts() {
+                    fetch('https://localhost:7042/api/Chart/Products/Count')
+                        .then(response => response.json())
+                        .then(data => {
+                            var productsCountElement = document.getElementById('products');
 
-                // Hàm để tạo màu ngẫu nhiên
-                function getRandomColor() {
-                    var letters = '0123456789ABCDEF';
-                    var color = '#';
-                    for (var i = 0; i < 6; i++) {
-                        color += letters[Math.floor(Math.random() * 16)];
-                    }
-                    return color;
-                }
-
-                function DrawTrendingProducts() {
-                    $.ajax({
-                        url: 'https://localhost:7042/api/Chart/TopProduct',
-                        method: 'GET',
-                        dataType: 'json',
-                        success: function (data) {
-                            console.log(data);
-                            if (data && data.labels && data.datasets) {
-                                DrawTrendingProductsChart(data);
-                            } else {
-                                console.error('Invalid data received from API');
+                            // Kiểm tra xem phần tử có tồn tại không
+                            if (productsCountElement) {
+                                productsCountElement.innerText = data.totalQuantity;
                             }
-                        },
-                        error: function (error) {
-                            console.error('Error fetching data:', error);
-                        }
-                    });
-                }
+                        })
+                        .catch(error => console.error('Error fetching customer data:', error));
+                };
+                function GetRevenues() {
+                    fetch('https://localhost:7042/api/Chart/Revenues/Count')
+                        .then(response => response.json())
+                        .then(data => {
+                            var totalRevenue = document.getElementById('revenues');
 
+                            // Kiểm tra xem phần tử có tồn tại không
+                            if (totalRevenue) {
+                                totalRevenue.innerText = data.totalRevenue;
+                            }
+                        })
+                        .catch(error => console.error('Error fetching customer data:', error));
+                };
+                function GetBills() {
+                    fetch('https://localhost:7042/api/Chart/CountBills/Count')
+                        .then(response => response.json())
+                        .then(data => {
+                            var totalBill = document.getElementById('billCount');
 
-                // Danh sách sản phẩm
-                $(document).ready(
-                    sortBy('quantity'));
-            
-                function sortBy(option) {
-                    // Gọi API với tùy chọn sắp xếp tương ứng
-                    var apiUrl = 'https://localhost:7042/api/Chart/SoldProductsByMonth?sortBy=' + option;
+                            // Kiểm tra xem phần tử có tồn tại không
+                            if (totalBill) {
+                                totalBill.innerText = data.countBill;
+                            }
+                        })
+                        .catch(error => console.error('Error fetching customer data:', error));
+                };
 
-                    $.ajax({
-                        url: apiUrl,
-                        method: 'GET',
-                        success: function (data) {
-                            // Kiểm tra dữ liệu trong console log
-                            // console.log(data);
-
-                            // Xử lý dữ liệu và cập nhật HTML
-                            var tableBody = $('#productTable tbody');
-                            tableBody.empty();
-
-                            // Kiểm tra cấu trúc dữ liệu để xác định tên thuộc tính
-                            var productNameKey = 'ProductName';
-                            var quantitySoldKey = 'QuantitySold';
-                            var totalEarningsKey = 'TotalEarnings';
-                            var imageProductKey = 'ProductImage';  // Điều chỉnh tên thuộc tính hình ảnh
-
-                            // Sử dụng $.each để lặp qua mảng dữ liệu
-                            $.each(data.labels, function (index, productName) {
-                                var quantitySold = data.quantities[index];
-                                var totalEarnings = data.earnings[index];
-                                var imageProduct = data.images[index];  // Điều chỉnh tên thuộc tính hình ảnh
-
-                                // Hiển thị thông tin sản phẩm trong bảng
-                                var row = '<tr>' +
-                                    '<td><img src="/images/' + imageProduct.trim() + '" alt="Product Image" width="90px" height="90px"></td>' +
-                                    '<td>' + productName + '</td>' +
-                                    '<td>' + quantitySold + '</td>' +
-                                    '<td>' + totalEarnings + '</td>' +
-                                    '</tr>';
-
-                                tableBody.append(row);
-                            });
-                        },
-                        error: function (error) {
-                            // Xử lý lỗi nếu có
-                            console.error('Error fetching data:', error);
-                        }
-                    });
-                }
             });
+
+            function exportToExcel() {
+                if (confirm("Tải về file Excel?")) {
+                    var url = "https://localhost:7042/api/Chart/ExportDataToExcel/" + currentChart;
+
+                    // Kiểm tra nếu là DatePicker thì lấy giá trị startDate và endDate từ các phần tử HTML
+                    if (currentChart === "DatePicker") {
+                        var startDateElement = document.getElementById("startDate");
+                        var endDateElement = document.getElementById("endDate");
+
+                        // Kiểm tra xem phần tử có tồn tại không
+                        if (startDateElement && endDateElement) {
+                            var startDateValue = startDateElement.value;
+                            var endDateValue = endDateElement.value;
+
+                            // Thêm tham số startDate và endDate vào đường dẫn
+                            url += `?startDate=${encodeURIComponent(startDateValue)}&endDate=${encodeURIComponent(endDateValue)}`;
+                        } else {
+                            console.error("Không tìm thấy phần tử HTML");
+                            return;
+                        }
+                    }
+
+                    // Chuyển hướng đến đường dẫn đã tạo
+                    window.location.href = url;
+                }
+            }
+
         </script>
     </div>
 
 </div>
-
-

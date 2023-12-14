@@ -9,15 +9,28 @@
 
 
 
-<form asp-action="GetList" class="row contact_form" method="post">
-    <div class="row">
-        <div class="col-md-3 form-group">
-            <input type="text" id="searchTerm" class="form-control" name="searchTerm" placeholder="Nhập mã hóa đơn để tìm kiếm">
 
-        </div>    <div class="col-md-2 form-group">
-            <button type="submit" class="btn btn-success">Shearch</button>
+<form asp-action="GetList" class="row contact_form" method="post" style="margin-bottom:20px">
+    <div class="col-md-2 form-group">
+        <input style="300px" type="text" id="searchTerm" class="form-control" name="searchTerm" placeholder="Nhập mã hóa đơn để tìm kiếm">
 
-        </div>
+
+
+    </div>
+    <div class="col-md-2 form-group">
+        <button type="submit" class="btn btn-success">Shearch</button>
+
+    </div>
+    <div class="col-md-2 form-group">
+        <input style="300px" type="date" id="searchTerm" class="form-control" name="start">
+
+
+    </div> <div class="col-md-2 form-group">
+        <input style="300px" type="date" id="searchTerm" class="form-control" name="end">
+
+    </div>
+    <div class="col-md-1 form-group">
+        <button type="submit" class="btn btn-success">Lọc</button>
     </div>
 </form>
 <table class="table">
@@ -123,9 +136,13 @@
                     }
                     else if (item.Status == 4)
                     {
-                        <span>Đã nhận hàng </span>
+                        <span>Đã nhận hàng và thanh toán </span>
                     }
-           
+                    else if (item.Status == 0)
+                    {
+                        <span>Chờ hủy </span>
+                    }
+
 
             </td>
           
