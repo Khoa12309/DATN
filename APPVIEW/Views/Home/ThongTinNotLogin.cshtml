@@ -272,9 +272,12 @@
                                             @if (itembill.Status == 1 || itembill.Status == 2)
                                             {
 
-                                                <button style="background-color:royalblue ; border-radius:12px ; border:none"> @Html.ActionLink("Hủy đơn", "HuyDon2", new { id = itembill.id }, new { style = "color:black;" }) </button>
+                                                <button class="cancel-button" data-itemid="@itembill.id" style="background-color:royalblue ; border-radius:12px ; border:none">
+                                                    <a href="@Url.Action("HuyDon2", new { id = itembill.id })" style="color:black;">Hủy Đơn</a>
+                                                </button>
+          
                                             }
-
+                                            
 
                                         </td>
                                         <td>
@@ -307,3 +310,26 @@ else
     <h3 style="text-align:center">@tb2</h3>
 
 }
+
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var cancelButtons = document.querySelectorAll('.cancel-button');
+
+        cancelButtons.forEach(function (cancelButton) {
+            cancelButton.addEventListener("click", function (event) {
+                event.preventDefault();
+                var itemId = this.getAttribute('data-itemid');
+                var confirmation = confirm("Bạn có chắc chắn muốn hủy đơn này không?");
+
+                if (confirmation) {
+                    // Chuyển hướng đến action HuyDon nếu xác nhận
+                    window.location.href = '@Url.Action("HuyDon2", "Home")?id=' + itemId;
+                } else {
+                    // Không làm gì nếu hủy
+                }
+            });
+        });
+    });
+</script>
