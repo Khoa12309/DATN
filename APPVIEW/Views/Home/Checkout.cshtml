@@ -3,20 +3,199 @@
 @{
     ViewData["Title"] = "Checkout";
     Layout = "~/Views/Shared/_LayoutWeb.cshtml";
-    
+
 }
 <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+<style>
+        h4{
+         margin-bottom: 20px;
+        text-transform: uppercase;
+        font-family: 'Roboto', sans-serif;
+        font-size: 18px;
+        font-weight: normal;
+        color: #333;
+        }
+    .billing_details .form-group select.country_select {
+        border-radius: 5px !important;
+        background-color: #f1f1f1;
+        color: #333;
+        border: 1px solid #ccc;
+        font-size: 14px;
+        padding: 10px;
+        text-align: left;
+        width: 100%;
+        transition: border-color 0.3s ease-in-out;
+    }
+    .billing_details .form-group select.country_select:hover,
+    .billing_details .form-group select.country_select:focus {
+        border-color: #0066FF;
+    }
+    .nice-select{
+        border-radius: 5px !important;
+        background-color: #f1f1f1;
+        color: #333;
+        border: 1px solid #ccc;
+        width: 100%;
+        transition: border-color 0.3s ease-in-out;
+    }
+    .billing_details .form-group input {
+        border-radius: 5px;
+        background-color: #f1f1f1;
+        color: #333;
+        border: 1px solid #ccc;
+        font-size: 14px;
+        padding: 10px;
+        text-align: left;
+        width: 100%;
+        transition: border-color 0.3s ease-in-out;
+    }
+    .billing_details .form-group input:hover,
+    .billing_details .form-group input:focus {
+        border-color: #0066FF;
+    }
 
+    .cupon_area .button-coupon {
+        background-color: #0066FF;
+        color: #fff;
+        border: 2px solid #0066FF;
+        border-radius: 5px;
+        text-align: center;
+        padding: 10px 20px;
+        margin-top: 10px;
+        transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+    }
+
+
+    .cupon_area .button-coupon:hover {
+        background-color: #fff;
+        color: #0066FF;
+    }
+
+
+    .checkout_area form input[type="radio"] {
+        width: 100%;
+        padding: 15px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        margin-bottom: 10px;
+        box-sizing: border-box;
+    }
+
+    .checkout_area form button {
+        background-color: #0066FF;
+        color: #fff;
+        padding: 15px 30px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-left: 15px;
+        margin-top: 20px;
+    }
+
+    .checkout_area form button:hover {
+        background-color: #0044CC;
+    }
+
+    .checkout_area .radion_btn {
+        position: relative;
+        cursor: pointer;
+        display: inline-block;
+        margin-right: 15px;
+    }
+
+    .checkout_area .radion_btn input {
+        display: none;
+    }
+
+    .checkout_area .radion_btn label {
+        position: relative;
+        padding-left: 30px;
+        cursor: pointer;
+        line-height: 20px;
+        display: inline-block;
+        color: #333;
+    }
+
+    .checkout_area .radion_btn .check {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 20px;
+        height: 20px;
+        border: 2px solid #0066FF;
+        border-radius: 50%;
+    }
+
+    .checkout_area .radion_btn input:checked + label .check:after {
+        content: "";
+        position: absolute;
+        width: 10px;
+        height: 10px;
+        background-color: #0066FF;
+        border-radius: 50%;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        display: block;
+    }
+        .checkout_area .order_box {
+            margin-top: 0;
+        }
+
+        .checkout_area .payment_item {
+            margin-bottom: 0;
+        }
+    .checkout_area form input#last {
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 10px;
+        width: 100%;
+        box-sizing: border-box;
+        transition: border-color 0.3s ease-in-out;
+    }
+
+    .checkout_area form input#first {
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 10px;
+        width: 100%;
+        box-sizing: border-box;
+        transition: border-color 0.3s ease-in-out;
+    }
+    .checkout_area form input#company {
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 10px;
+        width: 100%;
+        box-sizing: border-box;
+        transition: border-color 0.3s ease-in-out;
+    }
+
+    .checkout_area form input#text {
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        padding: 10px;
+        width: 100%;
+        box-sizing: border-box;
+        transition: border-color 0.3s ease-in-out;
+    }
+    .checkout_area form input:focus {
+        border-color: #0066FF;
+    }
+
+
+
+</style>
 <!-- ================ start banner area ================= -->
 <section class="blog-banner-area" id="category">
     <div class="container h-100">
         <div class="blog-banner">
             <div class="text-center">
-                <h1>Product Checkout</h1>
+                <h1>Thanh toán</h1>
                 <nav aria-label="breadcrumb" class="banner-breadcrumb">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="~/home/index">Home</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Checkout</li>
+                        <li class="breadcrumb-item"><a href="~/home/index">Trang chủ</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Thanh toán</li>
                     </ol>
                 </nav>
             </div>
@@ -26,32 +205,25 @@
 <!-- ================ end banner area ================= -->
 <!--================Checkout Area =================-->
 <section class="checkout_area section-margin--small">
+
     <div class="container">
-        <div class="returning_customer">
-            <div class="check_title">
-                <h2>Returning Customer? <a href="~/Account/login">Click here to login</a></h2>
-            </div>
-        </div>
         <div class="cupon_area">
-            <div class="check_title">
-                <h2>Have a coupon? <a href="#">Click here to enter your code</a></h2>
-            </div>
-           @* <input type="text" placeholder="Enter coupon code">*@
-            <a class="button button-coupon" asp-action="ApplyDiscount">Apply Coupon</a>
+            @* <input type="text" placeholder="Enter coupon code">*@
+            <a class="button button-coupon" asp-action="ApplyDiscount">Chọn khuyến mãi</a>
         </div>
+        <h4>Nhập thông tin</h4>
         <div class="billing_details">
             <div class="row">
 
 
                 <div class="col-lg-8">
-                    <h3>Billing Details</h3>
                     <form class="row contact_form" action="~/home/dathangn" method="post" novalidate="novalidate">
                         <div class="col-md-6 form-group p_star">
                             <input type="text" class="form-control" id="first" placeholder="Fullname" asp-for="@Model.Name" required>
                             <span class="placeholder" data-placeholder="Fullname" placeholder="Fullname"></span>
                         </div>
                         <div class="col-md-6 form-group p_star">
-                            <input type="text" class="form-control" placeholder="Phonenumber" max="10" id="last" asp-for="@Model.PhoneNumber" required> 
+                            <input type="text" class="form-control" placeholder="Phonenumber" max="10" id="last" asp-for="@Model.PhoneNumber" required>
                             <span class="placeholder" data-placeholder="Phonenumber"></span>
                         </div>
 
@@ -107,28 +279,28 @@
                         <input name="phiship" id="fee" hidden value="@ViewBag.fee" />
 
                         <div class="text-center  form-group">
-                            <button type="submit" class="button button-paypal" id="btncf">Order Confirmation</button>
+                            <button type="submit" class="button button-paypal" id="btncf">Thanh Toán</button>
                         </div>
                     </form>
                 </div>
                 <div class="col-lg-4">
                     <div class="order_box">
-                        <h2>Your Order</h2>
+                        <h2>Thông tin sản phẩm</h2>
                         <ul class="list">
-                            <li><a href="#"><h4>Product <span>Total</span></h4></a></li>
+                            <li><a href="#"><h4>Sản phẩm <span>Tổng</span></h4></a></li>
                             @foreach (var item in ViewBag.Product)
                             {
                                 var tt = item.Quantity * item.Price;
 
-                                <li><a href="#">@item.Name<span class="middle">x @item.Quantity</span> <span class="last">$@tt.ToString("C0", new CultureInfo("vi-VN"))</span></a></li>
+                                <li><a href="#">@item.Name<span class="middle">x @item.Quantity</span> <span class="last" style="color:#f15e2c">@tt.ToString("C0", new CultureInfo("vi-VN"))</span></a></li>
 
                             }
                         </ul>
-                     
 
-                    
+
+
                         <ul class="list list_2">
-                            <li><a href="#">Subtotal <span>@ViewBag.TT.ToString("C0", new CultureInfo("vi-VN"))</span></a></li>
+                            <li><a href="#">Subtotal <span style="color:#f15e2c">@ViewBag.TT.ToString("C0", new CultureInfo("vi-VN"))</span></a></li>
                             @if (ViewBag.Value != null)
                             {
                                 <li>
@@ -138,10 +310,10 @@
                                     <h6 style="font-size: 14px">Thông tin giảm giá:</h6>
                                     <p>Mã: <span>@ViewBag.VoucherCode</span></p>
                                     <p>Giảm: <span>@ViewBag.FirstValue%</span></p>
-                                    <p>Giảm tối đa: <span>@ViewBag.FirstDiscountAmount.ToString("C0", new CultureInfo("vi-VN"))</span></p>
+                                    <p>Giảm tối đa: <span style="color:#f15e2c">@ViewBag.FirstDiscountAmount.ToString("C0", new CultureInfo("vi-VN"))</span></p>
                                 </li>
                             }
-                            <li><a href="#">Shipping <span><input style="height:30px; width:80px; border: none; outline: none; background-color:#e8f0f2;" value="@ViewBag.fee" readonly id="feeship">VND</span></a></li>
+                            <li><a href="#">Tiền Ship <span><input style="height:30px; width:80px; border: none; outline: none; background-color:#e8f0f2;" value="@ViewBag.fee" readonly id="feeship">VND</span></a></li>
 
                             @if (ViewBag.Value != null)
                             {
@@ -153,48 +325,48 @@
                                 {
 
                                     <li>
-                                        <a  href="#">
-                                            Total
+                                        <a href="#">
+                                            Tổng tiền
                                             <span>
                                                 <input readonly style="height:30px; width:80px; border: none; outline: none; background-color:#e8f0f2;" value="@(totalll+ViewBag.fee)" id="tShip" /> VND
                                             </span>
                                         </a>
-                                      @*   <a   href="#">
-                                            Total
-                                            <span>
-                                                @(totalll + ViewBag.fee.ToString("C0", new CultureInfo("vi-VN")))
-                                            </span>
-                                        </a> *@
+                                        @*   <a   href="#">
+                                Total
+                                <span>
+                                @(totalll + ViewBag.fee.ToString("C0", new CultureInfo("vi-VN")))
+                                </span>
+                                </a> *@
                                     </li>
 
 
                                 }
                                 else
                                 {
-                                    
+
                                     <li>
-                                        <a  href="#">
-                                            Total
+                                        <a href="#">
+                                            Tổng tiền
                                             <span>
                                                 @(Convert.ToDecimal(ViewBag.TT) - Convert.ToDecimal(ViewBag.DiscountAmount) + Convert.ToDecimal(ViewBag.fee).ToString("C0", new CultureInfo("vi-VN")))
                                             </span>
                                         </a>
-                                        <a  href="#">Total <span> <input readonly style="height:30px; width:80px; border: none; outline: none; background-color:#e8f0f2;" value="@(ViewBag.TT -  ViewBag.DiscountAmount+ViewBag.fee)" id="tShip" /> VND</span></a>
+                                        <a href="#">Tổng tiền <span> <input readonly style="height:30px; width:80px; border: none; outline: none; background-color:#e8f0f2;" value="@(ViewBag.TT -  ViewBag.DiscountAmount+ViewBag.fee)" id="tShip" /> VND</span></a>
                                     </li>
 
                                 }
                             }
                             else
                             {
-                               <li>
+                                <li>
                                     @* <a href="#">
-                                        Total
-                                        <span>
-                                            @((Convert.ToDecimal(ViewBag.TT) + Convert.ToDecimal(ViewBag.fee)).ToString("C0", new CultureInfo("vi-VN")))
-                                        </span>
-                                    </a> *@
-                                    <a  href="#">Total <span> <input readonly style="height:30px; width:80px; border: none; outline: none; background-color:#e8f0f2;" value="@(ViewBag.TT+ViewBag.fee)" id="tShip" /> VND</span></a>
-                                    </li>
+                                Total
+                                <span>
+                                @((Convert.ToDecimal(ViewBag.TT) + Convert.ToDecimal(ViewBag.fee)).ToString("C0", new CultureInfo("vi-VN")))
+                                </span>
+                                </a> *@
+                                    <a href="#">Tổng tiền <span> <input readonly style="height:30px; width:80px; border: none; outline: none; background-color:#e8f0f2;" value="@(ViewBag.TT+ViewBag.fee)" id="tShip" /> VND</span></a>
+                                </li>
 
                             }
                         </ul>
@@ -204,7 +376,7 @@
                         <div class="payment_item">
                             <div class="radion_btn">
                                 <input type="radio" id="f-option5" name="selector">
-                                <label for="f-option5">Thanh toán thường</label>
+                                <label for="f-option5">Thanh toán(COD)</label>
                                 <div class="check"></div>
                             </div>
                             <p>
@@ -214,7 +386,7 @@
                         <div class="payment_item active">
                             <div class="radion_btn">
                                 <input type="radio" id="f-option6" name="selector">
-                                <label for="f-option6"> Thanh toán trực tuyến </label>
+                                <label for="f-option6"> Thanh toán(VNPAY) </label>
                                 <img src="img/product/card.jpg" alt="">
                                 <div class="check"></div>
                             </div>
@@ -233,11 +405,10 @@
 
         </div>
     </div>
-    </div>
 </section>
 <!--================End Checkout Area =================-->
 <script>
-     
+
     // Lấy tham chiếu đến thẻ select bằng id
     var select = document.getElementById("countrySelect");
     var selectDistrict = document.getElementById("districtSelect");
@@ -253,7 +424,7 @@
 
 
     // Thêm một sự kiện onchange cho thẻ select
-    select.onchange = function () {
+    select.onchange = function() {
         // Lấy giá trị được chọn trong thẻ select
         var selectedCountry = select.value;
         ldistrict.splice(0, ldistrict.length);
@@ -276,7 +447,7 @@
 
                 // Xử lý dữ liệu JSON
 
-                data.forEach(function (districs) {
+                data.forEach(function(districs) {
                     ldistrict.push(districs);
                     console.log(ldistrict);
                     // Duyệt qua mảng các user
@@ -296,11 +467,11 @@
     };
 
     //chọn phường
-    inputdis.onchange = function () {
+    inputdis.onchange = function() {
         // Lấy giá trị được chọn trong thẻ select
         var district = 0;
         lward.splice(0, ldistrict.length);
-        ldistrict.forEach(function (id) {
+        ldistrict.forEach(function(id) {
             if (id.districtName == inputdis.value) {
                 district = id.districtID;
                 iddis = id.districtID;
@@ -324,7 +495,7 @@
 
                 // Xử lý dữ liệu JSON
 
-                data.forEach(function (ward) {
+                data.forEach(function(ward) {
 
                     // Duyệt qua mảng các user
                     var option = document.createElement("option"); // Tạo một phần tử option mới
@@ -343,11 +514,11 @@
     };
 
     var t = 0;
-    inputward.onchange = function () {
+    inputward.onchange = function() {
         // Lấy giá trị được chọn trong thẻ select
         var district = 0;
         var ward = 0
-        lward.forEach(function (id) {
+        lward.forEach(function(id) {
             if (id.wardName == inputward.value) {
 
                 idwar = id.wardCode;
@@ -389,10 +560,10 @@
     };
     var inputon = document.getElementById("f-option6");
     var inputoff = document.getElementById("f-option5");
-    inputon.onclick = function () {
+    inputon.onclick = function() {
         document.getElementById("pay").value = "Online"
     }
-    inputoff.onclick = function () {
+    inputoff.onclick = function() {
         document.getElementById("pay").value = "shipCod"
     }
 

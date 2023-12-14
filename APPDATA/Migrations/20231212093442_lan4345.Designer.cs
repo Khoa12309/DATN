@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace APPDATA.Migrations
 {
     [DbContext(typeof(ShoppingDB))]
-    [Migration("20231210051238_Migrations")]
-    partial class Migrations
+    [Migration("20231212093442_lan4345")]
+    partial class lan4345
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -153,6 +153,9 @@ namespace APPDATA.Migrations
 
                     b.Property<float?>("MoneyReduce")
                         .HasColumnType("real");
+
+                    b.Property<string>("Name")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime?>("PayDate")
                         .HasColumnType("datetime2");

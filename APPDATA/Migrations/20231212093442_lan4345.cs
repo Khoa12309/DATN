@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace APPDATA.Migrations
 {
-    public partial class Migrations : Migration
+    public partial class lan4345 : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -438,6 +438,7 @@ namespace APPDATA.Migrations
                     AccountId = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     Voucherid = table.Column<Guid>(type: "uniqueidentifier", nullable: true),
                     Code = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     ShipFee = table.Column<float>(type: "real", nullable: true),
                     PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Address = table.Column<string>(type: "nvarchar(max)", nullable: true),
