@@ -28,6 +28,7 @@ using APPVIEW.ViewModels;
 
 
 using AspNetCoreHero.ToastNotification.Abstractions;
+using DocumentFormat.OpenXml.Drawing.Charts;
 
 
 namespace APPVIEW.Controllers
@@ -382,7 +383,7 @@ namespace APPVIEW.Controllers
               .Select(s => s[random.Next(s.Length)]).ToArray());
         }
         [HttpPost]
-        public async Task<IActionResult> CreateBill(List<Guid> productId, List<int> soluong, float tongtien, string tenkh)
+        public async Task<IActionResult> CreateBill(List<Guid> productId, List<int> soluong, float tongtien, string tenkh,string sdt)
         {
             var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
             if (account.Id == Guid.Empty)
@@ -402,6 +403,7 @@ namespace APPVIEW.Controllers
             var bill = bills.GetApi("Bill");
             Bill newbil = new Bill();
             newbil.id = Guid.NewGuid();
+            newbil.PhoneNumber = sdt;
             newbil.AccountId = account.Id;
             newbil.Code = GenerateRandomString(8);
             newbil.CreateDate = DateTime.Now;
@@ -483,6 +485,7 @@ namespace APPVIEW.Controllers
 
             return ten;
         }
+
         public ActionResult GenerateInvoice(Guid billId, string tenkh)
         {
             // Lấy thông tin hóa đơn từ billId
@@ -651,6 +654,26 @@ namespace APPVIEW.Controllers
             x.Status = 2;
             await bills.UpdateObj(x, "Bill");
             return RedirectToAction("ShowBillDaNhan");
+        }
+        [HttpPost]
+        public ActionResult GetName(string sdt)
+        {
+            var bill = bills.GetApi("Bill").FirstOrDefault(c=>c.PhoneNumber == sdt);
+            if (bill != null) {
+                if (bill.Name != null || bill.Name != "")
+                {
+                    return Json(new { success = true, Name = bill.Name });
+                }
+              
+            
+            }
+
+
+
+
+            return Json(new { success = true, Name = "" });
+
+
         }
         // POST: QLBills/Delete/5
         [HttpPost]
