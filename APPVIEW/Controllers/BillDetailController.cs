@@ -1,9 +1,11 @@
 ﻿using APPDATA.Models;
 using APPVIEW.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace APPVIEW.Controllers
 {
+    [Authorize(Roles = "Admin,Staff")]
     public class BillDetailController : Controller
     {
         private Getapi<BillDetail> getapi;

@@ -44,6 +44,7 @@ function saveVoucherToAccount(voucherId) {
         type: 'POST',
         contentType: 'application/json',
         success: function (rs) {
+            console.log(rs);
             if (rs.success) {
                 // Hiển thị thông báo thành công
                 Swal.fire({
@@ -55,6 +56,7 @@ function saveVoucherToAccount(voucherId) {
                     timer: 2000,
                     toast: true
                 });
+                
             } else {
                 // Hiển thị thông báo lỗi nếu cần
                 Swal.fire({
@@ -66,6 +68,7 @@ function saveVoucherToAccount(voucherId) {
                     timer: 2000,
                     toast: true
                 });
+                console.log(rs);
             }
         }
     });

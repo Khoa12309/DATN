@@ -21,7 +21,6 @@ namespace APPDATA.DB
         {
             optionsBuilder.UseSqlServer(@"Data Source=DESKTOP-H4H9TH9\SQLEXPRESS;Initial Catalog=DATN4;Integrated Security=True");
 
-
         }
 
 

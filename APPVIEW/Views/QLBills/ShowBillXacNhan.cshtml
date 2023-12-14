@@ -29,110 +29,6 @@
         </div>
     </div>
 </form>
-@* <table class="table">
-    <thead>
-        <tr>
-            <th>
-                Mã hóa Đơn
-            </th>
-            <th>
-                Trạng thái
-            </th>
-            <th>
-                Tên khách hàng
-            </th>
-        
-            <th>
-                SDT
-            </th>
-            <th>
-                Địa chỉ
-            </th>
-            
-            <th>
-                Ngày tạo
-            </th>
-
-
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var itembill in bill)
-        {
-            var account = acc.FirstOrDefault(c => c.Id == itembill.AccountId);
-            var userbillct = billct.FirstOrDefault(c => c.BIllId == itembill.id);
-            var pct = prdct.FirstOrDefault(c => c.Id == userbillct.ProductDetailID);
-            var pro = prd.FirstOrDefault(c => c.Id == pct.Id_Product);
-            var siz = size.FirstOrDefault(c => c.Id == pct.Id_Size);
-            var colo = color.FirstOrDefault(c => c.Id == pct.Id_Color);
-
-            <tr>
-                <td>
-                    @itembill.Code
-                </td>
-
-                @if (itembill.Status == 1)
-                {
-                    <td>  Chờ xác nhận</td>
-
-                }
-                else if (itembill.Status == 2)
-                {
-                    <td>  Đã xác nhận đơn hàng</td>
-
-                }
-                else if (itembill.Status == 3)
-                {
-                    <td>Đang giao</td>
-                }
-                else if (itembill.Status == 4)
-                {
-                    <td>Đã giao</td>
-                }
-
-
-
-
-
-
-
-
-        
-                    @if (account.Name == "khach k dang nhap")
-
-                    {
-                    <td>@itembill.Name</td>
-                    }
-                    else
-                    {
-                    <td>@account.Name</td>
-
-                    }
-          
-             
-                <td>
-                    @itembill.PhoneNumber
-                </td>
-                <td>
-                    @itembill.Address
-                </td>
-              
-                <td>
-                    @itembill.CreateDate
-                </td>
-
-                <td>
-                    <button style="width:140px" class="btn btn-danger"> @Html.ActionLink("Giao hàng ", "GiaoHang", new { id = itembill.id }, new { style = "color:white;" }) </button>
-
-                </td>            <td>
-                    <button  style="width:140px"  class="btn btn-danger"> @Html.ActionLink("Giao hàng ", "GiaoHang", new { id = itembill.id }, new { style = "color:white;" }) </button>
-
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
- *@
 
 
 
@@ -148,7 +44,6 @@
                         <th>STT</th>
                         <th>Mã hóa đơn</th>
                         <th>Tên khách hàng</th>
-
                         <th>SDT</th>
                         <th>Địa chỉ</th>
                         <th>Tổng tiền</th>
