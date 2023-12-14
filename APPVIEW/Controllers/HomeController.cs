@@ -1085,9 +1085,19 @@ namespace APPVIEW.Controllers
                         }
                     }
 
-                    filterProductsWithImages = filterProductsWithImages
+                    if (priceRanges.Any(c=>c.Max==0))
+                    {
+                        filterProductsWithImages = filterProductsWithImages
+                       .Where(p => priceRanges.Any(r => p.ProductDetail.Price >= r.Min ))
+                       .ToList();
+                    }
+                    else
+                    {
+                        filterProductsWithImages = filterProductsWithImages
                         .Where(p => priceRanges.Any(r => p.ProductDetail.Price >= r.Min && p.ProductDetail.Price <= r.Max))
                         .ToList();
+                    }
+                   
                 }
 
                 ViewBag.Products = filterProductsWithImages;
