@@ -67,6 +67,9 @@ namespace APPVIEW.Controllers
             bills = new Getapi<Bill>();
             billDetails = new Getapi<BillDetail>();
             _account = new Getapi<Account>();
+
+
+
             _notyf = notyf;
 
         }
@@ -134,24 +137,9 @@ namespace APPVIEW.Controllers
 
             var x = bills.GetApi("Bill").FirstOrDefault(c => c.id == id);
             var y = billDetails.GetApi("BillDetail").Where(c => c.BIllId == id).ToList();
-            if (x.Status == 5)
+            foreach (var item in y)
             {
-
-                foreach (var item in y)
-                {  
-                    var pr = getapi.GetApi("ProductDetails").FirstOrDefault(c => c.Id == item.ProductDetailID);
-                    pr.Quantity += item.Amount;
-                    await getapi.UpdateObj(pr, "ProductDetails");
-                    await billDetails.DeleteObj(item.id, "BillDetail");
-                }
-            }
-            else {
-
-                foreach (var item in y)
-                {                 
-                    await billDetails.DeleteObj(item.id, "BillDetail");
-                }
-
+                await billDetails.DeleteObj(item.id, "BillDetail");
             }
             await bills.DeleteObj(id, "Bill");
             _notyf.Success("Đã xác nhận hủy đơn");
@@ -241,13 +229,15 @@ namespace APPVIEW.Controllers
                 SessionService.SetObjToJson(HttpContext.Session, "Account", acc);
             }
             var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
-            var userBills = bills.GetApi("Bill").Where(c => c.Status == 0).OrderByDescending(d => d.CreateDate).ToList();
+            var userBills = bills.GetApi("Bill").Where(c => c.Status == 0|| c.Status==5).OrderByDescending(d => d.CreateDate).ToList();
             ViewBag.viewbill = userBills;
 
 
             var billDetailsApi = billDetails.GetApi("BillDetail");
             var productDetailsApi = getapi.GetApi("ProductDetails");
             var productsApi = getapiProduct.GetApi("Product");
+
+
             ViewBag.viewbillct = billDetailsApi;
             ViewBag.viewprdct = productDetailsApi;
             ViewBag.viewprd = productsApi;
@@ -258,13 +248,16 @@ namespace APPVIEW.Controllers
             {
                 if (search != "")
                 {
-                    var tk = bills.GetApi("Bill").Where(c => c.Status == 0 && c.Code.Contains(search)).OrderByDescending(d => d.CreateDate).ToList();
+                    var tk = bills.GetApi("Bill").Where(c => c.Status == 0||c.Status==5 && c.Code.Contains(search)).OrderByDescending(d => d.CreateDate).ToList();
                     ViewBag.viewbill = tk;
                     return View(tk);
                 }
                 else
                 {
                     ViewBag.viewbill = userBills;
+
+
+
                     _notyf.Information("Không tìm thấy đơn hàng!");
                     return View(userBills);
                 }
@@ -285,6 +278,8 @@ namespace APPVIEW.Controllers
             var billDetailsApi = billDetails.GetApi("BillDetail");
             var productDetailsApi = getapi.GetApi("ProductDetails");
             var productsApi = getapiProduct.GetApi("Product");
+
+
             ViewBag.viewbillct = billDetailsApi;
             ViewBag.viewprdct = productDetailsApi;
             ViewBag.viewprd = productsApi;
@@ -304,12 +299,19 @@ namespace APPVIEW.Controllers
                 else
                 {
                     ViewBag.viewbill = userBills;
+
+
+
+
                     return View(userBills);
                 }
             }
             catch (Exception ex)
             {
+
+
                 return View(userBills);
+
             }
 
             return View(userBills);
@@ -608,7 +610,7 @@ namespace APPVIEW.Controllers
 
                 if (search != "")
                 {
-                    var tk = bills.GetApi("Bill").Where(c => c.Status == 3 && c.Code.Contains(search)).OrderByDescending(d => d.CreateDate).ToList();
+                    var tk = bills.GetApi("Bill").Where(c => c.Status == 2 && c.Code.Contains(search)).OrderByDescending(d => d.CreateDate).ToList();
                     ViewBag.viewbill = tk;
                     return View(tk);
                 }

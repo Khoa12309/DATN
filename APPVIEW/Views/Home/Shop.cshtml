@@ -9,17 +9,97 @@
     ViewData["Title"] = "Shop";
     Layout = "~/Views/Shared/_LayoutWeb.cshtml";
 }
+<style>
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+            margin-left: 200px;
+        }
 
+        .pagination .page-item {
+            list-style: none;
+            margin: 0 5px;
+        }
+        .pagination .page-link {
+            display: block;
+            padding: 10px;
+            text-align: center;
+            text-decoration: none;
+            color: #fff; 
+            background-color: #007bff;
+            border: 1px solid #dee2e6;
+            border-radius: 5px;
+        }
+
+        .pagination .page-link:hover {
+            background-color: #0056b3; 
+        }
+
+        .pagination .active .page-link {
+            background-color: #0056b3; 
+            border: 1px solid #0056b3;
+        }
+
+        .pagination .disabled .page-link {
+            color: #6c757d;
+            pointer-events: none;
+            cursor: not-allowed;
+        }
+
+
+        .pagination .page-link {
+            font-size: 14px;
+        }
+
+        #btnFilter {
+        padding: 10px 20px;
+        font-size: 16px;
+        background-color: #0066FF;
+        color: #fff;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        width:250px;
+        margin-top: 20px;
+    }
+
+    #btnFilter:hover {
+        background-color: #0044CC;
+    }
+        #card {
+          border: 1px solid #ccc;
+          border-radius: 8px;
+          overflow: hidden;
+          box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+          margin-bottom: 30px;
+
+
+        }
+        #card img {
+          border-bottom: 1px solid #ccc;
+        }
+        .card-product__title {
+        text-transform: uppercase;
+        font-family: 'Roboto', sans-serif;
+        font-size: 18px; /* Điều chỉnh kích thước font theo ý muốn */
+        font-weight: normal; /* Chọn độ đậm nhẹ của chữ */
+        color: #333;
+    }
+
+
+</style>
 
 <section class="blog-banner-area" id="category">
     <div class="container h-100">
         <div class="blog-banner">
             <div class="text-center">
-                <h1>Shop Category</h1>
+                <h1>Shop</h1>
                 <nav aria-label="breadcrumb" class="banner-breadcrumb">
                     <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="#">Home</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Shop Category</li>
+                        <li class="breadcrumb-item"><a href="#">Trang chủ</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Shop</li>
                     </ol>
                 </nav>
             </div>
@@ -32,38 +112,39 @@
             <div class="col-xl-3 col-lg-4 col-md-5">
                 <!-- Color Start -->
                 <div class="sidebar-categories">
-                    <div class="head" style="background: #f1f6f7; color: #999999">Color</div>
+                    <div class="head" style="background-color:#007bff">Màu Sắc</div>
                     <form id="color-filter-form">
                         <ul>
                             <li class="filter-list">
                                 <input class="pixel-radio" type="checkbox" id="color-all" value="all" name="color" checked>
-                                <label for="color-all">All Color</label>
+                                <label for="color-all">Tất cả màu sắc</label>
                             </li>
                             @{
                                 foreach (var item in ViewBag.color)
                                 {
-                                    <li class="filter-list">
-                                        <input class="pixel-radio" type="checkbox" id="color-red" value="@item.Id" name="color">
-                                        <label for="@item.Id">@item.Name</label>
-                                    </li>
+                                        <li class="filter-list">
+                                            <input class="pixel-radio" type="checkbox" id="color-red" value="@item.Id" name="color">
+                                            <label for="@item.Id">@item.Name</label>
+                                        </li>
                                 }
                             }
-                          
-                        
+
+
                         </ul>
                     </form>
                 </div>
                 <!-- Color End -->
                 <!-- Size Start -->
                 <div class="sidebar-categories">
-                    <div class="head" style="background: #f1f6f7; color: #999999">Size</div>
+                    <div class="head" style="background-color:#007bff">Size</div>
                     <form id="size-filter-form">
                         <ul>
                             <li class="filter-list">
                                 <input class="pixel-radio" type="checkbox" id="size-all" value="all" name="size" checked>
-                                <label for="size-all">All Size</label>
+                                <label for="size-all">Tất cả size</label>
                             </li>
-                              @{
+                            @if (ViewBag.size != null && ViewBag.size.Count > 0)
+                            {
                                 foreach (var item in ViewBag.size)
                                 {
                                     <li class="filter-list">
@@ -71,14 +152,19 @@
                                         <label for="@item.Id">@item.Name</label>
                                     </li>
                                 }
-                            }                                                                             
+                            }
+                            else
+                            {
+                                <h4 style="margin: auto">Không có sản phẩm nào để hiển thị</h4>
+                            }
+
                         </ul>
                     </form>
                 </div>
                 <!-- Size End -->
                 <!-- Price Start -->
                 <div class="sidebar-categories">
-                    <div class="head" style="background: #f1f6f7; color: #999999">Price</div>
+                    <div class="head" style="background-color:#007bff">Giá</div>
                     <form id="price-filter-form">
                         <ul>
                             <li class="filter-list">
@@ -87,56 +173,45 @@
                             </li>
                             <li class="filter-list">
                                 <input class="pixel-radio" type="checkbox" id="price-1" value="0-100000" name="price">
-                                <label for="price-1">$0-$100000</label>
+                                <label for="price-1">Dưới 100.000 VNĐ</label>
                             </li>
                             <li class="filter-list">
                                 <input class="pixel-radio" type="checkbox" id="price-2" value="100000-200000" name="price">
-                                <label for="price-2">$100000-$200000</label>
+                                <label for="price-2">100.000 - 200.000 VNĐ</label>
                             </li>
                             <li class="filter-list">
                                 <input class="pixel-radio" type="checkbox" id="price-3" value="200000-300000" name="price">
-                                <label for="price-3">$200000-$300000</label>
+                                <label for="price-3">200.000 - 300.000 VNĐ</label>
                             </li>
                             <li class="filter-list">
                                 <input class="pixel-radio" type="checkbox" id="price-4" value="300000-400000" name="price">
-                                <label for="price-4">$300000-$400000</label>
+                                <label for="price-4">300.000 - 400.000 VNĐ</label>
                             </li>
                             <li class="filter-list">
                                 <input class="pixel-radio" type="checkbox" id="price-5" value="400000-500000" name="price">
-                                <label for="price-5">$400000-$500000</label>
+                                <label for="price-5">400.000 - 500.000 VNĐ</label>
+                            </li>
+                            <li class="filter-list">
+                                <input class="pixel-radio" type="checkbox" id="price-5" value="500000-0" name="price">
+                                <label for="price-5">Trên 500.000 VNĐ</label>
                             </li>
                         </ul>
                     </form>
                 </div>
+
+
                 <!-- Price End -->
-                <button id="btnFilter" style="margin-left: 110px; background: #0066FF; color: black" class="btn btn-close">Filter</button>
+                <button id="btnFilter" class="btn btn-close">Lọc</button>
             </div>
             <div class="col-xl-9 col-lg-8 col-md-7">
                 <!-- Start Filter Bar -->
                 <div class="filter-bar d-flex flex-wrap align-items-center">
-               @*     <div class="sorting mr-auto">
-                        <select id="showProducts">
-                            <option value="12">Show 12</option>
-                            <option value="24">Show 24</option>
-                            <option value="36">Show 36</option>
-                            <option value="48">Show 48</option>
-                            <option value="60">Show 60</option>
-                        </select>
-                    </div>*@
-                    <div class="sorting mr-auto">
-                        <form asp-action="Shop">
-
-                            <input name="sortOrder" />
-                            <button type="submit" class="btn btn-light" style="font-size: 18px; border-radius: inherit"><i class='bx bx-sort-alt-2'></i></button>
-
-                         </form>
-                    </div>
                     <div>
                         <div class="input-group filter-bar-search">
                             <form id="sortForm" method="get" asp-action="Shop">
                                 <select id="sortOrder" name="sortOrder" style="font-size: 18px; border-radius: inherit">
-                                    <option value="asc">Ascending</option>
-                                    <option value="desc">Descending</option>
+                                    <option value="asc">Tăng dần theo giá</option>
+                                    <option value="desc">Giảm dần theo giá</option>
                                 </select>
                                 <button type="submit" class="btn btn-light" style="font-size: 18px; border-radius: inherit"><i class='bx bx-sort-alt-2'></i></button>
                             </form>
@@ -160,7 +235,7 @@
                                 }
                                 p.Add(product.ProductDetail.Id_Product);
                                 <div class="col-md-6 col-lg-4">
-                                    <div class="card text-center card-product">
+                                    <div class="card text-center card-product" id="card">
                                         <div class="card-product__img">
                                             @if (!string.IsNullOrEmpty(product.ProductDetail.Name))
                                             {
@@ -180,10 +255,10 @@
                                         <div class="card-body">
                                             <h4 class="card-product__title"><a href="#">@product.ProductDetail.Name</a></h4>
 
-                                            <p class="card-product__price">@product.ProductDetail.Price.ToString("C0", new CultureInfo("vi-VN"))</p>
+                                            <p class="card-product__price" style="color:#f15e2c">@product.ProductDetail.Price.ToString("C0", new CultureInfo("vi-VN"))</p>
 
                                         </div>
-                                    </div>
+                                    </div> 
                                 </div>
                             }
                         }
@@ -205,22 +280,22 @@
     PageClasses = new[]{ "page-link"},
     LiElementClasses=new[] { "page-item"},
     UlElementClasses = new[] { "pagination","justify-content-center", "mt-3", "size" },
-    LinkToNextPageFormat = "Next",
-    LinkToPreviousPageFormat = "Previous",
+    LinkToNextPageFormat = "Sau",
+    LinkToPreviousPageFormat = "Trước",
     MaximumPageNumbersToDisplay = 6,
     DisplayLinkToPreviousPage = PagedListDisplayMode.Always,
     DisplayLinkToNextPage = PagedListDisplayMode.Always
     })
 </div>
-<!-- ================ category section end ================= -->	
+<!-- ================ category section end ================= -->
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
+
+    document.addEventListener("DOMContentLoaded", function() {
         // Thêm sự kiện cho nút lọc
-        document.getElementById("btnFilter").addEventListener("click", function () {
+        document.getElementById("btnFilter").addEventListener("click", function() {
             var colors = getSelectedCheckboxes("color-filter-form");
             var sizes = getSelectedCheckboxes("size-filter-form");
             var priceRange = getSelectedCheckboxes("price-filter-form");
-
             var data = {
                 Colors: colors,
                 Sizes: sizes,
@@ -235,9 +310,9 @@
                 },
                 body: JSON.stringify(data)
             })
-            .then(handleResponse)
-            .then(updateFilteredProducts)
-            .catch(handleError);
+                .then(handleResponse)
+                .then(updateFilteredProducts)
+                .catch(handleError);
         });
 
         // Hàm xử lý phản hồi từ fetch
@@ -262,14 +337,14 @@
         // Hàm lấy giá trị của các checkbox được chọn trong một biểu mẫu
         function getSelectedCheckboxes(formId) {
             var checkboxes = $('#' + formId + ' input[type="checkbox"]:checked');
-            return checkboxes.map(function () {
+            return checkboxes.map(function() {
                 return $(this).val();
             }).get();
         }
     });
 </script>
 <script>
-    $('body').on('click', '.buy-btn', function (e) {
+    $('body').on('click', '.buy-btn', function(e) {
         e.preventDefault();
         var id = $(this).data('product-id');
         var quantity = 1;
@@ -282,7 +357,7 @@
             url: '/cart/AddToCart',
             type: 'POST',
             data: { id: id, Soluong: quantity },
-            success: function (rs) {
+            success: function(rs) {
                 if (rs.success) {
                     // Hiển thị thông báo thành công
                     Swal.fire({

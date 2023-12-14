@@ -293,17 +293,15 @@ namespace APPVIEW.Controllers
             {
                 id = Guid.NewGuid(),
                 AccountId = obj.Id,
-                City = "N/A",
-                Ward = "N/A",
-                District = "N/A",
+                City = "",
+                Ward = "",
+                District = "",
                 PhoneNumber = obj.PhoneNumber,
-                Description = "N/A",
+                Description = "",
                 Name = obj.Name,
-                Province = "N/A",
-                DefaultAddress = "N/A",
-                SpecificAddress = "N/A"
-
-
+                Province = "",
+                DefaultAddress = "",
+                SpecificAddress = ""
             };
             var jsonDataAddress = JsonConvert.SerializeObject(address);
 
@@ -485,13 +483,19 @@ namespace APPVIEW.Controllers
         {
             try
             {
-                if (imageFile != null)
+
+                obj.Avatar = AddImg(imageFile);
+                var acc = await getapi.UpdateObj(obj, "Account");
+                if (acc != null)
                 {
-                    obj.Avatar = AddImg(imageFile);
-                }              
-                await getapi.UpdateObj(obj, "Account");
-                _notyf.Success("Edit Sucsess");
-                return RedirectToAction("GetList");
+                    _notyf.Success("Edit Sucsess");
+                    return RedirectToAction("GetList");
+                }
+                else
+                {
+                    _notyf.Error("Lỗi");
+                    return View();
+                }
 
             }
             catch
@@ -637,10 +641,10 @@ namespace APPVIEW.Controllers
                     }
                 }
                 var user = new Account();
-                user.Email = obj.Email;
                 if (imageFile != null)
                 {
                     user.Id = obj.AccountId;
+                    user.Email = obj.Email;
                     user.Name = obj.Name;
                     user.Password = obj.Password;
                     user.IdRole = obj.Id_Role;
