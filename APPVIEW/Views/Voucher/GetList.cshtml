@@ -24,17 +24,17 @@
                 <thead>
                     <tr>
                         <th>STT</th>
-                        <th>Name</th>
-                        <th>Code</th>
-                        <th>Maximum DiscountAmount</th>
-                        <th>Quantity</th>
-                        <th>Status</th>
-                        <th>Value</th>
-                        <th>Create date</th>
-                        <th>Update date</th>
-                        <th>Start date</th>
-                        <th>End date</th>
-                        <th>Actions</th>
+                        <th>Tên</th>
+                        <th>Mã</th>
+                        <th>Giảm tối đa</th>
+                        <th>Số lượng</th>
+                        <th>Trạng thái</th>
+                        <th>%</th>
+                        <th>Ngày tạo</th>
+                        <th>Ngày sửa</th>
+                        <th>Ngày bắt đầu</th>
+                        <th>Ngày kết thúc</th>
+                        <th>Hành động</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -50,7 +50,7 @@
                                 <td>@Html.DisplayFor(modelItem => item.Quantity)</td>
                                 <td>
                                     <span class="badge @(item.Status == 1 ? "badge rounded-pill bg-label-success" : "badge rounded-pill bg-label-danger")">
-                                        @(item.Status == 1 ? "Using" : "Not use")
+                                        @(item.Status == 1 ? "Sử dụng" : "Không sử dụng")
                                     </span>
                                 </td>
                                 <td>@Html.DisplayFor(modelItem => item.Value)%</td>
