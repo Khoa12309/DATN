@@ -21,7 +21,7 @@
     }
     .card-product__title {
     text-transform: uppercase;
-    font-family: 'Roboto', sans-serif;
+       font-family: 'Roboto', sans-serif;
     font-size: 18px; /* Điều chỉnh kích thước font theo ý muốn */
     font-weight: normal; /* Chọn độ đậm nhẹ của chữ */
     color: #333;
@@ -103,7 +103,7 @@
                             {
                                 if (img.IdProductdetail == item.Id)
                                 {
-                                    <img class="card-img" src="~/images/@img.Name" width="180px" height="250px"
+                                    <img class="card-img" src="~/images/@img.Name" width="150px" height="250px"
                              alt="">
                                     break;
                                 }
@@ -117,7 +117,6 @@
                                         <i class="ti-shopping-cart"></i>
                                     </button>
                                 </li>
-                                <li><button> @Html.ActionLink("Mua ngay", "ViewBill", new { id = item.Id_Product }, new { style = "color:black;" })</button></li>
                             </ul>
                         </div>
                         <div class="card-body">

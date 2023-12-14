@@ -8,36 +8,6 @@
     string Id_userValue = IdUser?.Value;
 
 }
-<style>
-    .form-select{
-    width: 100px;
-    margin-top: -26px;
-    height: 38px 
-    }
-    .labels{
-         margin-bottom: 20px;
-    }
-      .nice-select .list{
-        width:100px;
-        }
-
-
-
-.button-register-login {
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    padding: 10px;
-    border-radius: 5px;
-    text-decoration: none;
-}
-
-.button-register-login:hover {
-    background-color: #0056b3;
-}
-
-</style>
-
 <section class="blog-banner-area" id="category">
     <div class="container h-100">
         <div class="blog-banner">
@@ -140,6 +110,10 @@
                         <div class="col-md-6">
                             <label asp-for=SpecificAddress class="labels">Địa chỉ cụ thể</label>
                             <input asp-for=SpecificAddress type="text" class="form-control" placeholder="Nhập địa chỉ cụ thể của bạn" value="@Model.SpecificAddress">
+                        </div>
+                        <div class="col-md-6">
+                            <label asp-for=DefaultAddress class="labels">Địa chỉ mặc định</label>
+                            <input asp-for=DefaultAddress type="text" class="form-control" placeholder="Nhập địa chỉ mặc định của bạn" value="@Model.DefaultAddress">
                         </div>
                     </div>
                     <div class="row mb-3">

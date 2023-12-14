@@ -4,7 +4,6 @@
     ViewData["Title"] = "ShowBill";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 @using APPDATA.Models;
-@using System.Globalization;
     List<Bill> bill = ViewBag.viewbill;
     List<BillDetail> billct = ViewBag.viewbillct;
     List<ProductDetail> prdct = ViewBag.viewprdct;
@@ -17,24 +16,24 @@
 
 
 
+<form asp-controller="QLBills" asp-action="ShowBill" class="row contact_form" method="post">
+    <div class="row">
+        <div class="col-md-3 form-group">
+            <input type="text" class="form-control" name="search" placeholder="Nhập mã hóa đơn để tìm kiếm">
 
+        </div>    <div class="col-md-2 form-group">
+            <button type="submit" class="btn btn-success">Tìm kiếm</button>
+
+        </div>
+    </div>
+</form>
 <div class="card">
     <div class="card-header">
     
     </div>
     <div class="card-body">
-        <form asp-controller="QLBills" asp-action="ShowBill" class="row contact_form" method="post">
-            <div class="row">
-                <div class="col-md-3 form-group">
-                    <input type="text" class="form-control" name="search" placeholder="Nhập mã hóa đơn để tìm kiếm">
-
-                </div>    <div class="col-md-2 form-group">
-                    <button type="submit" class="btn btn-success">Tìm kiếm</button>
-
-                </div>
-            </div>
-        </form>
-        <div class="table-responsive table-sm">
+  
+        <div class="table-responsive">
             <table class="table table-hover">
                 <thead>
                     <tr>
@@ -81,14 +80,7 @@
                                     @itembill.PhoneNumber
                                 </td>
                                 <td>
-                                    @if (!string.IsNullOrEmpty(itembill.Address) && itembill.Address.Length > 50)
-                                    {
-                                        @Html.Raw(Html.Encode(itembill.Address.Substring(0, 50)) + "...")
-                                    }
-                                    else
-                                    {
-                                        @Html.Raw(Html.Encode(itembill.Address))
-                                    }
+                                    @itembill.Address
                                 </td>
                                 <td>
                                     @itembill.TotalMoney
@@ -118,33 +110,22 @@
                                         DateTime createDate = itembill.CreateDate;
                                         string formattedDate = createDate != DateTime.MinValue
                                         ? createDate.ToString("dd/MM/yyyy")
-                                        : "Chưa thay đổi";
+                                        : "Not changed";
                                     }
                                     @formattedDate
                                 </td>
 
                                 <td>
+                                    <button style="width:140px" class="btn btn-danger"> @Html.ActionLink("Xác Nhận", "XacNhan", new { id = itembill.id }, new { style = "color:white;" }) </button>
+                                </td>
+                                <td>
+                                    <button data-itemid="@itembill.id" style="width:140px" class="btn btn-danger cancel-button">
+                                        <a href="@Url.Action("HuyDon", new { id = itembill.id })" style="color:white;">Hủy Đơn</a>
+                                    </button>
+                                </td>
 
-                                    <div class="d-inline-block text-nowrap">
-                                        <button class="btn btn-sm btn-icon btn-text-secondary rounded-pill btn-icon dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
-                                            <i class="mdi mdi-dots-vertical mdi-20px"></i>
-                                        </button>
-                                        <div class="dropdown-menu dropdown-menu-end m-0">
-                                            <a href=" @Url.Action("Chitiet", new { id = itembill.id })" class="dropdown-item ">
-                                                <i class="mdi mdi-eye-outline me-2"></i>
-                                                <span>Xem đơn hàng</span>
-                                            </a>
-                                            <a href="@Url.Action("XacNhan", new { id = itembill.id })" class="dropdown-item">
-                                                <i class="mdi mdi-receipt-text-check-outline"></i>
-                                                <span>Xác nhận</span>
-                                            </a>
-                                            <a href="@Url.Action("HuyDon", new { id = itembill.id })" class="dropdown-item delete-record">
-                                                <i class="mdi mdi-receipt-text-remove"></i>
-                                                <span>Hủy đơn</span>
-                                            </a>
-                                        </div>
-                                    </div>
-              
+                                <td>
+                                    <button style="width:140px" class="btn btn-danger"> @Html.ActionLink("Chi Tiết ", "Chitiet", new { id = itembill.id }, new { style = "color:white;" }) </button>
                                 </td>
 
                             </tr>

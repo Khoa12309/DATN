@@ -28,6 +28,7 @@ using APPVIEW.ViewModels;
 
 
 using AspNetCoreHero.ToastNotification.Abstractions;
+using DocumentFormat.OpenXml.Drawing.Charts;
 
 
 namespace APPVIEW.Controllers
@@ -66,9 +67,6 @@ namespace APPVIEW.Controllers
             bills = new Getapi<Bill>();
             billDetails = new Getapi<BillDetail>();
             _account = new Getapi<Account>();
-
-
-
             _notyf = notyf;
 
         }
@@ -136,9 +134,24 @@ namespace APPVIEW.Controllers
 
             var x = bills.GetApi("Bill").FirstOrDefault(c => c.id == id);
             var y = billDetails.GetApi("BillDetail").Where(c => c.BIllId == id).ToList();
-            foreach (var item in y)
+            if (x.Status == 5)
             {
-                await billDetails.DeleteObj(item.id, "BillDetail");
+
+                foreach (var item in y)
+                {  
+                    var pr = getapi.GetApi("ProductDetails").FirstOrDefault(c => c.Id == item.ProductDetailID);
+                    pr.Quantity += item.Amount;
+                    await getapi.UpdateObj(pr, "ProductDetails");
+                    await billDetails.DeleteObj(item.id, "BillDetail");
+                }
+            }
+            else {
+
+                foreach (var item in y)
+                {                 
+                    await billDetails.DeleteObj(item.id, "BillDetail");
+                }
+
             }
             await bills.DeleteObj(id, "Bill");
             _notyf.Success("Đã xác nhận hủy đơn");
@@ -228,15 +241,13 @@ namespace APPVIEW.Controllers
                 SessionService.SetObjToJson(HttpContext.Session, "Account", acc);
             }
             var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
-            var userBills = bills.GetApi("Bill").Where(c => c.Status == 0|| c.Status==5).OrderByDescending(d => d.CreateDate).ToList();
+            var userBills = bills.GetApi("Bill").Where(c => c.Status == 0).OrderByDescending(d => d.CreateDate).ToList();
             ViewBag.viewbill = userBills;
 
 
             var billDetailsApi = billDetails.GetApi("BillDetail");
             var productDetailsApi = getapi.GetApi("ProductDetails");
             var productsApi = getapiProduct.GetApi("Product");
-
-
             ViewBag.viewbillct = billDetailsApi;
             ViewBag.viewprdct = productDetailsApi;
             ViewBag.viewprd = productsApi;
@@ -247,16 +258,13 @@ namespace APPVIEW.Controllers
             {
                 if (search != "")
                 {
-                    var tk = bills.GetApi("Bill").Where(c => c.Status == 0||c.Status==5 && c.Code.Contains(search)).OrderByDescending(d => d.CreateDate).ToList();
+                    var tk = bills.GetApi("Bill").Where(c => c.Status == 0 && c.Code.Contains(search)).OrderByDescending(d => d.CreateDate).ToList();
                     ViewBag.viewbill = tk;
                     return View(tk);
                 }
                 else
                 {
                     ViewBag.viewbill = userBills;
-
-
-
                     _notyf.Information("Không tìm thấy đơn hàng!");
                     return View(userBills);
                 }
@@ -277,8 +285,6 @@ namespace APPVIEW.Controllers
             var billDetailsApi = billDetails.GetApi("BillDetail");
             var productDetailsApi = getapi.GetApi("ProductDetails");
             var productsApi = getapiProduct.GetApi("Product");
-
-
             ViewBag.viewbillct = billDetailsApi;
             ViewBag.viewprdct = productDetailsApi;
             ViewBag.viewprd = productsApi;
@@ -298,19 +304,12 @@ namespace APPVIEW.Controllers
                 else
                 {
                     ViewBag.viewbill = userBills;
-
-
-
-
                     return View(userBills);
                 }
             }
             catch (Exception ex)
             {
-
-
                 return View(userBills);
-
             }
 
             return View(userBills);
@@ -382,7 +381,7 @@ namespace APPVIEW.Controllers
               .Select(s => s[random.Next(s.Length)]).ToArray());
         }
         [HttpPost]
-        public async Task<IActionResult> CreateBill(List<Guid> productId, List<int> soluong, float tongtien, string tenkh)
+        public async Task<IActionResult> CreateBill(List<Guid> productId, List<int> soluong, float tongtien, string tenkh,string sdt)
         {
             var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
             if (account.Id == Guid.Empty)
@@ -402,6 +401,7 @@ namespace APPVIEW.Controllers
             var bill = bills.GetApi("Bill");
             Bill newbil = new Bill();
             newbil.id = Guid.NewGuid();
+            newbil.PhoneNumber = sdt;
             newbil.AccountId = account.Id;
             newbil.Code = GenerateRandomString(8);
             newbil.CreateDate = DateTime.Now;
@@ -483,6 +483,7 @@ namespace APPVIEW.Controllers
 
             return ten;
         }
+
         public ActionResult GenerateInvoice(Guid billId, string tenkh)
         {
             // Lấy thông tin hóa đơn từ billId
@@ -607,7 +608,7 @@ namespace APPVIEW.Controllers
 
                 if (search != "")
                 {
-                    var tk = bills.GetApi("Bill").Where(c => c.Status == 2 && c.Code.Contains(search)).OrderByDescending(d => d.CreateDate).ToList();
+                    var tk = bills.GetApi("Bill").Where(c => c.Status == 3 && c.Code.Contains(search)).OrderByDescending(d => d.CreateDate).ToList();
                     ViewBag.viewbill = tk;
                     return View(tk);
                 }
@@ -651,6 +652,26 @@ namespace APPVIEW.Controllers
             x.Status = 2;
             await bills.UpdateObj(x, "Bill");
             return RedirectToAction("ShowBillDaNhan");
+        }
+        [HttpPost]
+        public ActionResult GetName(string sdt)
+        {
+            var bill = bills.GetApi("Bill").FirstOrDefault(c=>c.PhoneNumber == sdt);
+            if (bill != null) {
+                if (bill.Name != null || bill.Name != "")
+                {
+                    return Json(new { success = true, Name = bill.Name });
+                }
+              
+            
+            }
+
+
+
+
+            return Json(new { success = true, Name = "" });
+
+
         }
         // POST: QLBills/Delete/5
         [HttpPost]

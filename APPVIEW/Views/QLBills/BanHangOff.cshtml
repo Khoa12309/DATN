@@ -22,9 +22,12 @@
                         <div class="card-body">
                         </div>
                         <div class="card-footer">
-                            <span>Tên khách hàng : </span>   <input type="text" name="tenkh"><br>
-                            <span>Tổng tiền : </span>   <input type="number" min="0" id="tong" name="tongtien" readonly="readonly" style="border:none"><br>
-
+                            <span>Số điện thoại : </span>   <br><input type="text" id="sdt" name="sdt" onchange="layTenKhachHang()" style="margin-right:170px"><br>
+                            <span>Tên khách hàng : </span>  <br> <input type="text" id="tenkh" name="tenkh"><br>
+                            <span>Tiền khách đưa : </span>  <br> <input type="number" min="0" id="khachdua" onchange="tinhTienThua()"><br>
+                            <span>Tổng tiền : </span> <br>  <input type="number" min="0" id="tong" name="tongtien" readonly="readonly" style="border:none"><br>
+                            <span id="tienthua"></span>  <br>
+                            <span id="error"></span> <br>
                             <button type="submit" class="btn btn-primary" style="margin-top:15px">Tạo Hóa Đơn</button>
                         </div>
 
@@ -97,7 +100,7 @@
 
                                             }
 
-                                            <p style="text-align:left" >Giá : @item.Price.ToString("C0", new CultureInfo("vi-VN"))</p>
+                                            <p style="text-align:left">Giá : @item.Price</p>
                                         </div>
                                     </div>
                                 </div>
@@ -191,12 +194,12 @@
                             productPriceContainer.style.alignItems = 'center';
 
                             const productPrice = document.createElement('span');
-                            productPrice.textContent = `${formatPrice(product.price)}`;   
+                            productPrice.textContent = `${product.price}`;
                             productPriceContainer.appendChild(productPrice);
                             productPriceContainer.classList.add('product-price'); // Thêm lớp product-price vào phần tử chứa giá sản phẩm
 
                             const productPriceVND = document.createElement('span');
-                         
+                            productPriceVND.textContent = ` VND`;
                             productPriceVND.style.marginLeft = '5px';
                             productPriceContainer.appendChild(productPriceVND);
 
@@ -223,7 +226,7 @@
                             const tongInput1 = document.getElementById('tong');
                             const productPriceValue = parseInt(productQuantityInput.value) * product.price;
                             totalPrice += productPriceValue; // Cộng giá sản phẩm vào tổng giá
-                            tongInput1.value = formatPrice(totalPrice);   // Cập nhật tổng giá vào input có id là 'tong'
+                            tongInput1.value = totalPrice; // Cập nhật tổng giá vào input có id là 'tong'
 
                             // Sự kiện thay đổi số lượng sản phẩm và tính tổng giá sản phẩm
                             productQuantityInput.addEventListener('change', function () {
@@ -241,7 +244,7 @@
 
                                     const tongInput = document.getElementById('tong');
                                     if (tongInput) {
-                                         tongInput1.value = formatPrice(totalPrice); // Cập nhật tổng giá vào input có id là 'tong'
+                                        tongInput.value = totalPrice; // Cập nhật tổng giá vào input có id là 'tong'
                                     }
                                 } else {
                                     console.error('Số lượng không hợp lệ!');
@@ -304,20 +307,19 @@
                             });
 
                             var cardHtml = '<div class="col-md-6 col-lg-4 col-xl-3">' +
-                '<div class="card text-center card-product">' +
-                '<div class="card-product__img">' + imgHTML + '</div>' + // Đóng chuỗi HTML ở đây
-                '<button class="btn btn-primary" style="margin-top:10px" data-id="' + item.id + '">Chọn sản phẩm</button>' +
-                '</div>' +
-                '<div class="card-body">' +
-                '<p style="text-align:left;display: inline-block;width: 700px">Sản phẩm: ' + item.name + '</p>' +
-                sizeHTML + colorHTML +
-                '<p style="text-align:left">Giá: ' + formatPrice(item.price) + '</p>' +
-                '</div>' +
-                '</div>' +
-                '</div>';
+                                '<div class="card text-center card-product">' +
+                                '<div class="card-product__img">' + imgHTML + '</div>' + // Đóng chuỗi HTML ở đây
+                                '<button class="btn btn-primary" style="margin-top:10px" data-id="' + item.id + '">Chọn sản phẩm</button>' +
+                                '</div>' +
+                                '<div class="card-body">' +
+                                '<p style="text-align:left;display: inline-block;width: 700px">Sản phẩm: ' + item.name + '</p>' +
+                                sizeHTML + colorHTML +
+                                '<p style="text-align:left">Giá: ' + item.price + '</p>' +
+                                '</div>' +
+                                '</div>' +
+                                '</div>';
 
-productsHTML += cardHtml;
-
+                            productsHTML += cardHtml;
                         });
 
                         $('#divToUpdate').html(productsHTML);
@@ -328,9 +330,7 @@ productsHTML += cardHtml;
         });
     });
 
-    function formatPrice(price) {
-    return (price).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
-}
+
     document.addEventListener('DOMContentLoaded', function () {
         const productButtons = document.querySelectorAll('button[data-id]');
         const cardBody = document.querySelector('.card-body'); // Chọn phần tử chứa thông tin sản phẩm
@@ -403,12 +403,12 @@ productsHTML += cardHtml;
                                     productPriceContainer.style.alignItems = 'center';
 
                                     const productPrice = document.createElement('span');
-                                    productPrice.textContent = `${formatPrice(product.price)}`; 
+                                    productPrice.textContent = `${product.price}`;
                                     productPriceContainer.appendChild(productPrice);
                                     productPriceContainer.classList.add('product-price'); // Thêm lớp product-price vào phần tử chứa giá sản phẩm
 
                                     const productPriceVND = document.createElement('span');
-                                   
+                                    productPriceVND.textContent = ` VND`;
                                     productPriceVND.style.marginLeft = '5px';
                                     productPriceContainer.appendChild(productPriceVND);
 
@@ -435,7 +435,7 @@ productsHTML += cardHtml;
                                     const tongInput1 = document.getElementById('tong');
                                     const productPriceValue = parseInt(productQuantityInput.value) * product.price;
                                     totalPrice += productPriceValue; // Cộng giá sản phẩm vào tổng giá
-                                   tongInput1.value = formatPrice(totalPrice);  // Cập nhật tổng giá vào input có id là 'tong'
+                                    tongInput1.value = totalPrice; // Cập nhật tổng giá vào input có id là 'tong'
 
                                     // Sự kiện thay đổi số lượng sản phẩm và tính tổng giá sản phẩm
                                     productQuantityInput.addEventListener('change', function () {
@@ -453,7 +453,7 @@ productsHTML += cardHtml;
 
                                             const tongInput = document.getElementById('tong');
                                             if (tongInput) {
-                                               tongInput.value = formatPrice(totalPrice);  // Cập nhật tổng giá vào input có id là 'tong'
+                                                tongInput.value = totalPrice; // Cập nhật tổng giá vào input có id là 'tong'
                                             }
                                         } else {
                                             console.error('Số lượng không hợp lệ!');
@@ -476,7 +476,57 @@ productsHTML += cardHtml;
         });
     });
 </script>
+<script>
+    function tinhTienThua() {
+        // Lấy giá trị nhập vào từ trường "Tiền khách đưa"
+        var khachDua = parseFloat(document.getElementById("khachdua").value);
+
+        // Lấy giá trị tổng tiền từ trường "Tổng tiền" (giả sử bạn đã cập nhật giá trị này từ code khác)
+        var tongTien = parseFloat(document.getElementById("tong").value);
+
+        // Tính tiền thừa
+        var tienThua = khachDua - tongTien;
+        if (isNaN(khachDua)) {
+            document.getElementById("error").textContent = "Vui lòng nhập số.";
+            document.getElementById("error").style.color = "red";
+            return; // Kết thúc hàm tại đây nếu giá trị nhập không phải số
+        }
 
 
+        // Hiển thị giá trị tiền thừa và thông báo lỗi (nếu có)
+        if (tienThua < 0) {
+            document.getElementById("error").textContent = "Thiếu : " + (tienThua * (-1));
+            document.getElementById("error").style.color = "red";
+           // Ẩn nhãn "Tiền thừa" nếu không có tiền thừa
+            document.getElementById("tienthua").textContent = ""; // Xóa nội dung trường "Tiền thừa"
+        } else {
+        // Cập nhật nhãn "Tiền thừa"
+            document.getElementById("tienthua").textContent = "Thừa : "+tienThua; // Hiển thị tiền thừa
+            document.getElementById("error").textContent = ""; // Xóa thông báo lỗi
+        }
+    }
 
+    
+</script>
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    function layTenKhachHang() {
+        var sdt = document.getElementById('sdt').value;
+
+        $.ajax({
+            url: '/QLBills/GetName', // Địa chỉ URL của phương thức trong CustomerController
+            type: 'POST',
+            data: { sdt: sdt },
+            success: function (response) {
+                // Xử lý dữ liệu nhận được từ server
+                document.getElementById('tenkh').value = response.name;
+            },
+            error: function (xhr, status, error) {
+                // Xử lý lỗi nếu có
+                console.error(xhr.responseText);
+            }
+        });
+    }
+</script>
+ 
 
