@@ -274,12 +274,9 @@
                                             }
                                             else if (itembill.Status == 5)
                                             {
-                                                <span>Thanh toán thành công </span>
+                                                <span>Đơn chờ hủy </span>
                                             }
-                                            else if (itembill.Status == 6)
-                                            {
-                                                <span>Thanh toán không thành công </span>
-                                            }
+
                                             else if (itembill.Status == 0)
                                             {
                                                 <span>Đơn chờ hủy </span>
@@ -319,24 +316,24 @@
                                 <tr>
                                     <td>
                                         @if (itembill.Status == 1 )
-
                                         {
                                             <button style="background-color:royalblue ; border-radius:12px ; border:none"> @Html.ActionLink("Đổi thông tin nhận hàng", "UpdateAddress", new { id = itembill.id }, new { style = "color:black;" }) </button>
+
+                                
                                         }
-                                        @if (itembill.Status == 1 || itembill.Status == 2)
+                                        @if(itembill.Status == 1 || itembill.Status == 2)
 
                                         {
-                                            <button style="background-color:royalblue ; border-radius:12px ; border:none"> @Html.ActionLink("Hủy đơn", "HuyDon", new { id = itembill.id }, new { style = "color:black;" }) </button>
+                                            <button class="cancel-button" data-itemid="@itembill.id" style="background-color:royalblue ; border-radius:12px ; border:none">
+                                                <a href="@Url.Action("HuyDon", new { id = itembill.id })" style="color:black;">Hủy Đơn</a>
+                                            </button>
+                                          
                                         }
+
                                         @if (itembill.Status == 3)
-
                                         {
-
                                             <button style="background-color:royalblue ;border-radius:20px;border:none"> @Html.ActionLink("Đã nhận hàng", "Nhanhang", new { id = itembill.id }, new { style = "color:black;" }) </button>
-
-
                                         }
-
                                     </td>
                                     <td>
                                     </td>
@@ -353,9 +350,27 @@
 
 
 
-
-
     </body>
 
 
 }
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var cancelButtons = document.querySelectorAll('.cancel-button');
+
+        cancelButtons.forEach(function (cancelButton) {
+            cancelButton.addEventListener("click", function (event) {
+                event.preventDefault();
+                var itemId = this.getAttribute('data-itemid');
+                var confirmation = confirm("Bạn có chắc chắn muốn hủy đơn này không?");
+
+                if (confirmation) {
+                    // Chuyển hướng đến action HuyDon nếu xác nhận
+                    window.location.href = '@Url.Action("HuyDon", "Home")?id=' + itemId;
+                } else {
+                    // Không làm gì nếu hủy
+                }
+            });
+        });
+    });
+</script>

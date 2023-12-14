@@ -202,8 +202,18 @@
                                         <div data-i18n="Dashboards">Đơn Đã Xác Nhận</div>
                                     </a>
                                 </li>
+                                <li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "Bill" && ViewContext.RouteData.Values["action"].ToString() == "ShowBillDaNhan" ? "active" : "")">
+                                    <a href="~/QLBills/ShowBillDaNhan" class="menu-link">
+
+                                        <span class="mdi mdi-receipt-text-check"></span>
+
+
+                                        <div data-i18n="Dashboards">Đơn Đang Giao</div>
+                                    </a>
+                                </li>
                                 <li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "Bill" && ViewContext.RouteData.Values["action"].ToString() == "DonHuy" ? "active" : "")">
                                     <a href="~/QLBills/DonHuy" class="menu-link">
+                                        <span class="mdi mdi-receipt-text-check"></span>
                                         <div data-i18n="Dashboards">Đơn Chờ Hủy</div>
                                     </a>
                                 </li>
@@ -358,8 +368,18 @@
                                         <div data-i18n="Dashboards">Đơn Đã Xác Nhận</div>
                                         </a>
                                     </li>
+                                <li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "Bill" && ViewContext.RouteData.Values["action"].ToString() == "ShowBillDaNhan" ? "active" : "")">
+                                    <a href="~/QLBills/ShowBillDaNhan" class="menu-link">
+
+                                        <span class="mdi mdi-receipt-text-check"></span>
+
+
+                                        <div data-i18n="Dashboards">Đơn Đang Giao</div>
+                                    </a>
+                                </li>
                                 <li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "Bill" && ViewContext.RouteData.Values["action"].ToString() == "DonHuy" ? "active" : "")">
                                         <a href="~/QLBills/DonHuy" class="menu-link">
+                                        <span class="mdi mdi-receipt-text-check"></span>
                                         <div data-i18n="Dashboards">Đơn Chờ Hủy</div>
                                         </a>
                                     </li>

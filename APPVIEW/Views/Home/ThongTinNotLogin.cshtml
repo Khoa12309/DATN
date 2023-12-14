@@ -1,0 +1,335 @@
+﻿
+
+@{
+    ViewData["Title"] = "Thongtin";
+    Layout = "~/Views/Shared/_LayoutWeb.cshtml";
+    @using APPDATA.Models;
+    @using System.Globalization;
+    List<Bill> bill = ViewBag.viewbill;
+    List<BillDetail> billct = ViewBag.viewbillct;
+    List<ProductDetail> prdct = ViewBag.viewprdct;
+    List<Product> prd = ViewBag.viewprd;
+    List<Size> size = ViewBag.sizee;
+    List<Color> color = ViewBag.Collor;
+    List<Image> image = ViewBag.image;
+    List<Voucher> voucher = ViewBag.Voucher;
+    string tb = ViewBag.error;
+    string tb2 = "Không có dữ liệu";
+
+}
+
+
+
+<section class="blog-banner-area" id="category">
+    <div class="container h-100">
+        <div class="blog-banner">
+            <div class="text-center">
+                <h1>Xem hóa đơn</h1>
+                @*<nav aria-label="breadcrumb" class="banner-breadcrumb">
+                <ol class="breadcrumb">
+                <li class="breadcrumb-item"><a href="~/home/index">Home</a></li>
+                <li class="breadcrumb-item active" aria-current="page">Checkout</li>
+                </ol>
+                </nav>*@
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<div class="container">
+
+    <form asp-controller="Home" style="margin-top:20px;margin-left:1px" asp-action="ThongTinNotLogin" class="row contact_form" method="post">
+        <div class="row">
+            <div class="col-md-8 form-group">
+                <input type="text" class="form-control" name="sdt" placeholder="Số Điện Thoại">
+
+            </div>    <div class="col-md-2 form-group">
+                <button type="submit" class="btn btn-success">Tìm kiếm</button>
+
+            </div>
+        </div>
+    </form>
+</div>
+
+
+
+
+
+@if (tb != null ||  bill.Count()>0)
+{
+    <h3 style="text-align:center">Đơn hàng của bạn </h3>
+    @foreach (var itembill in bill)
+    {
+        var userbillct = billct.Where(c => c.BIllId == itembill.id).ToList();
+
+        var vouchers = voucher.FirstOrDefault(c => c.Id == itembill.Voucherid);
+
+        <body>
+            <!--================ Start Header Menu Area =================-->
+            <!-- ================ end banner area ================= -->
+            <!--================Order Details Area =================-->
+            <section class="order_details section-margin--small">
+                <div class="container">
+
+
+                    <div class="order_details_table">
+                        <h2>Chi tiết đơn hàng </h2>
+                        <div class="table-responsive">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col"></th>
+                                        <th scope="col">Tên sản phẩm</th>
+                                        <th scope="col">Số lượng</th>
+                                        <th scope="col">Size</th>
+                                        <th scope="col">Màu</th>
+                                        <th scope="col">Giá</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach (var bil in userbillct)
+                                    {
+
+                                        var pct = prdct.FirstOrDefault(c => c.Id == bil.ProductDetailID);
+                                        var pro = prd.FirstOrDefault(c => c.Id == pct.Id_Product);
+                                        var siz = size.FirstOrDefault(c => c.Id == pct.Id_Size);
+                                        var colo = color.FirstOrDefault(c => c.Id == pct.Id_Color);
+                                        var img = image.FirstOrDefault(c => c.IdProductdetail == pct.Id);
+
+                                        <tr>
+                                            <td>
+                                                @if (@img.Name != null)
+                                                {
+                                                    <img src="~/images/@img.Name" style="width: 100px; height:auto" alt="">
+                                                }
+
+                                            </td>
+                                            <td>
+                                                <p><h5>@pro.Name<h5></p>
+                                            </td>
+                                            <td>
+                                                <h5>@bil.Amount</h5>
+                                            </td>
+                                            <td>
+                                                <p>@siz.Name</p>
+                                            </td>
+                                            <td>
+                                                <p>@colo.Name</p>
+                                            </td>
+                                            <td>
+                                                <h5>@bil.Price.ToString("C0", new CultureInfo("vi-VN"))</h5>
+                                            </td>
+
+                                        </tr>
+
+                                    }
+                                    <tr>
+
+                                        <td><h4 style="color:black"><hr style="color:black"></h4></td>
+                                        <td><h4 style="color:black"><hr style="color:black"></h4></td>
+                                        <td><h4 style="color:black"><hr style="color:black"></h4></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <h4>Voucher</h4>
+                                        </td>
+                                        <td>
+                                            <h5></h5>
+                                        </td>
+                                        <td>
+                                            <h5>
+                                                @if (itembill.Voucherid != null)
+                                                {
+                                                    if (vouchers != null)
+                                                    {
+                                                        <span>Mã: @vouchers.Code</span> <br></br>
+                                                        <span>Giảm: @vouchers.Value%</span> <br></br>
+                                                        <span>Giảm tối đa: @vouchers.DiscountAmount.ToString("C0", new CultureInfo("vi-VN"))</span>
+                                                    }
+                                                    else
+                                                    {
+                                                        <span>Không có voucher áp dụng</span>
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    <span>Không có voucher áp dụng</span>
+                                                }
+                                            </h5>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <h4>Phí ship</h4>
+                                        </td>
+                                        <td>
+                                            <h5></h5>
+                                        </td>
+                                        <td>
+                                            <h5>@string.Format(new CultureInfo("vi-VN"), "{0:C0}", itembill.ShipFee)</h5>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <h4>Số điện thoại</h4>
+                                        </td>
+                                        <td>
+                                            <h5></h5>
+                                        </td>
+                                        <td>
+                                            <h5>@itembill.PhoneNumber</h5>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <h4>Địa chỉ</h4>
+                                        </td>
+                                        <td>
+                                            <h5></h5>
+                                        </td>
+                                        <td>
+                                            <h5>@itembill.Address</h5>
+                                        </td>
+                                    </tr>
+
+
+                                    <tr>
+                                        <td>
+                                            <h4>Trạng thái đơn hàng : </h4>
+                                        </td>
+                                        <td>
+                                            <h5></h5>
+                                        </td>
+                                        <td>
+                                            <h5>
+                                                @if (itembill.Status == 1)
+                                                {
+
+                                                    <span>Chờ xác nhận</span>
+                                                }
+                                                else if (itembill.Status == 2)
+                                                {
+                                                    <span>Đã xác nhận đơn hàng </span>
+                                                }
+                                                else if (itembill.Status == 3)
+                                                {
+                                                    <span> Đang giao  </span>
+                                                }
+                                                else if (itembill.Status == 4)
+                                                {
+                                                    <span>Đã giao </span>
+                                                }
+                                                else if (itembill.Status == 5)
+                                                {
+                                                    <span>Đơn chờ hủy </span>
+                                                }
+
+                                                else if (itembill.Status == 0)
+                                                {
+                                                    <span>Đơn chờ hủy </span>
+                                                }
+                                            </h5>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <h4>Tổng tiền</h4>
+                                        </td>
+                                        <td>
+                                            <h5></h5>
+                                        </td>
+                                        <td>
+                                            @if (ViewBag.VoucherAcc != null)
+                                            {
+                                                var priceProd = itembill.TotalMoney;
+                                                var percent = vouchers.Value / 100;
+                                                var priceXpercent = priceProd * percent;
+                                                @if (priceXpercent > vouchers.DiscountAmount)
+                                                {
+                                                    itembill.TotalMoney = (float)(priceProd - vouchers.DiscountAmount) + itembill.ShipFee;
+                                                }
+                                                else
+                                                {
+                                                    itembill.TotalMoney = (priceProd - priceXpercent) + itembill.ShipFee;
+                                                }
+                                                <h5><span>@itembill.TotalMoney@string.Format(new CultureInfo("vi-VN"), "{0:C0}", itembill.TotalMoney)</span></h5>
+                                            }
+                                            else
+                                            {
+                                                <p>@string.Format(new CultureInfo("vi-VN"), "{0:C0}", itembill.TotalMoney)</p>
+                                            }
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            @if (itembill.Status == 1)
+
+                                            {
+                                                <button style="background-color:royalblue ; border-radius:12px ; border:none"> @Html.ActionLink("Đổi thông tin nhận hàng", "UpdateAddress2", new { id = itembill.id }, new { style = "color:black;" }) </button>
+
+                                            }
+                                            @if (itembill.Status == 1 || itembill.Status == 2)
+                                            {
+
+                                                <button class="cancel-button" data-itemid="@itembill.id" style="background-color:royalblue ; border-radius:12px ; border:none">
+                                                    <a href="@Url.Action("HuyDon2", new { id = itembill.id })" style="color:black;">Hủy Đơn</a>
+                                                </button>
+          
+                                            }
+                                            
+
+                                        </td>
+                                        <td>
+                                        </td>
+                                        <td>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!--================End Order Details Area =================-->
+
+
+
+
+
+        </body>
+
+
+    }
+
+}
+else
+{
+
+    <h3 style="text-align:center">@tb</h3>
+    <h3 style="text-align:center">@tb2</h3>
+
+}
+
+
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var cancelButtons = document.querySelectorAll('.cancel-button');
+
+        cancelButtons.forEach(function (cancelButton) {
+            cancelButton.addEventListener("click", function (event) {
+                event.preventDefault();
+                var itemId = this.getAttribute('data-itemid');
+                var confirmation = confirm("Bạn có chắc chắn muốn hủy đơn này không?");
+
+                if (confirmation) {
+                    // Chuyển hướng đến action HuyDon nếu xác nhận
+                    window.location.href = '@Url.Action("HuyDon2", "Home")?id=' + itemId;
+                } else {
+                    // Không làm gì nếu hủy
+                }
+            });
+        });
+    });
+</script>

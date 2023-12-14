@@ -101,13 +101,15 @@ namespace APPVIEW.Controllers
             if (account.Id == Guid.Empty)
             {
                
+
                 account = getapiAc.GetApi("Account").FirstOrDefault(c => c.Name == "khach k dang nhap");
                 var role = getapiRole.GetApi("Role").FirstOrDefault(c => c.name == "Customer");
+
                 if (account == null)
                 {                 
                     account = new Account();
                     account.Id = Guid.Empty;
-                    account.Status = 10;
+                    account.Status = 3;
                     account.Name = "khach k dang nhap";
                     account.Email = "";
                     account.Password = "";
@@ -314,15 +316,40 @@ namespace APPVIEW.Controllers
             var x = bills.GetApi("Bill").FirstOrDefault(c => c.id == id);
             x.Status = 4;
             x.PayDate = DateTime.Now;
+            x.Type = "Đã nhận hàng và thanh toán";
             await bills.UpdateObj(x, "Bill");
             return RedirectToAction("Thongtin");
         }
         public async Task<IActionResult> HuyDon(Guid id)
         {
             var x = bills.GetApi("Bill").FirstOrDefault(c => c.id == id);
-            x.Status = 0;
-            await bills.UpdateObj(x, "Bill");
+            if (x.Status == 1 ) {
+                x.Status = 0;
+                await bills.UpdateObj(x, "Bill");
+
+            }
+            if (x.Status == 2) {
+
+
+                x.Status = 5;
+                await bills.UpdateObj(x, "Bill");
+            }
             return RedirectToAction("Thongtin");
+        } public async Task<IActionResult> HuyDon2(Guid id)
+        {
+            var x = bills.GetApi("Bill").FirstOrDefault(c => c.id == id);
+            if (x.Status == 1 ) {
+                x.Status = 0;
+                await bills.UpdateObj(x, "Bill");
+
+            }
+            if (x.Status == 2) {
+
+
+                x.Status = 5;
+                await bills.UpdateObj(x, "Bill");
+            }
+            return RedirectToAction("ThongTinNotLogin",new{ sdt = x.PhoneNumber });
         }
         public async Task<IActionResult> UpdateAddress(Guid id)
         {
@@ -390,42 +417,115 @@ namespace APPVIEW.Controllers
             var x = bills.GetApi("Bill").FirstOrDefault(c => c.id == id);
             x.PhoneNumber = sdt;
             x.Address = diachi;
+            x.TotalMoney = x.TotalMoney + (ship - x.ShipFee);
             x.ShipFee = ship;
             await bills.UpdateObj(x, "Bill");
             return RedirectToAction("Thongtin");
+        }    public async Task<IActionResult> UpdateAddress2(Guid id)
+        {
+
+
+        
+
+
+            var client = new OnlineGatewayClient($"https://online-gateway.ghn.vn/shiip/public-api/master-data/province", "bdbbde2a-fec2-11ed-8a8c-6e4795e6d902");
+
+            // Gọi API để lấy danh sách các tỉnh/thành phố
+            var response = await client.GetProvincesAsync();
+
+            //Kiểm tra kết quả trả về
+            if (response.Code == 200) // Thành công
+            {
+                // Trả về danh sách các quận/huyện dưới dạng JSON
+                ViewBag.province = response.Data;
+            }
+
+            ViewBag.Product = SessionService.GetObjFromSession(HttpContext.Session, "Cart");
+            var tt = 0;
+            foreach (var item in ViewBag.Product)
+            {
+                tt += (item.Quantity * item.Price);
+            }
+            ViewBag.TT = tt;
+            var x = bills.GetApi("Bill").FirstOrDefault(c => c.id == id);
+            ViewBag.bill = x;
+
+            return View(x);
+        }
+        [HttpPost]
+        public async Task<IActionResult> UpdateAddress2(Guid id, string sdt, int province, string district, string ward, string diachict, float ship)
+        {
+            string province2 = "";
+  
+
+
+            var client = new OnlineGatewayClient($"https://online-gateway.ghn.vn/shiip/public-api/master-data/province", "bdbbde2a-fec2-11ed-8a8c-6e4795e6d902");
+
+            // Gọi API để lấy danh sách các tỉnh/thành phố
+            var response = await client.GetProvincesAsync();
+
+            //Kiểm tra kết quả trả về
+            if (response.Code == 200) // Thành công
+            {
+                // Trả về danh sách các quận/huyện dưới dạng JSON
+                ViewBag.province = response.Data;
+            }
+
+            foreach (var item in response.Data)
+            {
+                if (item.ProvinceID == province)
+                {
+
+                    province2 = item.ProvinceName; break;
+                }
+            }
+
+            // Gọi API để lấy danh sách các tỉnh/thành phố
+
+            var diachi = diachict + "-" + ward + "-" + district + "-Tỉnh " + province2;
+
+            var x = bills.GetApi("Bill").FirstOrDefault(c => c.id == id);
+            x.PhoneNumber = sdt;
+            x.Address = diachi;
+            x.TotalMoney = x.TotalMoney + (ship -x.ShipFee);
+            x.ShipFee = ship;
+           
+            await bills.UpdateObj(x, "Bill");
+            return RedirectToAction("ThongTinNotLogin", new { sdt = x.PhoneNumber });
         }
 
         // Sử dụng:
         // Tạo chuỗi có độ dài 8 ký tự
 
-
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> DatHangN(Address obj, string pay, float phiship, float voucher, string vouchercode)
         {
            
             if (obj.Name==null)
             {
                 _notyf.Warning("Tên không được để trống");
-                return RedirectToAction("checkout");
+                return RedirectToAction("checkout", new { obj = obj });
             } 
             if (obj.PhoneNumber==null)
             {
                 _notyf.Warning("Số điện thoại không được để trống");
-                return RedirectToAction("checkout");
+                return RedirectToAction("checkout", new { obj = obj });
             }  
             if (obj.Province==null)
             {
+
                 _notyf.Warning("Thành phố không được để trống");
-                return RedirectToAction("checkout");
+                return RedirectToAction("checkout", new { obj = obj });
             } 
             if (obj.District==null)
             {
                 _notyf.Warning("Quận/huyện không được để trống");
-                return RedirectToAction("checkout");
+                return RedirectToAction("checkout", new { obj = obj });
             }
             if (obj.Ward==null)
             {
                 _notyf.Warning("Phường/xã không được để trống");
-                return RedirectToAction("checkout");
+                return RedirectToAction("checkout", new { obj = obj });
             } 
 
 
@@ -435,9 +535,33 @@ namespace APPVIEW.Controllers
                 account = getapiAc.GetApi("Account").FirstOrDefault(c => c.Name == "khach k dang nhap");
               
             }
+
+            if (obj != null)
+            {
+                var p = Convert.ToInt32(obj.Province);
+                if (p != 0)
+                {
+                    var d = await dis(obj.District, p);
+                    if (d != 0)
+                    {
+                        var w = await wad(obj.Ward, d);
+                        if (w == 0) // Thành công
+                        {
+                            // Trả về danh sách các quận/huyện dưới dạng JSON
+                            _notyf.Warning("Phường/xã không đúng");
+                            return RedirectToAction("checkout", new { obj = obj });
+
+                        }
+                    }
+                    else
+                    {
+                        _notyf.Warning("Quận/huyện không đúng");
+                        return RedirectToAction("checkout", new { obj = obj });
+                    }
+                }
+            }
+
             var client = new OnlineGatewayClient($"https://online-gateway.ghn.vn/shiip/public-api/master-data/province", "bdbbde2a-fec2-11ed-8a8c-6e4795e6d902");
-
-
 
             // Gọi API để lấy danh sách các tỉnh/thành phố
             var response = await client.GetProvincesAsync();
@@ -452,17 +576,16 @@ namespace APPVIEW.Controllers
             bill.id = Guid.NewGuid();
             bill.Name = obj.Name;
             bill.AccountId = account.Id;
-            bill.Code = GenerateRandomString(8);
+            bill.Code ="HD"+GenerateRandomString(6);
             bill.PhoneNumber = obj.PhoneNumber;
             bill.Address = obj.Province + "-" + obj.District + "-" + obj.Ward + "-" + obj.SpecificAddress;
             bill.CreateBy = DateTime.Now;
             bill.CreateDate = DateTime.Now;
             bill.UpdateBy = DateTime.Now;
             bill.ShipFee = phiship;
-            bill.PayDate = DateTime.Now;
             bill.TotalMoney = 0;
             bill.Status = 1;
-            bill.PayDate = DateTime.Now;
+
             bill.Type = pay + " - Chưa Thanh Toán ";
             var vo = getapiVoucher.GetApi("Voucher").FirstOrDefault(c => c.Code == vouchercode);
             if (vo != null)
@@ -735,7 +858,7 @@ namespace APPVIEW.Controllers
         public async Task<IActionResult> Thongtin()
         {
             var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
-            var userBills = bills.GetApi("Bill").Where(c => c.AccountId == account.Id && c.Status != 4 && c.Status != 5).OrderByDescending(d => d.CreateDate).ToList();
+            var userBills = bills.GetApi("Bill").Where(c => c.AccountId == account.Id && c.Status != 4 ).OrderByDescending(d => d.CreateDate).ToList();
             ViewBag.viewbill = userBills;
 
             if (User.Identity.IsAuthenticated)
@@ -748,18 +871,24 @@ namespace APPVIEW.Controllers
             {
                 return Redirect("~/Account/login");
             }
-            var billss = bills.GetApi("Bill").Where(c => c.Type == "Online - Chưa Thanh Toán ").ToList();
-            foreach (var item in billss)
-            {
+  
 
-                var xx = bills.GetApi("Bill").FirstOrDefault(c => c.id == item.id);
-                var y = billDetails.GetApi("BillDetail").Where(c => c.BIllId == item.id).ToList();
-                foreach (var item2 in y)
-                {
-                    await billDetails.DeleteObj(item2.id, "BillDetail");
+            var bill = bills.GetApi("Bill");
+            foreach (var item in bill) {
+               var y = billDetails.GetApi("BillDetail").Where(c => c.BIllId == item.id).ToList();
+
+                foreach (var item2 in y) {
+                    if (item2.ProductDetailID== null || item2.ProductDetailID == Guid.Empty) {
+                    
+                    
+                    
+                    
+                    
+                    }
+                
+                
                 }
-                await bills.DeleteObj(item.id, "Bill");
-
+            
             }
             var client = new OnlineGatewayClient($"https://online-gateway.ghn.vn/shiip/public-api/master-data/province", "bdbbde2a-fec2-11ed-8a8c-6e4795e6d902");
             // Gọi API để lấy danh sách các tỉnh/thành phố
@@ -784,6 +913,75 @@ namespace APPVIEW.Controllers
             ViewBag.Collor = getapiColor.GetApi("Color");
             ViewBag.image = getapiImg.GetApi("Image");
             return View(userBills);
+
+        }       
+        public async Task<IActionResult> ThongTinNotLogin(string sdt)
+        {
+            if (sdt != null || sdt != "") {
+
+
+                var userBills = bills.GetApi("Bill").Where(c => c.PhoneNumber == sdt && c.Status != 4).OrderByDescending(d => d.CreateDate).ToList();
+                ViewBag.viewbill = userBills;
+
+
+
+                var bill = bills.GetApi("Bill");
+                foreach (var item in bill)
+                {
+                    var y = billDetails.GetApi("BillDetail").Where(c => c.BIllId == item.id).ToList();
+
+                    foreach (var item2 in y)
+                    {
+                        if (item2.ProductDetailID == null || item2.ProductDetailID == Guid.Empty)
+                        {
+
+
+
+
+
+                        }
+
+
+                    }
+
+                }
+                var client = new OnlineGatewayClient($"https://online-gateway.ghn.vn/shiip/public-api/master-data/province", "bdbbde2a-fec2-11ed-8a8c-6e4795e6d902");
+                // Gọi API để lấy danh sách các tỉnh/thành phố
+                var response = await client.GetProvincesAsync();
+                var billDetailsApi = billDetails.GetApi("BillDetail");
+                var productDetailsApi = getapi.GetApi("ProductDetails");
+                var productsApi = getapiProduct.GetApi("Product");
+                var voucherApi = getapiVoucher.GetApi("Voucher");
+                // Lấy thông tin về voucher
+                foreach (var userBill in userBills)
+                {
+                    if (userBill.Voucherid.HasValue)
+                    {
+                        userBill.Voucher = voucherApi.FirstOrDefault(v => v.Id == userBill.Voucherid);
+                    }
+                }
+                ViewBag.viewbillct = billDetailsApi;
+                ViewBag.viewprdct = productDetailsApi;
+                ViewBag.viewprd = productsApi;
+                ViewBag.Voucher = voucherApi;
+                ViewBag.sizee = getapiSize.GetApi("Size");
+                ViewBag.Collor = getapiColor.GetApi("Color");
+                ViewBag.image = getapiImg.GetApi("Image");
+
+                ViewBag.bill = userBills;
+                return View();
+
+
+
+            }
+            else
+            {
+                ViewBag.erorr = "Không có thông tin";
+              
+                return View() ;
+            }
+            
+
 
         }
 
@@ -924,7 +1122,7 @@ namespace APPVIEW.Controllers
             TempData["prodtId"] = pro.Id;
             return View(pro);
         }
-
+        
 
 
         [HttpPost]
@@ -1082,7 +1280,7 @@ namespace APPVIEW.Controllers
 
                 foreach (var item in response.Data)
                 {
-                    if (item.NameExtension.Any(c => c.Contains(ten))||item.DistrictName.ToLower().Contains(ten.ToLower()))
+                    if (item.NameExtension.Any(c => c.Contains(ten))||item.DistrictName.ToLower() == ten.ToLower())
                     {
                         return item.DistrictID;
                     }
@@ -1221,10 +1419,16 @@ namespace APPVIEW.Controllers
             return View();
         }
 
+       
         public async Task<IActionResult> Checkout( Guid? id)
         {
             try
             {
+                if (User.IsInRole("Admin") || User.IsInRole("Staff"))
+                {
+                    _notyf.Warning("Quản trị viên không được phép mua hàng.");
+                    return RedirectToAction("Index", "Home"); // Hoặc điều hướng đến trang chính của ứng dụng
+                }
                 var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
                 if (User.Identity.IsAuthenticated)
                 {
@@ -1233,12 +1437,13 @@ namespace APPVIEW.Controllers
                     account = getapiAc.GetApi("Account").FirstOrDefault(c => c.Id.ToString() == Uid);
                     SessionService.SetObjToJson(HttpContext.Session, "Account", account);
                 }
+               
 
                 var client = new OnlineGatewayClient($"https://online-gateway.ghn.vn/shiip/public-api/master-data/province", "bdbbde2a-fec2-11ed-8a8c-6e4795e6d902");
 
                 // Gọi API để lấy danh sách các tỉnh/thành phố
                 var response = await client.GetProvincesAsync();
-                if (response.Code == 200) // Thành công
+                if (response.Code == 200) // Thành côngnhan
                 {
                     ViewBag.province = response.Data;
                 }
@@ -1338,6 +1543,21 @@ namespace APPVIEW.Controllers
                                     // Trả về danh sách các quận/huyện dưới dạng JSON
                                     ViewBag.fee = fee.Data.total;
                                 }
+                                else
+                                {
+                                    ViewBag.fee=0; 
+                                    ViewBag.TT = tt;
+                                    ViewBag.Total = tt;
+                                    _notyf.Warning("Phường/xã không đúng");
+                                    return View(dc);
+                                }
+                            }
+                            else {
+                                ViewBag.fee = 0;
+                                ViewBag.TT = tt;
+                                ViewBag.Total = tt;
+                                _notyf.Warning("Quận/huyện không đúng");
+                                return View(dc);
                             }
 
                         }
@@ -1358,11 +1578,11 @@ namespace APPVIEW.Controllers
                 }
                 return View();
             }
-            catch (Exception )
+            catch (Exception ex )
             { 
-                _notyf.Error("Lỗi");
+                _notyf.Error($"Lỗi:{ex.Message}");
                 return View();
-              }
+            }
            
           
         }
@@ -1378,15 +1598,14 @@ namespace APPVIEW.Controllers
                 {
                     return RedirectToAction("Login", "Account");
                 }
-
+                var prodtId = TempData["prodtId"] as Guid?;
                 var voucher = getapiVoucher.GetApi("Voucher").FirstOrDefault(v => v.Id == voucherId);
+                var voucherAcc = getapiVoucherAcc.GetApi("VoucherForAcc").FirstOrDefault(v => v.Id_Voucher == voucherId && v.Id_Account == account.Id);
 
                 if (voucher != null)
                 {
-                    // Kiểm tra xem người dùng đã có phiếu giảm giá này chưa
-                    var existingVoucherAcc = getapiVoucherAcc.GetApi("VoucherForAcc").FirstOrDefault(v => v.Id_Voucher == voucherId && v.Id_Account == account.Id);
 
-                    if (existingVoucherAcc == null)
+                    if (voucherAcc == null)
                     {
                         if (voucher.Quantity > 0)
                         {
@@ -1409,28 +1628,25 @@ namespace APPVIEW.Controllers
                             voucher.Quantity--;
 
                             await getapiVoucher.UpdateObj(voucher, "Voucher");
-                            TempData["VoucherError"] = "Lưu thành công";
+                            _notyf.Success("Lưu phiếu gỉảm giá thành công!");
+
+                            return Json(new { success = true });
                         }
                         else
                         {
-                            TempData["VoucherError"] = "Chúc bạn may mắn lần sau";
+                            _notyf.Warning("Chúc bạn may mắn lần sau!");
                         }
                     }
                     else
                     {
-                        TempData["VoucherError"] = "Phiếu giảm giá đã có trong tài khoản của bạn.";                     
-                        _notyf.Success("Voucher đã có trong tài khoản của bạn!");
+                        _notyf.Success("Phiếu giảm giá đã có trong tài khoản của bạn!");
+                        return Json(new { success = false });
 
                     }
                 }
                 else
                 {
-
-                    TempData["VoucherError"] = "Phiếu giảm giá không hợp lệ";
-
-                   
-                    _notyf.Warning("Chúc bạn may mắn lần sau!");
-
+                    _notyf.Warning("Phiếu giảm giá không hợp lệ!");
                 }
             }
             catch (Exception ex)
@@ -1442,7 +1658,42 @@ namespace APPVIEW.Controllers
             }
             return RedirectToAction("Details", "Home");
         }
+        [HttpGet]
+        public async Task<IActionResult> YourVouchers()
+        {
 
+            try
+            {
+                // Lấy thông tin tài khoản từ session
+                var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
+
+                if (account == null || account.Id == Guid.Empty)
+                {
+                    // Xử lý trường hợp người dùng chưa đăng nhập
+                    return RedirectToAction("Login", "Account");
+                }
+                else
+                {
+                    // Lấy danh sách voucher cho tài khoản
+                    var voucherAcc = getapiVoucherAcc.GetApi("VoucherForAcc").Where(c => c.Id_Account == account.Id && c.Status == 1).ToList();
+
+                    if (voucherAcc != null && voucherAcc.Any())
+                    {
+                        return View(voucherAcc);
+                    }
+                    else
+                    {
+                        return View();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Xử lý nếu có lỗi xảy ra
+                return StatusCode(500, new { ErrorMessage = $"Lỗi viewáy chủ nội bộ: {ex.Message}" });
+            }
+
+        }
         [HttpGet]
         public async Task<IActionResult> ApplyDiscount()
         {
@@ -1590,13 +1841,14 @@ namespace APPVIEW.Controllers
 
         public async Task<IActionResult> PaymentConfirm(Guid id)
         {
+            var Bill = bills.GetApi("Bill").FirstOrDefault(c => c.id == id);
             if (Request.QueryString.Value != null)
             {
 
                 string hashSecret = "UGHKKYGUTTLWWTQOJBECDFAMDHZDBLWW"; //Chuỗi bí mật
                 var vnpayData = Request.Query;
                 PayLib pay = new PayLib();
-                var Bill = bills.GetApi("Bill").FirstOrDefault(c => c.id == id);
+                
                 var account = getapiAc.GetApi("Account").FirstOrDefault(c => c.Id == Bill.AccountId).Name;
 
                 //lấy toàn bộ dữ liệu được trả về
@@ -1682,6 +1934,13 @@ namespace APPVIEW.Controllers
                     }
                     else
                     {
+                       
+                        var billd = billDetails.GetApi("BillDetail").Where(c => c.BIllId == id);
+                        foreach (var item in billd)
+                        {
+                            await billDetails.DeleteObj(item.id, "BillDetail");
+                        }
+                        await bills.DeleteObj(id, "Bill");
                         //Thanh toán không thành công. Mã lỗi: vnp_ResponseCode
                         ViewBag.Message = "Có lỗi xảy ra trong quá trình xử lý hóa đơn " + orderId + " | Mã giao dịch: " + vnpayTranId + " | Mã lỗi: " + vnp_ResponseCode;
                         _notyf.Error("Đặt hàng thất bại");
@@ -1690,16 +1949,18 @@ namespace APPVIEW.Controllers
                             return RedirectToAction("Index");
                         }
                     }
+                    return RedirectToAction("checkout");
                 }
                 else
                 {
+                    await bills.DeleteObj(id, "Bill");
                     _notyf.Error("Đặt hàng thất bại");
                     if (account == "khach k dang nhap")
                     {
                         return RedirectToAction("Index");
                     }
                     ViewBag.Message = "Có lỗi xảy ra trong quá trình xử lý";
-                     
+                    return RedirectToAction("Index");
                 }
             }
             return RedirectToAction("thongtin");

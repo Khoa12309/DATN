@@ -1,0 +1,146 @@
+﻿@using APPDATA.Models;
+@model APPVIEW.ViewModels.AccountVm
+
+@{
+    ViewData["Title"] = $"Tài khoản({Model.Name})";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+@functions
+{
+    private string GetRoleName(Guid? roleId)
+    {
+        var roles = ViewBag.Roles as List<Role>;
+        var role = roles.FirstOrDefault(c => c.id == roleId);
+        if (role != null)
+        {
+
+            return role.name;
+        }
+        return "No Data";
+    }
+
+}
+@{
+    var nameClaim = User.FindFirst("Name");
+
+    bool isCurrentUser = nameClaim != null && nameClaim.Value == Model.Name;
+}
+<div class="row">
+    <!-- User Sidebar -->
+    <div class="col-xl-4 col-lg-5 col-md-5 order-1 order-md-0">
+        <!-- User Card -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <div class="user-avatar-section">
+                    <div class=" d-flex align-items-center flex-column">
+                        <img class="img-fluid rounded mb-3 mt-4" src="~/UserImage/@Model.Avatar" height="120" width="120" alt="Hình đại diện người dùng" _mstalt="158743" _msthash="270">
+                        <div class="user-info text-center">
+                            <h4 _msttexthash="260650" _msthash="271">@Model.Name</h4>
+                            <span class="badge bg-label-danger rounded-pill" _msttexthash="1294540" _msthash="272"></span>
+                            @if (GetRoleName(Model.Id_Role).Contains("Admin"))
+                            {
+                                <span class="text-truncate d-flex align-items-center">
+                                    <i class="mdi mdi-laptop mdi-20px text-danger me-2"></i>
+                                    <font _mstmutation="1" _msttexthash="58448" _msthash="405">@GetRoleName(Model.Id_Role)</font>
+                                </span>
+                            }
+                            else if (GetRoleName(Model.Id_Role).Contains("Staff"))
+                            {
+                                <span class="text-truncate d-flex align-items-center">
+                                    <i class="mdi mdi-cog-outline mdi-20px text-warning me-2"></i>
+                                    <font _mstmutation="1" _msttexthash="58448" _msthash="405">@GetRoleName(Model.Id_Role)</font>
+                                </span>
+                            }
+                            else
+                            {
+                                <span class="text-truncate d-flex align-items-center">
+                                    <i class="mdi mdi-account-outline mdi-20px text-primary me-2"></i>
+                                    <font _mstmutation="1" _msttexthash="58448" _msthash="405">@GetRoleName(Model.Id_Role)</font>
+                                </span>
+                            }
+
+                        </div>
+                    </div>
+                </div>
+                <h5 class="pb-3 border-bottom mb-3" _msttexthash="1306773" _msthash="277">Chi tiết</h5>
+                <div class="info-container">
+                    <ul class="list-unstyled mb-4">
+                        <li class="mb-3">
+                            <font _mstmutation="1" _msttexthash="2204293" _msthash="278"><span class="h6" _mstmutation="1" _istranslated="1">Tên đăng nhập:</span> <span _mstmutation="1" _istranslated="1">@Model.Name</span></font>
+                        </li>
+                        <li class="mb-3">
+                            <font _mstmutation="1" _msttexthash="3613467" _msthash="279"><span class="h6" _mstmutation="1" _istranslated="1">Email: @Model.Email</span> <span _mstmutation="1" _istranslated="1"></span></font>
+                        </li>
+                        <li class="mb-3">
+                            <span class="h6" _msttexthash="1470248" _msthash="280">Tình trạng:</span>
+
+                            @if (Model.Status == 1)
+                            {
+                                <span class="badge bg-label-success rounded-pill" _msttexthash="2258880" _msthash="281">Hoạt động</span>
+                            }
+                            else if (Model.Status==2)
+                            {
+                                <span class="badge badge rounded-pill bg-label-danger" _msttexthash="2258880" _msthash="281">Đã khóa</span>
+                            }else
+                            {
+                                <span class="badge bg-label-warning rounded-pill" _msttexthash="2258880" _msthash="281">Chưa kích hoạt</span>
+                            }
+                        </li>
+                        <li class="mb-3">
+                            <font _mstmutation="1" _msttexthash="2173444" _msthash="282"><span class="h6" _mstmutation="1" _istranslated="1">Vai trò:</span> <span _mstmutation="1" _istranslated="1">@GetRoleName(Model.Id_Role)</span></font>
+                        </li>
+                        <font _mstmutation="1" _msttexthash="1484314" _msthash="284"><span class="h6" _mstmutation="1" _istranslated="1">Liên hệ:</span> <span _mstmutation="1" _istranslated="1">@Model.PhoneNumber</span></font>
+                        </li>
+                    </ul>
+                    <div class="d-flex justify-content-center">
+                        <a href="javascript:;" class="btn btn-primary me-3 waves-effect waves-light" data-bs-toggle="modal" _msttexthash="1319188" _msthash="287" onclick="goBack()">Quay lại</a>
+
+                        <a href="@Url.Action("Delete", new { id = Model.AccountId })" class="btn btn-outline-danger suspend-user waves-effect @(isCurrentUser ? "disabled" : "")" _msttexthash="1437956" _msthash="288">Khóa</a>
+                        <script>
+                            function goBack() {
+                                window.history.back();
+                            }
+                        </script>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /User Card -->
+    </div>
+    <!--/ User Sidebar -->
+    <!-- User Content -->
+    <div class="col-xl-8 col-lg-7 col-md-7 order-0 order-md-1">
+        <!--/ User Tabs -->
+        <!-- Project table -->
+        <div class="card mb-4">
+            <h5 class="card-header" _msttexthash="6987929" _msthash="304">Chi tiết địa chỉ</h5>
+            <div class="card-datatable table-responsive">
+                <div id="DataTables_Table_0_wrapper" class="dataTables_wrapper dt-bootstrap5 no-footer">
+                    <table class="table datatable-project dataTable no-footer dtr-column collapsed" id="DataTables_Table_0" aria-describedby="DataTables_Table_0_info" style="width: 803px;">
+                        <thead class="table-light">
+                            <tr>
+                                <td>Tỉnh/Thành phố</td>
+                                <td>Quận/Huyện</td>
+                                <td>Phường/Xã</td>
+                                <td>Địa chỉ cụ thể</td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>@Model.Province</td>
+                                <td>@Model.District</td>
+                                <td>@Model.Ward</td>
+                                <td>@Model.SpecificAddress</td>
+
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <!-- /Project table -->
+    </div>
+    <!--/ User Content -->
+</div>
