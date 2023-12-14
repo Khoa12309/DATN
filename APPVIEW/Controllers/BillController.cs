@@ -16,35 +16,49 @@ namespace APPVIEW.Controllers
             getapiacc = new Getapi<Account>();
         }
   
-        public async Task<IActionResult> GetList(string searchTerm)
+        public async Task<IActionResult> GetList(string searchTerm, DateTime? start, DateTime? end)
         {
             var obj = getapi.GetApi("Bill").Where(c=>c.Type!= "Tại Quầy");
             ViewBag.account = getapiacc.GetApi("Account");
             try
             {
-                if (searchTerm != "" || searchTerm!= null)
+                if (!string.IsNullOrEmpty(searchTerm) && start == null && end == null)
                 {
-                    var ac = getapiacc.GetApi("Account").Where(c=>c.Name.ToLower().Contains(searchTerm.ToLower())); ;
-                    var tk = obj.Where(c=> c.Code.ToLower().Contains(searchTerm.ToLower()) || c.TotalMoney.ToString().Contains(searchTerm)).OrderByDescending(d => d.CreateDate).ToList();
-                 
+                    var tk = obj.Where(c => c.Code.ToLower().Contains(searchTerm.ToLower()) || c.TotalMoney.ToString().Contains(searchTerm)).OrderByDescending(d => d.CreateDate).ToList();
+                    return View(tk);
+                }
+                else if (string.IsNullOrEmpty(searchTerm) && start != null && end != null)
+                {
+                    // Adjust end date to include the entire day until 23:59:59
+                    end = end?.Date.AddDays(1).AddTicks(-1); // Setting the end date to the end of the day
+
+                    var tk = obj.Where(c => (c.CreateDate >= start && c.CreateDate <= end)).OrderByDescending(d => d.CreateDate).ToList();
+                    return View(tk);
+                }
+                else if (string.IsNullOrEmpty(searchTerm) && start != null && end == null)
+                {
+                    // Filter bills for today
+                    var todayStart = DateTime.Today;
+                    var todayEnd = DateTime.Today.AddDays(1).AddTicks(-1);
+
+                    var tk = obj.Where(c => (c.CreateDate >= todayStart && c.CreateDate <= todayEnd)).OrderByDescending(d => d.CreateDate).ToList();
+                    return View(tk);
+                }
+                else if (!string.IsNullOrEmpty(searchTerm) && start != null && end != null)
+                {
+                    end = end?.Date.AddDays(1).AddTicks(-1);
+                    var tk = obj.Where(c => (c.Code.ToLower().Contains(searchTerm.ToLower()) || c.TotalMoney.ToString().Contains(searchTerm)) && (c.CreateDate >= start && c.CreateDate <= end)).OrderByDescending(d => d.CreateDate).ToList();
                     return View(tk);
                 }
                 else
                 {
-
-
-
-
-
                     return View(obj);
                 }
-
             }
             catch (Exception ex)
             {
                 return View(obj);
             }
-            return View(obj);
 
         }
         public async Task<IActionResult> GetList2(string searchTerm, DateTime? start, DateTime? end)
