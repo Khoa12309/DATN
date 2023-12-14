@@ -97,10 +97,7 @@ namespace _APPAPI.Controllers
             Account item = _crud.GetAllItems().FirstOrDefault(c => c.Id == obj.Id);
 
             item.Update_date = DateTime.Now;
-            if (obj.Avatar!=null)
-            {
-                item.Avatar = obj.Avatar;
-            }
+            item.Avatar = obj.Avatar;
             item.Email = obj.Email;
             item.Password = obj.Password;
             item.IdRole = obj.IdRole;
