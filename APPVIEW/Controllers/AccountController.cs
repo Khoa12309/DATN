@@ -293,15 +293,15 @@ namespace APPVIEW.Controllers
             {
                 id = Guid.NewGuid(),
                 AccountId = obj.Id,
-                City = "N/A",
-                Ward = "N/A",
-                District = "N/A",
+                City = "",
+                Ward = "",
+                District = "",
                 PhoneNumber = obj.PhoneNumber,
-                Description = "N/A",
+                Description = "",
                 Name = obj.Name,
-                Province = "N/A",
-                DefaultAddress = "N/A",
-                SpecificAddress = "N/A"
+                Province = "",
+                DefaultAddress = "",
+                SpecificAddress = ""
 
 
             };
