@@ -511,9 +511,14 @@
     });
 
 </script> 
-<!--================ end related Product area =================-->
 <script>
-
+    var maxQuantity = @Model.Quantity;
+    document.getElementById('sst').addEventListener('input', function () {
+        var inputValue = parseInt(this.value);
+        if (inputValue < 1 || inputValue > maxQuantity) {
+            this.value = Math.min(Math.max(inputValue, 1), maxQuantity);
+        }
+    });
     $(document).ready(function () {
 
         $(".s_Product_carousel").owlCarousel({

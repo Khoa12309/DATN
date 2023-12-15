@@ -4,6 +4,7 @@
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 
     @using APPDATA.Models;
+@using System.Globalization;
     var bill = ViewBag.viewbill;
     List<BillDetail> billct = ViewBag.viewbillct;
     List<ProductDetail> prdct = ViewBag.viewprdct;
@@ -14,41 +15,35 @@
     int stt = 0;
 }
 
-
-
-
-<form asp-controller="QLBills" asp-action="ShowBillXacNhan" class="row contact_form" method="post">
-
-    <div class="row">
-        <div class="col-md-3 form-group">
-            <input type="text" class="form-control" name="search" placeholder="Nhập mã hóa đơn để tìm kiếm">
-    
-        </div>    <div class="col-md-2 form-group">
-            <button type="submit" class="btn btn-success">Tìm kiếm</button>
-
-        </div>
-    </div>
-</form>
-
-
-
 <div class="card">
     <div class="card-header">
     </div>
     <div class="card-body">
-       
-        <div class="table-responsive">
+        <form asp-controller="QLBills" asp-action="ShowBillXacNhan" class="row contact_form" method="post">
+            <div class="row">
+                <div class="col-md-3 form-group">
+                    <input type="text" class="form-control" name="search" placeholder="Nhập mã hóa đơn để tìm kiếm">
+
+                </div>    <div class="col-md-2 form-group">
+                    <button type="submit" class="btn btn-success">Tìm kiếm</button>
+
+                </div>
+            </div>
+        </form>
+        <div class="table-responsive table-sm">
             <table class="table table-hover">
                 <thead>
                     <tr>
                         <th>STT</th>
                         <th>Mã hóa đơn</th>
                         <th>Tên khách hàng</th>
+
                         <th>SDT</th>
                         <th>Địa chỉ</th>
                         <th>Tổng tiền</th>
                         <th>Trạng thái</th>
                         <th>Ngày tạo</th>
+
 
                     </tr>
                 </thead>
@@ -82,24 +77,31 @@
                                     @itembill.PhoneNumber
                                 </td>
                                 <td>
-                                    @itembill.Address
+                                    @if (!string.IsNullOrEmpty(itembill.Address) && itembill.Address.Length > 50)
+                                    {
+                                        @Html.Raw(Html.Encode(itembill.Address.Substring(0, 50)) + "...")
+                                    }
+                                    else
+                                    {
+                                        @Html.Raw(Html.Encode(itembill.Address))
+                                    }
                                 </td>
                                 <td>
-                                    @itembill.TotalMoney
+                                    @itembill.TotalMoney.ToString("C0", new CultureInfo("vi-VN"))
                                 </td>
                                 @if (itembill.Status == 1)
                                 {
-                                    <td>  Chờ xác nhận + @itembill.Type</td>
+                                    <td>  Chờ xác nhận</td>
 
                                 }
                                 else if (itembill.Status == 2)
                                 {
-                                    <td>  Đã xác nhận đơn hàng + @itembill.Type</td>
+                                    <td>  Đã xác nhận đơn hàng</td>
 
                                 }
                                 else if (itembill.Status == 3)
                                 {
-                                    <td>Đang giao + @itembill.Type</td>
+                                    <td>Đang giao</td>
                                 }
                                 else if (itembill.Status == 4)
                                 {
@@ -112,17 +114,29 @@
                                         DateTime createDate = itembill.CreateDate;
                                         string formattedDate = createDate != DateTime.MinValue
                                         ? createDate.ToString("dd/MM/yyyy")
-                                        : "Not changed";
+                                        : "Chưa thay đổi";
                                     }
                                     @formattedDate
                                 </td>
 
                                 <td>
-                                    <button style="width:140px" class="btn btn-danger"> @Html.ActionLink("Giao Hàng", "GiaoHang", new { id = itembill.id }, new { style = "color:white;" }) </button>
-                                </td>
-                              
-                                <td>
-                                    <button style="width:140px" class="btn btn-danger"> @Html.ActionLink("Chi Tiết ", "Chitiet", new { id = itembill.id }, new { style = "color:white;" }) </button>
+
+                                    <div class="d-inline-block text-nowrap">
+                                        <button class="btn btn-sm btn-icon btn-text-secondary rounded-pill btn-icon dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                                            <i class="mdi mdi-dots-vertical mdi-20px"></i>
+                                        </button>
+                                        <div class="dropdown-menu dropdown-menu-end m-0">
+                                            <a href=" @Url.Action("GiaoHang", new { id = itembill.id })" class="dropdown-item ">
+                                                <i class="mdi mdi-truck me-2"></i>
+                                                <span>Giao hàng</span>
+                                            </a>
+                                            <a href="@Url.Action("Chitiet", new { id = itembill.id })" class="dropdown-item">
+                                                <i class="mdi mdi-eye-outline me-2"></i>
+                                                <span>Chi tiết</span>
+                                            </a>
+                                        </div>
+                                    </div>
+
                                 </td>
 
                             </tr>

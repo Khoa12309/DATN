@@ -142,7 +142,7 @@
                         <form asp-action="Login" id="formAuthentication" class="mb-3" method="POST">
                             <div class="form-floating form-floating-outline mb-3">
                                 <input type="hidden" name="ReturnUrl" value="@ViewData["ReturnUrl"]" />
-                                <input asp-for="Email" type="text"
+                                <input asp-for="Email" type="email"
                                        class="form-control"
                                        id="email"
                                        name="email"
@@ -154,15 +154,16 @@
                                 <div class="form-password-toggle">
                                     <div class="input-group input-group-merge">
                                         <div class="form-floating form-floating-outline">
-                                            <input asp-for=Password type="password"
+                                            <input asp-for="Password" type="password"
                                                    id="password"
                                                    class="form-control"
                                                    name="password"
                                                    placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
-                                                   aria-describedby="password" />
+                                                   aria-describedby="password" required />
+                                            <span id="passwordError" class="text-danger"></span>
                                             <label for="password">Password</label>
                                         </div>
-                                        <span class="input-group-text cursor-pointer"><i class="mdi mdi-eye-off-outline"></i></span>
+                                       
                                     </div>
                                 </div>
                             </div>
@@ -232,6 +233,23 @@
     <!-- Page JS -->
     <!-- Place this tag in your head or just before your close body tag. -->
     <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <script>
+        document.getElementById('password').addEventListener('input', function () {
+            var password = this.value;
+            var passwordPattern = /^(?!.*\s)(.{8,})$/;
+            var passwordErrorSpan = document.getElementById('passwordError');
+
+            if (passwordPattern.test(password)) {
+                // Mật khẩu hợp lệ, xóa thông báo lỗi
+                passwordErrorSpan.textContent = '';
+            } else {
+                // Mật khẩu không hợp lệ, hiển thị thông báo lỗi
+                passwordErrorSpan.textContent = 'Mật khẩu phải có ít nhất 8 ký tự và không chứa khoảng trắng';
+            }
+        });
+    </script>
+
+
 </body>
 </html>
 
