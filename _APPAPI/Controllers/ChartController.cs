@@ -117,8 +117,10 @@ namespace _APPAPI.Controllers
             try
             {
                 var data = _context.Bills
-                    .Where(b => b.PayDate.HasValue && b.PayDate >= startDate && b.PayDate <= endDate && b.Status == 4)
-                    .GroupBy(b => b.PayDate.Value.Date)  // Nhóm hóa đơn theo tháng
+                    .Where(b => b.PayDate.HasValue &&
+                                (b.PayDate.Value.Date >= startDate.Date && b.PayDate.Value.Date <= endDate.Date) &&
+                                b.Status == 4)
+                    .GroupBy(b => b.PayDate.Value.Date)
                     .Select(group => new
                     {
                         Dates = group.Key,
@@ -127,7 +129,6 @@ namespace _APPAPI.Controllers
                     .OrderBy(item => item.Dates)
                     .ToList();
 
-                // Chuyển đổi dữ liệu thành định dạng phù hợp cho biểu đồ
                 var chartData = new
                 {
                     labels = data.Select(item => item.Dates),
@@ -142,6 +143,7 @@ namespace _APPAPI.Controllers
                 return BadRequest(new { error = ex.Message });
             }
         }
+
 
         private ApiData GetDataFromApi(string apiUrl)
         {
@@ -278,7 +280,7 @@ namespace _APPAPI.Controllers
                                          {
                                              ProductName = grouped.Key.Name,
                                              QuantitySold = grouped.Sum(x => x.billdetails.Amount),
-                                             TotalEarnings = grouped.Sum(x => x.billdetails.Price),
+                                             TotalEarnings = grouped.Sum(x => x.bills.TotalMoney),
                                              ProductImage = grouped.FirstOrDefault().images.Name,
                                          });
 
@@ -360,7 +362,6 @@ namespace _APPAPI.Controllers
                 {
                     formattedQuantity = totalQuantity.ToString();
                 }
-
                 return Ok(new { totalQuantity = formattedQuantity });
             }
             catch (Exception ex)

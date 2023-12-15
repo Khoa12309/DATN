@@ -46,7 +46,7 @@
                                     </div>
                                 </div>
                                 <div class="ms-3">
-                                    <div class="small mb-1">Hoá đơn đã thanh toán</div>
+                                    <div class="small mb-1">Tổng hoá đơn đã thanh toán</div>
                                     <h5 class="mb-0" id="billCount">Loading...</h5>
                                 </div>
                             </div>
@@ -59,7 +59,7 @@
                                     </div>
                                 </div>
                                 <div class="ms-3">
-                                    <div class="small mb-1">Số khách hàng</div>
+                                    <div class="small mb-1">Tổng số khách hàng</div>
                                     <h5 class="mb-0" id="customerCount">Loading...</h5>
                                 </div>
                             </div>
@@ -72,7 +72,7 @@
                                     </div>
                                 </div>
                                 <div class="ms-3">
-                                    <div class="small mb-1">Số lượng sản phẩm đã bán</div>
+                                    <div class="small mb-1">Tổng sản phẩm đã bán</div>
                                     <h5 class="mb-0" id="products">Loading...</h5>
                                 </div>
                             </div>
@@ -85,7 +85,7 @@
                                     </div>
                                 </div>
                                 <div class="ms-3">
-                                    <div class="small mb-1">Doanh thu</div>
+                                    <div class="small mb-1">Tổng doanh thu</div>
                                     <h5 class="mb-0" id="revenues">Loading...</h5>
                                 </div>
                             </div>
@@ -142,7 +142,7 @@
                         <button class="btn btn-primary" value="datepicker" onclick="validateAndFetch()">Xác nhận</button>
 
                         <!-- Button to export data to Excel -->
-                        <button id="exportBtn" class="btn btn-primary ml-2" onclick="exportToExcel()">Export to Excel</button>
+                        <button id="exportBtn" class="btn btn-primary ml-2" onclick="exportToExcel()">Xuất ra file Excel</button>
                     </div>
                 </div>
                 <div class="card-body">
@@ -202,10 +202,12 @@
         <!--/Script xử lí -->
         <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-        <!-- Thư viện Bootstrap-datepicker -->
+        <!-- Thư viện Bootstrap -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/css/bootstrap-datepicker.min.css">
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/js/bootstrap-datepicker.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.9.0/locales/bootstrap-datepicker.vi.min.js"></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+
 
         <script>
             let yearlyChart;
@@ -293,7 +295,7 @@
             }
 
             function fetchAndDrawChart() {
-                // Lấy giá trị từ ô input cho startdate và enddate
+                // Lấy giá trị từ ô input cho startDate và endDate
                 var startDate = document.getElementById('startDate').value;
                 var endDate = document.getElementById('endDate').value;
 
@@ -305,7 +307,7 @@
                         if (yearlyChart) {
                             yearlyChart.destroy()
                         }
-                        if(weeklyChart){
+                        if (weeklyChart) {
                             weeklyChart.destroy()
                         }
                         if (PickDateChart) {
@@ -313,11 +315,15 @@
                         }
                         currentChart = "DatePicker";
                         console.log(currentChart);
+
+                        // Sử dụng moment.js để định dạng lại các ngày
+                        var formattedDates = data.labels.map(date => moment(date).format('DD-MM-YYYY'));
+
                         // Tạo biểu đồ
                         PickDateChart = new Chart(ctx, {
                             type: 'line',
                             data: {
-                                labels: data.labels,
+                                labels: formattedDates,
                                 datasets: [{
                                     label: data.label,
                                     data: data.values,
@@ -338,6 +344,7 @@
                     .catch(error => console.error('Error:', error));
             }
 
+
             function validateAndFetch() {
                 // Lấy giá trị từ ô input
                 var startDateValue = document.getElementById("startDate").value;
@@ -345,10 +352,14 @@
 
                 // Kiểm tra xem có nhập đủ dữ liệu hay không
                 if (!startDateValue || !endDateValue) {
-                    alert("Vui lòng nhập đủ dữ liệu cho Ngày bắt đầu và Ngày kết thúc.");
+                    alert("Vui lòng nhập đủ dữ liệu cho ngày bắt đầu và ngày kết thúc.");
                     return;
                 }
-
+                // Kiểm tra nếu ngày bắt đầu lớn hơn ngày kết thúc
+                if (new Date(startDateValue) > new Date(endDateValue)) {
+                    alert("Ngày tháng năm không hợp lệ");
+                    return;
+                }
                 // Nếu dữ liệu đủ, tiếp tục thực hiện fetchAndDrawChart hoặc hành động mong muốn
                 fetchAndDrawChart();
             }
@@ -498,7 +509,7 @@
                     yearlyChart = new Chart(ctx, {
                         type: 'bar',
                         data: {
-                            labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
+                            labels: ['Tháng 1', 'Tháng 2', 'Tháng 3', 'Tháng 4', 'Tháng 5', 'Tháng 6', 'Tháng 7', 'Tháng 8 ', 'Tháng 9', 'Tháng 10', 'Tháng 11', 'Tháng 12'],
                             datasets: [{
                                 label: data.label,
                                 data: monthsData,
