@@ -181,7 +181,7 @@ namespace _APPAPI.Controllers
             public string Label { get; set; }
         }
         [HttpGet("ExportDataToExcel/{label}")]
-        public IActionResult ExportDataToExcel(string currentyear, string label, DateTime? startDate = null, DateTime? endDate = null)
+        public IActionResult ExportDataToExcel(string? currentyear, string label, DateTime? startDate = null, DateTime? endDate = null)
         {
             try
             {

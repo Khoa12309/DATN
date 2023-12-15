@@ -114,7 +114,7 @@
                             <!-- Dropdown for selecting chart type -->
                             <div class="dropdown">
                                 <select id="chartTypeDropdown" class="form-control" style="width: 100%">
-                                    <option value="yearly">12 tháng trong năm</option>
+                                    <option value="yearly">1 năm</option>
                                     <option value="weekly">7 ngày qua</option>
                                 </select>
                             </div>
@@ -126,16 +126,17 @@
                             <label for="startDate">Ngày bắt đầu:</label>
                         </div>
                         <div class="form-group">
-                            <input type="datetime-local" class="form-control" id="startDate" placeholder="dd/mm/yyyy">
+                            <input type="date" class="form-control" id="startDate" placeholder="dd/mm/yyyy">
                         </div>
 
-                        <!-- Thêm ô input cho enddate -->
+                        <!-- Thêm ô input cho endDate -->
                         <div>
                             <label for="endDate">Ngày kết thúc:</label>
                         </div>
                         <div class="form-group">
-                            <input type="datetime-local" class="form-control" id="endDate" placeholder="dd/mm/yyyy">
+                            <input type="date" class="form-control" id="endDate" placeholder="dd/mm/yyyy">
                         </div>
+
 
                         <!-- Nút xác nhận -->
                         <button class="btn btn-primary" value="datepicker" onclick="validateAndFetch()">Xác nhận</button>
@@ -394,10 +395,10 @@
                         gr.style.color = 'orange'; // Màu vàng
                     }
                 }
-
-                function DrawChartForYear() {
+                var cryear = new Date().getFullYear();
+                function RevenueGrowth() {
                     $.ajax({
-                        url: 'https://localhost:7042/api/Chart/2023',
+                        url: 'https://localhost:7042/api/Chart/'+ cryear,
                         method: 'GET',
                         dataType: 'json',
                         success: function (data) {
@@ -420,6 +421,7 @@
                 GetProducts();
                 GetRevenues();
                 GetBills();
+                RevenueGrowth();
                 var currentDay = new Date();
 
                 // Sự kiện thay đổi của dropdown
@@ -446,6 +448,7 @@
                         DrawLast7DayChart();
                     }
                 });
+
                 $('#yearDropdown').on('change', function () {
                     var selectedYear = $(this).val();
                     // Nếu dropdown chọn loại biểu đồ đang là 'weekly', thay đổi nó thành 'yearly'
@@ -520,7 +523,6 @@
                         success: function (data) {
                             if (data && data.values && data.label) {
                                 DrawChart(data);
-                                growthToLastMonth(data);
                             } else {
                                 console.error('Invalid data received from API');
                             }
@@ -721,7 +723,7 @@
 
                             // Thêm tham số startDate và endDate vào đường dẫn
                             url += `?startDate=${encodeURIComponent(startDateValue)}&endDate=${encodeURIComponent(endDateValue)}`;
-                        } 
+                        }
                         else {
                             console.error("Không tìm thấy phần tử HTML");
                             return;
