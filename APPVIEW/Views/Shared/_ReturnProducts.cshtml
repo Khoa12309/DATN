@@ -21,10 +21,8 @@
                     <img class="card-img" src="~/images/@product.Image.Name" alt="ErrorImg" width="150px" height="250px">
                 }
                 <ul class="card-product__imgOverlay">
-                    @* <li><a href="@Url.ActionLink("details","home",new{id=product.Id})"><button><i class="ti-search"></i></button></a></li>
-                <li><button class="buy-btn" data-product-id="@product.Id"><i class="ti-shopping-cart"></i></button></li>  *@
-               <li><button><i class="ti-search"></i></button></li>
-                <li><button><i class="ti-shopping-cart"></i></button></li>  
+                    <li><a href="@Url.ActionLink("details","home",new{id=product.ProductDetail.Id})"><button><i class="ti-search"></i></button></a></li>
+                    <li><button class="buy-btn" data-product-id="@product.ProductDetail.Id"><i class="ti-shopping-cart"></i></button></li>
                 </ul>
             </div>
             <div class="card-body">
