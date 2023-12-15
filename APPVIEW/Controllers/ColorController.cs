@@ -112,27 +112,27 @@ namespace APPVIEW.Controllers
             }
         }
 
-
         public async Task<IActionResult> Delete(Guid id)
         {
+
+
             try
             {
-               
                 if (await getapi.DeleteObj(id, "Color"))
                 {
                     _notyf.Success("Chuyển trạng thái thành công");
                     var lst = getapi.GetApi("Color").Find(c => c.Id == id);
-                    lst.Status = 0;
                     await getapi.UpdateObj(lst, "Color");
+                    _notyf.Success("Xóa thành công");
                 }
                 return RedirectToAction("GetList");
             }
-            catch (Exception ex)
+            catch (Exception)
             {
 
-                _notyf.Error($"Lỗi:{ex.Message} ");
+                _notyf.Error("Lỗi");
                 return View();
-            }
+            }      
 
         }
     }

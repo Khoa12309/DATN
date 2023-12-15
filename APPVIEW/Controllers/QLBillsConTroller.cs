@@ -155,7 +155,7 @@ namespace APPVIEW.Controllers
             }
             await bills.DeleteObj(id, "Bill");
             _notyf.Success("Đã xác nhận hủy đơn");
-            return RedirectToAction("ViewBill");
+            return RedirectToAction(nameof(ShowBill));
         }
         public async Task<IActionResult> HuyDon2(Guid id)
         {

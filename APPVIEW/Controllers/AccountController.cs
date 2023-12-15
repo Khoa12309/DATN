@@ -825,19 +825,19 @@ namespace APPVIEW.Controllers
                 {
                     if (MD5Pass.GetMd5Hash(obj.OldPassword) != user.Password)
                     {
-                        ViewData["ErrorMessage"] = "Old Password is incorrect,try agin!";
+                        ViewData["ErrorMessage"] = "Mật khẩu cũ không đúng";
                         return View("ChangePassword", obj);
                     }
                     if (obj.NewPassWord != obj.ConfirmPassword)
                     {
-                        ViewData["ErrorMessage"] = " New password is incorrect,try again!";
+                        ViewData["ErrorMessage"] = " Mật khẩu không khớp với mật khẩu mới";
                         return View("ChangePassword", obj);
                     }
 
                     user.Password = MD5Pass.GetMd5Hash(obj.NewPassWord);
                     _context.Update(user);
                     await _context.SaveChangesAsync();
-                    ViewData["Sucsess"] = "Changed password successfully";
+                    ViewData["Sucsess"] = "Thay đổi mật khẩu thành công";
                     return Redirect("~/Home/Index");
 
 

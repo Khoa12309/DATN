@@ -92,13 +92,20 @@ namespace APPVIEW.Controllers
 
         public async Task<IActionResult> Delete(Guid id)
         {
-            if (await getapi.DeleteObj(id, "Category"))
+            if ( getapi.DeleteObj(id, "Category").IsCompletedSuccessfully)
             {
-                var lst = getapi.GetApi("Category").Find(c => c.Id == id);
-                lst.Status = 0;
-                await getapi.UpdateObj(lst, "Category");
+                //var lst = getapi.GetApi("Category").Find(c => c.Id == id);
+                //lst.Status = 0;
+                //await getapi.UpdateObj(lst, "Category");
+                _notyf.Success("Xóa thành công");
+                return RedirectToAction("GetList");
             }
-            return RedirectToAction("GetList");
+            else
+            {
+                _notyf.Warning("Dữ liệu này đang được sử dụng,hiện không thể xóa");
+                return View();
+            }
+            
 
         }
     }
