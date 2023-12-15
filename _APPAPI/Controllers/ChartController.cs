@@ -181,7 +181,7 @@ namespace _APPAPI.Controllers
             public string Label { get; set; }
         }
         [HttpGet("ExportDataToExcel/{label}")]
-        public IActionResult ExportDataToExcel(string label, DateTime? startDate = null, DateTime? endDate = null)
+        public IActionResult ExportDataToExcel(string currentyear, string label, DateTime? startDate = null, DateTime? endDate = null)
         {
             try
             {
@@ -193,9 +193,9 @@ namespace _APPAPI.Controllers
 
                 if (label == "yearly")
                 {
-                    fileName = "_Doanh_thu_2023";
-                    apiData = GetDataFromApi($"https://localhost:7042/api/Chart/2023");
-                    worksheet.Cells["A1"].Value = "STT";
+                    fileName = "_Doanh_thu_" + currentyear ;
+                    apiData = GetDataFromApi($"https://localhost:7042/api/Chart/" + currentyear);
+                    worksheet.Cells["A1"].Value = "STT";    
                     worksheet.Cells["B1"].Value = "Tháng";
                     worksheet.Cells["C1"].Value = "Doanh thu";
                 }
