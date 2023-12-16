@@ -1927,6 +1927,7 @@ namespace APPVIEW.Controllers
                             await getapiPMD.CreateObj(pmd, "PaymentMethodDetail");
                             Bill.Type = "Online - Đã Thanh Toán";
                             Bill.Code = orderId.ToString();
+                            Bill.PayDate = DateTime.Now;
                             await bills.UpdateObj(Bill, "Bill");
                             
                         }
