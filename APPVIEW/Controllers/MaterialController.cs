@@ -42,8 +42,8 @@ namespace APPVIEW.Controllers
                 return View("GetList", searchResult);
             }
 
-            _notyf.Information("Material không tồn tại");
-            return View();
+            _notyf.Information("Chất liệu không tồn tại");
+            return View("GetList");
         }
 
         [HttpGet]

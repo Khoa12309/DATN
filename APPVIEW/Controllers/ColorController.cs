@@ -41,8 +41,8 @@ namespace APPVIEW.Controllers
             {
                 return View("GetList", searchResult);
             }
-
-            return View();
+            _notyf.Warning("Màu không tồn tại");
+            return View("GetList");
         }
 
 

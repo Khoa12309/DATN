@@ -45,7 +45,7 @@ namespace APPVIEW.Controllers
                 return View("GetList", searchResult);
             }
             _notyf.Warning("Voucher không tồn tại");
-            return View();
+            return View("GetList");
         }
 
 
