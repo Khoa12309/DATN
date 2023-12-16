@@ -1,7 +1,7 @@
 ﻿@model APPDATA.Models.Material
 
 @{
-    ViewData["Title"] = "Create";
+    ViewData["Title"] = "Tạo mới";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 }
 
@@ -11,28 +11,27 @@
     <div class="col-xxl">
         <div class="card mb-4">
             <div class="card-header d-flex align-items-center justify-content-between">
-                <h5 class="mb-0">Create a Material</h5>
-
+                <h5 class="mb-0">Tạo mới Chất Liệu</h5>
             </div>
             <div class="card-body">
                 <form asp-action="Create" method="post" onsubmit="showAlert()">
                     <div class="row mb-3">
-                        <label asp-for="Name" class="col-sm-2 col-form-label">Name Material</label>
+                        <label asp-for="Name" class="col-sm-2 col-form-label">Tên Chất Liệu</label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" asp-for="Name" placeholder="Enter name of Material" />
+                            <input type="text" class="form-control" asp-for="Name" placeholder="Nhập tên Chất Liệu" />
                             <span asp-validation-for="Name" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="row mb-3">
-                        <label asp-for="Status" class="col-sm-2 col-form-label">Status</label>
+                        <label asp-for="Status" class="col-sm-2 col-form-label">Trạng Thái</label>
                         <div class="col-sm-10 offset-sm-2">
                             <div class="form-check">
                                 <input asp-for="Status" name="status" class="form-check-input" checked type="radio" value="1" id="defaultRadio1" />
-                                <label class="form-check-label" asp-for="Status" > Use </label>
+                                <label class="form-check-label" asp-for="Status"> Sử dụng </label>
                             </div>
                             <div class="form-check">
-                                <input asp-for="Status" name="status" class="form-check-input" type="radio" value="0" id="defaultRadio2"  />
-                                <label class="form-check-label" for="defaultRadio2"> Not Use </label>
+                                <input asp-for="Status" name="status" class="form-check-input" type="radio" value="0" id="defaultRadio2" />
+                                <label class="form-check-label" for="defaultRadio2"> Không sử dụng </label>
                             </div>
                             <span asp-validation-for="Status" class="text-danger"></span>
                         </div>
@@ -40,14 +39,14 @@
                     <div class="row justify-content-end">
                         <div class="col-sm-10">
                             <button type="submit" class="btn btn-primary">
-                                <span class="mdi mdi-check-outline"></span> Submit
+                                <span class="mdi mdi-check-outline"></span> Gửi
                             </button>
                             <div class="btn-group ms-2">
-                                <a href="#" class="btn btn-danger waves-effect waves-light" onclick="goBack()">
-                                    <span class="mdi mdi-close"></span> Cancel
+                                <a href="#" class="btn btn-danger waves-effect waves-light" onclick="quayLai()">
+                                    <span class="mdi mdi-close"></span> Hủy
                                 </a>
                                 <script>
-                                    function goBack() {
+                                    function quayLai() {
                                         window.history.back();
                                     }
                                 </script>
@@ -58,6 +57,6 @@
             </div>
         </div>
     </div>
-
 </div>
+
 

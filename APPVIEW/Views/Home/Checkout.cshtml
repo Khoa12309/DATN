@@ -229,22 +229,22 @@
 
                 <div class="col-lg-8">
                     <h3>Billing Details</h3>
-                    <form class="row contact_form" action="~/home/dathangn" method="post" novalidate="novalidate">
+                    <form class="row contact_form" action="~/home/dathangn" method="post" novalidate="novalidate" onsubmit="return validateForm()">
                         <div class="col-md-6 form-group p_star">
-                            <input type="text" class="form-control" id="first" placeholder="Fullname" asp-for="@Model.Name" required>
-                            <span class="placeholder" data-placeholder="Fullname" placeholder="Fullname"></span>
+                            <input type="text" class="form-control" id="first" placeholder="Tên đầy đủ" asp-for="@Model.Name" required>
+                            <span class="placeholder" data-placeholder="Fullname" placeholder="Te"></span>
                         </div>
                         <div class="col-md-6 form-group p_star">
-                            <input type="text" class="form-control" placeholder="Phonenumber" max="10" id="phone" asp-for="@Model.PhoneNumber" required>
+                            <input type="text" class="form-control" placeholder="Số điện thoại" max="10" id="phone" asp-for="@Model.PhoneNumber" required>
                             <span class="placeholder" data-placeholder="Phonenumber"></span>
                         </div>
 
                         <div class="col-md-6 form-group p_star">
-                            <input type="text" class="form-control" placeholder="SpecificAddress" asp-for="@Model.SpecificAddress" id="text">
+                            <input type="text" class="form-control" placeholder="Địa chỉ cụ thể" asp-for="@Model.SpecificAddress" id="text">
                             <span class="placeholder"></span>
                         </div>
                         <div class="col-md-12 form-group">
-                            <input type="text" class="form-control" id="company" name="company" placeholder="Description" asp-for="Description">
+                            <input type="text" class="form-control" id="company" name="company" placeholder="Mô tả" asp-for="Description">
                         </div>
                         <div class="col-md-12 form-group p_star">
                             <div class="row">
@@ -659,6 +659,30 @@
             }
         }
     });
+        function validateForm() {
+            var fullName = document.getElementById('first').value;
+            var phoneNumber = document.getElementById('phone').value;
+            var specificAddress = document.getElementById('text').value;
+            var province = document.getElementById('countrySelect').value;
+            var district = document.getElementById('district').value;
+            var ward = document.getElementById('ward').value;
+
+            // Kiểm tra xem các trường có rỗng hay không
+            if (fullName.trim() === '' || phoneNumber.trim() === '' || specificAddress.trim() === '' || province.trim() === '' || district.trim() === '' || ward.trim() === '') {
+            Swal.fire({
+                title: "Hãy điền đầy đủ thông tin",
+                icon: "warning",
+                confirmButtonText: "Ok"
+            })
+                return false; // Ngăn chặn form submit
+            }
+
+            // Thêm các điều kiện kiểm tra khác nếu cần thiết
+            // ...
+
+            return true; // Cho phép form submit
+        }
+
 
 
 </script>

@@ -34,41 +34,69 @@
     </div>
 } *@
 <!--================Cart Area =================-->
-<<section class="cart_area">
+<section class="cart_area">
     <div class="container">
         <div class="cart_inner">
             <div class="table-responsive">
-                @if (Model.Count > 0)
-                {
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th scope="col">Ảnh</th>
-                                <th scope="col">Tên sản phẩm</th>
-                                <th scope="col">Giá</th>
-                                <th scope="col">Số Lượng</th>
-                                <th scope="col">Kích Cỡ</th>
-                                <th scope="col">Màu sắc</th>
-                                <th scope="col">Tổng tiền</th>
-                                <th scope="col">Xóa</th>
-                            </tr>
-                        </thead>
-                        <tbody>
+                <table class="table">
+                    <thead>
+                        <tr>
+
+                            <th scope="col">Ảnh</th>
+                            <th scope="col">Tên sản phẩm</th>
+
+                            <th scope="col">Giá</th>
+                            <th scope="col">Số Lượng</th>
+
+                            <th scope="col">Kích Cỡ</th>
+                            <th scope="col">Màu sắc</th>
+                            <th scope="col">Tổng tiền</th>
+                            <th scope="col">Xóa</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model.Count()<0)
+                        {
+                            <div class="text-center" style="padding: 20px; background-color: #f8f9fa; border-radius: 10px; margin-top: 20px;">
+                                <p style="font-size: 18px; color: #6c757d;">Chưa có sản phẩm nào trong giỏ hàng. Hãy bắt đầu mua sắm ngay!</p>
+                            </div>
+                        }else
+                        {
                             <form asp-action="Updatecart" asp-controller="Cart" method="post">
                                 @{
+
                                     var ls = new List<Guid>();
                                     var lc = new List<Guid>();
                                     @for (int i = 0; i < Model.Count; i++)
                                     {
+                                        ls = new List<Guid>();
+                                        lc = new List<Guid>();
+                                        @foreach (var pro in ViewBag.prod)
+                                        {
+                                            if (pro.Id_Product == @Model[i].Id_Product)
+                                            {
+                                                if (!ls.Any(c => c == pro.Id_Size))
+                                                {
+                                                    ls.Add(pro.Id_Size);
+                                                }
+                                                if (!lc.Any(c => c == pro.Id_Color))
+                                                {
+                                                    lc.Add(pro.Id_Color);
+                                                }
+
+
+                                            }
+                                        }
+
                                         <input hidden asp-for="@Model[i].Id" value="@Model[i].Id" id="pro" />
                                         <input hidden asp-for="@Model[i].Id_Product" value="@Model[i].Id_Product" />
                                         <input hidden asp-for="@Model[i].Name" value="@Model[i].Name" />
-
                                         var tt = @Model[i].Price * @Model[i].Quantity;
-
                                     <tr>
+
                                             @foreach (var img in ViewBag.Img)
                                             {
+
                                                 if (img.IdProductdetail == @Model[i].Id)
                                                 {
                                                 <td>
@@ -82,19 +110,28 @@
                                                 }
                                             }
                                         <td>@Model[i].Name</td>
+
                                         <td style="color:#f15e2c">@Model[i].Price.ToString("C0", new CultureInfo("vi-VN"))</td>
+
                                         <td>
+
                                             <div class="product_count">
-                                                <input type="number" id=@Model[i].Id maxlength="12" title="Quantity:" class="input-text qty" value="@Model[i].Quantity" asp-for="@Model[i].Quantity" min="0">
-                                                <button onclick="var result = document.getElementById('@Model[i].Id'); var sst = result.value; if( !isNaN( sst )) result.value++;return false;" class="increase items-count" type="button"><i class="fa fa-plus"></i></button>
-                                                <button onclick="var result = document.getElementById('@Model[i].Id'); var sst = result.value; if( !isNaN( sst ) &amp;&amp; sst > 0 ) result.value--;return false;" class="reduced items-count" type="button"><i class="fa fa-minus"></i></button>
+                                                <input type="number" id="quantity_@Model[i].Id" maxlength="12" title="Quantity:" class="input-text qty" value="@Model[i].Quantity" asp-for="@Model[i].Quantity" min="1" oninput="validateQuantity(this)">
+                                                <button onclick="incrementQuantity('@Model[i].Id')" class="increase items-count" type="button">
+                                                    <i class="fa fa-plus"></i>
+                                                </button>
+                                                <button onclick="decrementQuantity('@Model[i].Id')" class="reduced items-count" type="button">
+                                                    <i class="fa fa-minus"></i>
+                                                </button>
                                             </div>
                                         </td>
+
                                         <td class="align-middle">
                                             <select asp-for="@Model[i].Id_Size">
                                                     @foreach (var Size in ViewBag.Size)
                                                     {
-                                                        foreach (var c in ls)
+
+                                                        @foreach (var c in ls)
                                                         {
                                                             if (c == @Size.Id)
                                                             {
@@ -104,20 +141,23 @@
                                                     }
                                             </select>
                                         </td>
+
                                         <td class="align-middle">
                                             <select asp-for="@Model[i].Id_Color">
                                                     @foreach (var Color in ViewBag.Color)
                                                     {
-                                                        foreach (var c in lc)
+                                                        @foreach (var c in lc)
                                                         {
                                                             if (c == @Color.Id)
                                                             {
                                                             <option value="@Color.Id">@Color.Name</option>
                                                             }
+
                                                         }
                                                     }
                                             </select>
                                         </td>
+
                                         <td class="align-middle" style="color:#f15e2c">
                                                 @tt.ToString("C0", new CultureInfo("vi-VN"))
                                         </td>
@@ -125,30 +165,75 @@
                                             <a class="btn btn-light" href="@Url.ActionLink("DeleteCartItem","Cart",new{id=Model[i].Id})"><i class="fa fa-trash"></i></a>
                                             <a class="btn btn-light" href="@Url.ActionLink("checkout","home",new{id=Model[i].Id})"><i class="fa fa-bill"></i>Thanh toán</a>
                                         </td>
+
+
                                     </tr>
                                     }
+
+
+
+
                                 }
+
+
+                            <tr class="bottom_button">
+                                <td>
+                                    <button class="button" type="submit">Cập nhật giỏ hàng</button>
+                                </td>
+                            </tr>
                             </form>
-                        </tbody>
-                    </table>
-                }
-                else
-                {
-                    <div class="text-center">
-                        <p>Chưa có sản phẩm nào trong giỏ hàng. Hãy bắt đầu mua sắm ngay!</p>
-                        <a href="~/home/index" class="btn btn-primary">Đi mua sắm ngay</a>
-                    </div>
-                }
+                            <tr>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                    <h5>Tổng tiền</h5>
+                                </td>
+                                <td>
+                                    <h5 style="color:#f15e2c">@ViewBag.tt.ToString("C0", new CultureInfo("vi-VN"))</h5>
+                                </td>
+                            </tr>
+
+                            <tr class="out_button_area">
+                                <td class="d-none-l">
+                                </td>
+                                <td class="d-none-l">
+                                </td>
+                                <td class="d-none-l">
+                                </td>
+                                <td class="">
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                </td>
+                                <td>
+                                    <div class="checkout_btn_inner d-flex align-items-center">
+                                        <a class="gray_btn" href="~/home/index">Trang chủ</a>
+                                        <a class="primary-btn ml-2" href="~/home/checkout">Thanh Toán</a>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
 </section>
-
 <!--================End Cart Area =================-->
 <script>
     var Size = document.getElementById("size");
     var pro = document.getElementById("pro");
-   
+
     var color = document.getElementById("color");
     Size.onchange = function () {
         // Lấy giá trị được chọn trong thẻ select
@@ -159,8 +244,8 @@
         //inputdis.value = "";
         //inputward.value = "";
         var data = {
-           Id_Size: Size.value,
-           Id: pro.value ,
+            Id_Size: Size.value,
+            Id: pro.value,
         };
         var json = JSON.stringify(data);
         // Sử dụng fetch() để gửi một request GET đến /Home/GetUsers
@@ -171,7 +256,7 @@
             },
             body: json
         })
-           
+
             .catch(error => {
                 // Xử lý lỗi
                 console.error(error); // In ra lỗi
@@ -179,10 +264,10 @@
 
 
     };
-    function updatecart( quant){
+    function updatecart(quant) {
         var quantity = document.getElementById(quant);
         var data = {
-           Quantity : quantity.value
+            Quantity: quantity.value
         };
         var json = JSON.stringify(data);
         // Sử dụng fetch() để gửi một request GET đến /Home/GetUsers
@@ -198,5 +283,33 @@
                 // Xử lý lỗi
                 console.error(error); // In ra lỗi
             });
+    }
+    function validateQuantity(input) {
+        var value = parseInt(input.value);
+
+        if (isNaN(value)) {
+            // Nếu giá trị là NaN, đặt giá trị về 1
+            input.value = 1;
+        } else if (value < 1) {
+            // Nếu giá trị là số âm, đặt giá trị về 1
+            input.value = 1;
+        }
+    }
+    function incrementQuantity(itemId) {
+        var quantityInput = document.getElementById('quantity_' + itemId);
+        var currentQuantity = parseInt(quantityInput.value);
+
+        if (!isNaN(currentQuantity)) {
+            quantityInput.value = currentQuantity + 1;
+        }
+    }
+
+    function decrementQuantity(itemId) {
+        var quantityInput = document.getElementById('quantity_' + itemId);
+        var currentQuantity = parseInt(quantityInput.value);
+
+        if (!isNaN(currentQuantity)) {
+            quantityInput.value = Math.max(currentQuantity - 1, 1);
+        }
     }
 </script>

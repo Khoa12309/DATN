@@ -6,58 +6,56 @@
 
 <!DOCTYPE html>
 
-<html
-  lang="en"
-  class="light-style layout-wide customizer-hide"
-  dir="ltr"
-  data-theme="theme-default"
-  data-assets-path="../contentadmin/assets/"
-  data-template="vertical-menu-template-free">
-  <head>
+<html lang="en"
+      class="light-style layout-wide customizer-hide"
+      dir="ltr"
+      data-theme="theme-default"
+      data-assets-path="../contentadmin/assets/"
+      data-template="vertical-menu-template-free">
+<head>
     <meta charset="utf-8" />
-    <meta
-      name="viewport"
-      content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
 
     <title>Register </title>
 
     <meta name="description" content="" />
 
     <!-- Favicon -->
-    <link rel="icon" type="image/x-icon"href="~/contentadmin/assets/img/favicon/favicon.ico" />
+    <link rel="icon" type="image/x-icon" href="~/contentadmin/assets/img/favicon/favicon.ico" />
 
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&ampdisplay=swap"
-      rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&ampdisplay=swap"
+          rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.css">
 
-    <link rel="stylesheet"href="~/contentadmin/assets/vendor/fonts/materialdesignicons.css" />
+    <link rel="stylesheet" href="~/contentadmin/assets/vendor/fonts/materialdesignicons.css" />
 
     <!-- Menu waves for no-customizer fix -->
-    <link rel="stylesheet"href="~/contentadmin/assets/vendor/libs/node-waves/node-waves.css" />
+    <link rel="stylesheet" href="~/contentadmin/assets/vendor/libs/node-waves/node-waves.css" />
 
     <!-- Core CSS -->
-    <link rel="stylesheet"href="~/contentadmin/assets/vendor/css/core.css" class="template-customizer-core-css" />
-    <link rel="stylesheet"href="~/contentadmin/assets/vendor/css/theme-default.css" class="template-customizer-theme-css" />
-    <link rel="stylesheet"href="~/contentadmin/assets/css/demo.css" />
+    <link rel="stylesheet" href="~/contentadmin/assets/vendor/css/core.css" class="template-customizer-core-css" />
+    <link rel="stylesheet" href="~/contentadmin/assets/vendor/css/theme-default.css" class="template-customizer-theme-css" />
+    <link rel="stylesheet" href="~/contentadmin/assets/css/demo.css" />
 
     <!-- Vendors CSS -->
-    <link rel="stylesheet"href="~/contentadmin/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
+    <link rel="stylesheet" href="~/contentadmin/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.css" />
 
     <!-- Page CSS -->
     <!-- Page -->
-    <link rel="stylesheet"href="~/contentadmin/assets/vendor/css/pages/page-auth.css" />
+    <link rel="stylesheet" href="~/contentadmin/assets/vendor/css/pages/page-auth.css" />
 
     <!-- Helpers -->
     <script src="~/contentadmin/assets/vendor/js/helpers.js"></script>
     <!--! Template customizer & Theme config files MUST be included after core stylesheets and helpers.js in the <head> section -->
     <!--? Config:  Mandatory theme config file contain global vars & default theme options, Set your preferred theme option in this file.  -->
     <script src="~/contentadmin/assets/js/config.js"></script>
-  </head>
+</head>
 
-  <body>
+<body>
     <!-- Content -->
 
     <div class="position-relative">
@@ -140,11 +138,12 @@
                         }
                         <p class="mb-4">Đăng ký</p>
 
-                        <form asp-action="Register" id="formAuthentication" class="mb-3" method="POST">
+                        <form asp-action="Register" id="formAuthentication" class="mb-3" method="POST" onsubmit="return validateForm()">
                             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                             <div class="form-floating form-floating-outline mb-3">
                                 <input asp-for="Name" type="text" class="form-control" id="name" name="Name" placeholder="Nhập tên của bạn" />
                                 <label for="name">Tên</label>
+                                <span id="nameError" class="text-danger"></span>
                             </div>
                             <div class="form-floating form-floating-outline mb-3">
                                 <input asp-for="Email" type="text" class="form-control" id="email" name="email" placeholder="Nhập email của bạn" />
@@ -152,6 +151,7 @@
                             </div>
                             <div class="form-floating form-floating-outline mb-3">
                                 <input asp-for="PhoneNumber" type="text" class="form-control" id="phone" name="phonenumber" placeholder="Nhập số điện thoại của bạn" />
+                                <span id="phoneError" class="text-danger"></span>
                                 <label for="phone">Số điện thoại</label>
                             </div>
                             <div class="mb-3 form-password-toggle">
@@ -164,9 +164,10 @@
                                                name="password"
                                                placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
                                                aria-describedby="password" />
+                                        <span id="passError" class="text-danger"></span>
                                         <label for="password">Mật khẩu</label>
                                     </div>
-                                    <span class="input-group-text cursor-pointer"><i class="mdi mdi-eye-off-outline"></i></span>
+                                    <span id="passwordError" class="input-group-text cursor-pointer"><i class="mdi mdi-eye-off-outline"></i></span>
                                 </div>
                             </div>
                             <div class="mb-3 form-password-toggle">
@@ -179,7 +180,9 @@
                                                name="ConfirmPassword"
                                                placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
                                                aria-describedby="password" />
+
                                         <label for="password">Xác nhận mật khẩu</label>
+                                        <span id="cofpassError" class="text-danger"></span>
                                     </div>
                                     <span class="input-group-text cursor-pointer"><i class="mdi mdi-eye-off-outline"></i></span>
                                 </div>
@@ -227,67 +230,142 @@
 
 
     <!-- / Content -->
-
     <!-- Core JS -->
     <!-- build:js contentadmin/assets/vendor/js/core.js -->
-    <script src="~/contentadmin/assets/vendor/libs/jquery/jquery.js"></script>  
+    <script src="~/contentadmin/assets/vendor/libs/jquery/jquery.js"></script>
     <script src="~/contentadmin/assets/vendor/libs/popper/popper.js"></script>
     <script src="~/contentadmin/assets/vendor/js/bootstrap.js"></script>
     <script src="~/contentadmin/assets/vendor/libs/node-waves/node-waves.js"></script>
     <script src="~/contentadmin/assets/vendor/libs/perfect-scrollbar/perfect-scrollbar.js"></script>
     <script src="~/contentadmin/assets/vendor/js/menu.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@10/dist/sweetalert2.min.js"></script>
 
     <!-- endbuild -->
-
     <!-- Vendors JS -->
-
     <!-- Main JS -->
     <script src="~/contentadmin/assets/js/main.js"></script>
 
     <!-- Page JS -->
-
     <!-- Place this tag in your head or just before your close body tag. -->
     <script async defer src="https://buttons.github.io/buttons.js"></script>
-  </body>
+</body>
 </html>
 <script>
     document.addEventListener('DOMContentLoaded', function () {
         var phoneNumberInput = document.getElementById('phone');
+        var phoneErrorSpan = document.getElementById('phoneError');
 
-        // Thêm sự kiện input để kiểm tra và xóa các kí tự không hợp lệ
         phoneNumberInput.addEventListener('input', function () {
             var inputValue = phoneNumberInput.value;
-
-            // Loại bỏ kí tự không phải số từ giá trị nhập vào
             var cleanedValue = inputValue.replace(/[^0-9+]/g, '');
-
-            // Giới hạn chiều dài tối đa là 10 kí tự
             cleanedValue = cleanedValue.slice(0, 10);
-
-            // Cập nhật giá trị của ô nhập số điện thoại
             phoneNumberInput.value = cleanedValue;
         });
 
-        // Thêm sự kiện blur để kiểm tra số điện thoại khi mất focus
         phoneNumberInput.addEventListener('blur', function () {
             validatePhoneNumber(phoneNumberInput.value);
         });
 
         function validatePhoneNumber(phoneNumber) {
-            // Biểu thức chính quy cho số điện thoại (ví dụ: +84-123-456-7890)
             var phoneRegex = /^\+?[0-9]{1,4}-?[0-9]{3,4}-?[0-9]{4,}$/;
 
-            if (phoneRegex.test(phoneNumber)) {
-                console.log('Số điện thoại hợp lệ');
+            if (phoneRegex.test(phoneNumber) && phoneNumber.startsWith('0')) {
+                // Nếu số điện thoại hợp lệ, ẩn thông báo và hiển thị nền trắng cho ô nhập
+                phoneErrorSpan.textContent = '';
+                phoneNumberInput.style.backgroundColor = 'white';
             } else {
-                // Kiểm tra chiều dài của số điện thoại
                 if (phoneNumber.length < 10) {
-                    // Hiển thị thông báo khi số điện thoại có ít hơn 10 kí tự
-                    alert('Số điện thoại phải có ít nhất 10 kí tự.');
+                    // Hiển thị thông báo trong thẻ span khi số điện thoại có ít hơn 10 kí tự
+                    phoneErrorSpan.textContent = 'Số điện thoại phải có ít nhất 10 kí tự.';
+                } else if (!phoneNumber.startsWith('0')) {
+                    // Hiển thị thông báo trong thẻ span khi số điện thoại không bắt đầu bằng số 0
+                    phoneErrorSpan.textContent = 'Số điện thoại phải bắt đầu bằng số 0.';
                 } else {
-                    console.log('Số điện thoại không hợp lệ');
+                    // Hiển thị thông báo trong thẻ span khi số điện thoại không hợp lệ
+                    phoneErrorSpan.textContent = 'Số điện thoại không hợp lệ.';
                 }
+
+
             }
         }
     });
+
+    //Check Null
+    function validateForm() {
+        var name = document.getElementById('name').value;
+        var email = document.getElementById('email').value;
+        var phone = document.getElementById('phone').value;
+        var password = document.getElementById('password').value;
+        var confirmPassword = document.getElementById('confirmpassword').value;
+
+        // Lấy thẻ span thông báo lỗi
+        var phoneErrorSpan = document.getElementById('phoneError');
+        var EmailErrorSpan = document.getElementById('emailError');
+        var PassErrorSpan = document.getElementById('passError');
+        var CofPassErrorSpan = document.getElementById('cofpassError');
+        var NameErrorSpan = document.getElementById('nameError');
+        //
+
+        // Kiểm tra xem các trường có rỗng hay không
+        if (name.trim() === '' || email.trim() === '' || phone.trim() === '' || password.trim() === '' || confirmPassword.trim() === '') {
+            // alert('Vui lòng nhập đầy đủ thông tin.');
+            Swal.fire({
+                title: "Hãy điền đầy đủ thông tin",
+                icon: "warning",
+                confirmButtonText: "Ok"
+            })
+            return false; // Ngăn chặn form submit
+        }
+
+        // ... Các kiểm tra khác
+        var phoneRegex = /^\+?[0-9]{1,4}-?[0-9]{3,4}-?[0-9]{4,}$/;
+        if (!phoneRegex.test(phone)) {
+            phoneErrorSpan.textContent = 'Số điện thoại không hợp lệ!'
+            return false;
+        } else if (!phone.startsWith('0')) {
+            phoneErrorSpan.textContent = 'Số điện thoại Số điện thoại phải bắt đầu bằng số 0!'
+            return false;
+        } else if (phone.length < 10) {
+            phoneErrorSpan.textContent = 'Số điện thoại Số điện thoại phải đủ 10 kí tự!'
+            return false;
+        } else {
+            phoneErrorSpan.textContent = '';
+           
+        }
+
+        if (name.length >50) {
+            NameErrorSpan.textContent = 'Không được nhập quá 50 kí tự';
+            return false;
+        }
+        if (password != confirmPassword) {
+            PassErrorSpan.textContent = "Mật khẩu không trùng khớp";
+           
+            return false
+        } else {
+            // Nếu mật khẩu khớp, xóa cả hai thông báo lỗi
+            PassErrorSpan.textContent = "";
+            CofPassErrorSpan.textContent = "";
+        }
+      
+
+        return true; // Cho phép form submit
+    }
+
+    //Mật khẩu
+    document.getElementById('password').addEventListener('input', function () {
+        var password = this.value;
+        var passwordPattern = /^(?!.*\s)(.{8,})$/;
+        var passwordErrorSpan = document.getElementById('passwordError');
+
+        if (passwordPattern.test(password)) {
+            // Mật khẩu hợp lệ, xóa thông báo lỗi
+            passwordErrorSpan.textContent = '';
+        } else {
+            // Mật khẩu không hợp lệ, hiển thị thông báo lỗi
+            passwordErrorSpan.textContent = 'Mật khẩu phải có ít nhất 8 ký tự và không chứa khoảng trắng';
+        }
+    });
+
+
 </script>
+

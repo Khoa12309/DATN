@@ -129,8 +129,8 @@ namespace APPVIEW.Controllers
             catch (Exception)
             {
 
-                _notyf.Error("Lỗi");
-                return View();
+
+                return RedirectToAction("GetList");
             }      
 
         }

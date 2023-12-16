@@ -321,14 +321,23 @@ else
             cancelButton.addEventListener("click", function (event) {
                 event.preventDefault();
                 var itemId = this.getAttribute('data-itemid');
-                var confirmation = confirm("Bạn có chắc chắn muốn hủy đơn này không?");
 
-                if (confirmation) {
-                    // Chuyển hướng đến action HuyDon nếu xác nhận
-                    window.location.href = '@Url.Action("HuyDon2", "Home")?id=' + itemId;
-                } else {
-                    // Không làm gì nếu hủy
-                }
+                Swal.fire({
+                    title: 'Bạn có chắc chắn muốn hủy đơn này không?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Có',
+                    cancelButtonText: 'Không'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Chuyển hướng đến action HuyDon nếu xác nhận
+                        window.location.href = '@Url.Action("HuyDon2", "Home")?id=' + itemId;
+                    } else {
+                        // Không làm gì nếu hủy
+                    }
+                });
             });
         });
     });

@@ -1,153 +1,201 @@
-﻿@model IEnumerable<APPDATA.Models.Bill>
+﻿@using System.Globalization;
+@model IEnumerable<APPDATA.Models.Bill>
 @{
-    ViewData["Title"] = "HoaDonOnl";
+    ViewData["Title"] = "Hóa đơn online";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+    int stt = 0;
 }
 
-
-
-
-
-
-
-<form asp-action="GetList" class="row contact_form" method="post" style="margin-bottom:20px">
-    <div class="col-md-2 form-group">
-        <input style="300px" type="text" id="searchTerm" class="form-control" name="searchTerm" placeholder="Nhập mã hóa đơn để tìm kiếm">
-
-
-
+<div class="card">
+    <div class="card-header">
     </div>
-    <div class="col-md-2 form-group">
-        <button type="submit" class="btn btn-success">Tìm Kiếm</button>
-
-    </div>
-    <div class="col-md-2 form-group">
-        <input style="300px" type="date" id="searchTerm" class="form-control" name="start">
+    <div class="card-body">
+        <form asp-action="GetList" class="row contact_form" method="post" style="margin-bottom:20px">
+            <div class="col-md-2 form-group">
+                <input style="300px" type="text" id="searchTerm" class="form-control" name="searchTerm" placeholder="Nhập mã hóa đơn để tìm kiếm">
 
 
-    </div> <div class="col-md-2 form-group">
-        <input style="300px" type="date" id="searchTerm" class="form-control" name="end">
 
-    </div>
-    <div class="col-md-1 form-group">
-        <button type="submit" class="btn btn-success">Lọc</button>
-    </div>
-</form>
-<table class="table">
-    <thead>
-        <tr>
-         
-            <th>
-            <span>Tên Khách Hàng</span>
-            </th>
-     
-            <th>
-                @Html.DisplayNameFor(model => model.Code)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.ShipFee)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.PhoneNumber)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.Address)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.TotalMoney)
-            </th>
-         
-            <th>
-                @Html.DisplayNameFor(model => model.Type)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.CreateDate)
-            </th>
-        
-            <th>
-                @Html.DisplayNameFor(model => model.PayDate)
-            </th>
-       
-            <th>
-                @Html.DisplayNameFor(model => model.Status)
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-@foreach (var item in Model) {
-        <tr>
-            
-            <td>
-                    @foreach(var acc in ViewBag.account)
+            </div>
+            <div class="col-md-2 form-group">
+                <button type="submit" class="btn btn-success">Tìm Kiếm</button>
+
+            </div>
+            <div class="col-md-2 form-group">
+                <input style="300px" type="date" id="searchTerm" class="form-control" name="start">
+
+
+            </div> <div class="col-md-2 form-group">
+                <input style="300px" type="date" id="searchTerm" class="form-control" name="end">
+
+            </div>
+            <div class="col-md-1 form-group">
+                <button type="submit" class="btn btn-success">Lọc</button>
+            </div>
+        </form>
+        <div class="table-responsive table-sm">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Stt</th>
+                        <th>
+                            <span>Tên Khách Hàng</span>
+                        </th>
+
+                        <th>
+                            
+                            Mã
+                        </th>
+                        <th>
+                           
+                            phí ship
+                        </th>
+                        <th>
+                           
+                            số điện thoại
+                        </th>
+                        <th>
+                           
+                            địa chỉ
+                        </th>
+                        <th>
+                           
+                            tổng tiền
+                        </th>
+
+                        <th>
+                           
+                            Kiểu thanh toán
+                        </th>
+                        <th>
+                           
+                            Ngày tạo
+                        </th>
+
+                        <th>
+                            
+                            ngày thanh toán
+                        </th>
+
+                        <th>
+                            
+                            trạng thái
+                        </th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (Model.Any())
                     {
-
-                        if (acc.Id == item.AccountId)
+                        @foreach (var itembill in Model)
                         {
-                            <span>@acc.Name</span>
-                            break;
+                            <tr>
+                                <td>@(stt += 1)</td>
+                                <td>
+                                    @foreach (var acc in ViewBag.account)
+                                    {
 
+                                        if (acc.Id == itembill.AccountId)
+                                        {
+                                            <span>@acc.Name</span>
+                                            break;
+
+                                        }
+                                    }
+                                </td>
+                                <td>
+                                    @itembill.Code
+                                </td>
+
+
+                                <td>
+                                    @string.Format(new CultureInfo("vi-VN"), "{0:C0}",itembill.ShipFee)
+                                </td>  
+                                <td>
+                                    @itembill.PhoneNumber
+                                </td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(itembill.Address) && itembill.Address.Length > 50)
+                                    {
+                                        @Html.Raw(Html.Encode(itembill.Address.Substring(0, 50)) + "...")
+                                    }
+                                    else
+                                    {
+                                        @Html.Raw(Html.Encode(itembill.Address))
+                                    }
+                                </td>
+
+                                <td>
+                                    @string.Format(new CultureInfo("vi-VN"), "{0:C0}",itembill.TotalMoney)
+                                </td>
+                                <td>@itembill.Type</td>                               
+                                
+
+
+                                <td>
+                                    @{
+                                        DateTime createDate = itembill.CreateDate;
+                                        string formattedDate = createDate != DateTime.MinValue
+                                        ? createDate.ToString("dd/MM/yyyy")
+                                        : "Chưa thay đổi";
+                                    }
+                                    @formattedDate
+                                </td>
+                                <td>
+                                    @{
+                                        if (itembill.PayDate != null)
+                                        {
+                                           @itembill.PayDate
+
+                                        }
+                                        else
+                                        {
+
+                                            <span>Chưa thanh toán.</span>
+                                        }
+                                    }
+
+                                </td>
+                                @if (itembill.Status == 1)
+                                {
+                                    <td>  Chờ xác nhận</td>
+
+                                }
+                                else if (itembill.Status == 2)
+                                {
+                                    <td>  Đã xác nhận đơn hàng</td>
+
+                                }
+                                else if (itembill.Status == 3)
+                                {
+                                    <td>Đang giao</td>
+                                }
+                                else if (itembill.Status == 4)
+                                {
+                                    <td>Đã giao</td>
+                                }
+                                else if (itembill.Status == 0)
+                                {
+                                    <td>Chờ Hủy</td>
+                                }
+                                else if (itembill.Status == 5)
+                                {
+                                    <td>Chờ Hủy</td>
+                                }
+
+
+                            </tr>
                         }
                     }
-                </td>
-        
-            <td>
-                @Html.DisplayFor(modelItem => item.Code)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.ShipFee)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.PhoneNumber)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.Address)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.TotalMoney)
-            </td>
-       
-            <td>
-                @Html.DisplayFor(modelItem => item.Type)
-            </td>
-            <td>
-                @Html.DisplayFor(modelItem => item.CreateDate)
-            </td>
-         
-         
-            <td>
-                @Html.DisplayFor(modelItem => item.PayDate)
-            </td>
-         
-            <td>
-                    @if (item.Status == 1)
+                    else
                     {
-
-                        <span>Chờ xác nhận</span>
+                        <tr>
+                            <td colspan="12" class="text-center">Không có dữ liệu.</td>
+                        </tr>
                     }
-                    else if (item.Status == 2)
-                    {
-
-                        <span>Đã xác nhận đơn hàng </span>
-                    }
-                    else if (item.Status == 3)
-                    {
-                        <span> Đang giao  </span>
-                    }
-                    else if (item.Status == 4)
-                    {
-                        <span>Đã nhận hàng và thanh toán </span>
-                    }
-                    else if (item.Status == 0)
-                    {
-                        <span>Chờ hủy </span>
-                    }
-
-
-            </td>
-          
-        </tr>
-}
-    </tbody>
-</table>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 
