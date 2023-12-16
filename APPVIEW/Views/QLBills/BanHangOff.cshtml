@@ -6,6 +6,28 @@
     @using System.Globalization
     ViewData["Title"] = "BanHangOff";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+    Bill bil = ViewBag.bil;
+    List<BillDetail> billct = ViewBag.bilct;
+    List<ProductDetail> prd = ViewBag.prd;
+    List<Color> mau = ViewBag.color;
+    List<Size> kichco = ViewBag.size;
+
+    List<Guid> id = new List<Guid>();
+    if (bil != null)
+    {
+        var idpr = billct.Where(c => c.BIllId == bil.id);
+     
+        if (idpr != null)
+
+        {
+            foreach (var item in idpr)
+            {
+                id.Add(item.ProductDetailID);
+
+            }
+        }
+    }
+
 
 }
 
@@ -15,20 +37,89 @@
             <!-- Phần bên trái để tạo hóa đơn -->
             <div class="col-md-5">
                 <div class="card">
-                    <form action="~/qlbills/CreateBill" method="post">
+                    <form id="myForm" asp-action="Createbill" method="post">
                         <div class="card-header">
                             Tạo Hóa Đơn
                         </div>
                         <div class="card-body">
+                            @if (bil != null)
+
+                            {
+                                var bilct = billct.Where(c => c.BIllId == bil.id).ToList();
+                                <input type="hidden" value="@bil.id" name="billid">
+
+                                foreach (var item in bilct)
+
+                                {
+
+                                    var pr = prd.FirstOrDefault(c => c.Id == item.ProductDetailID);
+                                    var siz = kichco.FirstOrDefault(c => c.Id == pr.Id_Size);
+                                    var colo = mau.FirstOrDefault(c => c.Id == pr.Id_Color);
+
+                                    <div style="display: flex; flex-direction: column;">
+                                        <p data-productid="@pr.Id">
+                                            Sản phẩm: @pr.Name | Size: @siz.Name | Màu: @colo.Name
+                                        </p>
+                                        <div style="display: flex; align-items: center; margin-top: 5px;">
+                                            <p>Số lượng: </p>
+                                            <input type="number" value="@item.Amount" min="1" max="@pr.Quantity" name="sl" style="margin-left: 5px; margin-bottom: 12px; width: 50px;">
+                                            <input type="hidden" value="@pr.Id" name="productIdChoose">
+                                        </div>
+                                        <p style="display: flex; align-items: center;" class="product-price">
+                                            <span>@pr.Price</span>
+                                            <span style="margin-left: 5px;">VND</span>
+                                        </p>
+                                        <button type="button" style="width: 170px; margin-bottom: 17px; background-color: #F08080; border-radius: 17px;">
+                                            Hủy chọn
+                                        </button>
+                                    </div>
+
+
+
+
+
+                                }
+
+                            }
                         </div>
                         <div class="card-footer">
                             <span>Số điện thoại : </span>   <br><input type="text" id="sdt" name="sdt" onchange="layTenKhachHang()" style="margin-right:170px"><br>
                             <span>Tên khách hàng : </span>  <br> <input type="text" id="tenkh" name="tenkh"><br>
                             <span>Tiền khách đưa : </span>  <br> <input type="number" min="0" id="khachdua" onchange="tinhTienThua()"><br>
-                            <span>Tổng tiền : </span> <br>  <input type="number" min="0" id="tong" name="tongtien" readonly="readonly" style="border:none"><br>
+              @*               @{
+                                if (bil != null)
+                                {
+                                    <span>Tổng tiền : </span> <br>  <input type="number" min="0" value="@bil.TotalMoney" id="tong" name="tongtien" readonly="readonly" style="border:none">
+
+                                    <br>
+                                }
+                                else
+                                {
+
+                                    <span>Tổng tiền : </span> <br>  <input type="number" min="0" value="0" id="tong" name="tongtien" readonly="readonly" style="border:none">
+
+                                    <br>
+                                
+                                }
+
+                            
+                            } *@
+                            <span>Tổng tiền : </span> <br>  <input type="number" min="0" value="0" id="tong" name="tongtien" readonly="readonly" style="border:none">
+
+                            <br>
                             <span id="tienthua"></span>  <br>
                             <span id="error"></span> <br>
-                            <button type="submit" class="btn btn-primary" style="margin-top:15px">Tạo Hóa Đơn</button>
+                            <div class="row">
+                                <!-- Phần bên trái để tạo hóa đơn -->
+                                <div class="col-md-4">
+                                    <button type="submit" class="btn btn-primary" style="margin-top:15px">Tạo Hóa Đơn</button>
+
+                                </div>
+                                <div class="col-md-4">
+                                    <button type="submit" onclick="submitForm('CreateBillWait')" class="btn btn-primary" style="margin-top:15px">Tạo Hóa Đơn Chờ</button>
+
+                                </div>
+                            </div>
                         </div>
 
                     </form>
@@ -123,9 +214,136 @@
 
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 <script>
-    const chosenProducts = {};
+
+    var idArray = @Html.Raw(Json.Serialize(id.Select(x => x.ToString()).ToArray()));
+    var bill = @Html.Raw(Json.Serialize(bil));
+    console.log(bill.name);
+    var mau = @Html.Raw(Json.Serialize(mau));
+    var kichco = @Html.Raw(Json.Serialize(kichco));
+    var prd = @Html.Raw(Json.Serialize(prd));
+    console.log(prd);
+    var billct = @Html.Raw(Json.Serialize(billct));
+
+    var filteredBillct = billct.every(item => item.billid == bill.id);
+    console.log(filteredBillct);
+    var filteredProducts = prd.every(product => {
+        return billct.every(item => item.billid === bill.id && item.ProductDetailID === product.id);
+    });
+    console.log(filteredProducts);
+
+
+
+
+
+    filteredBillct.forEach(function (item) {
+            filteredProducts.forEach(function (retunprd) {
+                var colorr = mau.find(bills => bills.id === retunprd.id_size);
+            var sizee = kichco.find(bills => bills.id === retunprd.id_color);
+
+                console.log(colorr); console.log(sizee);
+            }); 
+        });
+    
+    
+
+    // const productContainer = document.createElement('div');
+    // productContainer.style.display = 'flex';
+    // productContainer.style.flexDirection = 'column'; Hiển thị các phần tử theo chiều dọc
+
+    // const productName = document.createElement('p');
+    // productName.textContent = `Sản phẩm: ${product.name} | Size: ${size} | Màu : ${color}`;
+    // productName.setAttribute('data-productid', product.id);
+    // productContainer.appendChild(productName);
+
+    // const productInfoContainer = document.createElement('div');
+    // productInfoContainer.style.display = 'flex';
+    // productInfoContainer.style.alignItems = 'center'; Căn giữa các phần tử con theo chiều dọc
+    // productInfoContainer.style.marginTop = '5px'; Khoảng cách từ tên sản phẩm đến số lượng
+
+    // const productQuantityLabel = document.createElement('p');
+    // productQuantityLabel.textContent = 'Số lượng: ';
+    // productInfoContainer.appendChild(productQuantityLabel);
+
+
+    // const productQuantityInput = document.createElement('input');
+    // productQuantityInput.setAttribute('type', 'number');
+    // productQuantityInput.setAttribute('value', '1')
+
+    // productQuantityInput.setAttribute('min', '1');
+    // productQuantityInput.setAttribute('max', product.quantity);
+    // productQuantityInput.setAttribute('name', 'soluong');
+    // productQuantityInput.style.marginLeft = '5px';
+    // productQuantityInput.style.marginBottom = '12px';
+    // productQuantityInput.style.width = '50px';
+    // const idprd = document.createElement('input');
+    // idprd.setAttribute('type', 'hidden');
+    // idprd.setAttribute('value', product.id);
+
+    // idprd.setAttribute('name', 'productId');
+
+
+    // productInfoContainer.appendChild(idprd);
+
+    // productInfoContainer.appendChild(productQuantityInput);
+
+
+
+    // const productPriceContainer = document.createElement('p');
+    // productPriceContainer.style.display = 'flex';
+    // productPriceContainer.style.alignItems = 'center';
+
+    // const productPrice = document.createElement('span');
+    // productPrice.textContent = `${product.price}`;
+    // productPriceContainer.appendChild(productPrice);
+    // productPriceContainer.classList.add('product-price'); Thêm lớp product - price vào phần tử chứa giá sản phẩm
+
+    // const productPriceVND = document.createElement('span');
+    // productPriceVND.textContent = ` VND`;
+    // productPriceVND.style.marginLeft = '5px';
+    // productPriceContainer.appendChild(productPriceVND);
+
+    // const cancelButton = document.createElement('button');
+    // cancelButton.textContent = 'Hủy chọn';
+    // cancelButton.setAttribute('type', 'button');
+    // cancelButton.addEventListener('click', function () {
+    //     totalPrice -= parseInt(productPrice.textContent);
+    //     tongInput1.value = totalPrice;
+    //     delete chosenProducts[productId];
+    //     productContainer.remove();
+    // });
+    // cancelButton.style.width = '170px';
+    // cancelButton.style.marginBottom = '17px';
+    // cancelButton.style.backgroundColor = '#F08080';
+    // cancelButton.style.borderRadius = '17px';
+    // productContainer.appendChild(productInfoContainer);
+    // productContainer.appendChild(productPriceContainer);
+    // productContainer.appendChild(cancelButton);
+
+
+    // cardBody.appendChild(productContainer);
+    // Kiểm tra nếu idArray có giá trị và log ra console để kiểm tra
+    if (idArray.length > 0) {
+        console.log("idArray: ", idArray);  
+
+        // Thực hiện các thao tác khác sau khi có idArray
+        // ...
+    }
+    if (idArray.length) {
+        var chosenProducts = {};
+        idArray.forEach(function (productId) {
+            chosenProducts[productId] = true;
+        });
+
+        // Các thao tác khác sau khi đã thêm các productId vào chosenProducts
+    } else {
+        var chosenProducts = {};
+    }
+
     let totalPrice = 0;
+
+    
     $('#divToUpdate').on('click', 'button[data-id]', function (event) {
         event.preventDefault();
         const cardBody = document.querySelector('.card-body');
@@ -188,6 +406,8 @@
                             productInfoContainer.appendChild(idprd);
 
                             productInfoContainer.appendChild(productQuantityInput);
+
+
 
                             const productPriceContainer = document.createElement('p');
                             productPriceContainer.style.display = 'flex';
@@ -497,16 +717,16 @@
         if (tienThua < 0) {
             document.getElementById("error").textContent = "Thiếu : " + (tienThua * (-1));
             document.getElementById("error").style.color = "red";
-           // Ẩn nhãn "Tiền thừa" nếu không có tiền thừa
+            // Ẩn nhãn "Tiền thừa" nếu không có tiền thừa
             document.getElementById("tienthua").textContent = ""; // Xóa nội dung trường "Tiền thừa"
         } else {
-        // Cập nhật nhãn "Tiền thừa"
-            document.getElementById("tienthua").textContent = "Thừa : "+tienThua; // Hiển thị tiền thừa
+            // Cập nhật nhãn "Tiền thừa"
+            document.getElementById("tienthua").textContent = "Thừa : " + tienThua; // Hiển thị tiền thừa
             document.getElementById("error").textContent = ""; // Xóa thông báo lỗi
         }
     }
 
-    
+
 </script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
@@ -528,5 +748,10 @@
         });
     }
 </script>
- 
+<script>
+    function submitForm(action) {
+        document.getElementById('myForm').setAttribute('action', action);
+        document.getElementById('myForm').submit();
+    }
+</script>
 

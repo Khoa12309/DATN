@@ -1,0 +1,164 @@
+﻿@{
+    ViewData["Title"] = "ShowBill";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+    @using APPDATA.Models;
+    List<Bill> bill = ViewBag.viewbill;
+    List<BillDetail> billct = ViewBag.viewbillct;
+    List<ProductDetail> prdct = ViewBag.viewprdct;
+    List<Product> prd = ViewBag.viewprd;
+    List<Size> size = ViewBag.sizee;
+    List<Color> color = ViewBag.Collor;
+    List<Account> acc = ViewBag.acc;
+    int stt = 0;
+}
+
+
+
+<form asp-controller="QLBills" asp-action="DonCho" class="row contact_form" method="post">
+    <div class="row">
+        <div class="col-md-3 form-group">
+            <input type="text" class="form-control" name="search" placeholder="Nhập mã hóa đơn để tìm kiếm">
+
+        </div>    <div class="col-md-2 form-group">
+            <button type="submit" class="btn btn-success">Tìm kiếm</button>
+
+        </div>
+    </div>
+</form>
+<div class="card">
+    <div class="card-header">
+    </div>
+    <div class="card-body">
+
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>STT</th>
+                        <th>Mã hóa đơn</th>
+                        <th>Tên khách hàng</th>
+
+                        <th>SDT</th>
+                        <th>Địa chỉ</th>
+                        <th>Tổng tiền</th>
+                        <th>Trạng thái</th>
+                        <th>Ngày tạo</th>
+
+
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (bill != null || bill.Count() > 0)
+                    {
+                        @foreach (var itembill in bill)
+                        {
+                            var account = acc.FirstOrDefault(c => c.Id == itembill.AccountId);
+                            var userbillct = billct.FirstOrDefault(c => c.BIllId == itembill.id);
+                            var pct = prdct.FirstOrDefault(c => c.Id == userbillct.ProductDetailID);
+                            var pro = prd.FirstOrDefault(c => c.Id == pct.Id_Product);
+                            var siz = size.FirstOrDefault(c => c.Id == pct.Id_Size);
+                            var colo = color.FirstOrDefault(c => c.Id == pct.Id_Color);
+                            <tr>
+                                <td>@(stt += 1)</td>
+                                <td>@itembill.Code</td>
+
+                                @if (itembill.Name !=null)
+
+                                {
+                                    <td>@itembill.Name</td>
+                                }
+                                else
+                                {
+                                    <td>@account.Name</td>
+
+                                }
+
+                                <td>
+                                    @itembill.PhoneNumber
+                                </td>
+                                <td>
+                                    @itembill.Address
+                                </td>
+                                <td>
+                                    @itembill.TotalMoney
+                                </td>
+                                @if (itembill.Status == 1)
+                                {
+                                    <td>  Chờ xác nhận</td>
+
+                                }
+                                else if (itembill.Status == 2)
+                                {
+                                    <td>  Đã xác nhận đơn hàng</td>
+
+                                }
+                                else if (itembill.Status == 3)
+                                {
+                                    <td>Đang giao</td>
+                                }
+                                else if (itembill.Status == 4)
+                                {
+                                    <td>Đã nhận và thanh toán</td>
+                                }
+                                else if (itembill.Status == 7)
+                                {
+                                    <td>Đơn chờ</td>
+                                }
+
+                                <td>
+                                    @{
+                                        DateTime createDate = itembill.CreateDate;
+                                        string formattedDate = createDate != DateTime.MinValue
+                                        ? createDate.ToString("dd/MM/yyyy")
+                                        : "Not changed";
+                                    }
+                                    @formattedDate
+                                </td>
+
+                                <td>
+                                    <button style="width:140px" class="btn btn-danger"> @Html.ActionLink("Thanh toán tiếp", "BanHangOff", new { id = itembill.id }, new { style = "color:white;" }) </button>
+                                </td>
+                                <td>
+                                    <button data-itemid="@itembill.id" style="width:140px" class="btn btn-danger cancel-button">
+                                        <a href="@Url.Action("HuyDon", new { id = itembill.id })" style="color:white;">Hủy Đơn</a>
+                                    </button>
+                                </td>
+
+                                <td>
+                                    <button style="width:140px" class="btn btn-danger"> @Html.ActionLink("Chi Tiết ", "Chitiet", new { id = itembill.id }, new { style = "color:white;" }) </button>
+                                </td>
+
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        <tr>
+                            <td colspan="12" class="text-center">No Data.</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        var cancelButtons = document.querySelectorAll('.cancel-button');
+
+        cancelButtons.forEach(function (cancelButton) {
+            cancelButton.addEventListener("click", function (event) {
+                event.preventDefault();
+                var itemId = this.getAttribute('data-itemid');
+                var confirmation = confirm("Bạn có chắc chắn muốn hủy đơn này không?");
+
+                if (confirmation) {
+                    // Chuyển hướng đến action HuyDon nếu xác nhận
+                    window.location.href = '@Url.Action("HuyDon", "QLBills")?id=' + itemId;
+                } else {
+                    // Không làm gì nếu hủy
+                }
+            });
+        });
+    });
+</script>

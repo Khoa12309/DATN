@@ -163,6 +163,12 @@
                                         <div data-i18n="Analytics">Bán Hàng</div>
                                     </a>
                                 </li>
+                                <li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "QLBills" && ViewContext.RouteData.Values["action"].ToString() == "BanHangOff" ? "active" : "")">
+                                    <a href="~/QLBills/DonCho" class="menu-link">
+                                        <span class="mdi mdi-chart-line"></span>
+                                        <div data-i18n="Analytics">Đơn chờ</div>
+                                    </a>
+                                </li>
                             </ul>
                         </li>
               

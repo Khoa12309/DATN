@@ -75,11 +75,13 @@ namespace APPVIEW.Controllers
         {
             return View();
         }
-        public IActionResult Chitiet(Guid id ) {
-            var bill = bills.GetApi("Bill").FirstOrDefault(c=>c.id == id);
-            if (bill != null) {
+        public IActionResult Chitiet(Guid id)
+        {
+            var bill = bills.GetApi("Bill").FirstOrDefault(c => c.id == id);
+            if (bill != null)
+            {
                 ViewBag.bil = bill;
-                var billct = billDetails.GetApi("BillDetail").Where(c=>c.BIllId==bill.id);
+                var billct = billDetails.GetApi("BillDetail").Where(c => c.BIllId == bill.id);
                 ViewBag.prd = getapi.GetApi("ProductDetails");
                 ViewBag.size = getapiSize.GetApi("Size");
                 ViewBag.color = getapiColor.GetApi("Color");
@@ -138,24 +140,25 @@ namespace APPVIEW.Controllers
             {
 
                 foreach (var item in y)
-                {  
+                {
                     var pr = getapi.GetApi("ProductDetails").FirstOrDefault(c => c.Id == item.ProductDetailID);
                     pr.Quantity += item.Amount;
                     await getapi.UpdateObj(pr, "ProductDetails");
                     await billDetails.DeleteObj(item.id, "BillDetail");
                 }
             }
-            else {
+            else
+            {
 
                 foreach (var item in y)
-                {                 
+                {
                     await billDetails.DeleteObj(item.id, "BillDetail");
                 }
 
             }
             await bills.DeleteObj(id, "Bill");
             _notyf.Success("Đã xác nhận hủy đơn");
-            return RedirectToAction("ViewBill");
+            return RedirectToAction("ShowBill");
         }
         public async Task<IActionResult> HuyDon2(Guid id)
         {
@@ -210,7 +213,7 @@ namespace APPVIEW.Controllers
                 {
                     var tk = bills.GetApi("Bill").Where(c => c.Status == 1 && c.Code.Contains(search)).OrderByDescending(d => d.CreateDate).ToList();
                     ViewBag.viewbill = tk;
-                 
+
                     return View(tk);
                 }
                 else
@@ -345,22 +348,31 @@ namespace APPVIEW.Controllers
             if (searchText != null)
             {
                 var products = getapi.GetApi("ProductDetails").Where(c => c.Quantity > 0 && c.Status != 0 && c.Name.ToLower().Contains(searchText.ToLower().Trim())).ToList();
-                return Json(new { success = true, productct = products, size = size, color = color,img = Img });
+                return Json(new { success = true, productct = products, size = size, color = color, img = Img });
             }
             return Json(new { success = true, productct = prd, size = size, color = color, img = Img });
         }
 
 
-        public ActionResult BanHangOff(string inputValue)
+        public ActionResult BanHangOff(string inputValue, Guid id)
         {
             ViewBag.size = getapiSize.GetApi("Size");
             ViewBag.color = getapiColor.GetApi("Color");
             ViewBag.Img = getapiImg.GetApi("Image");
+            var bil = bills.GetApi("Bill").FirstOrDefault(c => c.id == id);
+            if (bil != null)
+            {
+                ViewBag.bil = bil;
+                var bct = billDetails.GetApi("BillDetail");
+                ViewBag.bilct = bct;
+                ViewBag.prd = getapi.GetApi("ProductDetails");
+            }
             try
             {
-                if (inputValue != "")
+                if (inputValue != null)
                 {
-                    return View(getapi.GetApi("ProductDetails").Where(c => c.Quantity > 0 && c.Status!=0 && c.Name.ToLower().Contains(inputValue.ToLower())).ToList());
+                    var proc = getapi.GetApi("ProductDetails").Where(c => c.Quantity > 0 && c.Status != 0 && c.Name.ToLower().Contains(inputValue.ToLower())).ToList();
+                    return View(proc);
                 }
             }
             catch (Exception ex)
@@ -381,7 +393,149 @@ namespace APPVIEW.Controllers
               .Select(s => s[random.Next(s.Length)]).ToArray());
         }
         [HttpPost]
-        public async Task<IActionResult> CreateBill(List<Guid> productId, List<int> soluong, float tongtien, string tenkh,string sdt)
+        public async Task<IActionResult> CreateBill(List<Guid> productId,List<int>sl, List<int> soluong, float tongtien, string tenkh, string sdt,List<Guid> productIdChoose, Guid billid)
+        {
+            if (User.Identity.IsAuthenticated)
+            {
+
+                var Uid = User.Claims.FirstOrDefault(c => c.Type == "Id").Value;
+                var acc = _account.GetApi("Account").FirstOrDefault(c => c.Id.ToString() == Uid);
+                SessionService.SetObjToJson(HttpContext.Session, "Account", acc);
+            }
+            var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
+            if (account.Id == Guid.Empty)
+            {
+
+                return Redirect("~/Account/Login");
+            }
+            if (productIdChoose.Count() == 0 || billid == Guid.Empty)
+            {
+
+                if (tenkh == "" || tenkh == null)
+                {
+
+
+                    tenkh = "Khong Luu Ten";
+                }
+
+                var prdct = getapi.GetApi("ProductDetails").ToList();
+                var billct = billDetails.GetApi("BillDetail");
+                var bill = bills.GetApi("Bill");
+                Bill newbil = new Bill();
+                newbil.id = Guid.NewGuid();
+                newbil.PhoneNumber = sdt;
+                newbil.AccountId = account.Id;
+                newbil.Code = GenerateRandomString(8);
+                newbil.CreateDate = DateTime.Now;
+                newbil.Type = "Tại Quầy";
+                newbil.TotalMoney = tongtien;
+                newbil.Status = 4;
+                newbil.Name = tenkh;
+                newbil.PayDate = DateTime.Now;
+                await bills.CreateObj(newbil, "Bill");
+                if (productId.Count == soluong.Count)
+                {
+                    for (int i = 0; i < productId.Count; i++)
+                    {
+                        var idpr = productId[i];
+                        var quantity = soluong[i];
+
+                        foreach (var item in prdct)
+                        {
+                            if (item.Id == idpr)
+                            {
+                                var bil = new BillDetail();
+                                bil.id = Guid.NewGuid();
+                                bil.BIllId = newbil.id;
+                                bil.Amount = quantity;
+                                bil.Price = quantity * item.Price;
+                                bil.Status = 1;
+                                bil.ProductDetailID = item.Id;
+                                await billDetails.CreateObj(bil, "BillDetail");
+
+                                item.Quantity = item.Quantity - quantity;
+                                await getapi.UpdateObj(item, "ProductDetails");
+                            }
+                        }
+                    }
+                }
+                else
+                {
+                    return RedirectToAction("BanHangOff");
+                }
+                return RedirectToAction("GenerateInvoice", new { billId = newbil.id, tenkh = newbil.Name });
+            }
+            else {
+                var bill = bills.GetApi("Bill").FirstOrDefault(c=>c.id==billid);
+
+
+                var prdct = getapi.GetApi("ProductDetails").ToList();
+                var billct = billDetails.GetApi("BillDetail");
+                //var bict = billct.Where(c=>c.BIllId == bill.id);
+
+                if (sl.Count == productIdChoose.Count) {
+
+                    for (int i = 0; i < productIdChoose.Count; i++)
+                    {
+                        var idpr = productIdChoose[i];
+                        var quantity = sl[i];
+
+                        foreach (var item in billct)
+                        {
+                            if (item.BIllId == bill.id)
+                            {
+
+                                var x = prdct.FirstOrDefault(c => c.Id == item.ProductDetailID);
+                                x.Quantity = x.Quantity - (item.Amount-quantity);
+                                await getapi.UpdateObj(x, "ProductDetails");
+                                item.Amount = quantity;
+                                item.Price = quantity * x.Price;
+                            
+                       
+                                await billDetails.UpdateObj(item, "BillDetail");
+
+                            
+                            }
+                        }
+                    }
+
+
+
+
+                }
+                if (productId.Count == soluong.Count && bill!=null)
+                {
+                    for (int i = 0; i < productId.Count; i++)
+                    {
+                        var idpr = productId[i];
+                        var quantity = soluong[i];
+
+                        foreach (var item in prdct)
+                        {
+                            if (item.Id == idpr)
+                            {
+                                var bil = new BillDetail();
+                                bil.id = Guid.NewGuid();
+                                bil.BIllId = billid;
+                                bil.Amount = quantity;
+                                bil.Price = quantity * item.Price;
+                                bil.Status = 1;
+                                bil.ProductDetailID = item.Id;
+                                await billDetails.CreateObj(bil, "BillDetail");
+
+                                item.Quantity = item.Quantity - quantity;
+                                await getapi.UpdateObj(item, "ProductDetails");
+                            }
+                        }
+                    }
+                }
+                bill.Status = 4;
+                await bills.UpdateObj(bill,"Bill");
+                return RedirectToAction("GenerateInvoice", new { billId = bill.id, tenkh = bill.Name });
+            }
+        }
+        [HttpPost]
+        public async Task<IActionResult> CreateBillWait(List<Guid> productId, List<int> soluong, float tongtien, string tenkh, string sdt)
         {
             var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
             if (account.Id == Guid.Empty)
@@ -407,9 +561,9 @@ namespace APPVIEW.Controllers
             newbil.CreateDate = DateTime.Now;
             newbil.Type = "Tại Quầy";
             newbil.TotalMoney = tongtien;
-            newbil.Status = 4;
+            newbil.Status = 7;
             newbil.Name = tenkh;
-            newbil.PayDate = DateTime.Now;  
+            newbil.PayDate = DateTime.Now;
             await bills.CreateObj(newbil, "Bill");
             if (productId.Count == soluong.Count)
             {
@@ -441,7 +595,51 @@ namespace APPVIEW.Controllers
             {
                 return RedirectToAction("BanHangOff");
             }
-            return RedirectToAction("GenerateInvoice", new { billId = newbil.id, tenkh = newbil.Name });
+            return RedirectToAction("BanHangOff");
+        }
+        public async Task<IActionResult> DonCho(string search)
+        {
+
+            var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
+            var userBills = bills.GetApi("Bill").Where(c => c.Status == 7).OrderByDescending(d => d.CreateDate).ToList();
+            ViewBag.viewbill = userBills;
+
+            var billDetailsApi = billDetails.GetApi("BillDetail");
+            var productDetailsApi = getapi.GetApi("ProductDetails");
+            var productsApi = getapiProduct.GetApi("Product");
+
+
+            ViewBag.viewbillct = billDetailsApi;
+            ViewBag.viewprdct = productDetailsApi;
+            ViewBag.viewprd = productsApi;
+            ViewBag.sizee = getapiSize.GetApi("Size");
+            ViewBag.acc = _account.GetApi("Account");
+            ViewBag.Collor = getapiColor.GetApi("Color");
+            try
+            {
+                if (search != "")
+                {
+                    var tk = bills.GetApi("Bill").Where(c => c.Status == 7 && c.Code.Contains(search)).OrderByDescending(d => d.CreateDate).ToList();
+                    ViewBag.viewbill = tk;
+
+                    return View(tk);
+                }
+                else
+                {
+                    ViewBag.viewbill = userBills;
+
+
+
+
+                    return View(userBills);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return View(userBills);
+            }
+
         }
 
         public string xulichuoi(string tenkh)
@@ -638,12 +836,13 @@ namespace APPVIEW.Controllers
             x.Type = "Đã nhận hàng và thanh toán";
             await bills.UpdateObj(x, "Bill");
             return RedirectToAction("ShowBillDaNhan");
-        } 
+        }
         public async Task<IActionResult> KhongHuy(Guid id)
         {
             var x = bills.GetApi("Bill").FirstOrDefault(c => c.id == id);
-            if (x.Status == 0 ) {
-               x.Status=1;
+            if (x.Status == 0)
+            {
+                x.Status = 1;
 
                 await bills.UpdateObj(x, "Bill");
                 return RedirectToAction("ShowBillDaNhan");
@@ -656,14 +855,15 @@ namespace APPVIEW.Controllers
         [HttpPost]
         public ActionResult GetName(string sdt)
         {
-            var bill = bills.GetApi("Bill").FirstOrDefault(c=>c.PhoneNumber == sdt);
-            if (bill != null) {
+            var bill = bills.GetApi("Bill").FirstOrDefault(c => c.PhoneNumber == sdt);
+            if (bill != null && sdt != null)
+            {
                 if (bill.Name != null || bill.Name != "")
                 {
                     return Json(new { success = true, Name = bill.Name });
                 }
-              
-            
+
+
             }
 
 
