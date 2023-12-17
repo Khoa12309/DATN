@@ -358,10 +358,12 @@ namespace APPVIEW.Controllers
             ViewBag.Img = getapiImg.GetApi("Image");
             try
             {
-                if (inputValue != "")
+                if (inputValue != null)
                 {
-                    return View(getapi.GetApi("ProductDetails").Where(c => c.Quantity > 0 && c.Status!=0 && c.Name.ToLower().Contains(inputValue.ToLower())).ToList());
+                    var proc = getapi.GetApi("ProductDetails").Where(c => c.Quantity > 0 && c.Status != 0 && c.Name.ToLower().Contains(inputValue.ToLower())).ToList();
+                    return View(proc);
                 }
+                
             }
             catch (Exception ex)
             {

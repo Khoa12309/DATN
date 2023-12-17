@@ -52,12 +52,12 @@ namespace APPVIEW.Controllers
                 }
                 else
                 {
-                    return View(obj);
+                    return View(obj.OrderByDescending(d => d.CreateDate).ToList());
                 }
             }
             catch (Exception ex)
             {
-                return View(obj);
+                return View(obj.OrderByDescending(d => d.CreateDate).ToList());
             }
 
         }
@@ -98,12 +98,12 @@ namespace APPVIEW.Controllers
                 }
                 else
                 {
-                    return View(obj);
+                    return View(obj.OrderByDescending(d => d.CreateDate).ToList());
                 }
             }
             catch (Exception ex)
             {
-                return View(obj);
+                return View(obj.OrderByDescending(d => d.CreateDate).ToList());
             }
         }
 
