@@ -75,14 +75,13 @@
                             Ngày tạo
                         </th>
 
-                        <th>
-                            
-                            ngày thanh toán
+                        <th>                           
+                            Ngày thanh toán
                         </th>
 
                         <th>
                             
-                            trạng thái
+                            Trạng thái
                         </th>
                         <th></th>
                     </tr>
@@ -95,7 +94,8 @@
                             <tr>
                                 <td>@(stt += 1)</td>
                                 <td>
-                                    @foreach (var acc in ViewBag.account)
+                                    @itembill.Name
+                                  @*   @foreach (var acc in ViewBag.account)
                                     {
 
                                         if (acc.Id == itembill.AccountId)
@@ -108,7 +108,7 @@
                                         {
                                             @itembill.Name
                                         }
-                                    }
+                                    } *@
                                    
                                 </td>
                                 <td>

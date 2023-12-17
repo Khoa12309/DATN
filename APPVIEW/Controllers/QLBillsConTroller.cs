@@ -357,10 +357,12 @@ namespace APPVIEW.Controllers
             ViewBag.Img = getapiImg.GetApi("Image");
             try
             {
-                if (inputValue != "")
+                if (inputValue != null)
                 {
-                    return View(getapi.GetApi("ProductDetails").Where(c => c.Quantity > 0 && c.Status!=0 && c.Name.ToLower().Contains(inputValue.ToLower())).ToList());
+                    var proc = getapi.GetApi("ProductDetails").Where(c => c.Quantity > 0 && c.Status != 0 && c.Name.ToLower().Contains(inputValue.ToLower())).ToList();
+                    return View(proc);
                 }
+                
             }
             catch (Exception ex)
             {
@@ -393,6 +395,11 @@ namespace APPVIEW.Controllers
 
 
                 tenkh = "Khong Luu Ten";
+            }
+            if (productId.Count==0)
+            {
+                _notyf.Warning("Không có sản phẩm");
+                return RedirectToAction("BanHangOff");
             }
 
             var prdct = getapi.GetApi("ProductDetails").ToList();
@@ -650,9 +657,11 @@ namespace APPVIEW.Controllers
             return RedirectToAction("ShowBillDaNhan");
         }
         [HttpPost]
-        public ActionResult GetName(string sdt)
-        {
-            var bill = bills.GetApi("Bill").FirstOrDefault(c=>c.PhoneNumber == sdt);
+        public ActionResult GetName(string sdt) { 
+
+
+
+            var bill = bills.GetApi("Bill").FirstOrDefault(c => c.PhoneNumber ==sdt &&c.Name!=null&&c.Name!="" );
             if (bill != null && sdt!=null) {
                 if (bill.Name != null || bill.Name != "")
                 {

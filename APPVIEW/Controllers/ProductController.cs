@@ -25,6 +25,25 @@ namespace APPVIEW.Controllers
             int pageNumber = (page ?? 1);
             return View(obj.OrderByDescending(x => x.Id).ToPagedList(pageNumber, pageSize));
         }
+        [HttpPost]
+        public async Task<IActionResult> GetList(int? page,string searchTerm)
+        {
+            var lstProduct = getapi.GetApi("Product").ToList();
+
+            var searchResult = lstProduct
+                .Where(v =>
+                    v.Code.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) ||
+                    v.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase) 
+                )
+                .ToList();
+            int pageSize = 8;
+            int pageNumber = (page ?? 1);
+            if (searchTerm==null)
+            {
+                searchResult = lstProduct;
+            }
+            return View(searchResult.OrderByDescending(x => x.Id).ToPagedList(pageNumber, pageSize));
+        }
 
         public async Task<IActionResult> Search(string searchTerm)
         {

@@ -55,12 +55,14 @@ namespace APPVIEW.Controllers
                 }
                 else
                 {
-                    return View(obj.OrderByDescending(x => x.id).ToPagedList(pageNumber, pageSize));
+
+                    return View(obj.OrderByDescending(d => d.CreateDate).ToPagedList(pageNumber, pageSize));
+
                 }
             }
             catch (Exception ex)
             {
-                return View(obj.OrderByDescending(x => x.id).ToPagedList(pageNumber, pageSize));
+                return View(obj.OrderByDescending(d => d.CreateDate).ToPagedList(pageNumber, pageSize));
             }
 
         }
@@ -103,12 +105,16 @@ namespace APPVIEW.Controllers
                 }
                 else
                 {
-                    return View(obj.OrderByDescending(x => x.id).ToPagedList(pageNumber, pageSize));
+
+                    return View(obj.OrderByDescending(d => d.CreateDate).ToPagedList(pageNumber, pageSize));
+
                 }
             }
             catch (Exception ex)
             {
-                return View(obj.OrderByDescending(x => x.id).ToPagedList(pageNumber, pageSize));
+
+                return View(obj.OrderByDescending(d => d.CreateDate).ToPagedList(pageNumber, pageSize));
+
             }
         }
 
