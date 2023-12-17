@@ -62,6 +62,17 @@ namespace APPVIEW.Controllers
         {
             try
             {
+                if (obj.StartDate.Date < DateTime.Now.Date)
+                {
+                    _notyf.Warning("Ngày bắt đầu không được nhỏ hơn ngày hiện tại");
+                    return View();
+                }
+
+                if (obj.EndDate.Date < obj.StartDate.Date)
+                {
+                    _notyf.Warning("Ngày kết thúc không được nhỏ hơn ngày bắt đầu");
+                    return View();
+                }
                 var item = getapi.CreateObj(obj, "Voucher").Result;
                 if (item != null)
                 {
