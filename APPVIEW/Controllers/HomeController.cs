@@ -22,6 +22,9 @@ using System.Security.Principal;
 using X.PagedList;
 using DocumentFormat.OpenXml.Math;
 using DocumentFormat.OpenXml.Office2010.Excel;
+using APPDATA.DB;
+using DocumentFormat.OpenXml.InkML;
+
 namespace APPVIEW.Controllers
 {
     [AllowAnonymous]
@@ -47,18 +50,19 @@ namespace APPVIEW.Controllers
         private Getapi<PaymentMethod> getapiPM;
         private Getapi<Role> getapiRole;
         private Getapi<VoucherForAcc> getapiVoucherAcc;
-        
+        private ShoppingDB _context;
+
         public INotyfService _notyf;
 
         private static readonly Random random = new Random();
         private string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
-        public HomeController(ILogger<HomeController> logger,INotyfService notyf)
+        public HomeController(ILogger<HomeController> logger, INotyfService notyf)
         {
             _logger = logger;
             getapi = new Getapi<ProductDetail>();
             getapiCategory = new Getapi<Category>();
-            getapiColor= new Getapi<APPDATA.Models.Color>();
+            getapiColor = new Getapi<APPDATA.Models.Color>();
             getapiImg = new Getapi<Image>();
             getapiSize = new Getapi<Size>();
             getapiSupplier = new Getapi<Supplier>();
@@ -72,9 +76,10 @@ namespace APPVIEW.Controllers
 
             getapiCD = new Getapi<CartDetail>();
             getapiPM = new Getapi<PaymentMethod>();
-            getapiRole= new Getapi<Role>();
+            getapiRole = new Getapi<Role>();
             getapiPMD = new Getapi<PaymentMethodDetail>();
             getapiVoucherAcc = new Getapi<VoucherForAcc>();
+            _context = new ShoppingDB();
 
             _notyf = notyf;
 
@@ -95,18 +100,49 @@ namespace APPVIEW.Controllers
                 var acc = getapiAc.GetApi("Account").FirstOrDefault(c => c.Id.ToString() == Uid);
                 SessionService.SetObjToJson(HttpContext.Session, "Account", acc);
             }
-           
+
             var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
-            
+
             if (account.Id == Guid.Empty)
             {
-               
 
-                account = getapiAc.GetApi("Account").FirstOrDefault(c => c.Name == "khach k dang nhap");
+                var checkRole = _context.Roles.Count();
+                if (checkRole == 0)
+                {
+                    var customerRole = new Role()
+                    {
+                        id = Guid.NewGuid(),
+                        name = "Customer",
+                        Status = 1
+                    };
+                    _context.Roles.Add(customerRole);
+
+                    var adminRole = new Role()
+                    {
+                        id = Guid.NewGuid(),
+                        name = "Admin",
+                        Status = 1
+                    };
+                    _context.Roles.Add(adminRole);
+
+                    var staffRole = new Role()
+                    {
+                        id = Guid.NewGuid(),
+                        name = "Staff",
+                        Status = 1
+                    };
+                    _context.Roles.Add(staffRole);
+                    _context.SaveChangesAsync();
+
+                    account = getapiAc.GetApi("Account").FirstOrDefault(c => c.Name == "khach k dang nhap");
+
+
+                }
+
                 var role = getapiRole.GetApi("Role").FirstOrDefault(c => c.name == "Customer");
 
                 if (account == null)
-                {                 
+                {
                     account = new Account();
                     account.Id = Guid.Empty;
                     account.Status = 3;
@@ -116,7 +152,7 @@ namespace APPVIEW.Controllers
                     account.Avatar = "";
                     account.Create_date = DateTime.Now;
                     account.Update_date = DateTime.Now;
-                    if (role!= null)
+                    if (role != null)
                     {
                         account.IdRole = role.id;
                     }
@@ -134,7 +170,7 @@ namespace APPVIEW.Controllers
 
             ViewBag.Img = getapiImg.GetApi("Image");
 
-            return View(productJoin); 
+            return View(productJoin);
         }
         [HttpGet]
         public async Task<IActionResult> Search(string searchTerm)
@@ -150,18 +186,18 @@ namespace APPVIEW.Controllers
 
             if (searchResult.Any())
             {
-                return View("Index", searchResult); 
+                return View("Index", searchResult);
             }
 
             return NotFound("Voucher không tồn tại");
-             
+
         }
 
         public async Task<IActionResult> ViewBill(Guid id)
         {
 
             var productDetails = getapi.GetApi("ProductDetails");
-            var products = getapiProduct.GetApi("Product");  
+            var products = getapiProduct.GetApi("Product");
 
             var productJoin = productDetails.Join(products, ct => ct.Id_Product, s => s.Id, (ct, s) => new { ct, s })
                                     .Select(cs => new { cs.s.Id, cs.s.Name, cs.ct.Price })
@@ -188,7 +224,7 @@ namespace APPVIEW.Controllers
             ViewBag.size = getapiSize.GetApi("Size");
             ViewBag.color = getapiColor.GetApi("Color");
             var prdct = getapi.GetApi("ProductDetails").FirstOrDefault(c => c.Id_Product == id);
-            
+
             if (prdct != null)
             {
                 ViewBag.image = getapiImg.GetApi("Image").FirstOrDefault(c => c.IdProductdetail == prdct.Id);
@@ -323,33 +359,38 @@ namespace APPVIEW.Controllers
         public async Task<IActionResult> HuyDon(Guid id)
         {
             var x = bills.GetApi("Bill").FirstOrDefault(c => c.id == id);
-            if (x.Status == 1 ) {
+            if (x.Status == 1)
+            {
                 x.Status = 0;
                 await bills.UpdateObj(x, "Bill");
 
             }
-            if (x.Status == 2) {
+            if (x.Status == 2)
+            {
 
 
                 x.Status = 5;
                 await bills.UpdateObj(x, "Bill");
             }
             return RedirectToAction("Thongtin");
-        } public async Task<IActionResult> HuyDon2(Guid id)
+        }
+        public async Task<IActionResult> HuyDon2(Guid id)
         {
             var x = bills.GetApi("Bill").FirstOrDefault(c => c.id == id);
-            if (x.Status == 1 ) {
+            if (x.Status == 1)
+            {
                 x.Status = 0;
                 await bills.UpdateObj(x, "Bill");
 
             }
-            if (x.Status == 2) {
+            if (x.Status == 2)
+            {
 
 
                 x.Status = 5;
                 await bills.UpdateObj(x, "Bill");
             }
-            return RedirectToAction("ThongTinNotLogin",new{ sdt = x.PhoneNumber });
+            return RedirectToAction("ThongTinNotLogin", new { sdt = x.PhoneNumber });
         }
         public async Task<IActionResult> UpdateAddress(Guid id)
         {
@@ -421,11 +462,12 @@ namespace APPVIEW.Controllers
             x.ShipFee = ship;
             await bills.UpdateObj(x, "Bill");
             return RedirectToAction("Thongtin");
-        }    public async Task<IActionResult> UpdateAddress2(Guid id)
+        }
+        public async Task<IActionResult> UpdateAddress2(Guid id)
         {
 
 
-        
+
 
 
             var client = new OnlineGatewayClient($"https://online-gateway.ghn.vn/shiip/public-api/master-data/province", "bdbbde2a-fec2-11ed-8a8c-6e4795e6d902");
@@ -456,7 +498,7 @@ namespace APPVIEW.Controllers
         public async Task<IActionResult> UpdateAddress2(Guid id, string sdt, int province, string district, string ward, string diachict, float ship)
         {
             string province2 = "";
-  
+
 
 
             var client = new OnlineGatewayClient($"https://online-gateway.ghn.vn/shiip/public-api/master-data/province", "bdbbde2a-fec2-11ed-8a8c-6e4795e6d902");
@@ -487,9 +529,9 @@ namespace APPVIEW.Controllers
             var x = bills.GetApi("Bill").FirstOrDefault(c => c.id == id);
             x.PhoneNumber = sdt;
             x.Address = diachi;
-            x.TotalMoney = x.TotalMoney + (ship -x.ShipFee);
+            x.TotalMoney = x.TotalMoney + (ship - x.ShipFee);
             x.ShipFee = ship;
-           
+
             await bills.UpdateObj(x, "Bill");
             return RedirectToAction("ThongTinNotLogin", new { sdt = x.PhoneNumber });
         }
@@ -500,40 +542,40 @@ namespace APPVIEW.Controllers
         [Authorize(Roles = "Customer")]
         public async Task<IActionResult> DatHangN(Address obj, string pay, float phiship, float voucher, string vouchercode)
         {
-           
-            if (obj.Name==null)
+
+            if (obj.Name == null)
             {
                 _notyf.Warning("Tên không được để trống");
                 return RedirectToAction("checkout", new { obj = obj });
-            } 
-            if (obj.PhoneNumber==null)
+            }
+            if (obj.PhoneNumber == null)
             {
                 _notyf.Warning("Số điện thoại không được để trống");
                 return RedirectToAction("checkout", new { obj = obj });
-            }  
-            if (obj.Province==null)
+            }
+            if (obj.Province == null)
             {
 
                 _notyf.Warning("Thành phố không được để trống");
                 return RedirectToAction("checkout", new { obj = obj });
-            } 
-            if (obj.District==null)
+            }
+            if (obj.District == null)
             {
                 _notyf.Warning("Quận/huyện không được để trống");
                 return RedirectToAction("checkout", new { obj = obj });
             }
-            if (obj.Ward==null)
+            if (obj.Ward == null)
             {
                 _notyf.Warning("Phường/xã không được để trống");
                 return RedirectToAction("checkout", new { obj = obj });
-            } 
+            }
 
 
             var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
             if (account.Id == Guid.Empty)
             {
                 account = getapiAc.GetApi("Account").FirstOrDefault(c => c.Name == "khach k dang nhap");
-              
+
             }
 
             if (obj != null)
@@ -576,7 +618,7 @@ namespace APPVIEW.Controllers
             bill.id = Guid.NewGuid();
             bill.Name = obj.Name;
             bill.AccountId = account.Id;
-            bill.Code ="HD"+GenerateRandomString(6);
+            bill.Code = "HD" + GenerateRandomString(6);
             bill.PhoneNumber = obj.PhoneNumber;
             bill.Address = obj.Province + "-" + obj.District + "-" + obj.Ward + "-" + obj.SpecificAddress;
             bill.CreateBy = DateTime.Now;
@@ -594,10 +636,10 @@ namespace APPVIEW.Controllers
             }
 
 
-          
+
 
             var procarrt = SessionService.GetObjFromSession(HttpContext.Session, "Cart");
-            if (procarrt.Count>0)
+            if (procarrt.Count > 0)
             {
                 await bills.CreateObj(bill, "Bill");
             }
@@ -607,14 +649,14 @@ namespace APPVIEW.Controllers
                 return RedirectToAction("checkout");
             }
             var lpd = SessionService.GetObjFromSession(HttpContext.Session, "mpd");
-            if (lpd.Count>0)
+            if (lpd.Count > 0)
             {
                 procarrt.Clear();
                 procarrt = lpd;
             }
             if (procarrt.Count > 0)
             {
-              
+
                 foreach (var item in procarrt)
                 {
                     var billct = new BillDetail();
@@ -670,7 +712,7 @@ namespace APPVIEW.Controllers
             {
 
                 var pp = SessionService.GetObjFromSession(HttpContext.Session, "Cart");
-               
+
                 foreach (var item in procarrt)
                 {
 
@@ -683,14 +725,14 @@ namespace APPVIEW.Controllers
                         await getapiCD.DeleteObj(productcartdetails.id, "CartDetails");
 
                     }
-                pp.RemoveAll(p => p.Id == item.Id);
+                    pp.RemoveAll(p => p.Id == item.Id);
                 }
 
                 SessionService.Clearobj(HttpContext.Session, "mpd");
-              
+
                 SessionService.Clearobj(HttpContext.Session, "Cart");
                 SessionService.SetObjToJson(HttpContext.Session, "Cart", pp);
-                if (account.Name== "khach k dang nhap")
+                if (account.Name == "khach k dang nhap")
                 {
                     _notyf.Success("Đặt hàng thành công");
                     return RedirectToAction("Index");
@@ -862,7 +904,7 @@ namespace APPVIEW.Controllers
         public async Task<IActionResult> Thongtin()
         {
             var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
-            var userBills = bills.GetApi("Bill").Where(c => c.AccountId == account.Id && c.Status != 4 ).OrderByDescending(d => d.CreateDate).ToList();
+            var userBills = bills.GetApi("Bill").Where(c => c.AccountId == account.Id && c.Status != 4).OrderByDescending(d => d.CreateDate).ToList();
             ViewBag.viewbill = userBills;
 
             if (User.Identity.IsAuthenticated)
@@ -875,24 +917,27 @@ namespace APPVIEW.Controllers
             {
                 return Redirect("~/Account/login");
             }
-  
+
 
             var bill = bills.GetApi("Bill");
-            foreach (var item in bill) {
-               var y = billDetails.GetApi("BillDetail").Where(c => c.BIllId == item.id).ToList();
+            foreach (var item in bill)
+            {
+                var y = billDetails.GetApi("BillDetail").Where(c => c.BIllId == item.id).ToList();
 
-                foreach (var item2 in y) {
-                    if (item2.ProductDetailID== null || item2.ProductDetailID == Guid.Empty) {
-                    
-                    
-                    
-                    
-                    
+                foreach (var item2 in y)
+                {
+                    if (item2.ProductDetailID == null || item2.ProductDetailID == Guid.Empty)
+                    {
+
+
+
+
+
                     }
-                
-                
+
+
                 }
-            
+
             }
             var client = new OnlineGatewayClient($"https://online-gateway.ghn.vn/shiip/public-api/master-data/province", "bdbbde2a-fec2-11ed-8a8c-6e4795e6d902");
             // Gọi API để lấy danh sách các tỉnh/thành phố
@@ -918,10 +963,11 @@ namespace APPVIEW.Controllers
             ViewBag.image = getapiImg.GetApi("Image");
             return View(userBills);
 
-        }       
+        }
         public async Task<IActionResult> ThongTinNotLogin(string sdt)
         {
-            if (sdt != null || sdt != "") {
+            if (sdt != null || sdt != "")
+            {
 
 
                 var userBills = bills.GetApi("Bill").Where(c => c.PhoneNumber == sdt && c.Status != 4).OrderByDescending(d => d.CreateDate).ToList();
@@ -981,10 +1027,10 @@ namespace APPVIEW.Controllers
             else
             {
                 ViewBag.erorr = "Không có thông tin";
-              
-                return View() ;
+
+                return View();
             }
-            
+
 
 
         }
@@ -995,7 +1041,7 @@ namespace APPVIEW.Controllers
             return View();
         }
 
-        public IActionResult Shop(string sortOrder,int?page)
+        public IActionResult Shop(string sortOrder, int? page)
         {
             int pageSize = 6;
             int pageNumber = (page ?? 1);
@@ -1097,7 +1143,7 @@ namespace APPVIEW.Controllers
                             }
                         }
                     }
-                    if (priceRanges.Any(c=>c.Max==0))
+                    if (priceRanges.Any(c => c.Max == 0))
                     {
                         filterProductsWithImages = filterProductsWithImages
                                                .Where(p => priceRanges.Any(r => p.ProductDetail.Price >= r.Min))
@@ -1109,7 +1155,7 @@ namespace APPVIEW.Controllers
                        .Where(p => priceRanges.Any(r => p.ProductDetail.Price >= r.Min && p.ProductDetail.Price <= r.Max))
                        .ToList();
                     }
-                   
+
                 }
 
                 ViewBag.Products = filterProductsWithImages;
@@ -1144,7 +1190,7 @@ namespace APPVIEW.Controllers
             TempData["prodtId"] = pro.Id;
             return View(pro);
         }
-        
+
 
 
         [HttpPost]
@@ -1302,7 +1348,7 @@ namespace APPVIEW.Controllers
 
                 foreach (var item in response.Data)
                 {
-                    if (item.NameExtension.Any(c => c.Contains(ten))||item.DistrictName.ToLower() == ten.ToLower())
+                    if (item.NameExtension.Any(c => c.Contains(ten)) || item.DistrictName.ToLower() == ten.ToLower())
                     {
                         return item.DistrictID;
                     }
@@ -1441,8 +1487,8 @@ namespace APPVIEW.Controllers
             return View();
         }
 
-       
-        public async Task<IActionResult> Checkout( Guid? id)
+
+        public async Task<IActionResult> Checkout(Guid? id)
         {
             try
             {
@@ -1459,7 +1505,7 @@ namespace APPVIEW.Controllers
                     account = getapiAc.GetApi("Account").FirstOrDefault(c => c.Id.ToString() == Uid);
                     SessionService.SetObjToJson(HttpContext.Session, "Account", account);
                 }
-               
+
 
                 var client = new OnlineGatewayClient($"https://online-gateway.ghn.vn/shiip/public-api/master-data/province", "bdbbde2a-fec2-11ed-8a8c-6e4795e6d902");
 
@@ -1474,12 +1520,12 @@ namespace APPVIEW.Controllers
                 //// fee ship
                 var products = SessionService.GetObjFromSession(HttpContext.Session, "Cart");
 
-                if (id!=null)
+                if (id != null)
                 {
-                    
-                   var p= products.FirstOrDefault(c => c.Id == id);
-                   SessionService.Clearobj(HttpContext.Session, "mpd");
-                  
+
+                    var p = products.FirstOrDefault(c => c.Id == id);
+                    SessionService.Clearobj(HttpContext.Session, "mpd");
+
                     var lpd = new List<ProductDetail>();
                     lpd.Add(p);
                     SessionService.SetObjToJson(HttpContext.Session, "mpd", lpd);
@@ -1541,7 +1587,7 @@ namespace APPVIEW.Controllers
                 if (account.Id != Guid.Empty)
                 {
 
-                    
+
                     var dc = getapiAddress.GetApi("Address").FirstOrDefault(c => c.AccountId == account.Id);
 
                     if (dc != null)
@@ -1569,14 +1615,15 @@ namespace APPVIEW.Controllers
                                 }
                                 else
                                 {
-                                    ViewBag.fee=0; 
+                                    ViewBag.fee = 0;
                                     ViewBag.TT = tt;
                                     ViewBag.Total = tt;
                                     _notyf.Warning("Phường/xã không đúng");
                                     return View(dc);
                                 }
                             }
-                            else {
+                            else
+                            {
                                 ViewBag.fee = 0;
                                 ViewBag.TT = tt;
                                 ViewBag.Total = tt;
@@ -1602,13 +1649,13 @@ namespace APPVIEW.Controllers
                 }
                 return View();
             }
-            catch (Exception ex )
-            { 
+            catch (Exception ex)
+            {
                 _notyf.Error($"Lỗi:{ex.Message}");
                 return View();
             }
-           
-          
+
+
         }
 
         [HttpPost]
@@ -1829,7 +1876,7 @@ namespace APPVIEW.Controllers
 
 
 
-        
+
 
         public async Task<IActionResult> Payment(Bill bill)
 
@@ -1872,7 +1919,7 @@ namespace APPVIEW.Controllers
                 string hashSecret = "UGHKKYGUTTLWWTQOJBECDFAMDHZDBLWW"; //Chuỗi bí mật
                 var vnpayData = Request.Query;
                 PayLib pay = new PayLib();
-                
+
                 var account = getapiAc.GetApi("Account").FirstOrDefault(c => c.Id == Bill.AccountId).Name;
 
                 //lấy toàn bộ dữ liệu được trả về
@@ -1897,7 +1944,7 @@ namespace APPVIEW.Controllers
                         ViewBag.Message = "Thanh toán thành công hóa đơn " + orderId + " | Mã giao dịch: " + vnpayTranId;
 
 
-                       
+
                         if (Bill != null)
                         {
 
@@ -1928,7 +1975,7 @@ namespace APPVIEW.Controllers
                             Bill.Type = "Online - Đã Thanh Toán";
                             Bill.Code = orderId.ToString();
                             await bills.UpdateObj(Bill, "Bill");
-                            
+
                         }
                         var products = SessionService.GetObjFromSession(HttpContext.Session, "Cart");
 
@@ -1950,15 +1997,15 @@ namespace APPVIEW.Controllers
                         products.Clear();
                         SessionService.SetObjToJson(HttpContext.Session, "Cart", products);
                         _notyf.Success("Đặt hàng thành công");
-                        if (account== "khach k dang nhap")
+                        if (account == "khach k dang nhap")
                         {
                             return RedirectToAction("Index");
                         }
-                        
+
                     }
                     else
                     {
-                       
+
                         var billd = billDetails.GetApi("BillDetail").Where(c => c.BIllId == id);
                         foreach (var item in billd)
                         {
