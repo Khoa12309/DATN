@@ -120,6 +120,7 @@ namespace APPVIEW.Controllers
             {
                 if (await getapi.DeleteObj(id, "Color"))
                 {
+                    _notyf.Success("Chuyển trạng thái thành công");
                     var lst = getapi.GetApi("Color").Find(c => c.Id == id);
                     await getapi.UpdateObj(lst, "Color");
                     _notyf.Success("Xóa thành công");

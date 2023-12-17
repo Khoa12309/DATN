@@ -1746,7 +1746,7 @@ namespace APPVIEW.Controllers
                 else
                 {
                     // Lấy danh sách voucher cho tài khoản
-                    var voucherAcc = getapiVoucherAcc.GetApi("VoucherForAcc").Where(c => c.Id_Account == account.Id && c.Status == 1).ToList();
+                    var voucherAcc = getapiVoucherAcc.GetApi("VoucherForAcc").Where(c => c.Id_Account == account.Id && c.Status == 1 && c.EndDate >= DateTime.Now).ToList();
 
                     if (voucherAcc != null && voucherAcc.Any())
                     {
@@ -1782,7 +1782,7 @@ namespace APPVIEW.Controllers
                 else
                 {
                     // Lấy danh sách voucher cho tài khoản
-                    var voucherAcc = getapiVoucherAcc.GetApi("VoucherForAcc").Where(c => c.Id_Account == account.Id && c.Status == 1).ToList();
+                    var voucherAcc = getapiVoucherAcc.GetApi("VoucherForAcc").Where(c => c.Id_Account == account.Id && c.Status == 1 && c.EndDate >= DateTime.Now).ToList();
 
                     if (voucherAcc != null && voucherAcc.Any())
                     {
@@ -1974,6 +1974,7 @@ namespace APPVIEW.Controllers
                             await getapiPMD.CreateObj(pmd, "PaymentMethodDetail");
                             Bill.Type = "Online - Đã Thanh Toán";
                             Bill.Code = orderId.ToString();
+                            Bill.PayDate = DateTime.Now;
                             await bills.UpdateObj(Bill, "Bill");
 
                         }

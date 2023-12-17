@@ -626,6 +626,39 @@ namespace APPVIEW.Controllers
         {
             try
             {
+
+                if (obj != null)
+                {
+                    var p = Convert.ToInt32(obj.Province);
+                    if (p != 0)
+                    {
+                        var d = await dis(obj.District, p);
+                        if (d != 0)
+                        {
+                            var w = await wad(obj.Ward, d);
+                            if (w == 0) // Thành công
+                            {
+                                // Trả về danh sách các quận/huyện dưới dạng JSON
+                                _notyf.Warning("Phường/xã không đúng");
+                                return Redirect($"~/Account/MyProfile?id_User={obj.AccountId}");
+
+
+                            }
+                        }
+                        else
+                        {
+                            _notyf.Warning("Quận/huyện không đúng");
+                            return Redirect($"~/Account/MyProfile?id_User={obj.AccountId}");
+
+                        }
+                    }
+                }
+                else
+                {
+                    _notyf.Warning("Phường/xã không đúng");
+                     return Redirect($"~/Account/MyProfile?id_User={obj.AccountId}");
+
+                }
                 var client = new OnlineGatewayClient($"https://online-gateway.ghn.vn/shiip/public-api/master-data/province", "bdbbde2a-fec2-11ed-8a8c-6e4795e6d902");
                 // Gọi API để lấy danh sách các tỉnh/thành phố
                 var response = await client.GetProvincesAsync();
@@ -960,6 +993,51 @@ namespace APPVIEW.Controllers
             }
         }
 
+        public async Task<int> dis(string ten, int id)
+        {
+            var client = new OnlineGatewayClient($"https://online-gateway.ghn.vn/shiip/public-api/master-data/district?province_id={id}", "bdbbde2a-fec2-11ed-8a8c-6e4795e6d902");
+            // Gọi API để lấy danh sách các tỉnh/thành phố
+            var response = await client.GetDistricsAsync();
+            //Kiểm tra kết quả trả về
+            if (response.Code == 200) // Thành công
+            {
 
+                // Trả về danh sách các quận/huyện dưới dạng JSON
+
+                foreach (var item in response.Data)
+                {
+                    if (item.NameExtension.Any(c => c.Contains(ten)) || item.DistrictName.ToLower() == ten.ToLower())
+                    {
+                        return item.DistrictID;
+                    }
+                }
+            }
+            return 0;
+
+
+        }
+        public async Task<int> wad(string ten, int id)
+        {
+            var client = new OnlineGatewayClient($"https://online-gateway.ghn.vn/shiip/public-api/master-data/ward?district_id={id}", "bdbbde2a-fec2-11ed-8a8c-6e4795e6d902");
+            // Gọi API để lấy danh sách các tỉnh/thành phố
+            var response = await client.GetWardsAsync();
+            //Kiểm tra kết quả trả về
+            if (response.Code == 200) // Thành công
+            {
+
+                // Trả về danh sách các quận/huyện dưới dạng JSON
+
+                foreach (var item in response.Data)
+                {
+                    if (item.NameExtension.Any(c => c.Contains(ten)) || item.WardName.ToLower() == ten.ToLower())
+                    {
+                        return item.WardCode;
+                    }
+                }
+            }
+            return 0;
+
+
+        }
     }
 }

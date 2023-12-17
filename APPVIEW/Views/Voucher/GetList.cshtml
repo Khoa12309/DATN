@@ -26,6 +26,7 @@
                         <th>STT</th>
                         <th>Tên</th>
                         <th>Mã</th>
+
                         <th>Số Tiền Giảm Tối Đa</th>
                         <th>Số Lượng</th>
                         <th>Trạng Thái</th>
@@ -35,6 +36,7 @@
                         <th>Ngày Bắt Đầu</th>
                         <th>Ngày Kết Thúc</th>
                         <th>Thao tác</th>
+
                     </tr>
                 </thead>
                 <tbody>
@@ -50,7 +52,9 @@
                                 <td>@Html.DisplayFor(modelItem => item.Quantity)</td>
                                 <td>
                                     <span class="badge @(item.Status == 1 ? "badge rounded-pill bg-label-success" : "badge rounded-pill bg-label-danger")">
+
                                         @(item.Status == 1 ? "Đang Sử Dụng" : "Không Sử Dụng")
+
                                     </span>
                                 </td>
                                 <td>@Html.DisplayFor(modelItem => item.Value)%</td>

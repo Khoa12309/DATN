@@ -657,7 +657,7 @@ namespace APPVIEW.Controllers
         public ActionResult GetName(string sdt)
         {
             var bill = bills.GetApi("Bill").FirstOrDefault(c=>c.PhoneNumber == sdt);
-            if (bill != null) {
+            if (bill != null && sdt!=null) {
                 if (bill.Name != null || bill.Name != "")
                 {
                     return Json(new { success = true, Name = bill.Name });

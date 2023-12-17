@@ -198,9 +198,9 @@
 
                         @foreach (var item in Model)
                         {
-                            var nameClaim = User.FindFirst("Name");
+                            var nameClaim = User.FindFirst("Id");
 
-                            bool isCurrentUser = nameClaim != null && nameClaim.Value == item.Name;
+                            bool isCurrentUser = nameClaim != null && nameClaim.Value == item.Id.ToString();
 
                             <tr>
                                 <td>@(stt += 1)</td>

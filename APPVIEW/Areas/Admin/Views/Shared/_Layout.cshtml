@@ -314,6 +314,12 @@
                                         <i class="mdi mdi-material-ui"></i>
                                         <div data-i18n="Layouts"> Chất liệu </div>
                                     </a>
+                                </li>   
+                                <li class="menu-item">
+                                    <a href="~/image/getlist" class="menu-link">
+                                        <i class="mdi mdi-image"></i>
+                                        <div data-i18n="Layouts">Hình ảnh</div>
+                                    </a>
                                 </li>
                                 <li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "Voucher" && ViewContext.RouteData.Values["action"].ToString() == "GetList" ? "active" : "")">
                                     <a href="~/Voucher/getlist" class="menu-link">
