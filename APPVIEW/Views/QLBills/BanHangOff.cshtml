@@ -8,7 +8,84 @@
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
 
 }
+<style>
+    span {
+        display: block; /* Để mỗi span hiển thị trên một dòng */
+        margin-bottom: 5px; /* Khoảng cách giữa các dòng */
+        font-weight: bold; /* Chữ đậm */
+    }
 
+    input[type="text"],
+    input[type="number"] {
+        width: 100%; /* Ở đây tôi sử dụng 100% để nó mở rộng hết chiều rộng của phần tử chứa */
+        padding: 8px; /* Độ dày của viền */
+        margin-bottom: 10px; /* Khoảng cách giữa các ô input */
+        border: 1px solid #ccc; /* Viền của ô input */
+        border-radius: 5px; /* Bo góc của ô input */
+    }
+
+    #tienthua,
+    #error {
+        color: red; /* Màu chữ đỏ cho thông báo */
+        font-weight: bold; /* Chữ đậm */
+    }
+
+    .button-container {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-top: 15px;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        color: #fff;
+        border: 1px solid #007bff;
+        border-radius: 5px;
+        padding: 10px 20px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+    }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+
+    .btn-secondary {
+        background-color: #28a745;
+        color: #fff;
+        border: 1px solid #28a745;
+        border-radius: 5px;
+        padding: 10px 20px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+        margin-left: 20px;
+    }
+
+        .btn-secondary:hover {
+            background-color: #218838;
+            border-color: #218838;
+        }
+
+    .card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    #timkiem {
+        height: 50px;
+        width: 100%; /* Điều chỉnh chiều rộng của ô tìm kiếm */
+        padding: 5px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+        #timkiem::placeholder {
+            color: #999; /* Màu của placeholder */
+        }
+</style>
 <body>
     <div class="container-fluid">
         <div class="row">
@@ -16,24 +93,35 @@
             <div class="col-md-5">
                 <div class="card">
                     <form action="~/qlbills/CreateBill" method="post">
-                        <div class="card-header">
-                            Tạo Hóa Đơn
-                        </div>
+
                         <div class="card-body">
                         </div>
                         <div class="card-footer">
-                            <span>Số điện thoại : </span>   <br><input type="text" id="sdt" name="sdt" onchange="layTenKhachHang()" style="margin-right:170px"><br>
-                            <span>Tên khách hàng : </span>  <br> <input type="text" id="tenkh" name="tenkh"><br>
-                            <span>Tiền khách đưa : </span>  <br> <input type="number" min="0" id="khachdua" onchange="tinhTienThua()"><br>
-                            <span>Tổng tiền : </span> <br>  <input type="number" min="0" id="tong" name="tongtien" readonly="readonly" style="border:none"><br>
-                            <span id="tienthua"></span>  <br>
-                            <span id="error"></span> <br>
-                            <button type="submit" class="btn btn-primary" style="margin-top:15px">Tạo Hóa Đơn</button>
+                            <span>Số điện thoại :</span>
+                            <input type="text" id="sdt" name="sdt" onchange="layTenKhachHang()">
+                            <span class="text-danger" id="phoneError"></span>
+                            <span>Tên khách hàng :</span>
+                            <input type="text" id="tenkh" name="tenkh">
+
+                            <span>Tiền khách đưa :</span>
+                            <input type="number" min="1" id="khachdua" onchange="tinhTienThua()">
+                            <span id="khachdua-error" class="text-danger"></span>
+                            <span>Tổng tiền :</span>
+                            <input type="hidden" min="1" id="tong" name="tongtien" readonly="readonly" style="border:none"> <br />
+                            <span id="tong2"></span>
+                            <span id="tienthua"></span>
+                            <span id="error"></span>
+
+                            <button type="submit" class="btn btn-primary" onclick="taoHoaDon()">Tạo Hóa Đơn</button>
+                            <span id="hoa-don-error" class="text-danger"></span>
+
                         </div>
 
                     </form>
                     <form action="~/qlbills/banhangoff" method="post">
+
                         <button type="submit" action="~/qlbills/banhangoff" class="btn btn-primary" style="margin-top:15px ;margin-left:20px">Tạo Hóa Đơn Khác</button>
+
                     </form>
                 </div>
             </div>
@@ -43,11 +131,7 @@
 
                 <div class="card">
                     <div class="card-header">
-
-
-                        <span>Tìm Kiếm : </span>   <input type="text" id="timkiem" style="height:40px"> <br>
-
-
+                        <input type="text" id="timkiem" placeholder="Tìm Kiếm....">
                     </div>
                     <div class="card-body">
                         <div class="row" id="divToUpdate">
@@ -100,7 +184,7 @@
 
                                             }
 
-                                            <p style="text-align:left">Giá : @item.Price</p>
+                                            <p style="text-align:left">Giá : @item.Price.ToString("C0", new CultureInfo("vi-VN"))</p>
                                         </div>
                                     </div>
                                 </div>
@@ -123,14 +207,18 @@
 
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
 <script>
+
     const chosenProducts = {};
     let totalPrice = 0;
-    $('#divToUpdate').on('click', 'button[data-id]', function (event) {
+    $('#divToUpdate').on('click', 'button[data-id]', function(event) {
         event.preventDefault();
         const cardBody = document.querySelector('.card-body');
         const productId = $(this).attr('data-id');
-
+        cardBody.style.display = 'flex';
+        cardBody.style.flexWrap = 'wrap';
+        cardBody.style.gap = '30px'; //
 
         if (!chosenProducts[productId]) { // Kiểm tra nếu sản phẩm chưa được chọn
             chosenProducts[productId] = true; // Đánh dấu sản phẩm đã chọn
@@ -138,7 +226,7 @@
             const xhr = new XMLHttpRequest();
             xhr.open('POST', '/QLBills/ChosenProduct');
             xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-            xhr.onreadystatechange = function () {
+            xhr.onreadystatechange = function() {
                 if (xhr.readyState === XMLHttpRequest.DONE) {
                     if (xhr.status === 200) {
                         const response = JSON.parse(xhr.responseText);
@@ -152,11 +240,22 @@
                             const productContainer = document.createElement('div');
                             productContainer.style.display = 'flex';
                             productContainer.style.flexDirection = 'column'; // Hiển thị các phần tử theo chiều dọc
+                            productContainer.style.maxWidth = '700px'; // Hiển thị các phần tử theo chiều dọc
+                            cardBody.appendChild(productContainer);
 
                             const productName = document.createElement('p');
-                            productName.textContent = `Sản phẩm: ${product.name} | Size: ${size} | Màu : ${color}`;
+                            productName.textContent = `${product.name}`;
                             productName.setAttribute('data-productid', product.id);
+                            productName.style.fontWeight = 'bold';
+                            productName.style.marginBottom = '5px';
+
+                            const sizeAndColor = document.createElement('p');
+                            sizeAndColor.textContent = `Size: ${size} | Màu: ${color}`;
+                            sizeAndColor.style.fontStyle = 'italic';
+                            sizeAndColor.style.marginBottom = '5px';
+
                             productContainer.appendChild(productName);
+                            productContainer.appendChild(sizeAndColor);
 
                             const productInfoContainer = document.createElement('div');
                             productInfoContainer.style.display = 'flex';
@@ -194,28 +293,52 @@
                             productPriceContainer.style.alignItems = 'center';
 
                             const productPrice = document.createElement('span');
-                            productPrice.textContent = `${product.price}`;
+                            productPrice.textContent = `${formatPrice(product.price)}`;
                             productPriceContainer.appendChild(productPrice);
                             productPriceContainer.classList.add('product-price'); // Thêm lớp product-price vào phần tử chứa giá sản phẩm
 
                             const productPriceVND = document.createElement('span');
-                            productPriceVND.textContent = ` VND`;
+
                             productPriceVND.style.marginLeft = '5px';
                             productPriceContainer.appendChild(productPriceVND);
 
                             const cancelButton = document.createElement('button');
+                            //css
                             cancelButton.textContent = 'Hủy chọn';
                             cancelButton.setAttribute('type', 'button');
-                            cancelButton.addEventListener('click', function () {
-                                totalPrice -= parseInt(productPrice.textContent);
+                            cancelButton.style.backgroundColor = '#F08080'; // Màu nền
+                            cancelButton.style.color = '#fff'; // Màu chữ
+                            cancelButton.style.border = 'none'; // Loại bỏ viền
+                            cancelButton.style.borderRadius = '5px'; // Bo góc
+                            cancelButton.style.padding = '5px 10px'; // Độ dày và khoảng cách giữa nút và chữ
+                            //hàm
+                            cancelButton.addEventListener('click', function() {
+                                // Lấy nội dung của productPrice.textContent
+                                var priceText = productPrice.textContent;
+
+                                // Sử dụng biểu thức chính quy để loại bỏ tất cả các ký tự không phải số
+                                var numericValue = priceText.replace(/[^\d]/g, '');
+
+                                // Chuyển đổi giá trị số thành số nguyên
+                                var priceValue = parseInt(numericValue);
+
+                                // Trừ giá trị cuối cùng từ tổng giá
+                                totalPrice -= priceValue;
+
+                                // Cập nhật tổng giá vào input có id là 'tong'
                                 tongInput1.value = totalPrice;
+                                tongInput2.textContent = formatPrice(totalPrice);
+                                // Xóa sản phẩm khỏi danh sách
                                 delete chosenProducts[productId];
+
+                                // Xóa sản phẩm khỏi giao diện người dùng
                                 productContainer.remove();
                             });
                             cancelButton.style.width = '170px';
                             cancelButton.style.marginBottom = '17px';
                             cancelButton.style.backgroundColor = '#F08080';
                             cancelButton.style.borderRadius = '17px';
+                            //
                             productContainer.appendChild(productInfoContainer);
                             productContainer.appendChild(productPriceContainer);
                             productContainer.appendChild(cancelButton);
@@ -227,24 +350,35 @@
                             const productPriceValue = parseInt(productQuantityInput.value) * product.price;
                             totalPrice += productPriceValue; // Cộng giá sản phẩm vào tổng giá
                             tongInput1.value = totalPrice; // Cập nhật tổng giá vào input có id là 'tong'
-
+                            const tongInput2 = document.getElementById('tong2');
+                        
+                            tongInput2.textContent = formatPrice(totalPrice); //
                             // Sự kiện thay đổi số lượng sản phẩm và tính tổng giá sản phẩm
-                            productQuantityInput.addEventListener('change', function () {
+                            productQuantityInput.addEventListener('change', function() {
                                 const quantity = parseInt(productQuantityInput.value); // Lấy giá trị số lượng từ ô input
 
                                 if (!isNaN(quantity) && quantity > 0) {
                                     const updatedPrice = product.price * quantity; // Tính giá sản phẩm mới dựa trên số lượng nhập vào
+                                    var priceText1 = productPrice.textContent;
+                                    // Trừ giá cũ khỏi tổng giá
+                                    var priceText1 = productPrice.textContent;
+                                    var numericValue = priceText1.replace(/[^\d]/g, '');
 
-                                    const previousPrice = parseInt(productPrice.textContent);
-                                    totalPrice -= previousPrice; // Trừ giá cũ khỏi tổng giá
+                                    // Chuyển đổi giá trị số thành số nguyên
+                                    var priceValue = parseInt(numericValue);
+                                    totalPrice -= priceValue;
+                                    // Sử dụng biểu thức chính quy để loại bỏ tất cả các ký tự không phải số
 
-                                    productPrice.textContent = `${updatedPrice}`;
+                                    productPrice.textContent = `${formatPrice(updatedPrice)}`;
 
                                     totalPrice += updatedPrice; // Cộng giá mới vào tổng giá
 
                                     const tongInput = document.getElementById('tong');
+                                    const tongInput2 = document.getElementById('tong2');
                                     if (tongInput) {
-                                        tongInput.value = totalPrice; // Cập nhật tổng giá vào input có id là 'tong'
+                                        tongInput.value = totalPrice;
+                                        tongInput2.textContent = formatPrice(totalPrice);
+                                        // Cập nhật tổng giá vào input có id là 'tong'
                                     }
                                 } else {
                                     console.error('Số lượng không hợp lệ!');
@@ -264,8 +398,8 @@
             // Có thể hiển thị thông báo cho người dùng rằng sản phẩm đã được chọn trước đó
         }
     });
-    $(document).ready(function () {
-        $('#timkiem').on('input', function () {
+    $(document).ready(function() {
+        $('#timkiem').on('input', function() {
             var searchText = $(this).val();
 
             // Gửi yêu cầu Ajax với dữ liệu searchText về server
@@ -273,7 +407,7 @@
                 type: "POST",
                 url: "/QLBills/TimKiem", // Thay đổi đường dẫn và thông tin tương ứng
                 data: { searchText: searchText },
-                success: function (data) {
+                success: function(data) {
                     if (data.success) {
                         var products = data.productct;
                         var sizes = data.size;
@@ -281,9 +415,9 @@
                         var imgs = data.img;
                         var productsHTML = '';
 
-                        products.forEach(function (item) {
+                        products.forEach(function(item) {
                             var imgHTML = '';
-                            imgs.forEach(function (img) {
+                            imgs.forEach(function(img) {
                                 if (img.idProductdetail == item.id) {
                                     imgHTML = '<img class="card-img"  style="width:150p;height:200px" src="/images/' + img.name + '" alt="">';
                                     return false;
@@ -291,7 +425,7 @@
                             });
 
                             var sizeHTML = '';
-                            sizes.forEach(function (size) {
+                            sizes.forEach(function(size) {
                                 if (size.id == item.id_Size) {
                                     sizeHTML = '<p style="text-align:left">Size: ' + size.name + '</p>';
                                     return false;
@@ -299,7 +433,7 @@
                             });
 
                             var colorHTML = '';
-                            colors.forEach(function (color) {
+                            colors.forEach(function(color) {
                                 if (color.id == item.id_Color) {
                                     colorHTML = '<p style="text-align:left">Màu: ' + color.name + '</p>';
                                     return false;
@@ -314,7 +448,7 @@
                                 '<div class="card-body">' +
                                 '<p style="text-align:left;display: inline-block;width: 700px">Sản phẩm: ' + item.name + '</p>' +
                                 sizeHTML + colorHTML +
-                                '<p style="text-align:left">Giá: ' + item.price + '</p>' +
+                                '<p style="text-align:left">Giá: ' + formatPrice(item.price) + '</p>' +
                                 '</div>' +
                                 '</div>' +
                                 '</div>';
@@ -329,16 +463,20 @@
             });
         });
     });
+    function formatPrice(price) {
+        return (price).toLocaleString('vi-VN', { style: 'currency', currency: 'VND' });
+    }
 
-
-    document.addEventListener('DOMContentLoaded', function () {
+    document.addEventListener('DOMContentLoaded', function() {
         const productButtons = document.querySelectorAll('button[data-id]');
         const cardBody = document.querySelector('.card-body'); // Chọn phần tử chứa thông tin sản phẩm
         // Biến để lưu tổng giá của các sản phẩm đã chọn
         // Đối tượng để lưu trữ các sản phẩm đã chọn
-
+        cardBody.style.display = 'flex';
+        cardBody.style.flexWrap = 'wrap';
+        cardBody.style.gap = '30px'; //
         productButtons.forEach(button => {
-            button.addEventListener('click', function (event) {
+            button.addEventListener('click', function(event) {
                 event.preventDefault();
 
                 const productId = this.getAttribute('data-id');
@@ -349,7 +487,7 @@
                     const xhr = new XMLHttpRequest();
                     xhr.open('POST', '/QLBills/ChosenProduct');
                     xhr.setRequestHeader('Content-Type', 'application/x-www-form-urlencoded');
-                    xhr.onreadystatechange = function () {
+                    xhr.onreadystatechange = function() {
                         if (xhr.readyState === XMLHttpRequest.DONE) {
                             if (xhr.status === 200) {
                                 const response = JSON.parse(xhr.responseText);
@@ -361,11 +499,21 @@
                                     const productContainer = document.createElement('div');
                                     productContainer.style.display = 'flex';
                                     productContainer.style.flexDirection = 'column'; // Hiển thị các phần tử theo chiều dọc
-
+                                    productContainer.style.maxWidth = '700px'; // Hiển thị các phần tử theo chiều dọc
+                                    cardBody.appendChild(productContainer);
                                     const productName = document.createElement('p');
-                                    productName.textContent = `Sản phẩm: ${product.name} | Size: ${size} | Màu : ${color}`;
+                                    productName.textContent = `${product.name}`;
                                     productName.setAttribute('data-productid', product.id);
+                                    productName.style.fontWeight = 'bold';
+                                    productName.style.marginBottom = '5px';
+
+                                    const sizeAndColor = document.createElement('p');
+                                    sizeAndColor.textContent = `Size: ${size} | Màu: ${color}`;
+                                    sizeAndColor.style.fontStyle = 'italic';
+                                    sizeAndColor.style.marginBottom = '5px';
+
                                     productContainer.appendChild(productName);
+                                    productContainer.appendChild(sizeAndColor);
 
                                     const productInfoContainer = document.createElement('div');
                                     productInfoContainer.style.display = 'flex';
@@ -379,23 +527,25 @@
 
                                     const productQuantityInput = document.createElement('input');
                                     productQuantityInput.setAttribute('type', 'number');
-                                    productQuantityInput.setAttribute('value', '1')
-
+                                    productQuantityInput.setAttribute('value', '1');
                                     productQuantityInput.setAttribute('min', '1');
                                     productQuantityInput.setAttribute('max', product.quantity);
                                     productQuantityInput.setAttribute('name', 'soluong');
-                                    productQuantityInput.style.marginLeft = '5px';
-                                    productQuantityInput.style.marginBottom = '12px';
+
+                                    // Tùy chỉnh CSS cho ô số lượng
+                                    productQuantityInput.style.padding = '8px'; // Độ dày của viền
+                                    productQuantityInput.style.border = '1px solid #ccc'; // Viền của ô
+                                    productQuantityInput.style.borderRadius = '5px'; // Bo góc của ô
                                     productQuantityInput.style.width = '50px';
+                                    productQuantityInput.style.fontSize = '14px'; // Kích thước chữ
+                                    productQuantityInput.style.textAlign = 'center'; // Căn giữa nội dung
+
                                     const idprd = document.createElement('input');
                                     idprd.setAttribute('type', 'hidden');
                                     idprd.setAttribute('value', product.id);
-
                                     idprd.setAttribute('name', 'productId');
 
-
                                     productInfoContainer.appendChild(idprd);
-
                                     productInfoContainer.appendChild(productQuantityInput);
 
                                     const productPriceContainer = document.createElement('p');
@@ -403,28 +553,52 @@
                                     productPriceContainer.style.alignItems = 'center';
 
                                     const productPrice = document.createElement('span');
-                                    productPrice.textContent = `${product.price}`;
+                                    productPrice.textContent = `${formatPrice(product.price)}`;
                                     productPriceContainer.appendChild(productPrice);
                                     productPriceContainer.classList.add('product-price'); // Thêm lớp product-price vào phần tử chứa giá sản phẩm
 
                                     const productPriceVND = document.createElement('span');
-                                    productPriceVND.textContent = ` VND`;
+
                                     productPriceVND.style.marginLeft = '5px';
                                     productPriceContainer.appendChild(productPriceVND);
 
                                     const cancelButton = document.createElement('button');
                                     cancelButton.textContent = 'Hủy chọn';
                                     cancelButton.setAttribute('type', 'button');
-                                    cancelButton.addEventListener('click', function () {
-                                        totalPrice -= parseInt(productPrice.textContent);
+                                    cancelButton.style.backgroundColor = '#F08080'; // Màu nền
+                                    cancelButton.style.color = '#fff'; // Màu chữ
+                                    cancelButton.style.border = 'none'; // Loại bỏ viền
+                                    cancelButton.style.borderRadius = '5px'; // Bo góc
+                                    cancelButton.style.padding = '5px 10px'; // Độ dày và khoảng cách giữa nút và chữ
+
+                                    cancelButton.addEventListener('click', function() {
+                                        // Lấy nội dung của productPrice.textContent
+                                        var priceText = productPrice.textContent;
+
+                                        // Sử dụng biểu thức chính quy để loại bỏ tất cả các ký tự không phải số
+                                        var numericValue = priceText.replace(/[^\d]/g, '');
+
+                                        // Chuyển đổi giá trị số thành số nguyên
+                                        var priceValue = parseInt(numericValue);
+
+                                        // Trừ giá trị cuối cùng từ tổng giá
+                                        totalPrice -= priceValue;
+
+                                        // Cập nhật tổng giá vào input có id là 'tong'
                                         tongInput1.value = totalPrice;
+                                        tongInput2.textContent = formatPrice(totalPrice);
+                                        // Xóa sản phẩm khỏi danh sách
                                         delete chosenProducts[productId];
+
+                                        // Xóa sản phẩm khỏi giao diện người dùng
                                         productContainer.remove();
                                     });
+
                                     cancelButton.style.width = '170px';
                                     cancelButton.style.marginBottom = '17px';
                                     cancelButton.style.backgroundColor = '#F08080';
                                     cancelButton.style.borderRadius = '17px';
+
                                     productContainer.appendChild(productInfoContainer);
                                     productContainer.appendChild(productPriceContainer);
                                     productContainer.appendChild(cancelButton);
@@ -436,24 +610,34 @@
                                     const productPriceValue = parseInt(productQuantityInput.value) * product.price;
                                     totalPrice += productPriceValue; // Cộng giá sản phẩm vào tổng giá
                                     tongInput1.value = totalPrice; // Cập nhật tổng giá vào input có id là 'tong'
-
+                                    const tongInput2 = document.getElementById('tong2');
+                                    tongInput2.textContent = formatPrice(totalPrice); //
                                     // Sự kiện thay đổi số lượng sản phẩm và tính tổng giá sản phẩm
-                                    productQuantityInput.addEventListener('change', function () {
+                                    productQuantityInput.addEventListener('change', function() {
                                         const quantity = parseInt(productQuantityInput.value); // Lấy giá trị số lượng từ ô input
 
                                         if (!isNaN(quantity) && quantity > 0) {
                                             const updatedPrice = product.price * quantity; // Tính giá sản phẩm mới dựa trên số lượng nhập vào
+                                            var priceText1 = productPrice.textContent;
+                                            // Trừ giá cũ khỏi tổng giá
+                                            var priceText1 = productPrice.textContent;
+                                            var numericValue = priceText1.replace(/[^\d]/g, '');
 
-                                            const previousPrice = parseInt(productPrice.textContent);
-                                            totalPrice -= previousPrice; // Trừ giá cũ khỏi tổng giá
+                                            // Chuyển đổi giá trị số thành số nguyên
+                                            var priceValue = parseInt(numericValue);
+                                            totalPrice -= priceValue;
+                                            // Sử dụng biểu thức chính quy để loại bỏ tất cả các ký tự không phải số
 
-                                            productPrice.textContent = `${updatedPrice}`;
+                                            productPrice.textContent = `${formatPrice(updatedPrice)}`;
 
                                             totalPrice += updatedPrice; // Cộng giá mới vào tổng giá
 
                                             const tongInput = document.getElementById('tong');
+                                            const tongInput2 = document.getElementById('tong2');
                                             if (tongInput) {
-                                                tongInput.value = totalPrice; // Cập nhật tổng giá vào input có id là 'tong'
+                                                tongInput.value = totalPrice;
+                                                tongInput2.textContent = formatPrice(totalPrice);
+                                                // Cập nhật tổng giá vào input có id là 'tong'
                                             }
                                         } else {
                                             console.error('Số lượng không hợp lệ!');
@@ -476,7 +660,25 @@
         });
     });
 </script>
+
 <script>
+
+
+    document.getElementById("khachdua").addEventListener("input", function() {
+        var khachDuaInput = document.getElementById("khachdua");
+
+        // Lấy giá trị nhập vào từ trường "Tiền khách đưa"
+        var khachDua = parseFloat(khachDuaInput.value);
+
+        // Kiểm tra nếu giá trị nhập là số âm và không phải là 0
+        if (!isNaN(khachDua) && khachDua < 0) {
+            khachDuaInput.value = ""; // Xóa giá trị trên trường nhập liệu nếu là số âm
+        }
+
+        // Gọi hàm tính tiền thừa
+        tinhTienThua();
+    });
+
     function tinhTienThua() {
         // Lấy giá trị nhập vào từ trường "Tiền khách đưa"
         var khachDua = parseFloat(document.getElementById("khachdua").value);
@@ -487,7 +689,7 @@
         // Tính tiền thừa
         var tienThua = khachDua - tongTien;
         if (isNaN(khachDua)) {
-            document.getElementById("error").textContent = "Vui lòng nhập số.";
+            document.getElementById("error").textContent = "Vui lòng không nhập số âm.";
             document.getElementById("error").style.color = "red";
             return; // Kết thúc hàm tại đây nếu giá trị nhập không phải số
         }
@@ -497,19 +699,58 @@
         if (tienThua < 0) {
             document.getElementById("error").textContent = "Thiếu : " + (tienThua * (-1));
             document.getElementById("error").style.color = "red";
-           // Ẩn nhãn "Tiền thừa" nếu không có tiền thừa
+            // Ẩn nhãn "Tiền thừa" nếu không có tiền thừa
             document.getElementById("tienthua").textContent = ""; // Xóa nội dung trường "Tiền thừa"
         } else {
-        // Cập nhật nhãn "Tiền thừa"
-            document.getElementById("tienthua").textContent = "Thừa : "+tienThua; // Hiển thị tiền thừa
+            // Cập nhật nhãn "Tiền thừa"
+            document.getElementById("tienthua").textContent = "Thừa : " + tienThua; // Hiển thị tiền thừa
             document.getElementById("error").textContent = ""; // Xóa thông báo lỗi
         }
     }
 
-    
+
 </script>
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var phoneNumberInput = document.getElementById('sdt');
+        var phoneErrorSpan = document.getElementById('phoneError');
+
+        phoneNumberInput.addEventListener('input', function() {
+            var inputValue = phoneNumberInput.value;
+            var cleanedValue = inputValue.replace(/[^0-9+]/g, '');
+            cleanedValue = cleanedValue.slice(0, 10);
+            phoneNumberInput.value = cleanedValue;
+        });
+
+        phoneNumberInput.addEventListener('blur', function() {
+            validatePhoneNumber(phoneNumberInput.value);
+        });
+
+        function validatePhoneNumber(phoneNumber) {
+            var phoneRegex = /^\+?[0-9]{1,4}-?[0-9]{3,4}-?[0-9]{4,}$/;
+
+            if (phoneRegex.test(phoneNumber) && phoneNumber.startsWith('0')) {
+                // Nếu số điện thoại hợp lệ, ẩn thông báo và hiển thị nền trắng cho ô nhập
+                phoneErrorSpan.textContent = '';
+                phoneNumberInput.style.backgroundColor = 'white';
+            } else {
+                if (phoneNumber.length < 10) {
+                    // Hiển thị thông báo trong thẻ span khi số điện thoại có ít hơn 10 kí tự
+                    phoneErrorSpan.textContent = 'Số điện thoại phải có ít nhất 10 kí tự.';
+                } else if (!phoneNumber.startsWith('0')) {
+                    // Hiển thị thông báo trong thẻ span khi số điện thoại không bắt đầu bằng số 0
+                    phoneErrorSpan.textContent = 'Số điện thoại phải bắt đầu bằng số 0.';
+                } else {
+                    // Hiển thị thông báo trong thẻ span khi số điện thoại không hợp lệ
+                    phoneErrorSpan.textContent = 'Số điện thoại không hợp lệ.';
+                }
+
+
+            }
+        }
+    });
+
     function layTenKhachHang() {
         var sdt = document.getElementById('sdt').value;
 
@@ -517,16 +758,16 @@
             url: '/QLBills/GetName', // Địa chỉ URL của phương thức trong CustomerController
             type: 'POST',
             data: { sdt: sdt },
-            success: function (response) {
+            success: function(response) {
                 // Xử lý dữ liệu nhận được từ server
                 document.getElementById('tenkh').value = response.name;
             },
-            error: function (xhr, status, error) {
+            error: function(xhr, status, error) {
                 // Xử lý lỗi nếu có
                 console.error(xhr.responseText);
             }
         });
     }
 </script>
- 
+
 
