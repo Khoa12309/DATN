@@ -92,8 +92,8 @@
                             <tr>
                                 <td>@(stt += 1)</td>
                                 <td>
-                                    @itembill.Name
-                                   @*  @foreach (var acc in ViewBag.account)
+                                   
+                                 @foreach (var acc in ViewBag.account)
                                     {
 
                                         if (acc.Id == itembill.AccountId)
@@ -102,7 +102,7 @@
                                             break;
 
                                         }
-                                    } *@
+                                    } 
                                 </td>
                                 <td>
                                     @itembill.Name

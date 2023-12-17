@@ -456,12 +456,14 @@ namespace APPVIEW.Controllers
             var diachi = diachict + "-" + ward + "-" + district + "-Tỉnh " + province2;
 
             var x = bills.GetApi("Bill").FirstOrDefault(c => c.id == id);
-            if (sdt!=null)
+            if (sdt != null)
             {
                 x.PhoneNumber = sdt;
-
             }
-            x.Address = diachi;
+            if ( ward != null && district != null && province2 != null)
+            {
+                x.Address = diachi;
+            }
             x.TotalMoney = x.TotalMoney + (ship - x.ShipFee);
             x.ShipFee = ship;
             await bills.UpdateObj(x, "Bill");
@@ -531,8 +533,15 @@ namespace APPVIEW.Controllers
             var diachi = diachict + "-" + ward + "-" + district + "-Tỉnh " + province2;
 
             var x = bills.GetApi("Bill").FirstOrDefault(c => c.id == id);
-            x.PhoneNumber = sdt;
-            x.Address = diachi;
+            if (sdt != null)
+            {
+                x.PhoneNumber = sdt;
+            }
+            if ( ward!=null&& district != null&& province2 != null)
+            {
+                x.Address = diachi;
+            }
+           
             x.TotalMoney = x.TotalMoney + (ship - x.ShipFee);
             x.ShipFee = ship;
 
@@ -970,7 +979,7 @@ namespace APPVIEW.Controllers
         }
         public async Task<IActionResult> ThongTinNotLogin(string sdt)
         {
-            if (sdt != null || sdt != "")
+            if (sdt != null )
             {
 
 
@@ -1021,9 +1030,9 @@ namespace APPVIEW.Controllers
                 ViewBag.sizee = getapiSize.GetApi("Size");
                 ViewBag.Collor = getapiColor.GetApi("Color");
                 ViewBag.image = getapiImg.GetApi("Image");
-
+               
                 ViewBag.bill = userBills;
-                return View();
+                return View(userBills);
 
 
 

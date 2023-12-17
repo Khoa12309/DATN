@@ -208,9 +208,9 @@ namespace APPVIEW.Controllers
             ViewBag.Collor = getapiColor.GetApi("Color");
             try
             {
-                if (search != "")
+                if (search != null||search!="")
                 {
-                    var tk = bills.GetApi("Bill").Where(c => c.Status == 1 && c.Code.Contains(search)).OrderByDescending(d => d.CreateDate).ToList();
+                    var tk = userBills.Where(c => c.Status == 1 && c.Code.ToLower().Contains(search.ToLower()) || c.Name.ToLower().Contains(search.ToLower())).OrderByDescending(d => d.CreateDate).ToList();
                     var pagedList = tk.ToPagedList(pageNumber, pageSize);
                     ViewBag.viewbill = pagedList;
                     return View(pagedList);
@@ -257,7 +257,7 @@ namespace APPVIEW.Controllers
             {
                 if (search != "")
                 {
-                    var tk = bills.GetApi("Bill").Where(c => c.Status == 0 && c.Code.Contains(search)).OrderByDescending(d => d.CreateDate).ToList();
+                    var tk = userBills.Where(c => c.Status == 2 && c.Code.ToLower().Contains(search.ToLower()) || c.Name.ToLower().Contains(search.ToLower())).OrderByDescending(d => d.CreateDate).ToList();
                     var pagedList = tk.ToPagedList(pageNumber, pageSize);
                     ViewBag.viewbill = pagedList;
                     return View(pagedList);
@@ -297,7 +297,7 @@ namespace APPVIEW.Controllers
 
                 if (search != "")
                 {
-                    var tk = bills.GetApi("Bill").Where(c => c.Status == 2 && c.Code.Contains(search)).OrderByDescending(d => d.CreateDate).ToList();
+                    var tk = userBills.Where(c => c.Status == 2 && c.Code.ToLower().Contains(search.ToLower()) || c.Name.ToLower().Contains(search.ToLower())).OrderByDescending(d => d.CreateDate).ToList();
                     var pagedList = tk.ToPagedList(pageNumber, pageSize);
                     ViewBag.viewbill = pagedList;
                     return View(pagedList);
@@ -615,7 +615,7 @@ namespace APPVIEW.Controllers
 
                 if (search != "")
                 {
-                    var tk = bills.GetApi("Bill").Where(c => c.Status == 3 && c.Code.Contains(search)).OrderByDescending(d => d.CreateDate).ToList();
+                    var tk = userBills.Where(c => c.Status == 3 && c.Code.ToLower().Contains(search.ToLower()) || c.Name.ToLower().Contains(search.ToLower())).OrderByDescending(d => d.CreateDate).ToList();
                     var pagedList = tk.ToPagedList(pageNumber, pageSize);
                     ViewBag.viewbill = pagedList;
                     return View(pagedList);

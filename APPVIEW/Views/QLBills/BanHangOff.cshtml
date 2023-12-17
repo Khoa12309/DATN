@@ -92,7 +92,7 @@
             <!-- Phần bên trái để tạo hóa đơn -->
             <div class="col-md-5">
                 <div class="card">
-                    <form action="~/qlbills/CreateBill" method="post">
+                    <form action="~/qlbills/CreateBill" id="myForm" method="post">
 
                         <div class="card-body">
                         </div>
@@ -112,17 +112,23 @@
                             <span id="tienthua"></span>
                             <span id="error"></span>
 
-                            <button type="submit" class="btn btn-primary" onclick="taoHoaDon()">Tạo Hóa Đơn</button>
+                          
                             <span id="hoa-don-error" class="text-danger"></span>
+                            <div class="row">
+                                <!-- Phần bên trái để tạo hóa đơn -->
+                                <div class="col-md-4">
+                                    <button type="submit" class="btn btn-primary" style="margin-top:15px">Tạo Hóa Đơn</button>
 
+                                </div>
+                                <div class="col-md-4">
+                                    <button type="submit" onclick="submitForm('banhangoff')" class="btn btn-primary" style="margin-top:15px">Tạo hóa đơn mới</button>
+
+                                </div>
+                            </div>
                         </div>
 
                     </form>
-                    <form action="~/qlbills/banhangoff" method="post">
-
-                        <button type="submit" action="~/qlbills/banhangoff" class="btn btn-primary" style="margin-top:15px ;margin-left:20px">Tạo Hóa Đơn Khác</button>
-
-                    </form>
+                   
                 </div>
             </div>
             <!-- Phần bên phải để hiển thị sản phẩm -->
@@ -767,6 +773,12 @@
                 console.error(xhr.responseText);
             }
         });
+    }
+</script>
+<script>
+    function submitForm(action) {
+        document.getElementById('myForm').setAttribute('action', action);
+        document.getElementById('myForm').submit();
     }
 </script>
 

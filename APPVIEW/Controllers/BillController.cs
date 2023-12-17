@@ -27,7 +27,7 @@ namespace APPVIEW.Controllers
             {
                 if (!string.IsNullOrEmpty(searchTerm) && start == null && end == null)
                 {
-                    var tk = obj.Where(c => c.Code.ToLower().Contains(searchTerm.ToLower()) || c.TotalMoney.ToString().Contains(searchTerm)).OrderByDescending(d => d.CreateDate).ToList();
+                    var tk = obj.Where(c => c.Code.ToLower().Contains(searchTerm.ToLower()) || c.Name.ToLower().Contains(searchTerm.ToLower()) || c.TotalMoney.ToString().Contains(searchTerm)).OrderByDescending(d => d.CreateDate).ToList();
                     return View(tk.ToPagedList(pageNumber, pageSize));
                 }
                 else if (string.IsNullOrEmpty(searchTerm) && start != null && end != null)
@@ -77,7 +77,7 @@ namespace APPVIEW.Controllers
             {
                 if (!string.IsNullOrEmpty(searchTerm) && start == null && end == null)
                 {
-                    var tk = obj.Where(c => c.Code.ToLower().Contains(searchTerm.ToLower()) || c.TotalMoney.ToString().Contains(searchTerm)).OrderByDescending(d => d.CreateDate).ToList();
+                    var tk = obj.Where(c => c.Code.ToLower().Contains(searchTerm.ToLower()) || c.Name.ToLower().Contains(searchTerm.ToLower()) || c.TotalMoney.ToString().Contains(searchTerm)).OrderByDescending(d => d.CreateDate).ToList();
                     return View(tk.ToPagedList(pageNumber, pageSize));
                 }
                 else if (string.IsNullOrEmpty(searchTerm) && start != null && end != null)
@@ -100,7 +100,7 @@ namespace APPVIEW.Controllers
                 else if (!string.IsNullOrEmpty(searchTerm) && start != null && end != null)
                 {
                     end = end?.Date.AddDays(1).AddTicks(-1);
-                    var tk = obj.Where(c => (c.Code.ToLower().Contains(searchTerm.ToLower()) || c.TotalMoney.ToString().Contains(searchTerm)) && (c.CreateDate >= start && c.CreateDate <= end)).OrderByDescending(d => d.CreateDate).ToList();
+                    var tk = obj.Where(c => (c.Code.ToLower().Contains(searchTerm.ToLower())|| c.TotalMoney.ToString().Contains(searchTerm)) && (c.CreateDate >= start && c.CreateDate <= end)).OrderByDescending(d => d.CreateDate).ToList();
                     return View(tk.ToPagedList(pageNumber, pageSize));
                 }
                 else
