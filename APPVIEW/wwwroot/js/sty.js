@@ -58,17 +58,27 @@ function saveVoucherToAccount(voucherId) {
                 });
                 
             } else {
-                // Hiển thị thông báo lỗi nếu cần
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Lỗi',
-                    text: 'Phiếu giảm giá đã có trong tài khoản của bạn',
-                    showConfirmButton: false,
-                    position: 'bottom-right',
-                    timer: 2000,
-                    toast: true
-                });
-                console.log(rs);
+                if (rs.message && rs.message === "Người dùng chưa đăng nhập") {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Lỗi đăng nhập',
+                        text: 'Bạn chưa đăng nhập!',
+                        showConfirmButton: false,
+                        position: 'bottom-right',
+                        timer: 2000,
+                        toast: true
+                    });
+                } else {
+                    Swal.fire({
+                        icon: 'error',
+                        title: 'Lỗi',
+                        text: 'Phiếu giảm giá đã có trong tài khoản của bạn',
+                        showConfirmButton: false,
+                        position: 'bottom-right',
+                        timer: 2000,
+                        toast: true
+                    });
+                }
             }
         }
     });
