@@ -101,7 +101,12 @@
                                             break;
 
                                         }
+                                        else
+                                        {
+                                            @itembill.Name
+                                        }
                                     }
+                                   
                                 </td>
                                 <td>
                                     @itembill.Code
@@ -143,17 +148,15 @@
                                 </td>
                                 <td>
                                     @{
-                                        if (itembill.PayDate != null)
-                                        {
-                                           @itembill.PayDate
+                                        string formattedDate2 = "Chưa thay đổi";
 
-                                        }
-                                        else
+                                        if (itembill.PayDate.HasValue)
                                         {
-
-                                            <span>Chưa thanh toán.</span>
+                                            formattedDate2 = itembill.PayDate.Value.ToString("dd/MM/yyyy");
                                         }
                                     }
+
+                                    @formattedDate2
 
                                 </td>
                                 @if (itembill.Status == 1)

@@ -1,4 +1,4 @@
-﻿﻿@using System.Globalization;
+﻿@using System.Globalization;
 @model List<APPDATA.Models.ProductDetail>
 
 @{
@@ -55,13 +55,13 @@
                         </tr>
                     </thead>
                     <tbody>
-
-                        @if (Model.Count()<0)
+                        @if (Model.Count() < 0)
                         {
                             <div class="text-center" style="padding: 20px; background-color: #f8f9fa; border-radius: 10px; margin-top: 20px;">
                                 <p style="font-size: 18px; color: #6c757d;">Chưa có sản phẩm nào trong giỏ hàng. Hãy bắt đầu mua sắm ngay!</p>
                             </div>
-                        }else
+                        }
+                        else
                         {
                             <form asp-action="Updatecart" asp-controller="Cart" method="post">
                                 @{
@@ -105,13 +105,11 @@
                                                         <div class="d-flex">
                                                             <img src="~/images/@img.Name" style="width: 150px;" alt="">
                                                         </div>
-
                                                     </div>
-                                                </div>
-                                            </td>
-                                                break;
+                                                </td>
+                                                    break;
+                                                }
                                             }
-
                                         <td>@Model[i].Name</td>
 
                                         <td style="color:#f15e2c">@Model[i].Price.ToString("C0", new CultureInfo("vi-VN"))</td>
@@ -135,12 +133,13 @@
                                                     {
 
                                                         @foreach (var c in ls)
-
                                                         {
-                                                        <option value="@Size.Id">@Size.Name</option>
+                                                            if (c == @Size.Id)
+                                                            {
+                                                            <option value="@Size.Id">@Size.Name</option>
+                                                            }
                                                         }
                                                     }
-
                                             </select>
                                         </td>
 
@@ -155,9 +154,7 @@
                                                             <option value="@Color.Id">@Color.Name</option>
                                                             }
 
-
                                                         }
-
                                                     }
                                             </select>
                                         </td>
@@ -226,7 +223,6 @@
                                 </td>
                             </tr>
                         }
-
 
                     </tbody>
                 </table>

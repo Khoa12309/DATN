@@ -4,6 +4,7 @@
     ViewData["Title"] = "ShowBill";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
     @using APPDATA.Models;
+@using System.Globalization
     var bill = ViewBag.viewbill;
     List<BillDetail> billct = ViewBag.viewbillct;
     List<ProductDetail> prdct = ViewBag.viewprdct;
@@ -93,7 +94,7 @@
                                 <td> @siz.Name</td>
                                 <td> @colo.Name</td>
                                 <td>
-                                    @itembill.TotalMoney
+                                    @itembill.TotalMoney.ToString("C0", new CultureInfo("vi-VN"))
                                 </td>
                                 @if (itembill.Status == 1)
                                 {

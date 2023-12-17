@@ -8,12 +8,9 @@
 
 <div class="card">
     <div class="card-header">
-        <h5 class="mb-0">Address</h5>
+        <h5 class="mb-0">Địa chỉ</h5>
     </div>
     <div class="card-body">
-        <a class="btn btn-success waves-effect waves-light" asp-action="Create">
-            <span class="mdi mdi-plus-thick"></span>Create new
-        </a>
         <form asp-action="Search" method="get" class="form-inline" style="margin-left: 1000px">
             <input placeholder="Search" type="text" name="searchTerm" id="searchTerm" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2" />
         </form>
@@ -22,15 +19,13 @@
                 <thead>
                     <tr>
                         <th>STT</th>
-                        <th>NamecCustomer</th>
-                        <th>Phone </th>
-                        <th>DefaultAddress</th>
-                        <th>SpecificAddress</th>
-                        <th>Province</th>
-                        <th>City</th>
-                        <th>Ward</th>
-                        <th>District</th>
-                        <th>Actions</th>
+                        <th>Tên khách hàng</th>
+                        <th>STD</th>                       
+                        <th>Địa chi cụ thể</th>
+                        <th>Tỉnh/TP</th>                                             
+                        <th>Quận/Huyện</th>
+                        <th>Phường/Xã</th>
+                       
                     </tr>
                 </thead>
                 <tbody>
@@ -43,25 +38,21 @@
                                 <td>@(stt += 1)</td>
                                 <td>@Html.DisplayFor(modelItem => item.Name)</td>
                                 <td>@Html.DisplayFor(modelItem => item.PhoneNumber)</td>
-                                <td>@Html.DisplayFor(modelItem => item.DefaultAddress)</td>
+                            
                                 <td>@Html.DisplayFor(modelItem => item.SpecificAddress)</td>
                                 <td>@Html.DisplayFor(modelItem => item.Province)</td>
-                                <td>@Html.DisplayFor(modelItem => item.City)</td>
-                                <td>@Html.DisplayFor(modelItem => item.Ward)</td>
                                 <td>@Html.DisplayFor(modelItem => item.District)</td>
 
-                                <td>
-                                    <a href="@Url.Action("Edit", new { id = item.id })" class="btn btn-info waves-effect waves-light">
-                                        <span class="mdi mdi-pencil-box-outline"></span>Edit
-                                    </a>
-                                </td>
+                                <td>@Html.DisplayFor(modelItem => item.Ward)</td>
+
+                             
                             </tr>
                         }
                     }
                     else
                     {
                         <tr>
-                            <td colspan="10" class="text-center">No Data.</td>
+                            <td colspan="10" class="text-center">Không có dữ liệu.</td>
                         </tr>
                     }
                 </tbody>

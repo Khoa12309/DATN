@@ -88,7 +88,7 @@
                                     }
                                 </td>
                                 <td>
-                                    @itembill.TotalMoney
+                                    @string.Format(new CultureInfo("vi-VN"), "{0:C0}", itembill.TotalMoney)
                                 </td>
                                 @if (itembill.Status == 1)
                                 {

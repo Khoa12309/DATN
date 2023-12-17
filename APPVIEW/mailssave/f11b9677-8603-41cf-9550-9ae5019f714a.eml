@@ -1,0 +1,10 @@
+From: Supper fashion shop <dungnguyengiaplai@gmail.com>
+Date: Sun, 17 Dec 2023 15:55:28 +0700
+Subject: Confirm your email
+Message-Id: <9CBN2KP8SLU4.5HGHO770D1K42@laptop-n6fk027m>
+Sender: Supper fashion shop <dungnguyengiaplai@gmail.com>
+To: vhoagmail.com
+MIME-Version: 1.0
+Content-Type: text/html; charset=utf-8
+
+Please confirm your email by clicking <a href='https://localhost:7095/Account/ConfirmEmail?email=vhoagmail.com&token=642671'>here</a>.
