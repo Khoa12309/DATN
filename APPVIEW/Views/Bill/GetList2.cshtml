@@ -1,5 +1,8 @@
 ﻿@using System.Globalization;
-@model IEnumerable<APPDATA.Models.Bill>
+@model X.PagedList.IPagedList<APPDATA.Models.Bill>
+@using X.PagedList.Web.Common
+@using X.PagedList
+@using X.PagedList.Mvc.Core
 @{
     ViewData["Title"] = "HoaDonTaiQuay";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
@@ -38,6 +41,9 @@
                 <thead>
                     <tr>
                         <th>Stt</th>
+                        <th>
+                            <span>Tên Người Tạo</span>
+                        </th>
                         <th>
                             <span>Tên Khách Hàng</span>
                         </th>
@@ -99,6 +105,9 @@
                                     } *@
                                 </td>
                                 <td>
+                                    @itembill.Name
+                                </td>
+                                <td>
                                     @itembill.Code
                                 </td>
 
@@ -126,7 +135,7 @@
                                 </td>
                                 <td>
                                     @{
-                                        string formattedDate2 = "Chưa thay đổi";
+                                        string formattedDate2 = "Chưa thanh toán";
 
                                         if (itembill.PayDate.HasValue)
                                         {
@@ -177,5 +186,19 @@
             </table>
         </div>
     </div>
+</div>
+<div>
+    @Html.PagedListPager(Model, page => Url.Action("GetList2", new {page = page, sort=ViewBag.sort}), new PagedListRenderOptions()
+    {
+    ActiveLiElementClass = "active",
+    PageClasses = new[]{ "page-link"},
+    LiElementClasses=new[] { "page-item"},
+    UlElementClasses = new[] { "pagination","justify-content-center", "mt-3", "size" },
+    LinkToNextPageFormat = "Next",
+    LinkToPreviousPageFormat = "Previous",
+    MaximumPageNumbersToDisplay = 15,
+    DisplayLinkToPreviousPage = PagedListDisplayMode.Always,
+    DisplayLinkToNextPage = PagedListDisplayMode.Always
+    })
 </div>
 

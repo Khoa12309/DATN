@@ -29,7 +29,7 @@ using APPVIEW.ViewModels;
 
 using AspNetCoreHero.ToastNotification.Abstractions;
 using DocumentFormat.OpenXml.Drawing.Charts;
-
+using X.PagedList;
 
 namespace APPVIEW.Controllers
 {
@@ -187,10 +187,12 @@ namespace APPVIEW.Controllers
             return RedirectToAction("DonHuy");
         }
 
-        public ActionResult ShowBill(string search)
+        public ActionResult ShowBill(string search,int?page)
         {
+            int pageSize = 15;
+            int pageNumber = (page ?? 1);
             var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
-            var userBills = bills.GetApi("Bill").Where(c => c.Status == 1).OrderByDescending(d => d.CreateDate).ToList();
+            var userBills = bills.GetApi("Bill").Where(c => c.Status == 1).OrderByDescending(d => d.CreateDate).ToPagedList(pageNumber, pageSize);
             ViewBag.viewbill = userBills;
 
             var billDetailsApi = billDetails.GetApi("BillDetail");
@@ -209,17 +211,12 @@ namespace APPVIEW.Controllers
                 if (search != "")
                 {
                     var tk = bills.GetApi("Bill").Where(c => c.Status == 1 && c.Code.Contains(search)).OrderByDescending(d => d.CreateDate).ToList();
-                    ViewBag.viewbill = tk;
-                 
-                    return View(tk);
+                    var pagedList = tk.ToPagedList(pageNumber, pageSize);
+                    ViewBag.viewbill = pagedList;
+                    return View(pagedList);
                 }
                 else
                 {
-                    ViewBag.viewbill = userBills;
-
-
-
-
                     return View(userBills);
                 }
 
@@ -231,8 +228,10 @@ namespace APPVIEW.Controllers
 
         }
 
-        public ActionResult DonHuy(string search)
+        public ActionResult DonHuy(string search,int?page)
         {
+            int pageSize = 15;
+            int pageNumber = (page ?? 1);
             if (User.Identity.IsAuthenticated)
             {
 
@@ -241,7 +240,7 @@ namespace APPVIEW.Controllers
                 SessionService.SetObjToJson(HttpContext.Session, "Account", acc);
             }
             var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
-            var userBills = bills.GetApi("Bill").Where(c => c.Status == 0).OrderByDescending(d => d.CreateDate).ToList();
+            var userBills = bills.GetApi("Bill").Where(c => c.Status == 0).OrderByDescending(d => d.CreateDate).ToPagedList(pageNumber, pageSize);
             ViewBag.viewbill = userBills;
 
 
@@ -259,12 +258,12 @@ namespace APPVIEW.Controllers
                 if (search != "")
                 {
                     var tk = bills.GetApi("Bill").Where(c => c.Status == 0 && c.Code.Contains(search)).OrderByDescending(d => d.CreateDate).ToList();
-                    ViewBag.viewbill = tk;
-                    return View(tk);
+                    var pagedList = tk.ToPagedList(pageNumber, pageSize);
+                    ViewBag.viewbill = pagedList;
+                    return View(pagedList);
                 }
                 else
                 {
-                    ViewBag.viewbill = userBills;
                     _notyf.Information("Không tìm thấy đơn hàng!");
                     return View(userBills);
                 }
@@ -277,11 +276,12 @@ namespace APPVIEW.Controllers
 
 
         }
-        public ActionResult ShowBillXacNhan(string search)
+        public ActionResult ShowBillXacNhan(string search,int? page)
         {
-
+            int pageSize = 15;
+            int pageNumber = (page ?? 1);
             var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
-            var userBills = bills.GetApi("Bill").Where(c => c.Status == 2).OrderByDescending(d => d.CreateDate).ToList();
+            var userBills = bills.GetApi("Bill").Where(c => c.Status == 2).OrderByDescending(d => d.CreateDate).ToPagedList(pageNumber, pageSize);
             var billDetailsApi = billDetails.GetApi("BillDetail");
             var productDetailsApi = getapi.GetApi("ProductDetails");
             var productsApi = getapiProduct.GetApi("Product");
@@ -298,12 +298,13 @@ namespace APPVIEW.Controllers
                 if (search != "")
                 {
                     var tk = bills.GetApi("Bill").Where(c => c.Status == 2 && c.Code.Contains(search)).OrderByDescending(d => d.CreateDate).ToList();
-                    ViewBag.viewbill = tk;
-                    return View(tk);
+                    var pagedList = tk.ToPagedList(pageNumber, pageSize);
+                    ViewBag.viewbill = pagedList;
+                    return View(pagedList);
                 }
                 else
                 {
-                    ViewBag.viewbill = userBills;
+                  
                     return View(userBills);
                 }
             }
@@ -311,8 +312,6 @@ namespace APPVIEW.Controllers
             {
                 return View(userBills);
             }
-
-            return View(userBills);
         }
         [HttpPost]
         public ActionResult ChosenProduct(Guid productId)
@@ -593,11 +592,12 @@ namespace APPVIEW.Controllers
             }
 
         }
-        public ActionResult ShowBillDaNhan(string search)
+        public ActionResult ShowBillDaNhan(string search,int?page)
         {
-
+            int pageSize = 15;
+            int pageNumber = (page ?? 1);
             var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
-            var userBills = bills.GetApi("Bill").Where(c => c.Status == 3).OrderByDescending(d => d.CreateDate).ToList();
+            var userBills = bills.GetApi("Bill").Where(c => c.Status == 3).OrderByDescending(d => d.CreateDate).ToPagedList(pageNumber, pageSize);
             var billDetailsApi = billDetails.GetApi("BillDetail");
             var productDetailsApi = getapi.GetApi("ProductDetails");
             var productsApi = getapiProduct.GetApi("Product");
@@ -616,16 +616,12 @@ namespace APPVIEW.Controllers
                 if (search != "")
                 {
                     var tk = bills.GetApi("Bill").Where(c => c.Status == 3 && c.Code.Contains(search)).OrderByDescending(d => d.CreateDate).ToList();
-                    ViewBag.viewbill = tk;
-                    return View(tk);
+                    var pagedList = tk.ToPagedList(pageNumber, pageSize);
+                    ViewBag.viewbill = pagedList;
+                    return View(pagedList);
                 }
                 else
                 {
-                    ViewBag.viewbill = userBills;
-
-
-
-
                     return View(userBills);
                 }
             }
