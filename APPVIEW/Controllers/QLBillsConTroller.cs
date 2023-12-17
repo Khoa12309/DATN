@@ -397,6 +397,11 @@ namespace APPVIEW.Controllers
 
                 tenkh = "Khong Luu Ten";
             }
+            if (productId.Count==0)
+            {
+                _notyf.Warning("Không có sản phẩm");
+                return RedirectToAction("BanHangOff");
+            }
 
             var prdct = getapi.GetApi("ProductDetails").ToList();
             var billct = billDetails.GetApi("BillDetail");
