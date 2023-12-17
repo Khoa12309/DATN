@@ -1,9 +1,13 @@
-﻿@{
+﻿@model X.PagedList.IPagedList<APPDATA.Models.Bill>
+@using X.PagedList.Web.Common
+@using X.PagedList
+@using X.PagedList.Mvc.Core
+@{
     ViewData["Title"] = "ShowBill";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
     @using APPDATA.Models;
     @using System.Globalization;
-    List<Bill> bill = ViewBag.viewbill;
+    var bill = ViewBag.viewbill;
     List<BillDetail> billct = ViewBag.viewbillct;
     List<ProductDetail> prdct = ViewBag.viewprdct;
     List<Product> prd = ViewBag.viewprd;
@@ -180,3 +184,17 @@
         });
     });
 </script>
+<div>
+    @Html.PagedListPager(Model, page => Url.Action("ShowBill", new {page = page, sort=ViewBag.sort}), new PagedListRenderOptions()
+    {
+    ActiveLiElementClass = "active",
+    PageClasses = new[]{ "page-link"},
+    LiElementClasses=new[] { "page-item"},
+    UlElementClasses = new[] { "pagination","justify-content-center", "mt-3", "size" },
+    LinkToNextPageFormat = "Next",
+    LinkToPreviousPageFormat = "Previous",
+    MaximumPageNumbersToDisplay = 15,
+    DisplayLinkToPreviousPage = PagedListDisplayMode.Always,
+    DisplayLinkToNextPage = PagedListDisplayMode.Always
+    })
+</div>

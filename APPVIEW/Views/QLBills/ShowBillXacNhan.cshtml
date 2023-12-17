@@ -1,8 +1,10 @@
-﻿
+﻿@model X.PagedList.IPagedList<APPDATA.Models.Bill>
+@using X.PagedList.Web.Common
+@using X.PagedList
+@using X.PagedList.Mvc.Core
 @{
     ViewData["Title"] = "ShowBillXacNhan";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
-
     @using APPDATA.Models;
 @using System.Globalization;
     var bill = ViewBag.viewbill;
@@ -152,6 +154,20 @@
             </table>
         </div>
     </div>
+</div>
+<div>
+    @Html.PagedListPager(Model, page => Url.Action("ShowBillXacNhan", new {page = page, sort=ViewBag.sort}), new PagedListRenderOptions()
+    {
+    ActiveLiElementClass = "active",
+    PageClasses = new[]{ "page-link"},
+    LiElementClasses=new[] { "page-item"},
+    UlElementClasses = new[] { "pagination","justify-content-center", "mt-3", "size" },
+    LinkToNextPageFormat = "Next",
+    LinkToPreviousPageFormat = "Previous",
+    MaximumPageNumbersToDisplay = 15,
+    DisplayLinkToPreviousPage = PagedListDisplayMode.Always,
+    DisplayLinkToNextPage = PagedListDisplayMode.Always
+    })
 </div>
 
 

@@ -1,5 +1,8 @@
 ﻿@using System.Globalization;
-@model IEnumerable<APPDATA.Models.Bill>
+@model X.PagedList.IPagedList<APPDATA.Models.Bill>
+@using X.PagedList.Web.Common
+@using X.PagedList
+@using X.PagedList.Mvc.Core
 @{
     ViewData["Title"] = "Hóa đơn online";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
@@ -148,7 +151,7 @@
                                 </td>
                                 <td>
                                     @{
-                                        string formattedDate2 = "Chưa thay đổi";
+                                        string formattedDate2 = "Chưa thanh toán";
 
                                         if (itembill.PayDate.HasValue)
                                         {
@@ -200,5 +203,19 @@
             </table>
         </div>
     </div>
+</div>
+<div>
+    @Html.PagedListPager(Model, page => Url.Action("GetList", new {page = page, sort=ViewBag.sort}), new PagedListRenderOptions()
+    {
+    ActiveLiElementClass = "active",
+    PageClasses = new[]{ "page-link"},
+    LiElementClasses=new[] { "page-item"},
+    UlElementClasses = new[] { "pagination","justify-content-center", "mt-3", "size" },
+    LinkToNextPageFormat = "Next",
+    LinkToPreviousPageFormat = "Previous",
+    MaximumPageNumbersToDisplay = 15,
+    DisplayLinkToPreviousPage = PagedListDisplayMode.Always,
+    DisplayLinkToNextPage = PagedListDisplayMode.Always
+    })
 </div>
 

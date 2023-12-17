@@ -2,6 +2,7 @@
 using APPVIEW.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using X.PagedList;
 
 namespace APPVIEW.Controllers
 {
@@ -16,8 +17,10 @@ namespace APPVIEW.Controllers
             getapiacc = new Getapi<Account>();
         }
   
-        public async Task<IActionResult> GetList(string searchTerm, DateTime? start, DateTime? end)
+        public async Task<IActionResult> GetList(string searchTerm, DateTime? start, DateTime? end, int? page)
         {
+            int pageSize = 15;
+            int pageNumber = (page ?? 1);
             var obj = getapi.GetApi("Bill").Where(c=>c.Type!= "Tại Quầy");
             ViewBag.account = getapiacc.GetApi("Account");
             try
@@ -25,7 +28,7 @@ namespace APPVIEW.Controllers
                 if (!string.IsNullOrEmpty(searchTerm) && start == null && end == null)
                 {
                     var tk = obj.Where(c => c.Code.ToLower().Contains(searchTerm.ToLower()) || c.TotalMoney.ToString().Contains(searchTerm)).OrderByDescending(d => d.CreateDate).ToList();
-                    return View(tk);
+                    return View(tk.ToPagedList(pageNumber, pageSize));
                 }
                 else if (string.IsNullOrEmpty(searchTerm) && start != null && end != null)
                 {
@@ -33,7 +36,7 @@ namespace APPVIEW.Controllers
                     end = end?.Date.AddDays(1).AddTicks(-1); // Setting the end date to the end of the day
 
                     var tk = obj.Where(c => (c.CreateDate >= start && c.CreateDate <= end)).OrderByDescending(d => d.CreateDate).ToList();
-                    return View(tk);
+                    return View(tk.ToPagedList(pageNumber, pageSize));
                 }
                 else if (string.IsNullOrEmpty(searchTerm) && start != null && end == null)
                 {
@@ -42,27 +45,29 @@ namespace APPVIEW.Controllers
                     var todayEnd = DateTime.Today.AddDays(1).AddTicks(-1);
 
                     var tk = obj.Where(c => (c.CreateDate >= todayStart && c.CreateDate <= todayEnd)).OrderByDescending(d => d.CreateDate).ToList();
-                    return View(tk);
+                    return View(tk.ToPagedList(pageNumber, pageSize));
                 }
                 else if (!string.IsNullOrEmpty(searchTerm) && start != null && end != null)
                 {
                     end = end?.Date.AddDays(1).AddTicks(-1);
                     var tk = obj.Where(c => (c.Code.ToLower().Contains(searchTerm.ToLower()) || c.TotalMoney.ToString().Contains(searchTerm)) && (c.CreateDate >= start && c.CreateDate <= end)).OrderByDescending(d => d.CreateDate).ToList();
-                    return View(tk);
+                    return View(tk.ToPagedList(pageNumber, pageSize));
                 }
                 else
                 {
-                    return View(obj);
+                    return View(obj.OrderByDescending(x => x.id).ToPagedList(pageNumber, pageSize));
                 }
             }
             catch (Exception ex)
             {
-                return View(obj);
+                return View(obj.OrderByDescending(x => x.id).ToPagedList(pageNumber, pageSize));
             }
 
         }
-        public async Task<IActionResult> GetList2(string searchTerm, DateTime? start, DateTime? end)
+        public async Task<IActionResult> GetList2(string searchTerm, DateTime? start, DateTime? end,int?page)
         {
+            int pageSize = 15;
+            int pageNumber = (page ?? 1);
             var obj = getapi.GetApi("Bill").Where(c => c.Type == "Tại Quầy");
             ViewBag.account = getapiacc.GetApi("Account");
 
@@ -71,7 +76,7 @@ namespace APPVIEW.Controllers
                 if (!string.IsNullOrEmpty(searchTerm) && start == null && end == null)
                 {
                     var tk = obj.Where(c => c.Code.ToLower().Contains(searchTerm.ToLower()) || c.TotalMoney.ToString().Contains(searchTerm)).OrderByDescending(d => d.CreateDate).ToList();
-                    return View(tk);
+                    return View(tk.ToPagedList(pageNumber, pageSize));
                 }
                 else if (string.IsNullOrEmpty(searchTerm) && start != null && end != null)
                 {
@@ -79,7 +84,7 @@ namespace APPVIEW.Controllers
                     end = end?.Date.AddDays(1).AddTicks(-1); // Setting the end date to the end of the day
 
                     var tk = obj.Where(c => (c.CreateDate >= start && c.CreateDate <= end)).OrderByDescending(d => d.CreateDate).ToList();
-                    return View(tk);
+                    return View(tk.ToPagedList(pageNumber, pageSize));
                 }
                 else if (string.IsNullOrEmpty(searchTerm) && start != null && end == null)
                 {
@@ -88,22 +93,22 @@ namespace APPVIEW.Controllers
                     var todayEnd = DateTime.Today.AddDays(1).AddTicks(-1);
 
                     var tk = obj.Where(c => (c.CreateDate >= todayStart && c.CreateDate <= todayEnd)).OrderByDescending(d => d.CreateDate).ToList();
-                    return View(tk);
+                    return View(tk.ToPagedList(pageNumber, pageSize));
                 }
                 else if (!string.IsNullOrEmpty(searchTerm) && start != null && end != null)
                 {
                     end = end?.Date.AddDays(1).AddTicks(-1);
                     var tk = obj.Where(c => (c.Code.ToLower().Contains(searchTerm.ToLower()) || c.TotalMoney.ToString().Contains(searchTerm)) && (c.CreateDate >= start && c.CreateDate <= end)).OrderByDescending(d => d.CreateDate).ToList();
-                    return View(tk);
+                    return View(tk.ToPagedList(pageNumber, pageSize));
                 }
                 else
                 {
-                    return View(obj);
+                    return View(obj.OrderByDescending(x => x.id).ToPagedList(pageNumber, pageSize));
                 }
             }
             catch (Exception ex)
             {
-                return View(obj);
+                return View(obj.OrderByDescending(x => x.id).ToPagedList(pageNumber, pageSize));
             }
         }
 

@@ -7,9 +7,6 @@
     ViewBag.Tinh = "";
 }
 
-
-
-
 <hr />
 <section class="order_details section-margin--small">
     <div class="container">
@@ -30,7 +27,7 @@
 
 
                         <div class="col-md-12 form-group">
-                        
+
 
                             <h4>SDT cũ : @Model.PhoneNumber</h4>
 
@@ -43,9 +40,10 @@
 
                         </div>
                         <div class="col-md-4 form-group">
-                            <input type="text" class="form-control" name="sdt" placeholder="SDT mới">
+                            <input type="text" class="form-control" name="sdt" id="sdt" placeholder="SDT mới">
+                            <span class="text-danger" id="phoneError"></span>
                         </div>   <div class="col-md-4 form-group">
-                           <h5>Địa chỉ mới<h5/>
+                            <h5>Địa chỉ mới<h5 />
                         </div>
                         <div class="col-md-12 form-group p_star">
                             <div class="row">
@@ -117,7 +115,7 @@
     var inputdis = document.getElementById("district");
     var inputward = document.getElementById("ward");
     // Thêm một sự kiện onchange cho thẻ select
-    select.onchange = function () {
+    select.onchange = function() {
         // Lấy giá trị được chọn trong thẻ select
         var selectedCountry = select.value;
         ldistrict.splice(0, ldistrict.length);
@@ -138,7 +136,7 @@
 
                 // Xử lý dữ liệu JSON
 
-                data.forEach(function (districs) {
+                data.forEach(function(districs) {
                     ldistrict.push(districs);
                     console.log(ldistrict);
                     // Duyệt qua mảng các user
@@ -159,11 +157,11 @@
     };
 
     //chọn phường
-    inputdis.onchange = function () {
+    inputdis.onchange = function() {
         // Lấy giá trị được chọn trong thẻ select
         var district = 0;
         lward.splice(0, ldistrict.length);
-        ldistrict.forEach(function (id) {
+        ldistrict.forEach(function(id) {
             if (id.districtName == inputdis.value) {
                 district = id.districtID;
                 iddis = id.districtID;
@@ -187,7 +185,7 @@
 
                 // Xử lý dữ liệu JSON
 
-                data.forEach(function (ward) {
+                data.forEach(function(ward) {
 
                     // Duyệt qua mảng các user
                     var option = document.createElement("option"); // Tạo một phần tử option mới
@@ -206,11 +204,11 @@
     };
 
 
-    inputward.onchange = function () {
+    inputward.onchange = function() {
         // Lấy giá trị được chọn trong thẻ select
         var district = 0;
         var ward = 0
-        lward.forEach(function (id) {
+        lward.forEach(function(id) {
             if (id.wardName == inputward.value) {
 
                 idwar = id.wardCode;
@@ -248,28 +246,10 @@
     };
 
 
-    //function showLabel(input) {
-    //    // Lấy giá trị của input
-    //    var value = input.value;
-    //    // Lấy phần tử datalist tương ứng
-    //    var list = document.getElementById(input.getAttribute("list"));
-    //    // Duyệt qua các thẻ option trong datalist
-    //    for (var i = 0; i < list.options.length; i++) {
-    //        var option = list.options[i];
-    //        // Nếu giá trị của input trùng với giá trị của option
-    //        if (option.value === value) {
-    //            // Lấy nhãn của option
-    //            var label = option.label;
-    //            // Gán nhãn cho thuộc tính placeholder của input
-    //            input.placeholder = label;
-    //            // Thoát khỏi vòng lặp
-    //            break;
-    //        }
-    //    }
-    //}
+   
 </script>
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-}
+    }

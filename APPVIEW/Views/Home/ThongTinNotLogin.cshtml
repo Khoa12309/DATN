@@ -1,6 +1,4 @@
-﻿
-
-@{
+﻿@{
     ViewData["Title"] = "Thongtin";
     Layout = "~/Views/Shared/_LayoutWeb.cshtml";
     @using APPDATA.Models;
@@ -14,49 +12,93 @@
     List<Image> image = ViewBag.image;
     List<Voucher> voucher = ViewBag.Voucher;
     string tb = ViewBag.error;
-    string tb2 = "Không có dữ liệu";
-
 }
 
+<style>
+    #t {
+        max-width: 700px;
+        margin: 0 auto;
+    }
 
+    #search-form {
+        background-color: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 0 30px rgba(0, 0, 0, 0.1);
+    }
+
+    #form {
+      flex: 1;
+    border-radius: 4px;
+    height: 40px;
+    margin-right: 10px;
+    }
+
+    .input-group {
+     display: flex;
+    align-items: center;
+    justify-content: space-between; 
+    }
+
+    #sdt {
+        border-radius: 4px;
+        height: 40px;
+        wid
+    }
+
+    #tk {
+        position: absolute;
+        right: 0;
+        top: 0;
+        height: 100px;
+        padding: 8px 15px;
+        border: none;
+        background-color: #007bff;
+        color: #fff;
+        border-top-right-radius: 4px;
+        border-bottom-right-radius: 4px;
+        cursor: pointer;
+    }
+
+    #tk:hover {
+        background-color: #0056b3;
+    }
+    #phoneError {
+   color: #dc3545; /* Màu đỏ */
+    display: block; /* Hiển thị dạng block để xuống dòng */
+    margin-top: 5px; /* Khoảng cách giữa span và input */
+    width: 100%; /* Sử dụng toàn bộ chiều rộng của container */
+    box-sizing: border-box; 
+}
+h3{
+    padding-top:20px;
+}
+</style>
 
 <section class="blog-banner-area" id="category">
     <div class="container h-100">
         <div class="blog-banner">
             <div class="text-center">
                 <h1>Xem hóa đơn</h1>
-                @*<nav aria-label="breadcrumb" class="banner-breadcrumb">
-                <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="~/home/index">Home</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Checkout</li>
-                </ol>
-                </nav>*@
             </div>
         </div>
     </div>
 </section>
-
-
-<div class="container">
-
-    <form asp-controller="Home" style="margin-top:20px;margin-left:1px" asp-action="ThongTinNotLogin" class="row contact_form" method="post">
-        <div class="row">
-            <div class="col-md-8 form-group">
-                <input type="text" class="form-control" name="sdt" placeholder="Số Điện Thoại">
-
-            </div>    <div class="col-md-2 form-group">
-                <button type="submit" class="btn btn-success">Tìm kiếm</button>
-
+<div class="container" id="t">
+    <div class="search-form" id="search-form">
+        <h2>Tìm kiếm hóa đơn</h2>
+        <form asp-controller="Home" asp-action="ThongTinNotLogin" method="post">
+            <div class="form-group" id="form">
+                <label for="sdt"></label>
+                <div class="input-group">
+                    <input type="text" class="form-control" name="sdt" id="sdt" placeholder="Nhập mã hóa đơn">
+                     <span class="text-danger error-message" id="phoneError"></span> <br />
+                </div>
             </div>
-        </div>
-    </form>
+        </form>
+    </div>
 </div>
-
-
-
-
-
-@if (tb != null ||  bill.Count()>0)
+@if (tb != null || bill.Count() > 0)
 {
     <h3 style="text-align:center">Đơn hàng của bạn </h3>
     @foreach (var itembill in bill)
@@ -275,9 +317,9 @@
                                                 <button class="cancel-button" data-itemid="@itembill.id" style="background-color:royalblue ; border-radius:12px ; border:none">
                                                     <a href="@Url.Action("HuyDon2", new { id = itembill.id })" style="color:black;">Hủy Đơn</a>
                                                 </button>
-          
+
                                             }
-                                            
+
 
                                         </td>
                                         <td>
@@ -307,18 +349,57 @@ else
 {
 
     <h3 style="text-align:center">@tb</h3>
-    <h3 style="text-align:center">@tb2</h3>
 
 }
 
 
 
 <script>
-    document.addEventListener("DOMContentLoaded", function () {
+    document.addEventListener('DOMContentLoaded', function() {
+        var phoneNumberInput = document.getElementById('sdt');
+        var phoneErrorSpan = document.getElementById('phoneError');
+
+        phoneNumberInput.addEventListener('input', function() {
+            var inputValue = phoneNumberInput.value;
+            var cleanedValue = inputValue.replace(/[^0-9+]/g, '');
+            cleanedValue = cleanedValue.slice(0, 10);
+            phoneNumberInput.value = cleanedValue;
+        });
+
+        phoneNumberInput.addEventListener('blur', function() {
+            validatePhoneNumber(phoneNumberInput.value);
+        });
+
+        function validatePhoneNumber(phoneNumber) {
+            var phoneRegex = /^\+?[0-9]{1,4}-?[0-9]{3,4}-?[0-9]{4,}$/;
+
+            if (phoneRegex.test(phoneNumber) && phoneNumber.startsWith('0')) {
+                // Nếu số điện thoại hợp lệ, ẩn thông báo và hiển thị nền trắng cho ô nhập
+                phoneErrorSpan.textContent = '';
+                phoneNumberInput.style.backgroundColor = 'white';
+                phoneErrorSpan.classList.remove('error-message'); // Ẩn thông báo lỗi
+            } else {
+                if (phoneNumber.length < 10) {
+                    // Hiển thị thông báo trong thẻ span khi số điện thoại có ít hơn 10 kí tự.
+                    phoneErrorSpan.textContent = 'Số điện thoại phải có ít nhất 10 kí tự.';
+                    phoneErrorSpan.classList.add('error-message'); // Hiển thị thông báo lỗi
+                } else if (!phoneNumber.startsWith('0')) {
+                    // Hiển thị thông báo trong thẻ span khi số điện thoại không bắt đầu bằng số 0.
+                    phoneErrorSpan.textContent = 'Số điện thoại phải bắt đầu bằng số 0.';
+                    phoneErrorSpan.classList.add('error-message'); // Hiển thị thông báo lỗi
+                } else {
+                    // Hiển thị thông báo trong thẻ span khi số điện thoại không hợp lệ.
+                    phoneErrorSpan.textContent = 'Số điện thoại không hợp lệ.';
+                    phoneErrorSpan.classList.add('error-message'); // Hiển thị thông báo lỗi
+                }
+            }
+        }
+    });
+    document.addEventListener("DOMContentLoaded", function() {
         var cancelButtons = document.querySelectorAll('.cancel-button');
 
-        cancelButtons.forEach(function (cancelButton) {
-            cancelButton.addEventListener("click", function (event) {
+        cancelButtons.forEach(function(cancelButton) {
+            cancelButton.addEventListener("click", function(event) {
                 event.preventDefault();
                 var itemId = this.getAttribute('data-itemid');
 

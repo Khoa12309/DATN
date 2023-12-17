@@ -19,7 +19,7 @@ namespace APPDATA.DB
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
 
         {
-            optionsBuilder.UseSqlServer(@"Data Source=HUYDX\SQLEXPRESS;Initial Catalog=DATN;Persist Security Info=True;User ID=Huydxph20596;Password=123456");
+            optionsBuilder.UseSqlServer(@"Data Source=LAPTOP-DEB8BBEA\SQLEXPRESS;Initial Catalog=DATNSupper2;User ID=anhpnt32;Password=123456");
 
         }
 

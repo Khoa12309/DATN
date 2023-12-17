@@ -7,103 +7,167 @@
     ViewBag.Tinh = "";
 }
 
+<style>
+            .container {
+            margin-top: 20px;
+        }
 
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        /*.row {
+            margin-top: 50px;
+            position: relative;
+            top: 50px;
+             position: relative;
+            z-index: 1;/* T/* Thay đổi giá trị tùy thuộc vào chiều cao của thanh menu */
+        /*}*/*/
+        /*.navbar {
+            z-index: 0;
+        }*/
+        #p{
+            position: relative;
+            z-index: 1;
+        }
+        #p h4 {
+            padding-top: 50px; /* Tăng giá trị nếu cần thiết để đảm bảo số điện thoại cách xa đủ */
+        }
+        .form-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .info-item {
+        margin-bottom: 10px; /* Khoảng cách giữa các info-item */
+    }
+
+    .info-item label {
+        display: inline-block;
+        width: 100px; /* Độ rộng của label */
+        margin-right: 10px; /* Khoảng cách giữa label và nội dung */
+    }
+
+    .info-item h4 {
+       margin: 0; /* Loại bỏ margin mặc định của thẻ h4 */
+    white-space: nowrap; /* Ngăn chặn việc ngắt dòng */
+    overflow: hidden; /* Ẩn nội dung vượt ra khỏi phần tử cha */
+    text-overflow: ellipsis; 
+    }
+
+        /* Tùy chỉnh cho ô input */
+        input.form-control {
+            border: 1px solid #ccc; /* Màu và độ đậm của đường viền */
+            border-radius: 5px; /* Độ cong của góc */
+            padding: 10px; /* Khoảng cách giữa nội dung và đường viền */
+        }
+
+        /* Tùy chỉnh cho nút button */
+        .btn-primary {
+            background-color: #007bff; /* Màu nền của nút */
+            color: #fff; /* Màu chữ của nút */
+            border: 1px solid #007bff; /* Màu đường viền của nút */
+            border-radius: 5px; /* Độ cong của góc */
+            padding: 10px 20px; /* Khoảng cách giữa nội dung và đường viền */
+            cursor: pointer; /* Con trỏ khi rê chuột vào nút */
+        }
+
+        /* Tùy chỉnh cho chú thích màu đỏ (span.text-danger) */
+        span.text-danger {
+            color: red; /* Màu chữ của chú thích màu đỏ */
+            font-size: 12px; /* Kích thước chữ */
+        }
+
+        /* Tùy chỉnh cho các hộp select */
+        select.country_select,
+        input[list] {
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            padding: 8px;
+        }
+
+        /* Tùy chỉnh cho hr */
+        hr {
+            border: none; /* Loại bỏ đường viền */
+            border-top: 1px solid #ccc; /* Màu và độ đậm của đường viền phía trên */
+        }
+
+
+
+</style>
 
 
 <hr />
-<section class="order_details section-margin--small">
+<<section class="account-section">
     <div class="container">
-
-        <div>
-            <div class="row">
-                <div class="col-lg-8">
-                    <form asp-action="UpdateAddress">
-                        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                        <div class="form-group">
-
-                            <input type="hidden" asp-for="id" class="form-control" />
-
+        <div class="row">
+            <div class="col-lg-8 offset-lg-2">
+                <form asp-action="UpdateAddress">
+                    <!-- Các ô input và nút button -->
+                    <div class="form-group">
+                        <div class="info-item">
+                            <label for="sdtCu">SDT cũ:</label>
+                            <h4>@Model.PhoneNumber</h4>
+                            <label for="diachiCu">Địa chỉ cũ:</label>
                         </div>
 
+                        <div class="info-item">
+                      
+                            <h4>Địa chỉ cũ:    @Model.Address</h4>
 
-
-
-
-                        <div class="col-md-12 form-group">
-                        
-
-                            <h4>SDT cũ : @Model.PhoneNumber</h4>
-
-                            <h4>Địa chỉ cũ : @Model.Address</h4>
-
+                             <h4>Số điện thoại cũ:     @Model.PhoneNumber</h4>
                         </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="sdtMoi">SDT mới:</label>
+                        <input type="text" class="form-control" name="sdt" id="sdt" placeholder="SDT mới">
+                        <span class="text-danger" id="phoneError"></span>
+                    </div>
 
-                        <div class="col-md-12 form-group">
-                            <hr>
+                    <div class="form-group">
+                        <label for="diachictMoi">Địa chỉ cụ thể mới:</label>
+                        <input type="text" class="form-control" name="diachict" id="diachict" placeholder="Địa chỉ cụ thể mới">
+                    </div>
 
-                        </div>
-                        <div class="col-md-4 form-group">
-                            <input type="text" class="form-control" name="sdt" placeholder="SDT mới">
-                        </div>   <div class="col-md-4 form-group">
-                           <h5>Địa chỉ mới<h5/>
-                        </div>
-                        <div class="col-md-12 form-group p_star">
-                            <div class="row">
-                                <div class="col-lg-4">
-                                    <select class="country_select" id="countrySelect" name="province">
-                                        @foreach (var item in ViewBag.province)
-                                        {
-                                            <option value="@item.ProvinceID">@item.ProvinceName</option>
-
-
-                                        }
-
-                                    </select>
-                                    <input type="hidden" name="province2" value="" />
-                                </div>
-                                <div class="col-lg-4">
-
-                                    <input list="districtSelect" id="district" name="district" placeholder="Chọn quận huyện">
-                                    <datalist id="districtSelect">
-                                    </datalist>
-                                </div>
-                                <div class="col-lg-4">
-
-                                    <input list="wardSelect" id="ward" name="ward" placeholder="Chọn xã phường">
-                                    <datalist id="wardSelect">
-                                    </datalist>
-                                </div>
-                                <div class="col-md-7 form-group">
-                                    <input type="text" style="margin-top:10px" class="form-control" name="diachict" placeholder="Địa chỉ cụ thể">
-                                </div>
+                    <div class="form-group">
+                        <label>Chọn địa chỉ mới:</label>
+                        <div class="row">
+                            <div class="col-lg-4">
+                                <select class="form-control" id="countrySelect" name="province">
+                                    @foreach (var item in ViewBag.province)
+                                    {
+                                        <option value="@item.ProvinceID">@item.ProvinceName</option>
+                                    }
+                                </select>
+                                <input type="hidden" name="province2" value="" />
                             </div>
 
+                            <div class="col-lg-4">
+                                <input list="districtSelect" id="district" name="district" placeholder="Chọn quận huyện" class="form-control">
+                                <datalist id="districtSelect"></datalist>
+                            </div>
+
+                            <div class="col-lg-4">
+                                <input list="wardSelect" id="ward" name="ward" placeholder="Chọn xã phường" class="form-control">
+                                <datalist id="wardSelect"></datalist>
+                            </div>
                         </div>
+                    </div>
 
+                    <div class="form-group">
+                        <label for="feeship">Phí ship thay đổi:</label>
+                        <input style="height:30px; border: none;" readonly id="feeship" name="ship" class="form-control">
+                    </div>
 
-                        <div class="col-md-12 form-group">
-
-
-
-                            <ul class="list list_2">
-
-                                <li><a href="#" style="text-decoration:none;color:black">Phí ship thay đổi :  <span><input style="height:30px;border:none" readonly id="feeship" name="ship"></span></a></li>
-
-                            </ul>
-
-                        </div>
-
-                        <div class="col-md-2 form-group">
-                            <input type="submit" value="Save" class="btn btn-primary" />
-                        </div>
-                    </form>
-                </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-primary">Lưu thay đổi</button>
+                    </div>
+                </form>
             </div>
-
-
         </div>
     </div>
 </section>
+
 <script>
 
     // Lấy tham chiếu đến thẻ select bằng id
@@ -117,7 +181,7 @@
     var inputdis = document.getElementById("district");
     var inputward = document.getElementById("ward");
     // Thêm một sự kiện onchange cho thẻ select
-    select.onchange = function () {
+    select.onchange = function() {
         // Lấy giá trị được chọn trong thẻ select
         var selectedCountry = select.value;
         ldistrict.splice(0, ldistrict.length);
@@ -138,7 +202,7 @@
 
                 // Xử lý dữ liệu JSON
 
-                data.forEach(function (districs) {
+                data.forEach(function(districs) {
                     ldistrict.push(districs);
                     console.log(ldistrict);
                     // Duyệt qua mảng các user
@@ -159,11 +223,11 @@
     };
 
     //chọn phường
-    inputdis.onchange = function () {
+    inputdis.onchange = function() {
         // Lấy giá trị được chọn trong thẻ select
         var district = 0;
         lward.splice(0, ldistrict.length);
-        ldistrict.forEach(function (id) {
+        ldistrict.forEach(function(id) {
             if (id.districtName == inputdis.value) {
                 district = id.districtID;
                 iddis = id.districtID;
@@ -187,7 +251,7 @@
 
                 // Xử lý dữ liệu JSON
 
-                data.forEach(function (ward) {
+                data.forEach(function(ward) {
 
                     // Duyệt qua mảng các user
                     var option = document.createElement("option"); // Tạo một phần tử option mới
@@ -206,11 +270,11 @@
     };
 
 
-    inputward.onchange = function () {
+    inputward.onchange = function() {
         // Lấy giá trị được chọn trong thẻ select
         var district = 0;
         var ward = 0
-        lward.forEach(function (id) {
+        lward.forEach(function(id) {
             if (id.wardName == inputward.value) {
 
                 idwar = id.wardCode;
@@ -248,28 +312,47 @@
     };
 
 
-    //function showLabel(input) {
-    //    // Lấy giá trị của input
-    //    var value = input.value;
-    //    // Lấy phần tử datalist tương ứng
-    //    var list = document.getElementById(input.getAttribute("list"));
-    //    // Duyệt qua các thẻ option trong datalist
-    //    for (var i = 0; i < list.options.length; i++) {
-    //        var option = list.options[i];
-    //        // Nếu giá trị của input trùng với giá trị của option
-    //        if (option.value === value) {
-    //            // Lấy nhãn của option
-    //            var label = option.label;
-    //            // Gán nhãn cho thuộc tính placeholder của input
-    //            input.placeholder = label;
-    //            // Thoát khỏi vòng lặp
-    //            break;
-    //        }
-    //    }
-    //}
+    document.addEventListener('DOMContentLoaded', function() {
+        var phoneNumberInput = document.getElementById('sdt');
+        var phoneErrorSpan = document.getElementById('phoneError');
+
+        phoneNumberInput.addEventListener('input', function() {
+            var inputValue = phoneNumberInput.value;
+            var cleanedValue = inputValue.replace(/[^0-9+]/g, '');
+            cleanedValue = cleanedValue.slice(0, 10);
+            phoneNumberInput.value = cleanedValue;
+        });
+
+        phoneNumberInput.addEventListener('blur', function() {
+            validatePhoneNumber(phoneNumberInput.value);
+        });
+
+        function validatePhoneNumber(phoneNumber) {
+            var phoneRegex = /^\+?[0-9]{1,4}-?[0-9]{3,4}-?[0-9]{4,}$/;
+
+            if (phoneRegex.test(phoneNumber) && phoneNumber.startsWith('0')) {
+                // Nếu số điện thoại hợp lệ, ẩn thông báo và hiển thị nền trắng cho ô nhập
+                phoneErrorSpan.textContent = '';
+                phoneNumberInput.style.backgroundColor = 'white';
+            } else {
+                if (phoneNumber.length < 10) {
+                    // Hiển thị thông báo trong thẻ span khi số điện thoại có ít hơn 10 kí tự
+                    phoneErrorSpan.textContent = 'Số điện thoại phải có ít nhất 10 kí tự.';
+                } else if (!phoneNumber.startsWith('0')) {
+                    // Hiển thị thông báo trong thẻ span khi số điện thoại không bắt đầu bằng số 0
+                    phoneErrorSpan.textContent = 'Số điện thoại phải bắt đầu bằng số 0.';
+                } else {
+                    // Hiển thị thông báo trong thẻ span khi số điện thoại không hợp lệ
+                    phoneErrorSpan.textContent = 'Số điện thoại không hợp lệ.';
+                }
+
+
+            }
+        }
+    });
 </script>
 @section Scripts {
     @{
         await Html.RenderPartialAsync("_ValidationScriptsPartial");
     }
-}
+    }
