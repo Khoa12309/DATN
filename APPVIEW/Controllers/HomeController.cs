@@ -456,7 +456,11 @@ namespace APPVIEW.Controllers
             var diachi = diachict + "-" + ward + "-" + district + "-Tỉnh " + province2;
 
             var x = bills.GetApi("Bill").FirstOrDefault(c => c.id == id);
-            x.PhoneNumber = sdt;
+            if (sdt!=null)
+            {
+                x.PhoneNumber = sdt;
+
+            }
             x.Address = diachi;
             x.TotalMoney = x.TotalMoney + (ship - x.ShipFee);
             x.ShipFee = ship;
@@ -1947,7 +1951,7 @@ namespace APPVIEW.Controllers
 
                         if (Bill != null)
                         {
-
+                            
                             ///phương thức thanh toán
                             var PM = getapiPM.GetApi("PaymentMethod").FirstOrDefault(c => c.Method == "Online");
                             if (PM == null)

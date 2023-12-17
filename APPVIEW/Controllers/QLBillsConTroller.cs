@@ -656,9 +656,11 @@ namespace APPVIEW.Controllers
             return RedirectToAction("ShowBillDaNhan");
         }
         [HttpPost]
-        public ActionResult GetName(string sdt)
-        {
-            var bill = bills.GetApi("Bill").FirstOrDefault(c=>c.PhoneNumber == sdt);
+        public ActionResult GetName(string sdt) { 
+
+
+
+            var bill = bills.GetApi("Bill").FirstOrDefault(c => c.PhoneNumber ==sdt &&c.Name!=null&&c.Name!="" );
             if (bill != null && sdt!=null) {
                 if (bill.Name != null || bill.Name != "")
                 {
