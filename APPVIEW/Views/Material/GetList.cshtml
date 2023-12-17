@@ -8,25 +8,25 @@
 
 <div class="card">
     <div class="card-header">
-        <h5 class="mb-0">Materials</h5>
+        <h5 class="mb-0">Chất Liệu</h5>
     </div>
     <div class="card-body">
         <a class="btn btn-success waves-effect waves-light" asp-action="Create">
-            <span class="mdi mdi-plus-thick">Create new</span>
+            <span class="mdi mdi-plus-thick">Tạo mới</span>
         </a>
         <form asp-action="Search" method="get" class="form-inline" style="margin-left: 1000px">
-            <input placeholder="Search" type="text" name="searchTerm" id="searchTerm" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2" />
+            <input placeholder="Tìm kiếm" type="text" name="searchTerm" id="searchTerm" class="form-control" aria-label="Tìm kiếm" aria-describedby="basic-addon2" />
         </form>
         <div class="table-responsive">
             <table class="table table-hover">
                 <thead>
                     <tr>
                         <th>STT</th>
-                        <th>Name material</th>
-                        <th>Create date</th>
-                        <th>Update date</th>
-                        <th>Status</th>
-                        <th>Actions</th>
+                        <th>Tên Chất liệu</th>
+                        <th>Ngày tạo</th>
+                        <th>Ngày cập nhật</th>
+                        <th>Trạng thái</th>
+                        <th>Thao tác</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -42,7 +42,7 @@
                                         DateTime createDate = item.Create_date;
                                         string formattedDate = createDate != DateTime.MinValue
                                         ? createDate.ToString("dd/MM/yyyy")
-                                        : "Not changed";
+                                        : "Chưa cập nhật";
                                     }
                                     @formattedDate
                                 </td>
@@ -51,23 +51,23 @@
                                         DateTime updatedDate = item.Update_date;
                                         string formattedUpdateDate = updatedDate != DateTime.MinValue
                                         ? updatedDate.ToString("dd/MM/yyyy")
-                                        : "Not changed";
+                                        : "Chưa cập nhật";
                                     }
                                     @formattedUpdateDate
                                 </td>
 
                                 <td>
                                     <span class="badge @(item.Status == 1 ? "badge rounded-pill bg-label-success" : "badge rounded-pill bg-label-danger")">
-                                        @(item.Status == 1 ? "Using" : "Not use")
+                                        @(item.Status == 1 ? "Đang sử dụng" : "Không sử dụng")
                                     </span>
                                 </td>
 
                                 <td>
                                     <a href="@Url.Action("Edit", new { id = item.Id  })" class="btn btn-info waves-effect waves-light">
-                                        <span class="mdi mdi-pencil-box-outline"></span>Edit
+                                        <span class="mdi mdi-pencil-box-outline"></span>Sửa
                                     </a>
                                     <a href="@Url.Action("Delete", new { id = item.Id  })" class="btn btn-danger waves-effect waves-light">
-                                        <span class="mdi mdi-delete"></span>Delete
+                                        <span class="mdi mdi-delete"></span>Xóa
                                     </a>
                                 </td>
 
@@ -77,7 +77,7 @@
                     else
                     {
                         <tr>
-                            <td colspan="8" class="text-center">No Data.</td>
+                            <td colspan="8" class="text-center">Không có dữ liệu.</td>
                         </tr>
                     }
                 </tbody>
@@ -85,3 +85,4 @@
         </div>
     </div>
 </div>
+

@@ -9,14 +9,14 @@
 
 <div class="card">
     <div class="card-header">
-        <h5 class="mb-0">Voucher</h5>
+        <h5 class="mb-0">Phiếu Giảm Giá</h5>
     </div>
     <div class="card-body">
         <a class="btn btn-success waves-effect waves-light" asp-action="Create">
-            <span class="mdi mdi-plus-thick">Create new</span>
+            <span class="mdi mdi-plus-thick">Tạo mới</span>
         </a>
         <form asp-action="Search" method="get" class="form-inline" style="margin-left: 1000px">
-            <input placeholder="Search" type="text" name="searchTerm" id="searchTerm" class="form-control" aria-label="Recipient's username" aria-describedby="basic-addon2" />
+            <input placeholder="Tìm kiếm" type="text" name="searchTerm" id="searchTerm" class="form-control" aria-label="Người nhận" aria-describedby="basic-addon2" />
         </form>
 
         <div class="table-responsive">
@@ -26,15 +26,17 @@
                         <th>STT</th>
                         <th>Tên</th>
                         <th>Mã</th>
-                        <th>Giảm tối đa</th>
-                        <th>Số lượng</th>
-                        <th>Trạng thái</th>
-                        <th>%</th>
-                        <th>Ngày tạo</th>
-                        <th>Ngày sửa</th>
-                        <th>Ngày bắt đầu</th>
-                        <th>Ngày kết thúc</th>
-                        <th>Hành động</th>
+
+                        <th>Số Tiền Giảm Tối Đa</th>
+                        <th>Số Lượng</th>
+                        <th>Trạng Thái</th>
+                        <th>Giá Trị</th>
+                        <th>Ngày Tạo</th>
+                        <th>Ngày Cập Nhật</th>
+                        <th>Ngày Bắt Đầu</th>
+                        <th>Ngày Kết Thúc</th>
+                        <th>Thao tác</th>
+
                     </tr>
                 </thead>
                 <tbody>
@@ -50,7 +52,9 @@
                                 <td>@Html.DisplayFor(modelItem => item.Quantity)</td>
                                 <td>
                                     <span class="badge @(item.Status == 1 ? "badge rounded-pill bg-label-success" : "badge rounded-pill bg-label-danger")">
-                                        @(item.Status == 1 ? "Sử dụng" : "Không sử dụng")
+
+                                        @(item.Status == 1 ? "Đang Sử Dụng" : "Không Sử Dụng")
+
                                     </span>
                                 </td>
                                 <td>@Html.DisplayFor(modelItem => item.Value)%</td>
@@ -59,7 +63,7 @@
                                         DateTime createDate = item.Create_date;
                                         string formattedDate = createDate != DateTime.MinValue
                                         ? createDate.ToString("dd/MM/yyyy")
-                                        : "Not changed";
+                                        : "Chưa cập nhật";
                                     }
                                     @formattedDate
                                 </td>
@@ -68,7 +72,7 @@
                                         DateTime updatedDate = item.Update_date;
                                         string formattedUpdateDate = updatedDate != DateTime.MinValue
                                         ? updatedDate.ToString("dd/MM/yyyy")
-                                        : "Not changed";
+                                        : "Chưa cập nhật";
                                     }
                                     @formattedUpdateDate
                                 </td>
@@ -77,21 +81,20 @@
                                         DateTime startDate = item.StartDate;
                                         string formattedStartDate = startDate != DateTime.MinValue
                                         ? startDate.ToString("dd/MM/yyyy")
-                                        : "Not changed";
+                                        : "Chưa cập nhật";
                                     }
                                     @formattedStartDate
                                 </td>
                                 <td>
                                     @{
-                                        DateTime EndDate = item.EndDate;
-                                        string formattedEndDate = EndDate != DateTime.MinValue
-                                        ? EndDate.ToString("dd/MM/yyyy")
-                                        : "Not changed";
+                                        DateTime endDate = item.EndDate;
+                                        string formattedEndDate = endDate != DateTime.MinValue
+                                        ? endDate.ToString("dd/MM/yyyy")
+                                        : "Chưa cập nhật";
                                     }
                                     @formattedEndDate
                                 </td>
                                 <td>
-                                                                     
                                     <div class="d-inline-block text-nowrap">
                                         <button class="btn btn-sm btn-icon btn-text-secondary rounded-pill btn-icon dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
                                             <i class="mdi mdi-dots-vertical mdi-20px"></i>
@@ -99,11 +102,11 @@
                                         <div class="dropdown-menu dropdown-menu-end m-0">
                                             <a href="@Url.Action("Edit", new { id = item.Id })" class="dropdown-item">
                                                 <i class="mdi mdi-pencil-outline me-2"></i>
-                                                <span>Edit</span>
+                                                <span>Sửa</span>
                                             </a>
                                             <a href="@Url.Action("Delete", new { id = item.Id })" class="dropdown-item delete-record">
                                                 <i class="mdi mdi-delete-outline me-2"></i>
-                                                <span>Delete</span>
+                                                <span>Xóa</span>
                                             </a>
                                         </div>
                                     </div>
@@ -114,7 +117,7 @@
                     else
                     {
                         <tr>
-                            <td colspan="8" class="text-center">No Data.</td>
+                            <td colspan="12" class="text-center">Không có dữ liệu.</td>
                         </tr>
                     }
                 </tbody>
@@ -122,4 +125,5 @@
         </div>
     </div>
 </div>
+
 

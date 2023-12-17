@@ -11,158 +11,150 @@
     List<Size> size = ViewBag.sizee;
     List<Color> color = ViewBag.Collor;
     List<Account> acc = ViewBag.acc;
+    int stt = 0;
 }
 
-<form asp-controller="QLBills" asp-action="DonHuy" class="row contact_form" method="post">
-    <div class="row">
-        <div class="col-md-3 form-group">
-            <input type="text" class="form-control" name="search" placeholder="Nhập mã hóa đơn để tìm kiếm">
-
-        </div>    <div class="col-md-2 form-group">
-            <button type="submit" class="btn btn-success">Tìm kiếm</button>
-
-        </div>
+<div class="card">
+    <div class="card-header">
     </div>
-</form>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                Mã hóa Đơn
-            </th>
-            <th>
-                Trạng thái
-            </th>
-            <th>
-                Tên khách hàng
-            </th>
-          
-            <th>
-                SDT
-            </th>
-            <th>
-                Địa chỉ
-            </th>
-            <th>
-                Sản phẩm
-            </th>
-            <th>
-                Size
-            </th>
-            <th>
-                Màu
-            </th>
-            <th>
-                Số lượng
-            </th>
-            <th>
-                Ngày tạo
-            </th>
+    <div class="card-body">
+        <form asp-controller="QLBills" asp-action="DonHuy" class="row contact_form" method="post">
+            <div class="row">
+                <div class="col-md-3 form-group">
+                    <input type="text" class="form-control" name="search" placeholder="Nhập mã hóa đơn để tìm kiếm">
+
+                </div>    <div class="col-md-2 form-group">
+                    <button type="submit" class="btn btn-success">Tìm kiếm</button>
+
+                </div>
+            </div>
+        </form>
+        <div class="table-responsive table-sm">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>STT</th>
+                        <th>Mã hóa đơn</th>
+                        <th>Tên khách hàng</th>
+
+                        <th>SDT</th>
+                        <th>Địa chỉ</th>
+                        <th>Sản phẩm</th>
+                        <th>Kích cỡ</th>
+                        <th>Màu</th>
+                        <th>Tổng tiền</th>
+                        <th>Trạng thái</th>
+                        <th>Ngày tạo</th>
+                        <th>Hành động</th>
 
 
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var itembill in bill)
-        {
-            var account = acc.FirstOrDefault(c => c.Id == itembill.AccountId);
-            var userbillct = billct.FirstOrDefault(c => c.BIllId == itembill.id);
-            var pct = prdct.FirstOrDefault(c => c.Id == userbillct.ProductDetailID);
-            var pro = prd.FirstOrDefault(c => c.Id == pct.Id_Product);
-            var siz = size.FirstOrDefault(c => c.Id == pct.Id_Size);
-            var colo = color.FirstOrDefault(c => c.Id == pct.Id_Color);
-
-            <tr>
-                <td>
-                    @itembill.Code
-                </td>
-
-                @if (itembill.Status == 1)
-                {
-                    <td>  Chờ xác nhận</td>
-
-                }
-                else if (itembill.Status == 2)
-                {
-                    <td>  Đã xác nhận đơn hàng</td>
-
-                }
-                else if (itembill.Status == 3)
-                {
-                    <td>Đang giao</td>
-                }
-                else if (itembill.Status == 4)
-                {
-                    <td>Đã giao</td>
-                } else if (itembill.Status == 0)
-                {
-                    <td>Chờ Hủy</td>
-                }
-                else if (itembill.Status == 5)
-                {
-                    <td>Chờ Hủy</td>
-                }
-
-
-
-
-
-
-
-
-                <td>
-                    @if (account.Name == "khach k dang nhap")
-
+                    </tr>
+                </thead>
+                <tbody>
+                    @if (bill != null || bill.Count() > 0)
                     {
-                        @itembill.Name
+                        @foreach (var itembill in bill)
+                        {
+                            var account = acc.FirstOrDefault(c => c.Id == itembill.AccountId);
+                            var userbillct = billct.FirstOrDefault(c => c.BIllId == itembill.id);
+                            var pct = prdct.FirstOrDefault(c => c.Id == userbillct.ProductDetailID);
+                            var pro = prd.FirstOrDefault(c => c.Id == pct.Id_Product);
+                            var siz = size.FirstOrDefault(c => c.Id == pct.Id_Size);
+                            var colo = color.FirstOrDefault(c => c.Id == pct.Id_Color);
+                            <tr>
+                                <td>@(stt += 1)</td>
+                                <td>@itembill.Code</td>
+
+                                @if (account.Name == "khach k dang nhap")
+
+                                {
+                                    <td>@itembill.Name</td>
+                                }
+                                else
+                                {
+                                    <td>@account.Name</td>
+
+                                }
+
+                                <td>
+                                    @itembill.PhoneNumber
+                                </td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(itembill.Address) && itembill.Address.Length > 50)
+                                    {
+                                        @Html.Raw(Html.Encode(itembill.Address.Substring(0, 50)) + "...")
+                                    }
+                                    else
+                                    {
+                                        @Html.Raw(Html.Encode(itembill.Address))
+                                    }
+                                </td>
+                                <td> @pro.Name</td>
+                                <td> @siz.Name</td>
+                                <td> @colo.Name</td>
+                                <td>
+                                    @itembill.TotalMoney
+                                </td>
+                                @if (itembill.Status == 1)
+                                {
+                                    <td>  Chờ xác nhận</td>
+
+                                }
+                                else if (itembill.Status == 2)
+                                {
+                                    <td>  Đã xác nhận đơn hàng</td>
+
+                                }
+                                else if (itembill.Status == 3)
+                                {
+                                    <td>Đang giao</td>
+                                }
+                                else if (itembill.Status == 4)
+                                {
+                                    <td>Đã giao</td>
+                                }
+                                else if (itembill.Status == 0)
+                                {
+                                    <td>Chờ Hủy</td>
+                                }
+                                else if (itembill.Status == 5)
+                                {
+                                    <td>Chờ Hủy</td>
+                                }
+
+
+                                <td>
+                                    @{
+                                        DateTime createDate = itembill.CreateDate;
+                                        string formattedDate = createDate != DateTime.MinValue
+                                        ? createDate.ToString("dd/MM/yyyy")
+                                        : "Chưa thay đổi";
+                                    }
+                                    @formattedDate
+                                </td>
+
+                                <td>
+                                    <a class="btn btn-danger cancel-button" data-itemid="@itembill.id" href="@Url.Action("HuyDon2", new { id = itembill.id })" data-bs-placement="top" aria-label="Xóa hóa đơn" data-bs-original-title="Delete Invoice" _mstaria-label="224575" _msthash="305"><i class="mdi mdi-delete-outline mdi-20px mx-1"></i></a>
+                                   @*  <button data-itemid="@itembill.id" style="width:140px" class="btn btn-danger cancel-button">
+                                        <a href="@Url.Action("HuyDon2", new { id = itembill.id })" style="color:white;">Hủy Đơn</a>
+                                    </button> *@
+
+                                </td>
+
+                            </tr>
+                        }
                     }
                     else
                     {
-                        @account.Name
-
+                        <tr>
+                            <td colspan="12" class="text-center">No Data.</td>
+                        </tr>
                     }
-                </td>
-
-       
-            
-                <td>
-                    @itembill.PhoneNumber
-                </td>
-                <td>
-                    @itembill.Address
-                </td>
-                <td>
-                    @pro.Name
-                </td>
-                <td>
-                    @siz.Name
-                </td>
-                <td>
-                    @colo.Name
-                </td>
-                <td>
-                    @userbillct.Amount
-                </td>
-                <td>
-                    @itembill.CreateDate
-                </td>
-                <td>
-                    <button data-itemid="@itembill.id" style="width:140px" class="btn btn-danger cancel-button">
-                        <a href="@Url.Action("HuyDon2", new { id = itembill.id })" style="color:white;">Hủy Đơn</a>
-                    </button>
-                </td>   
-                <td>
-                    <button data-itemid="@itembill.id" style="width:150px" class="btn btn-danger ">
-                        <a href="@Url.Action("KhongHuy", new { id = itembill.id })" style="color:white;"> Không Hủy</a>
-                    </button>
-                </td>
-                <td>
-                    <button style="width:140px" class="btn btn-danger"> @Html.ActionLink("Chi Tiết ", "Chitiet", new { id = itembill.id }, new { style = "color:white;" }) </button>
-                </td>
-            </tr>
-        }
-    </tbody>
-</table>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
         var cancelButtons = document.querySelectorAll('.cancel-button');
@@ -171,14 +163,23 @@
             cancelButton.addEventListener("click", function (event) {
                 event.preventDefault();
                 var itemId = this.getAttribute('data-itemid');
-                var confirmation = confirm("Bạn có chắc chắn muốn hủy đơn này không?");
 
-                if (confirmation) {
-                    // Chuyển hướng đến action HuyDon nếu xác nhận
-                    window.location.href = '@Url.Action("HuyDon2", "QLBills")?id=' + itemId;
-                } else {
-                    // Không làm gì nếu hủy
-                }
+                Swal.fire({
+                    title: 'Bạn có chắc chắn muốn hủy đơn này không?',
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Có',
+                    cancelButtonText: 'Không'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        // Chuyển hướng đến action HuyDon nếu xác nhận
+                        window.location.href = '@Url.Action("HuyDon2", "QLBills")?id=' + itemId;
+                    } else {
+                        // Không làm gì nếu hủy
+                    }
+                });
             });
         });
     });

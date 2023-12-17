@@ -728,7 +728,7 @@ namespace APPVIEW.Controllers
         {
             if (string.IsNullOrWhiteSpace(resetPass.Email))
             {
-                ViewData["ErrorMessage"] = "Email is required!";
+                ViewData["ErrorMessage"] = "Email bắt buộc!";
                 return View(resetPass);
 
             }
@@ -742,19 +742,19 @@ namespace APPVIEW.Controllers
 
                 // Send reset link  email
                 var resetLink = Url.Action("ResetPass", "Account", new { }, Request.Scheme);
-                var emailSubject = "Password Reset Request";
-                var emailBody = $"Hi {user.Name}, <br/> You recently requested to reset your password for your account. This is your request code: <b>{resetToken}</b> Please click on the following link to reset your password: <a href='{HtmlEncoder.Default.Encode(resetLink)}'>Reset Password</a>";
+                var emailSubject = "Yêu cầu đặt lại mật khẩu";
+                var emailBody = $"Chào {user.Name}, <br/> Bạn đã yêu cầu đặt lại mật khẩu cho tài khoản của bạn.Đây là mã đặt lại: <b>{resetToken}</b> Vui lòng click vào đừng dẫn này để có thể đặt lại mật khẩu tài khoản: <a href='{HtmlEncoder.Default.Encode(resetLink)}'>Reset Password</a>";
 
                 await _sendEmail.SendEmailAsync(user.Email, emailSubject, emailBody);
 
-                ViewData["Sucsess"] = "Reset password code has been sent to your email , Check your email now.";
+                ViewData["Sucsess"] = "Mã đặt lại tài khoản đã được gửi đến Email của bạn,Hãy kiểm tra Email của bạn";
                 return View(resetPass);
 
 
             }
             else
             {
-                ViewData["ErrorMessage"] = "Email not found!";
+                ViewData["ErrorMessage"] = "Không tìm thấy địa chỉ Email này!";
                 return View(resetPass);
             }
 
@@ -768,13 +768,13 @@ namespace APPVIEW.Controllers
         {
             if (string.IsNullOrWhiteSpace(obj.ConfirmCode) || string.IsNullOrWhiteSpace(obj.ConfirmPassword) || string.IsNullOrWhiteSpace(obj.NewPassword))
             {
-                ViewData["ErrorMessage"] = "Please enter your Confirm code and New password!";
+                ViewData["ErrorMessage"] = "Vui lòng nhập mật khẩu và mật khẩu mới của bạn";
                 return View(obj);
 
             }
             if (obj.NewPassword != obj.ConfirmPassword)
             {
-                ViewData["ErrorMessage"] = "Your new password or confirm password are wrong, try again!";
+                ViewData["ErrorMessage"] = "Mật khẩu mới và mật khẩu xác nhận của bạn không trùng khớp với nhau vui lòng thử lại!";
                 return View(obj);
             }
             else
@@ -784,7 +784,7 @@ namespace APPVIEW.Controllers
                 {
                     if (obj.ConfirmCode != user.ResetPasswordcode)
                     {
-                        ViewData["ErrorMessage"] = " Confirm code is wrong,try again!";
+                        ViewData["ErrorMessage"] = "Mã xác nhận không đúng!";
                         return View(obj);
                     }
                     else
@@ -792,14 +792,14 @@ namespace APPVIEW.Controllers
                         user.Password = MD5Pass.GetMd5Hash(obj.NewPassword);
                         user.ResetPasswordcode = null;
                         await _context.SaveChangesAsync();
-                        ViewData["Sucsess"] = " your password is changed,return to the login page!";
+                        ViewData["Sucsess"] = "Đổi mật khẩu thành công,bây giờ bạn có thể quay lại trang đăng nhập!";
                         return View(obj);
                     }
 
                 }
                 else
                 {
-                    ViewData["ErrorMessage"] = "Email not found!";
+                    ViewData["ErrorMessage"] = "Không tìm thấy địa chỉ Email!";
                     return View(obj);
                 }
 
@@ -905,10 +905,10 @@ namespace APPVIEW.Controllers
             if (responese.IsSuccessStatusCode && responeseAdress.IsSuccessStatusCode)
             {
 
-                //string Subject = "Create account successfully";
-                //_sendEmail.SendEmailAsync(obj.Email, Subject, _sendEmailMessage.SendEmail(obj.Name, obj.Email, obj.PhoneNumber));
+                string Subject = "Create account successfully";
+                _sendEmail.SendEmailAsync(obj.Email, Subject, _sendEmailMessage.SendEmail(obj.Name, obj.Email, obj.PhoneNumber));
 
-                _notyf.Success($"Create account for {obj.Name} successful and send email to {obj.Email}!");
+                _notyf.Success($"Tạo tài khoản cho: {obj.Name} Thành công và đã gửi Email đến địa chỉ: {obj.Email}!");
                 return Redirect("~/Account/GetList");
 
             }

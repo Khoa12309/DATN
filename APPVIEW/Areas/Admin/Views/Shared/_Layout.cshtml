@@ -159,7 +159,7 @@
                                 </li>
                                 <li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "QLBills" && ViewContext.RouteData.Values["action"].ToString() == "BanHangOff" ? "active" : "")">
                                     <a href="~/QLBills/BanHangOff" class="menu-link">
-                                        <span class="mdi mdi-chart-line"></span>
+                                        <span class=" mdi mdi-cart-outline"></span>
                                         <div data-i18n="Analytics">Bán Hàng</div>
                                     </a>
                                 </li>
@@ -193,7 +193,7 @@
                                         <div data-i18n="Dashboards">Đơn chờ xác nhận</div>
                                     </a>
                                 </li>
-                                <li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "Bill" && ViewContext.RouteData.Values["action"].ToString() == "ShowBillXacNhan" ? "active" : "")">
+                                <li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "QLBills" && ViewContext.RouteData.Values["action"].ToString() == "ShowBillXacNhan" ? "active" : "")">
                                     <a href="~/QLBills/ShowBillXacNhan" class="menu-link">
 
                                         <span class="mdi mdi-receipt-text-check"></span>
@@ -202,22 +202,22 @@
                                         <div data-i18n="Dashboards">Đơn Đã Xác Nhận</div>
                                     </a>
                                 </li>
-                                <li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "Bill" && ViewContext.RouteData.Values["action"].ToString() == "ShowBillDaNhan" ? "active" : "")">
+                                <li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "QLBills" && ViewContext.RouteData.Values["action"].ToString() == "ShowBillDaNhan" ? "active" : "")">
                                     <a href="~/QLBills/ShowBillDaNhan" class="menu-link">
 
-                                        <span class="mdi mdi-receipt-text-check"></span>
+                                        <span class="mdi mdi-truck"></span>
 
 
                                         <div data-i18n="Dashboards">Đơn Đang Giao</div>
                                     </a>
                                 </li>
-                                <li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "Bill" && ViewContext.RouteData.Values["action"].ToString() == "DonHuy" ? "active" : "")">
+                                <li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "QLBills" && ViewContext.RouteData.Values["action"].ToString() == "DonHuy" ? "active" : "")">
                                     <a href="~/QLBills/DonHuy" class="menu-link">
-                                        <span class="mdi mdi-receipt-text-check"></span>
+                                        <span class="mdi mdi-receipt-text-remove"></span>
                                         <div data-i18n="Dashboards">Đơn Chờ Hủy</div>
                                     </a>
                                 </li>
-                                <li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "Bill" && ViewContext.RouteData.Values["action"].ToString() == "GetList" ? "active" : "")">
+                                <li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "QLBills" && ViewContext.RouteData.Values["action"].ToString() == "GetList" ? "active" : "")">
 
                                     <a href="~/Bill/getlist" class="menu-link">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-receipt" viewBox="0 0 16 16">
@@ -227,7 +227,7 @@
                                         <div data-i18n="Dashboards">Đơn hàng online</div>
                                     </a>
                                 </li>
-                                <li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "Bill" && ViewContext.RouteData.Values["action"].ToString() == "GetList2" ? "active" : "")">
+                                <li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "QLBills" && ViewContext.RouteData.Values["action"].ToString() == "GetList2" ? "active" : "")">
 
                                     <a href="~/Bill/getlist2" class="menu-link">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-receipt" viewBox="0 0 16 16">
@@ -365,7 +365,7 @@
                                         <div data-i18n="Dashboards">Đơn chờ xác nhận</div>
                                         </a>
                                     </li>
-                                <li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "Bill" && ViewContext.RouteData.Values["action"].ToString() == "ShowBillXacNhan" ? "active" : "")">
+                                <li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "QLBills" && ViewContext.RouteData.Values["action"].ToString() == "ShowBillXacNhan" ? "active" : "")">
                                         <a href="~/QLBills/ShowBillXacNhan" class="menu-link">
 
                                             <span class="mdi mdi-receipt-text-check"></span>
@@ -374,22 +374,22 @@
                                         <div data-i18n="Dashboards">Đơn Đã Xác Nhận</div>
                                         </a>
                                     </li>
-                                <li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "Bill" && ViewContext.RouteData.Values["action"].ToString() == "ShowBillDaNhan" ? "active" : "")">
+                                <li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "QLBills" && ViewContext.RouteData.Values["action"].ToString() == "ShowBillDaNhan" ? "active" : "")">
                                     <a href="~/QLBills/ShowBillDaNhan" class="menu-link">
 
-                                        <span class="mdi mdi-receipt-text-check"></span>
+                                        <span class="mdi mdi-truck"></span>
 
 
                                         <div data-i18n="Dashboards">Đơn Đang Giao</div>
                                     </a>
                                 </li>
-                                <li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "Bill" && ViewContext.RouteData.Values["action"].ToString() == "DonHuy" ? "active" : "")">
+                                <li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "QLBills" && ViewContext.RouteData.Values["action"].ToString() == "DonHuy" ? "active" : "")">
                                         <a href="~/QLBills/DonHuy" class="menu-link">
-                                        <span class="mdi mdi-receipt-text-check"></span>
+                                        <span class="mdi mdi-receipt-text-remove"></span>
                                         <div data-i18n="Dashboards">Đơn Chờ Hủy</div>
                                         </a>
                                     </li>
-                                <li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "Bill" && ViewContext.RouteData.Values["action"].ToString() == "GetList" ? "active" : "")">
+                                <li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "QLBills" && ViewContext.RouteData.Values["action"].ToString() == "GetList" ? "active" : "")">
 
                                         <a href="~/Bill/getlist" class="menu-link">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-receipt" viewBox="0 0 16 16">
@@ -521,7 +521,7 @@
                                         <div class="dropdown-divider my-1"></div>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item" href="~/Account/Logout">
+                                        <a id="logoutButton" class="dropdown-item" href="#">
                                             <i class="mdi mdi-power me-1 mdi-20px"></i>
                                             <span class="align-middle">Đăng xuất</span>
                                         </a>
@@ -567,6 +567,24 @@
 
     <!-- Place this tag in your head or just before your close body tag. -->
     <script async defer src="https://buttons.github.io/buttons.js"></script>
+    <script>
+        document.getElementById('logoutButton').addEventListener('click', function () {
+            Swal.fire({
+                title: 'Bạn có chắc không?',
+                text: 'Bạn có chắc muốn đăng xuất không!',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Có, đăng xuất!',
+                cancelButtonText: 'Không',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Redirect to the logout URL
+                    window.location.href = '/account/logout';
+                }
+            });
+
+        });
+    </script>
     @await Component.InvokeAsync("Notyf")
     @RenderSection("Scripts", required: false)
 
