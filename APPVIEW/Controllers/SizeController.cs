@@ -44,8 +44,8 @@ namespace APPVIEW.Controllers
                 return View("GetList", searchResult);
             }
 
-            _notyf.Information("Size không tồn tại");
-            return View();
+            _notyf.Information("Kích cỡ không tồn tại");
+            return View("GetList");
         }
         [HttpGet]
         public async Task<IActionResult> Create()

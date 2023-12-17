@@ -1,5 +1,6 @@
 ﻿using APPDATA.Models;
 using APPVIEW.Services;
+using AspNetCoreHero.ToastNotification.Abstractions;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,9 +10,11 @@ namespace APPVIEW.Controllers
     public class AddressController : Controller
     {
         private Getapi<Address> getapi;
-        public AddressController()
+        public INotyfService _notyf;
+        public AddressController(INotyfService notyf)
         {
             getapi = new Getapi<Address>();
+            _notyf = notyf;
         }
 
         public async Task<IActionResult> GetList()
@@ -46,7 +49,8 @@ namespace APPVIEW.Controllers
                 return View("GetList", searchResult);
             }
 
-            return NotFound("Address không tồn tại");
+            _notyf.Warning("Địa chỉ không tồn tại");
+            return View("GetList");
         }
         [HttpGet]
         public async Task<IActionResult> Create()
