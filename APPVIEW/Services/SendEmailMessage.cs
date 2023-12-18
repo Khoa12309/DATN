@@ -21,7 +21,7 @@ namespace APPVIEW.Services
     <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
     <link href=""https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"" rel=""stylesheet"">
     <link href=""https://getbootstrap.com/docs/5.3/assets/css/docs.css"" rel=""stylesheet"">
-    <title>Tài Khoản Admin Tạo Thành Công</title>
+    <title>Tài Khoản Tạo Thành Công</title>
     <script src=""https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js""></script>
     <title>Tài Khoản Admin Tạo Thành Công</title>
     <style>
@@ -156,10 +156,10 @@ namespace APPVIEW.Services
     </header>
     <section>
         <h2>Tài Khoản Admin Đã Được Tạo Thành Cônng Bới Quản Trị viên</h2>
-        <p>Xin chào {{name}},</p>
+        <p>Xin chào {name},</p>
         <p>Cảm ơn bạn đã tạo tài khoản Admin trên trang web Super Fashion. Dưới đây là thông tin đăng nhập của bạn:</p>
-        <p><strong>Tài Khoản:</strong> {{email}}</p>
-        <p><strong>Mật Khẩu Tạm Thời:</strong> {{phone}}</p>
+        <p><strong>Tài Khoản:</strong> {email}</p>
+        <p><strong>Mật Khẩu Tạm Thời:</strong> {phone}</p>
         <p>Hãy đăng nhập vào trang Admin tại đường link sau: <a href='https://localhost:7095/Account/Login'>Trang Admin Super Fashion</a></p>
         <p><strong>Lưu ý:</strong> Đây là mật khẩu tạm thời, vui lòng đổi mật khẩu ngay sau khi đăng nhập để tăng tính bảo mật cho tài khoản của bạn.</p>
         <p>Xin cảm ơn và chúc bạn có trải nghiệm tuyệt vời trên Super Fashion!</p>

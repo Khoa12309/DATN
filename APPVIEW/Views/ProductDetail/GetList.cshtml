@@ -15,18 +15,17 @@
 
 <div class="card">
     <div class="card-header">
-        <h5 class="mb-0">Product Details</h5>
+        <h5 class="mb-0">Chi tiết Sản phẩm</h5>
     </div>
     <div class="card-body">
         <a class="btn btn-success waves-effect waves-light" asp-action="Create">
-            <span class="mdi mdi-plus-thick">Create new</span>
+            <span class="mdi mdi-plus-thick">Tạo mới</span>
         </a>
         <form asp-controller="productdetail" asp-action="getlist" class="row contact_form" method="post">
             <div class="col-md-5 form-group" style="margin-right:50px">
                 <input type="text" class="form-control" name="tk" placeholder="Nhập tên sản phẩm để tìm kiếm">
-                <button type="submit" style="background-color:brown ; color:black">Search</button>
+                <button type="submit" style="background-color:brown ; color:black">Tìm kiếm</button>
             </div>
-
         </form>
         <div class="table-responsive">
             <table class="table table-hover">
@@ -54,9 +53,7 @@
                         {
                             <tr>
                                 <td>
-                                    @(
-                                        stt += 1
-                                        )
+                                    @(stt += 1)
                                 </td>
                                 <td class="sorting_1">
                                     @foreach (var obj in ViewBag.Image as List<Image>)
@@ -67,7 +64,6 @@
                                                 <div class="avatar-wrapper me-3">
                                                     <div class="avatar rounded-2 bg-label-secondary">
                                                         <img src="~/images/@obj.Name" alt="Sản phẩm-9" class="rounded-2">
-
                                                     </div>
                                                 </div>
                                                 <div class="d-flex flex-column">
@@ -82,7 +78,6 @@
                                                             @Html.Raw(Html.Encode(item.Desciption))
                                                         }
                                                     </small>
-
                                                 </div>
                                             </div>
                                             break;
@@ -107,8 +102,7 @@
                                             {
                                                 <h6 class="text-truncate d-flex align-items-center mb-0">
                                                     <span class="avatar-sm rounded-circle d-flex justify-content-center align-items-center bg-label-warning me-2">
-                                                      <img src="~/images/icon/swimsuit.png" width="15px" height="20px" />
-
+                                                        <img src="~/images/icon/swimsuit.png" width="15px" height="20px" />
                                                     </span>
                                                     <font>@obj.Name</font>
                                                 </h6>
@@ -122,8 +116,6 @@
                                                     <font>@obj.Name</font>
                                                 </h6>
                                             }
-
-
                                         }
                                     }
                                 </td>
@@ -138,7 +130,6 @@
                                         }
                                     }
                                 </td>
-
                                 <td>
                                     @foreach (var obj in ViewBag.Material)
                                     {
@@ -175,7 +166,6 @@
                                 <td>
                                     @Html.DisplayFor(modelItem => item.Quantity)
                                 </td>
-
                                 <td>
                                     @item.Price.ToString("C0", new CultureInfo("vi-VN"))
                                 </td>
@@ -189,13 +179,12 @@
                                         <span class="badge rounded-pill bg-label-danger">Không hoạt động</span>
                                     }
                                 </td>
-
                                 <td>
                                     @{
                                         DateTime createDate = item.Create_date;
                                         string formattedDate = createDate != DateTime.MinValue
                                         ? createDate.ToString("dd/MM/yyyy")
-                                        : "Not changed";
+                                        : "Không thay đổi";
                                     }
                                     @formattedDate
                                 </td>
@@ -204,11 +193,10 @@
                                         DateTime updatedDate = item.Update_date;
                                         string formattedUpdateDate = updatedDate != DateTime.MinValue
                                         ? updatedDate.ToString("dd/MM/yyyy")
-                                        : "Not changed";
+                                        : "Không thay đổi";
                                     }
                                     @formattedUpdateDate
                                 </td>
-
                                 <td>
                                     <div class="d-inline-block text-nowrap">
                                         <button class="btn btn-sm btn-icon btn-text-secondary rounded-pill btn-icon dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
@@ -217,36 +205,34 @@
                                         <div class="dropdown-menu dropdown-menu-end m-0">
                                             <a href="@Url.Action( "Details","Home", new { id = item.Id  })" class="dropdown-item">
                                                 <i class="mdi mdi-eye-outline me-2"></i>
-                                                <span>View</span>
+                                                <span>Xem</span>
                                             </a>
                                             <a href="@Url.Action("Edit", new { id = item.Id })" class="dropdown-item">
                                                 <i class="mdi mdi-pencil-outline me-2"></i>
-                                                <span>Edit</span>
+                                                <span>Sửa</span>
                                             </a>
                                             <a href="@Url.Action("Delete", new { id = item.Id })" class="dropdown-item delete-record">
                                                 <i class="mdi mdi-delete-outline me-2"></i>
-                                                <span>Delete</span>
+                                                <span>Xóa</span>
                                             </a>
                                         </div>
                                     </div>
                                 </td>
                             </tr>
-
                         }
                     }
                     else
                     {
                         <tr>
-                            <td colspan="8" class="text-center">No Data.</td>
+                            <td colspan="8" class="text-center">Không có dữ liệu.</td>
                         </tr>
                     }
-
                 </tbody>
             </table>
         </div>
     </div>
-
 </div>
+
 @*<div class="col-12">
     <nav>
         <ul class="pagination justify-content-center">

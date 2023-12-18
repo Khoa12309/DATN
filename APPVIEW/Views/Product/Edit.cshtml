@@ -10,22 +10,21 @@
     <div class="col-xxl">
         <div class="card mb-4">
             <div class="card-header d-flex align-items-center justify-content-between">
-                <h5 class="mb-0">Edit a Product</h5>
-
+                <h5 class="mb-0">Chỉnh sửa Sản phẩm</h5>
             </div>
             <div class="card-body">
                 <form asp-action="Edit" method="post">
                     <div class="row mb-3">
-                        <label asp-for="Name" class="col-sm-2 col-form-label">Name Product</label>
+                        <label asp-for="Name" class="col-sm-2 col-form-label">Tên Sản phẩm</label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" asp-for="Name" placeholder="Enter name of Product" />
+                            <input type="text" class="form-control" asp-for="Name" placeholder="Nhập tên Sản phẩm" />
                             <span asp-validation-for="Name" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="row mb-3">
-                        <label asp-for="Code" class="col-sm-2 col-form-label">Code</label>
+                        <label asp-for="Code" class="col-sm-2 col-form-label">Mã sản phẩm</label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" asp-for="Code" placeholder="Enter Product code" />
+                            <input type="text" class="form-control" asp-for="Code" placeholder="Nhập mã sản phẩm" />
                             <span asp-validation-for="Code" class="text-danger"></span>
                         </div>
                     </div>
@@ -33,11 +32,11 @@
                         <div class="col-sm-10 offset-sm-2">
                             <div class="form-check">
                                 <input asp-for="Status" name="status" class="form-check-input" type="radio" value="1" id="defaultRadio1" />
-                                <label class="form-check-label" asp-for="Status"> Use </label>
+                                <label class="form-check-label" asp-for="Status"> Sử dụng </label>
                             </div>
                             <div class="form-check">
                                 <input asp-for="Status" name="status" class="form-check-input" type="radio" value="0" id="defaultRadio2" checked />
-                                <label class="form-check-label" for="defaultRadio2"> Not Use </label>
+                                <label class="form-check-label" for="defaultRadio2"> Không sử dụng </label>
                             </div>
                             <span asp-validation-for="Status" class="text-danger"></span>
                         </div>
@@ -45,11 +44,11 @@
                     <div class="row justify-content-end">
                         <div class="col-sm-10">
                             <button type="submit" class="btn btn-primary">
-                                <span class="mdi mdi-check-outline"></span> Submit
+                                <span class="mdi mdi-check-outline"></span> Gửi đi
                             </button>
                             <div class="btn-group ms-2">
                                 <a href="#" class="btn btn-danger waves-effect waves-light" onclick="goBack()">
-                                    <span class="mdi mdi-close"></span> Cancel
+                                    <span class="mdi mdi-close"></span> Hủy bỏ
                                 </a>
                                 <script>
                                     function goBack() {
@@ -63,5 +62,6 @@
             </div>
         </div>
     </div>
-</div>>
+</div>
+
 

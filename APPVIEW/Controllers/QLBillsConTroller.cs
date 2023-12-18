@@ -384,12 +384,15 @@ namespace APPVIEW.Controllers
         [HttpPost]
         public async Task<IActionResult> CreateBill(List<Guid> productId, List<int> soluong, float tongtien, string tenkh,string sdt)
         {
-            var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
-            if (account.Id == Guid.Empty)
+            if (!User.Identity.IsAuthenticated)
             {
 
+                var Uid = User.Claims.FirstOrDefault(c => c.Type == "Id").Value;
+                var acc = _account.GetApi("Account").FirstOrDefault(c => c.Id.ToString() == Uid);
+                SessionService.SetObjToJson(HttpContext.Session, "Account", acc);
                 return Redirect("~/Account/Login");
             }
+            var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
             if (tenkh == "" || tenkh == null)
             {
 

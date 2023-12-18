@@ -1,7 +1,10 @@
-﻿using APPDATA.Models;
+﻿using _APPAPI.Service;
+using APPDATA.Models;
+using APPVIEW.Areas.Admin.Controllers;
 using APPVIEW.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Principal;
 using X.PagedList;
 
 namespace APPVIEW.Controllers
@@ -11,10 +14,12 @@ namespace APPVIEW.Controllers
     {
         private Getapi<Bill> getapi;
         private Getapi<Account> getapiacc;
+        private Getapi<Role> getrole;
         public BillController()
         {
             getapi = new Getapi<Bill>();
             getapiacc = new Getapi<Account>();
+            getrole = new Getapi<Role>();
         }
   
         public async Task<IActionResult> GetList(string searchTerm, DateTime? start, DateTime? end, int? page)
@@ -68,9 +73,29 @@ namespace APPVIEW.Controllers
         }
         public async Task<IActionResult> GetList2(string searchTerm, DateTime? start, DateTime? end,int?page)
         {
+    
+            if (User.Identity.IsAuthenticated)
+            {
+
+                var Uid = User.Claims.FirstOrDefault(c => c.Type == "Id").Value;
+                var acc = getapiacc.GetApi("Account").FirstOrDefault(c => c.Id.ToString() == Uid);
+                SessionService.SetObjToJson(HttpContext.Session, "Account", acc);
+                
+            }
+            var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
+            var admmin = getrole.GetApi("Role").FirstOrDefault(c => c.name == "Admin");
+            
             int pageSize = 15;
             int pageNumber = (page ?? 1);
-            var obj = getapi.GetApi("Bill").Where(c => c.Type == "Tại Quầy");
+            var obj = getapi.GetApi("Bill").Where(c => c.Type == "Tại Quầy"&& c.AccountId==account.Id);
+            if (admmin != null) {
+                if (account.IdRole == admmin.id) {
+
+                    obj = getapi.GetApi("Bill").Where(c => c.Type == "Tại Quầy");
+                }
+
+            }
+            
             ViewBag.account = getapiacc.GetApi("Account");
 
             try

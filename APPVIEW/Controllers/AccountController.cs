@@ -154,13 +154,14 @@ namespace APPVIEW.Controllers
             {
                 ViewBag.Roles = GetListRole();
                 var Cusrole = GetListRole().FirstOrDefault(c => c.name == "Customer").id;
-                var AdminRole = GetListRole().FirstOrDefault(c => c.name == "Admin").id;
-                var StaffRole = GetListRole().FirstOrDefault(c => c.name == "Staff").id;
+                var AdminRole =  _dbContext.Roles.FirstOrDefault(c => c.name == "Admin").id;
+                var StaffRole = _dbContext.Roles.FirstOrDefault(c => c.name == "Staff").id;
                 var obj = getapi.GetApi("Account").Where(c => c.Status != 3);
                 if (tk != null)
                 {
-                    obj = obj.Where(c => c.Name.ToLower().Contains(tk.ToLower()) || c.Email == tk && c.IdRole == Cusrole).ToList();
-
+                    // Loại bỏ tài khoản admin bằng cách kiểm tra vai trò
+                    obj = obj.Where(c => (c.Name.ToLower().Contains(tk.ToLower()) || c.Email == tk)
+                                && c.IdRole != AdminRole && c.IdRole != StaffRole).ToList();
                 }
                 if (role != Guid.Empty)
                 {
@@ -172,7 +173,7 @@ namespace APPVIEW.Controllers
                 }
                 int pageSize = 8;
                 int pageNumber = (page ?? 1);
-                return View(obj.Where(c => c.Status != 2 && c.Status != 3).ToPagedList(pageNumber, pageSize));
+                return View(obj.Where(c => c.Status != 2 && c.Status != 3 && c.IdRole != AdminRole).ToPagedList(pageNumber, pageSize));
             }
             else
             {
@@ -475,7 +476,7 @@ namespace APPVIEW.Controllers
         public async Task<IActionResult> Edit(Guid id)
         {
             ViewBag.Roles = GetListRole();
-            var lst = getapi.GetApi("Account");            
+            var lst = getapi.GetApi("Account");
             return View(lst.Find(c => c.Id == id));
         }
 
@@ -488,7 +489,7 @@ namespace APPVIEW.Controllers
                 if (imageFile != null)
                 {
                     obj.Avatar = AddImg(imageFile);
-                }              
+                }
                 await getapi.UpdateObj(obj, "Account");
                 _notyf.Success("Edit Sucsess");
                 return RedirectToAction("GetList");
@@ -656,7 +657,7 @@ namespace APPVIEW.Controllers
                 else
                 {
                     _notyf.Warning("Phường/xã không đúng");
-                     return Redirect($"~/Account/MyProfile?id_User={obj.AccountId}");
+                    return Redirect($"~/Account/MyProfile?id_User={obj.AccountId}");
 
                 }
                 var client = new OnlineGatewayClient($"https://online-gateway.ghn.vn/shiip/public-api/master-data/province", "bdbbde2a-fec2-11ed-8a8c-6e4795e6d902");
@@ -716,6 +717,10 @@ namespace APPVIEW.Controllers
                 var obj = _getapiRole.GetApi("Role");
                 return obj;
             }
+
+
+
+
 
 
         }
@@ -906,7 +911,7 @@ namespace APPVIEW.Controllers
             {
 
                 string Subject = "Create account successfully";
-                _sendEmail.SendEmailAsync(obj.Email, Subject, _sendEmailMessage.SendEmail(obj.Name, obj.Email, obj.PhoneNumber));
+              await  _sendEmail.SendEmailAsync(obj.Email, Subject, _sendEmailMessage.SendEmail(obj.Name, obj.Email, obj.PhoneNumber));
 
                 _notyf.Success($"Tạo tài khoản cho: {obj.Name} Thành công và đã gửi Email đến địa chỉ: {obj.Email}!");
                 return Redirect("~/Account/GetList");
