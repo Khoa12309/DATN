@@ -910,7 +910,7 @@ namespace APPVIEW.Controllers
             if (responese.IsSuccessStatusCode && responeseAdress.IsSuccessStatusCode)
             {
 
-                string Subject = "Create account successfully";
+              string Subject = "Create account successfully";
               await  _sendEmail.SendEmailAsync(obj.Email, Subject, _sendEmailMessage.SendEmail(obj.Name, obj.Email, obj.PhoneNumber));
 
                 _notyf.Success($"Tạo tài khoản cho: {obj.Name} Thành công và đã gửi Email đến địa chỉ: {obj.Email}!");

@@ -441,6 +441,10 @@ namespace APPVIEW.Controllers
                             await billDetails.CreateObj(bil, "BillDetail");
 
                             item.Quantity = item.Quantity - quantity;
+                            if (item.Quantity==0)
+                            {
+                                item.Status = 0;
+                            }
                             await getapi.UpdateObj(item, "ProductDetails");
                         }
                     }
