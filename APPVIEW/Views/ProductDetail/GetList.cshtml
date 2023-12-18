@@ -47,10 +47,14 @@
                     </tr>
                 </thead>
                 <tbody>
+                    @{
+                        bool tk = true;
+                    }
                     @if (Model != null && Model.Any())
                     {
                         @foreach (var item in Model)
                         {
+                            tk = true;
                             <tr>
                                 <td>
                                     @(stt += 1)
@@ -80,7 +84,63 @@
                                                     </small>
                                                 </div>
                                             </div>
+                                            tk= false;
                                             break;
+                                        }
+                                    }
+                                    @if (tk)
+                                    {
+                                        @foreach (var anh in Model)
+                                        {
+                                            if (tk == false)
+                                            {
+                                                break;
+                                            }
+                                            @if (anh.Id_Product==item.Id_Product)
+                                            {
+                                                if (tk == false)
+                                                {
+                                                    break;
+                                                }
+                                                @foreach (var obj in ViewBag.Image as List<Image>)
+                                                {
+                                                    if (tk==false)
+                                                    {
+                                                        break;
+                                                    }
+                                                    if (anh.Id == obj.IdProductdetail)
+                                                    {
+                                                        <div class="d-flex justify-content-start align-items-center product-name">
+                                                            <div class="avatar-wrapper me-3">
+                                                                <div class="avatar rounded-2 bg-label-secondary">
+                                                                    <img src="~/images/@obj.Name" alt="Sản phẩm-9" class="rounded-2">
+
+                                                                </div>
+                                                            </div>
+                                                            <div class="d-flex flex-column">
+                                                                <span class="text-nowrap text-heading fw-medium">@item.Name</span>
+                                                                <small class="text-truncate d-none d-sm-block">
+                                                                    @if (!string.IsNullOrEmpty(item.Desciption) && item.Desciption.Length > 50)
+                                                                    {
+                                                                        @Html.Raw(Html.Encode(item.Desciption.Substring(0, 50)) + "...")
+                                                                    }
+                                                                    else
+                                                                    {
+                                                                        @Html.Raw(Html.Encode(item.Desciption))
+                                                                    }
+                                                                </small>
+
+                                                            </div>
+                                                        </div>
+                                                        tk = false;
+                                                        break;
+                                                    }
+
+                                                }
+
+                                            }
+
+
                                         }
                                     }
                                 </td>

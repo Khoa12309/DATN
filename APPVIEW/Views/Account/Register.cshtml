@@ -164,10 +164,9 @@
                                                name="password"
                                                placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
                                                aria-describedby="password" />
-                                        <span id="passError" class="text-danger"></span>
+                                        <span id="passError" class="text-danger"></span> <br />
                                         <label for="password">Mật khẩu</label>
                                     </div>
-                                    <span id="passwordError" class="input-group-text cursor-pointer"><i class="mdi mdi-eye-off-outline"></i></span>
                                 </div>
                             </div>
                             <div class="mb-3 form-password-toggle">
@@ -182,9 +181,9 @@
                                                aria-describedby="password" />
 
                                         <label for="password">Xác nhận mật khẩu</label>
-                                        <span id="cofpassError" class="text-danger"></span>
+
                                     </div>
-                                    <span class="input-group-text cursor-pointer"><i class="mdi mdi-eye-off-outline"></i></span>
+                                    <span id="cofpassError" class="text-danger"></span>
                                 </div>
                             </div>
                             <div class="mb-3">
@@ -330,23 +329,23 @@
             return false;
         } else {
             phoneErrorSpan.textContent = '';
-           
+
         }
 
-        if (name.length >50) {
+        if (name.length > 50) {
             NameErrorSpan.textContent = 'Không được nhập quá 50 kí tự';
             return false;
         }
         if (password != confirmPassword) {
             PassErrorSpan.textContent = "Mật khẩu không trùng khớp";
-           
+
             return false
         } else {
             // Nếu mật khẩu khớp, xóa cả hai thông báo lỗi
             PassErrorSpan.textContent = "";
             CofPassErrorSpan.textContent = "";
         }
-      
+
 
         return true; // Cho phép form submit
     }
@@ -355,7 +354,7 @@
     document.getElementById('password').addEventListener('input', function () {
         var password = this.value;
         var passwordPattern = /^(?!.*\s)(.{8,})$/;
-        var passwordErrorSpan = document.getElementById('passwordError');
+        var passwordErrorSpan = document.getElementById('passError');
 
         if (passwordPattern.test(password)) {
             // Mật khẩu hợp lệ, xóa thông báo lỗi

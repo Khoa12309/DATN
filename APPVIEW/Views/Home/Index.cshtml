@@ -83,10 +83,11 @@
             @{
                 var lstpr = new List<Guid>();
                 var ht = 0;
+                bool tk = true;
             }
             @foreach (var item in ViewBag.Result)
             {
-                ht++;
+                tk = true;
                 if (ht == 12)
                 {
                     break;
@@ -101,13 +102,51 @@
                         <div class="card-product__img">
                             @foreach (var img in Img)
                             {
+                                ht++;
                                 if (img.IdProductdetail == item.Id)
                                 {
                                     <img class="card-img" src="~/images/@img.Name" width="150px" height="250px"
-                             alt="">
+                                    alt="">
+                                    tk = false;
                                     break;
                                 }
 
+                            }
+                            @if (tk)
+                            {
+                                @foreach (var anh in Model)
+                                {
+                                    if (tk == false)
+                                    {
+                                        break;
+                                    }
+                                    @if (anh.Id_Product == item.Id_Product)
+                                    {
+                                        if (tk == false)
+                                        {
+                                            break;
+                                        }
+                                        @foreach (var obj in ViewBag.Img as List<Image>)
+                                        {
+                                            if (tk == false)
+                                            {
+                                                break;
+                                            }
+                                            if (anh.Id == obj.IdProductdetail)
+                                            {
+                                                ht++;
+                                                <img class="card-img" src="~/images/@obj.Name" width="150px" height="250px"
+                                                     alt="">
+                                                tk = false;
+                                                break;
+                                            }
+
+                                        }
+
+                                    }
+
+
+                                }
                             }
                             <ul class="card-product__imgOverlay">
                                 <li><a href="@Url.ActionLink("details","home",new{id=item.Id})"><button><i class="ti-search"></i></button></a></li>

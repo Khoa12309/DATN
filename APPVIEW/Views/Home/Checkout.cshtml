@@ -343,11 +343,12 @@
                                         <a href="#">Số tiền giảm:<span>@ViewBag.FirstDiscountAmount.ToString("C0", new CultureInfo("vi-VN"))</span></a>
                                         <a href="#">
 
-                                            Tổng tiền
+                                           Tiền hàng sau giảm
                                             <span>
-                                                <input readonly style="height:30px; width:80px; border: none; outline: none; background-color:#e8f0f2;" value="@(totalll+ViewBag.fee)" id="tShip" /> VND
+                                                @((Convert.ToDecimal(ViewBag.TT) - Convert.ToDecimal(ViewBag.FirstDiscountAmount)).ToString("C0", new CultureInfo("vi-VN")))
                                             </span>
                                         </a>
+                                        <a href="#">Tổng tiền <span> <input readonly style="height:30px; width:80px; border: none; outline: none; background-color:#e8f0f2;" value="@(ViewBag.TT -  ViewBag.FirstDiscountAmount+ViewBag.fee)" id="tShip" /> VND</span></a>
 
                                     </li>
 
@@ -356,10 +357,12 @@
                                 else
                                 {
                                     <li>
+                                        <a href="#">Số tiền giảm:<span>@ViewBag.DiscountAmount.ToString("C0", new CultureInfo("vi-VN"))</span></a>
+
                                         <a href="#">
-                                            Tổng tiền
+                                            Tiền hàng sau giảm
                                             <span>
-                                                @(Convert.ToDecimal(ViewBag.TT) - Convert.ToDecimal(ViewBag.DiscountAmount) + Convert.ToDecimal(ViewBag.fee).ToString("C0", new CultureInfo("vi-VN")))
+                                                @((Convert.ToDecimal(ViewBag.TT) - Convert.ToDecimal(ViewBag.DiscountAmount)).ToString("C0", new CultureInfo("vi-VN")))
                                             </span>
                                         </a>
                                         <a href="#">Tổng tiền <span> <input readonly style="height:30px; width:80px; border: none; outline: none; background-color:#e8f0f2;" value="@(ViewBag.TT -  ViewBag.DiscountAmount+ViewBag.fee)" id="tShip" /> VND</span></a>

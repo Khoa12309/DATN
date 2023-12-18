@@ -1060,41 +1060,65 @@ namespace APPVIEW.Controllers
             int pageNumber = (page ?? 1);
             var img = getapiImg.GetApi("Image");
             var productDetails = getapi.GetApi("ProductDetails").Where(c => c.Status == 1 && c.Quantity > 0).ToList();
+            var products = getapiProduct.GetApi("Product");
+
             ViewBag.size = getapiSize.GetApi("Size");
             ViewBag.color = getapiColor.GetApi("Color");
+            ViewBag.img = img;
             try
             {
-                var productsWithImages = productDetails
-                    .Join(img, pd => pd.Id, pi => pi.IdProductdetail, (pd, pi) => new { ProductDetail = pd, Image = pi })
-                    .ToList();
-
+                // var productJoin = productDetails
+                //.Join(products, ct => ct.Id_Product, s => s.Id, (ct, s) => new { ct, s })
+                //.Select(cs => new Productss
+                //{
+                //    Id_Product = cs.ct.Id_Product,
+                //    Name = cs.s.Name,
+                //    Price = cs.ct.Price,
+                //    Id = cs.ct.Id,
+                //    Create_date = cs.s.Create_date
+                //})
+                //.Distinct()
+                //.ToList();
                 // Sắp xếp danh sách sản phẩm tùy thuộc vào tham số sortOrder
+                List<ProductDetail> productJoin = new List<ProductDetail>();
+                foreach (var item in products)
+                {
+                    var x = productDetails.OrderBy(x => x.Create_date).FirstOrDefault(c => c.Id_Product == item.Id);
+                    if (x != null) { productJoin.Add(x); }
+
+                }
+
                 switch (sortOrder)
                 {
                     case "asc":
-                        productsWithImages = productsWithImages.OrderBy(item => item.ProductDetail.Price).ToList();
+                        productJoin = productJoin.OrderBy(item => item.Price).ToList();
                         break;
                     case "desc":
-                        productsWithImages = productsWithImages.OrderByDescending(item => item.ProductDetail.Price).ToList();
+                        productJoin = productJoin.OrderByDescending(item => item.Price).ToList();
                         break;
                     default:
                         if (sortOrder != null)
                         {
-                            productsWithImages = productsWithImages.Where(c => c.ProductDetail.Name.ToLower().Contains(sortOrder.ToLower())).ToList();
+                            productJoin = productJoin.Where(c => c.Name.ToLower().Contains(sortOrder.ToLower())).ToList();
                         }
 
                         break;
                 }
 
-                ViewBag.Products = productsWithImages.OrderByDescending(x => x.ProductDetail.Id).ToPagedList(pageNumber, pageSize);
+
+                var result = productJoin.OrderByDescending(x => x.Create_date).ToPagedList(pageNumber, pageSize);
+                ViewBag.Products = result;
+                return View(result);
+
             }
             catch (Exception ex)
             {
                 // Sử dụng logging để ghi lại lỗi
                 _logger.LogError($"Error in Shop action: {ex.Message}");
+                return View();
+
             }
 
-            return View(productDetails.OrderByDescending(x => x.Id).ToPagedList(pageNumber, pageSize));
         }
 
         [HttpPost]
@@ -1532,7 +1556,7 @@ namespace APPVIEW.Controllers
 
                 //// fee ship
                 var products = SessionService.GetObjFromSession(HttpContext.Session, "Cart");
-
+              
                 if (id != null)
                 {
 
@@ -1830,8 +1854,14 @@ namespace APPVIEW.Controllers
                 TempData["DiscountAmount"] = voucher.DiscountAmount.ToString();
                 TempData["Value"] = voucher.Value.ToString();
                 TempData["VoucherCode"] = voucher.Code;
+                var mpd = SessionService.GetObjFromSession(HttpContext.Session, "mpd");
+                if (mpd.Count>0)
+                {
+                    return RedirectToAction("Checkout", new { id = mpd[0].Id });
 
+                }
                 return RedirectToAction("Checkout");
+
             }
             else
             {

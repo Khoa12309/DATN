@@ -1,6 +1,6 @@
-﻿﻿@using APPDATA.Models
+﻿@using APPDATA.Models
 @using Newtonsoft.Json
-@model X.PagedList.IPagedList<APPDATA.Models.ProductDetail>
+@model IPagedList<APPDATA.Models.ProductDetail>
 @using X.PagedList.Web.Common
 @using X.PagedList
 @using X.PagedList.Mvc.Core
@@ -8,6 +8,7 @@
 @{
     ViewData["Title"] = "Shop";
     Layout = "~/Views/Shared/_LayoutWeb.cshtml";
+    List<Image> imgg = ViewBag.img;
 }
 <style>
     .pagination {
@@ -223,30 +224,35 @@
                 <!-- Start Best Seller -->
                 <section class="lattest-product-area pb-40 category-list">
                     <div class="row" id="filtered-products">
-                        @{
-                            var p = new List<Guid>();
-                        }
+
                         @if (ViewBag.Products != null && ViewBag.Products.Count > 0)
                         {
                             foreach (var product in ViewBag.Products)
                             {
-                                if (p.Any(c => c == product.ProductDetail.Id_Product))
-                                {
-                                    continue;
-                                }
-                                p.Add(product.ProductDetail.Id_Product);
+                                @*    if (p.Any(c => c == product.Id_Product))
+                        {
+                        continue;
+                        }
+                        p.Add(product.Id_Product); *@
                                 <div class="col-md-6 col-lg-4">
                                     <div class="card text-center card-product" id="card">
                                         <div class="card-product__img">
-                                            @if (!string.IsNullOrEmpty(product.ProductDetail.Name))
+                                            @foreach (var item in imgg)
                                             {
-                                                <img class="card-img" src="~/images/@product.Image.Name" alt="ErrorImg" width="150px" height="250px">
+                                                if (item.IdProductdetail == product.Id && item.Name != null)
+
+                                                {
+                                                    <img class="card-img" src="~/images/@item.Name" alt="ErrorImg" width="150px" height="250px">
+                                                    break;
+
+                                                }
+
 
                                             }
                                             <ul class="card-product__imgOverlay">
-                                                <li><a href="@Url.ActionLink("details","home",new{id=product.ProductDetail.Id})"><button><i class="ti-search"></i></button></a></li>
+                                                <li><a href="@Url.ActionLink("details","home",new{id=product.Id})"><button><i class="ti-search"></i></button></a></li>
                                                 <li>
-                                                    <button class="buy-btn" data-product-id="@product.ProductDetail.Id">
+                                                    <button class="buy-btn" data-product-id="@product.Id">
                                                         <i class="ti-shopping-cart"></i>
                                                     </button>
                                                 </li>
@@ -254,9 +260,9 @@
                                             </ul>
                                         </div>
                                         <div class="card-body">
-                                            <h4 class="card-product__title"><a href="#">@product.ProductDetail.Name</a></h4>
+                                            <h4 class="card-product__title"><a href="#">@product.Name</a></h4>
 
-                                            <p class="card-product__price" style="color:#f15e2c">@product.ProductDetail.Price.ToString("C0", new CultureInfo("vi-VN"))</p>
+                                            <p class="card-product__price" style="color:#f15e2c">@product.Price.ToString("C0", new CultureInfo("vi-VN"))</p>
 
                                         </div>
                                     </div>

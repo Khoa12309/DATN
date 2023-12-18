@@ -1,4 +1,5 @@
 ﻿@using System.Globalization;
+@using APPDATA.Models
 @model List<APPDATA.Models.ProductDetail>
 
 @{
@@ -64,125 +65,167 @@
                         else
                         {
                             <form asp-action="Updatecart" asp-controller="Cart" method="post">
-                                @{
-
-                                    var ls = new List<Guid>();
-                                    var lc = new List<Guid>();
-                                    @for (int i = 0; i < Model.Count; i++)
-                                    {
-                                        ls = new List<Guid>();
-                                        lc = new List<Guid>();
-                                        @foreach (var pro in ViewBag.prod)
+                                    @{
+                                        bool tk = true;
+                                        var ls = new List<Guid>();
+                                        var lc = new List<Guid>();
+                                        @for (int i = 0; i < Model.Count; i++)
                                         {
-                                            if (pro.Id_Product == @Model[i].Id_Product)
+                                            tk = true;
+                                            ls = new List<Guid>();
+                                            lc = new List<Guid>();
+                                            @foreach (var pro in ViewBag.prod)
                                             {
-                                                if (!ls.Any(c => c == pro.Id_Size))
+                                                if (pro.Id_Product == @Model[i].Id_Product)
                                                 {
-                                                    ls.Add(pro.Id_Size);
-                                                }
-                                                if (!lc.Any(c => c == pro.Id_Color))
-                                                {
-                                                    lc.Add(pro.Id_Color);
-                                                }
+                                                    if (!ls.Any(c => c == pro.Id_Size))
+                                                    {
+                                                        ls.Add(pro.Id_Size);
+                                                    }
+                                                    if (!lc.Any(c => c == pro.Id_Color))
+                                                    {
+                                                        lc.Add(pro.Id_Color);
+                                                    }
 
 
+                                                }
                                             }
+
+                                            <input hidden asp-for="@Model[i].Id" value="@Model[i].Id" id="pro" />
+                                            <input hidden asp-for="@Model[i].Id_Product" value="@Model[i].Id_Product" />
+                                            <input hidden asp-for="@Model[i].Name" value="@Model[i].Name" />
+                                            var tt = @Model[i].Price * @Model[i].Quantity;
+                                            <tr>
+
+                                                @foreach (var img in ViewBag.Img)
+                                                {
+
+                                                    if (img.IdProductdetail == @Model[i].Id)
+                                                    {
+                                                    <td>
+                                                        <div class="media">
+                                                            <div class="d-flex">
+                                                                <img src="~/images/@img.Name" style="width: 150px;" alt="">
+                                                            </div>
+                                                        </div>
+                                                    </td>
+                                                        tk = false;
+                                                        break;
+                                                    }
+                                                }
+                                                @if (tk)
+                                                {
+                                                    @foreach (var anh in ViewBag.prod)
+                                                    {
+                                                        if (tk == false)
+                                                        {
+                                                            break;
+                                                        }
+                                                        @if (anh.Id_Product == Model[i].Id_Product)
+                                                        {
+                                                            if (tk == false)
+                                                            {
+                                                                break;
+                                                            }
+                                                            @foreach (var obj in ViewBag.Img as List<Image>)
+                                                            {
+                                                                if (tk == false)
+                                                                {
+                                                                    break;
+                                                                }
+                                                                if (anh.Id == obj.IdProductdetail)
+                                                                {
+                                                                <td>
+                                                                    <div class="media">
+                                                                        <div class="d-flex">
+                                                                            <img src="~/images/@obj.Name" style="width: 150px;" alt="">
+                                                                        </div>
+                                                                    </div>
+                                                                </td>
+                                                                    tk = false;
+                                                                    break;
+                                                                }
+
+                                                            }
+
+                                                        }
+
+
+                                                    }
+                                                }
+                                            <td>@Model[i].Name</td>
+
+                                            <td style="color:#f15e2c">@Model[i].Price.ToString("C0", new CultureInfo("vi-VN"))</td>
+
+                                            <td>
+
+                                                <div class="product_count">
+                                                    <input type="number" id="quantity_@Model[i].Id" maxlength="12" title="Quantity:" class="input-text qty" value="@Model[i].Quantity" asp-for="@Model[i].Quantity" min="1" oninput="validateQuantity(this)">
+                                                    <button onclick="incrementQuantity('@Model[i].Id')" class="increase items-count" type="button">
+                                                        <i class="fa fa-plus"></i>
+                                                    </button>
+                                                    <button onclick="decrementQuantity('@Model[i].Id')" class="reduced items-count" type="button">
+                                                        <i class="fa fa-minus"></i>
+                                                    </button>
+                                                </div>
+                                            </td>
+
+                                            <td class="align-middle">
+                                                <select asp-for="@Model[i].Id_Size">
+                                                        @foreach (var Size in ViewBag.Size)
+                                                        {
+
+                                                            @foreach (var c in ls)
+                                                            {
+                                                                if (c == @Size.Id)
+                                                                {
+                                                                <option value="@Size.Id">@Size.Name</option>
+                                                                }
+                                                            }
+                                                        }
+                                                </select>
+                                            </td>
+
+                                            <td class="align-middle">
+                                                <select asp-for="@Model[i].Id_Color">
+                                                        @foreach (var Color in ViewBag.Color)
+                                                        {
+                                                            @foreach (var c in lc)
+                                                            {
+                                                                if (c == @Color.Id)
+                                                                {
+                                                                <option value="@Color.Id">@Color.Name</option>
+                                                                }
+
+                                                            }
+                                                        }
+                                                </select>
+                                            </td>
+
+                                            <td class="align-middle" style="color:#f15e2c">
+                                                    @tt.ToString("C0", new CultureInfo("vi-VN"))
+                                            </td>
+                                            <td>
+                                                <a class="btn btn-light" href="@Url.ActionLink("DeleteCartItem","Cart",new{id=Model[i].Id})"><i class="fa fa-trash"></i></a>
+                                                <a class="btn btn-light" href="@Url.ActionLink("checkout","home",new{id=Model[i].Id})"><i class="fa fa-bill"></i>Thanh toán</a>
+                                            </td>
+
+
+                                        </tr>
                                         }
 
-                                        <input hidden asp-for="@Model[i].Id" value="@Model[i].Id" id="pro" />
-                                        <input hidden asp-for="@Model[i].Id_Product" value="@Model[i].Id_Product" />
-                                        <input hidden asp-for="@Model[i].Name" value="@Model[i].Name" />
-                                        var tt = @Model[i].Price * @Model[i].Quantity;
-                                    <tr>
-
-                                            @foreach (var img in ViewBag.Img)
-                                            {
-
-                                                if (img.IdProductdetail == @Model[i].Id)
-                                                {
-                                                <td>
-                                                    <div class="media">
-                                                        <div class="d-flex">
-                                                            <img src="~/images/@img.Name" style="width: 150px;" alt="">
-                                                        </div>
-                                                    </div>
-                                                </td>
-                                                    break;
-                                                }
-                                            }
-                                        <td>@Model[i].Name</td>
-
-                                        <td style="color:#f15e2c">@Model[i].Price.ToString("C0", new CultureInfo("vi-VN"))</td>
-
-                                        <td>
-
-                                            <div class="product_count">
-                                                <input type="number" id="quantity_@Model[i].Id" maxlength="12" title="Quantity:" class="input-text qty" value="@Model[i].Quantity" asp-for="@Model[i].Quantity" min="1" oninput="validateQuantity(this)">
-                                                <button onclick="incrementQuantity('@Model[i].Id')" class="increase items-count" type="button">
-                                                    <i class="fa fa-plus"></i>
-                                                </button>
-                                                <button onclick="decrementQuantity('@Model[i].Id')" class="reduced items-count" type="button">
-                                                    <i class="fa fa-minus"></i>
-                                                </button>
-                                            </div>
-                                        </td>
-
-                                        <td class="align-middle">
-                                            <select asp-for="@Model[i].Id_Size">
-                                                    @foreach (var Size in ViewBag.Size)
-                                                    {
-
-                                                        @foreach (var c in ls)
-                                                        {
-                                                            if (c == @Size.Id)
-                                                            {
-                                                            <option value="@Size.Id">@Size.Name</option>
-                                                            }
-                                                        }
-                                                    }
-                                            </select>
-                                        </td>
-
-                                        <td class="align-middle">
-                                            <select asp-for="@Model[i].Id_Color">
-                                                    @foreach (var Color in ViewBag.Color)
-                                                    {
-                                                        @foreach (var c in lc)
-                                                        {
-                                                            if (c == @Color.Id)
-                                                            {
-                                                            <option value="@Color.Id">@Color.Name</option>
-                                                            }
-
-                                                        }
-                                                    }
-                                            </select>
-                                        </td>
-
-                                        <td class="align-middle" style="color:#f15e2c">
-                                                @tt.ToString("C0", new CultureInfo("vi-VN"))
-                                        </td>
-                                        <td>
-                                            <a class="btn btn-light" href="@Url.ActionLink("DeleteCartItem","Cart",new{id=Model[i].Id})"><i class="fa fa-trash"></i></a>
-                                            <a class="btn btn-light" href="@Url.ActionLink("checkout","home",new{id=Model[i].Id})"><i class="fa fa-bill"></i>Thanh toán</a>
-                                        </td>
 
 
-                                    </tr>
+
                                     }
 
 
-
-
-                                }
-
-
-                            <tr class="bottom_button">
-                                <td>
-                                    <button class="button" type="submit">Cập nhật giỏ hàng</button>
-                                </td>
-                            </tr>
-                            </form>
+                                        <tr class="bottom_button">
+                                            <td>
+                                                <button class="button" type="submit">Cập nhật giỏ hàng</button>
+                                            </td>
+                                        </tr>
+                             </form>
                             <tr>
                                 <td>
                                 </td>
