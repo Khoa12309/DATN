@@ -142,6 +142,7 @@ namespace APPVIEW.Controllers
                 var item = getapi.UpdateObj(obj, "Role").Result;
                 if (item != null)
                 {
+                    item.Status = 0;
                     _notyf.Success("Edit thành công!");
                     return RedirectToAction("GetList");
                 }

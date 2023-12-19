@@ -160,7 +160,7 @@
                                             <td>
 
                                                 <div class="product_count">
-                                                    <input type="number" id="quantity_@Model[i].Id" maxlength="12" title="Quantity:" class="input-text qty" value="@Model[i].Quantity" asp-for="@Model[i].Quantity" min="1" oninput="validateQuantity(this)">
+                                                    <input type="number" id="quantity_@Model[i].Id" title="Quantity:" class="input-text qty" value="@Model[i].Quantity" asp-for="@Model[i].Quantity" min="1" oninput="validateQuantity(this)">
                                                     <button onclick="incrementQuantity('@Model[i].Id')" class="increase items-count" type="button">
                                                         <i class="fa fa-plus"></i>
                                                     </button>
@@ -333,7 +333,7 @@
 
         if (isNaN(value)) {
             // Nếu giá trị là NaN, đặt giá trị về 1
-            input.value = 1;
+            input.value = "";
         } else if (value < 1) {
             // Nếu giá trị là số âm, đặt giá trị về 1
             input.value = 1;

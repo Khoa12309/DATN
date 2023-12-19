@@ -460,12 +460,23 @@ namespace APPVIEW.Controllers
             {
                 x.PhoneNumber = sdt;
             }
-            if ( ward != null && district != null && province2 != null)
+            if (x.Type == "Online - Đã Thanh Toán")
             {
-                x.Address = diachi;
+                _notyf.Warning("Đơn hàng đã thanh toán không thể đổi địa chỉ nhận hàng");
+
             }
-            x.TotalMoney = x.TotalMoney + (ship - x.ShipFee);
-            x.ShipFee = ship;
+            else
+            {
+                if (ward != null && district != null && province2 != null)
+                {
+                    x.Address = diachi;
+                    x.ShipFee = ship;
+                    x.TotalMoney = x.TotalMoney + (ship - x.ShipFee);
+                }
+                _notyf.Success("Đổi thông tin thành công");
+            }
+            
+           
             await bills.UpdateObj(x, "Bill");
             return RedirectToAction("Thongtin");
         }
@@ -533,17 +544,30 @@ namespace APPVIEW.Controllers
             var diachi = diachict + "-" + ward + "-" + district + "-Tỉnh " + province2;
 
             var x = bills.GetApi("Bill").FirstOrDefault(c => c.id == id);
+            
             if (sdt != null)
             {
                 x.PhoneNumber = sdt;
             }
-            if ( ward!=null&& district != null&& province2 != null)
+            if (x.Type == "Online - Đã Thanh Toán")
             {
-                x.Address = diachi;
+                _notyf.Warning("Đơn hàng đã thanh toán không thể đổi địa chỉ nhận hàng");
+
             }
-           
-            x.TotalMoney = x.TotalMoney + (ship - x.ShipFee);
-            x.ShipFee = ship;
+            else
+            {
+                if (ward != null && district != null && province2 != null)
+                {
+                    x.Address = diachi;
+                    x.TotalMoney = x.TotalMoney + (ship - x.ShipFee);
+                    x.ShipFee = ship;
+                }
+                _notyf.Success("Đổi thông tin thành công");
+            }
+
+
+
+            
 
             await bills.UpdateObj(x, "Bill");
             return RedirectToAction("ThongTinNotLogin", new { sdt = x.PhoneNumber });
@@ -1704,7 +1728,10 @@ namespace APPVIEW.Controllers
 
                 if (account == null || account.Id == Guid.Empty)
                 {
-                    return RedirectToAction("Login", "Account");
+                    _notyf.Warning("Người dùng chưa đăng nhập!");
+                    return Json(new { success = false, message = "Người dùng chưa đăng nhập" });
+
+                    
                 }
                 var prodtId = TempData["prodtId"] as Guid?;
                 var voucher = getapiVoucher.GetApi("Voucher").FirstOrDefault(v => v.Id == voucherId);
@@ -2045,7 +2072,7 @@ namespace APPVIEW.Controllers
                         {
                             return RedirectToAction("Index");
                         }
-
+                        return RedirectToAction("thongtin");
                     }
                     else
                     {

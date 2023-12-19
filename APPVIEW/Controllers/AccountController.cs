@@ -671,13 +671,17 @@ namespace APPVIEW.Controllers
                     }
                 }
                 var user = new Account();
+                user.Id = obj.AccountId;
                 user.Email = obj.Email;
+                user.Name = obj.Name;
+                user.IdRole = obj.Id_Role;
+                user.Password = obj.Password;
                 if (imageFile != null)
                 {
-                    user.Id = obj.AccountId;
-                    user.Name = obj.Name;
-                    user.Password = obj.Password;
-                    user.IdRole = obj.Id_Role;
+                  
+                  
+                   
+                  
                     user.Avatar = AddImg(imageFile);
                 }
                 var address = new Address()
