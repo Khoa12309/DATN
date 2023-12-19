@@ -1704,7 +1704,8 @@ namespace APPVIEW.Controllers
 
                 if (account == null || account.Id == Guid.Empty)
                 {
-                    return RedirectToAction("Login", "Account");
+                    _notyf.Warning("Người dùng chưa đăng nhập!");
+                    return Json(new { success = false, message = "Người dùng chưa đăng nhập" });
                 }
                 var prodtId = TempData["prodtId"] as Guid?;
                 var voucher = getapiVoucher.GetApi("Voucher").FirstOrDefault(v => v.Id == voucherId);
