@@ -17,7 +17,7 @@
                     <div class="row mb-3">
                         <label asp-for="Value" class="col-sm-2 col-form-label">%</label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" asp-for="Value" placeholder="Nhập %" />
+                            <input type="text" min="0" max="50"class="form-control" asp-for="Value" placeholder="Nhập %" />
                             <span asp-validation-for="Value" class="text-danger"></span>
                         </div>
                     </div>

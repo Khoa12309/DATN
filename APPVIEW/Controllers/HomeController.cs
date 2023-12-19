@@ -696,6 +696,7 @@ namespace APPVIEW.Controllers
 
                 foreach (var item in procarrt)
                 {
+                   
                     var billct = new BillDetail();
                     billct.ProductDetailID = item.Id;
                     billct.BIllId = bill.id;

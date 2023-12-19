@@ -60,7 +60,6 @@ namespace APPVIEW.Services
 
         public async Task<bool> DeleteObj(Guid id, string name)
         {
-
             string requestURL =
             $"https://localhost:7042/api/";
             var httpClient = new HttpClient(); // Tại 1 httpClient để call API
@@ -72,7 +71,6 @@ namespace APPVIEW.Services
                 return false;
             }            
             return true;
-
         }
     }
 }

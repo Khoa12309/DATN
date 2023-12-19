@@ -23,7 +23,7 @@ namespace APPVIEW.Controllers
         {
             ViewBag.Category = await getapiCategory.GetApia("Category");
             var obj = getapi.GetApi("Voucher");
-            return View(obj);
+            return View(obj.OrderByDescending(x=>x.Create_date));
         }
         public async Task<IActionResult> Search(string searchTerm)
         {
