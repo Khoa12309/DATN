@@ -8,25 +8,24 @@
 }
 <style>
     #card {
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      margin-bottom: 30px;
-  
- 
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        margin-bottom: 30px;
     }
-    #card img {
-      border-bottom: 1px solid #ccc;
-    }
-    .card-product__title {
-    text-transform: uppercase;
-       font-family: 'Roboto', sans-serif;
-    font-size: 18px; /* Điều chỉnh kích thước font theo ý muốn */
-    font-weight: normal; /* Chọn độ đậm nhẹ của chữ */
-    color: #333;
-}
 
+        #card img {
+            border-bottom: 1px solid #ccc;
+        }
+
+    .card-product__title {
+        text-transform: uppercase;
+        font-family: 'Roboto', sans-serif;
+        font-size: 18px; /* Điều chỉnh kích thước font theo ý muốn */
+        font-weight: normal; /* Chọn độ đậm nhẹ của chữ */
+        color: #333;
+    }
 
 </style>
 <section class="hero-banner">
@@ -48,7 +47,7 @@
         </div>
     </div>
 </section>
-    
+
 <section class="section-margin mt-0">
     <div class="owl-carousel owl-theme hero-carousel">
         <div class="hero-carousel__slide">
@@ -74,12 +73,12 @@
         </div>
     </div>
 </section>
-<section class="section-margin calc-60px" >
+<section class="section-margin calc-60px">
     <div class="container">
         <div class="section-intro pb-60px">
             <h2>Sản phẩm  <span class="section-intro__style">bán chạy</span></h2>
         </div>
-        <div class="row" >
+        <div class="row">
             @{
                 var lstpr = new List<Guid>();
                 var ht = 0;
@@ -88,6 +87,7 @@
             @foreach (var item in ViewBag.Result)
             {
                 tk = true;
+
                 if (ht == 12)
                 {
                     break;
@@ -97,16 +97,16 @@
                     continue;
                 }
                 lstpr.Add(item.Id_Product);
-                <div class="card" style="width: 16rem; margin: 10px"  id="card">
+                <div class="card" style="width: 16rem; margin: 10px" id="card">
                     <div class="card text-center card-product">
                         <div class="card-product__img">
                             @foreach (var img in Img)
                             {
-                                ht++;
                                 if (img.IdProductdetail == item.Id)
                                 {
+                                    ht++;
                                     <img class="card-img" src="~/images/@img.Name" width="150px" height="250px"
-                                    alt="">
+                                         alt="">
                                     tk = false;
                                     break;
                                 }

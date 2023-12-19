@@ -693,10 +693,11 @@ namespace APPVIEW.Controllers
             }
             if (procarrt.Count > 0)
             {
-
+              
                 foreach (var item in procarrt)
                 {
-                   
+                  
+
                     var billct = new BillDetail();
                     billct.ProductDetailID = item.Id;
                     billct.BIllId = bill.id;
@@ -1081,7 +1082,7 @@ namespace APPVIEW.Controllers
 
         public IActionResult Shop(string sortOrder, int? page)
         {
-            int pageSize = 6;
+            int pageSize = 9;
             int pageNumber = (page ?? 1);
             var img = getapiImg.GetApi("Image");
             var productDetails = getapi.GetApi("ProductDetails").Where(c => c.Status == 1 && c.Quantity > 0).ToList();
@@ -1595,6 +1596,37 @@ namespace APPVIEW.Controllers
                     products = lpd;
                 }
 
+                //đoạn này
+                var checkpro = getapi.GetApi("ProductDetails");
+                var ktpro = SessionService.GetObjFromSession(HttpContext.Session, "Cart");
+                foreach (var check in ktpro)
+                {
+                    var checkpd = checkpro.FirstOrDefault(c => c.Id == check.Id);
+
+                    if (checkpd.Quantity < check.Quantity)
+                    {
+                        var p = products.FirstOrDefault(c => c.Id == check.Id);
+
+                        var productcartdetails = getapiCD.GetApi("CartDetails").FirstOrDefault(c => c.ProductDetail_ID == check.Id);
+                        products.Remove(p);
+
+                        if (productcartdetails != null)
+                        {
+                            await getapiCD.DeleteObj(productcartdetails.id, "CartDetails");
+
+                        }
+                        if (products.Count <= 0)
+                        {
+                            SessionService.Clearobj(HttpContext.Session, "Cart");
+                            SessionService.SetObjToJson(HttpContext.Session, "Cart", products);
+                            _notyf.Warning("Sản phẩm bạn chọn đã hết hàng");
+                            return RedirectToAction("Index");
+                        }
+                    }
+                }
+                SessionService.Clearobj(HttpContext.Session, "Cart");
+                SessionService.SetObjToJson(HttpContext.Session, "Cart", products);
+                
                 var can = 100;
                 if (products.Count != 0)
                 {
@@ -1607,7 +1639,7 @@ namespace APPVIEW.Controllers
                 }
 
                 ViewBag.Product = products;
-
+               
 
                 var tt = 0;
                 // Lấy thông tin voucher từ TempData
@@ -1694,8 +1726,10 @@ namespace APPVIEW.Controllers
                             }
 
                         }
-
-
+                        if (ViewBag.fee == null)
+                        {
+                            ViewBag.fee = 0;
+                        }
                     }
 
                     else
