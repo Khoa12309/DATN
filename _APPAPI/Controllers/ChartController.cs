@@ -21,7 +21,7 @@ namespace _APPAPI.Controllers
     [ApiController]
     public class ChartController : ControllerBase
     {
-        private readonly ShoppingDB _context;
+        private readonly ShoppingDB _context; 
         private readonly HttpClient _httpClient;
 
         public ChartController()
