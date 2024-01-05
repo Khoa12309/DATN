@@ -30,6 +30,8 @@ namespace _APPAPI.Controllers
         }
         [Route("Delete")]
         [HttpDelete]
+
+
         public bool Delete(Guid id)
         {
             BillDetail item = _crud.GetAllItems().FirstOrDefault(c => c.id == id);
