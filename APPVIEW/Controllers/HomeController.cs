@@ -920,7 +920,7 @@ namespace APPVIEW.Controllers
 
         }       
         public async Task<IActionResult> ThongTinNotLogin(string sdt)
-        {
+        {   
             if (sdt != null || sdt != "") {
 
 
@@ -973,7 +973,7 @@ namespace APPVIEW.Controllers
                 ViewBag.image = getapiImg.GetApi("Image");
 
                 ViewBag.bill = userBills;
-                return View();
+                return View(userBills);
 
 
 
