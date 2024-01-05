@@ -17,6 +17,7 @@ namespace _APPAPI.Controllers
             _crud = new CRUDapi<BillDetail>(_context, _context.BillDetails);
         }
         [HttpGet]
+
         public IEnumerable<BillDetail> GetAll()
         {
             return _crud.GetAllItems();
