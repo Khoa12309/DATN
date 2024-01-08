@@ -693,10 +693,11 @@ namespace APPVIEW.Controllers
             }
             if (procarrt.Count > 0)
             {
-
+              
                 foreach (var item in procarrt)
                 {
-                   
+                  
+
                     var billct = new BillDetail();
                     billct.ProductDetailID = item.Id;
                     billct.BIllId = bill.id;
@@ -1635,7 +1636,7 @@ namespace APPVIEW.Controllers
                 }
 
                 ViewBag.Product = products;
-
+               
 
                 var tt = 0;
                 // Lấy thông tin voucher từ TempData

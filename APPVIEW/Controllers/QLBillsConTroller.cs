@@ -541,9 +541,6 @@ namespace APPVIEW.Controllers
                     infoTable.AddCell(new Phrase("Ten Khach Hang :", infoFont));
                     infoTable.AddCell(new Phrase(xulichuoi(tenkh).Replace("Đ", "D").Replace("đ", "d"), infoFont));
 
-
-
-
                     document.Add(infoTable);
 
                     // Tạo bảng chi tiết hóa đơn

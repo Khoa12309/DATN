@@ -303,11 +303,15 @@
                         <h2>Thông tin sản phẩm</h2>
                         <ul class="list">
                             <li><a href="#"><h4>Sản phẩm <span>Tổng</span></h4></a></li>
-                            @foreach (var item in ViewBag.Product)
+                            @if (ViewBag.Product!=null)
                             {
-                                var tt = item.Quantity * item.Price;
+                                @foreach (var item in ViewBag.Product)
+                                {
+                                    var tt = item.Quantity * item.Price;
 
-                                <li><a href="#">@item.Name<span class="middle">x @item.Quantity</span> <span class="last" style="color:#f15e2c">@tt.ToString("C0", new CultureInfo("vi-VN"))</span></a></li>
+                                    <li><a href="#">@item.Name<span class="middle">x @item.Quantity</span> <span class="last" style="color:#f15e2c">@tt.ToString("C0", new CultureInfo("vi-VN"))</span></a></li>
+
+                                }
 
                             }
                         </ul>
