@@ -81,6 +81,9 @@
 
                             trạng thái
                         </th>
+                        <th>
+                            Hành động
+                        </th>
                         <th></th>
                     </tr>
                 </thead>
@@ -115,7 +118,13 @@
 
                              
                                 <td>
-                                    @itembill.PhoneNumber
+                                    @if (@itembill.PhoneNumber!=null)
+                                    {
+                                        @itembill.PhoneNumber
+                                    }else
+                                    {
+                                        <span>Không lưu số.</span>
+                                    }  
                                 </td>
 
                                 <td>
@@ -170,6 +179,12 @@
                                     {
                                         <span>Chờ hủy </span>
                                     }
+                                </td>
+                                <td>
+                                    <a href=" @Url.Action("Chitiet","QLBills", new { id = itembill.id })" class="dropdown-item ">
+                                        <i class="mdi mdi-eye-outline me-2"></i>
+
+                                    </a>
                                 </td>
                         
 

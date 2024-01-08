@@ -109,6 +109,10 @@ namespace APPVIEW.Controllers
                 }
                 else
                 {
+                    if (sl==0)
+                    {
+                        prdct.Status = 0;
+                    }
                     _notyf.Success("Đã xác nhận đơn hàng!");
                     prdct.Quantity = sl;
                     await getapi.UpdateObj(prdct, "ProductDetails");
@@ -397,7 +401,7 @@ namespace APPVIEW.Controllers
             {
 
 
-                tenkh = "Khong Luu Ten";
+                tenkh = "getname";
             }
             if (productId.Count==0)
             {
@@ -504,7 +508,7 @@ namespace APPVIEW.Controllers
             var bill = bills.GetApi("Bill").FirstOrDefault(b => b.id == billId);
             var billDetailss = billDetails.GetApi("BillDetail").Where(bd => bd.BIllId == billId).ToList();
             var products = getapi.GetApi("ProductDetails").ToList();
-
+            
             // Tạo file PDF
 
 
@@ -517,7 +521,7 @@ namespace APPVIEW.Controllers
 
                     // Tạo tiêu đề hóa đơn
                     var titleFont = FontFactory.GetFont("Arial", 16, Font.BOLD);
-                    var titleParagraph = new Paragraph("Hoa Đơn Ban Hang Shop Super Fashion \n", titleFont);
+                    var titleParagraph = new Paragraph("Hoa Don Ban Hang Shop Super Fashion \n", titleFont);
                     titleParagraph.Alignment = Element.ALIGN_CENTER;
                     document.Add(titleParagraph);
                     var titleParagraph2 = new Paragraph("  ", titleFont);
@@ -668,7 +672,7 @@ namespace APPVIEW.Controllers
 
 
 
-            var bill = bills.GetApi("Bill").FirstOrDefault(c => c.PhoneNumber ==sdt &&c.Name!=null&&c.Name!="" );
+            var bill = bills.GetApi("Bill").FirstOrDefault(c => c.PhoneNumber ==sdt &&c.Name!=null&&c.Name!="" && c.Name != "Khong Luu Ten");
             if (bill != null && sdt!=null) {
                 if (bill.Name != null || bill.Name != "")
                 {

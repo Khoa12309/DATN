@@ -17,16 +17,30 @@
     <div class="card-header">
         <h5 class="mb-0">Chi tiết Sản phẩm</h5>
     </div>
-    <div class="card-body">
-        <a class="btn btn-success waves-effect waves-light" asp-action="Create">
-            <span class="mdi mdi-plus-thick">Tạo mới</span>
-        </a>
+    <div class="card-header row">
+
         <form asp-controller="productdetail" asp-action="getlist" class="row contact_form" method="post">
-            <div class="col-md-5 form-group" style="margin-right:50px">
-                <input type="text" class="form-control" name="tk" placeholder="Nhập tên sản phẩm để tìm kiếm">
-                <button type="submit" style="background-color:brown ; color:black">Tìm kiếm</button>
+            <div class="col-md-3 mb-3">
+                <div id="DataTables_Table_0_filter" class="dataTables_filter">
+                    <label><input type="search" class="form-control" placeholder="Nhập sản phẩm muốn tìm.." aria-controls="DataTables_Table_0" name="tk" /></label>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <button type="submit" class="btn btn-success">Tìm kiếm</button>
             </div>
         </form>
+        <div class="col-md-3 mb-3">
+            <a class="btn btn-success waves-effect waves-light" asp-action="Create">
+                <span class="mdi mdi-plus-thick">Tạo mới</span>
+            </a>
+        </div>
+    </div>
+
+
+
+    <div class="card-body">
+
+
         <div class="table-responsive">
             <table class="table table-hover">
                 <thead>
@@ -84,7 +98,7 @@
                                                     </small>
                                                 </div>
                                             </div>
-                                            tk= false;
+                                            tk = false;
                                             break;
                                         }
                                     }
@@ -96,7 +110,7 @@
                                             {
                                                 break;
                                             }
-                                            @if (anh.Id_Product==item.Id_Product)
+                                            @if (anh.Id_Product == item.Id_Product)
                                             {
                                                 if (tk == false)
                                                 {
@@ -104,7 +118,7 @@
                                                 }
                                                 @foreach (var obj in ViewBag.Image as List<Image>)
                                                 {
-                                                    if (tk==false)
+                                                    if (tk == false)
                                                     {
                                                         break;
                                                     }

@@ -217,7 +217,7 @@
                                         <div data-i18n="Dashboards">Đơn Chờ Hủy</div>
                                     </a>
                                 </li>
-                                <li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "QLBills" && ViewContext.RouteData.Values["action"].ToString() == "GetList" ? "active" : "")">
+                                <li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "Bill" && ViewContext.RouteData.Values["action"].ToString() == "GetList" ? "active" : "")">
 
                                     <a href="~/Bill/getlist" class="menu-link">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-receipt" viewBox="0 0 16 16">
@@ -227,7 +227,7 @@
                                         <div data-i18n="Dashboards">Đơn hàng online</div>
                                     </a>
                                 </li>
-                                <li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "QLBills" && ViewContext.RouteData.Values["action"].ToString() == "GetList2" ? "active" : "")">
+                                <li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "Bill" && ViewContext.RouteData.Values["action"].ToString() == "GetList2" ? "active" : "")">
 
                                     <a href="~/Bill/getlist2" class="menu-link">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-receipt" viewBox="0 0 16 16">
@@ -389,7 +389,7 @@
                                         <div data-i18n="Dashboards">Đơn Chờ Hủy</div>
                                         </a>
                                     </li>
-                                <li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "QLBills" && ViewContext.RouteData.Values["action"].ToString() == "GetList" ? "active" : "")">
+                                <li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "Bill" && ViewContext.RouteData.Values["action"].ToString() == "GetList" ? "active" : "")">
 
                                         <a href="~/Bill/getlist" class="menu-link">
                                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-receipt" viewBox="0 0 16 16">
@@ -412,7 +412,7 @@
 
                                 </ul>
                             </li>
-                            <li class="menu-item active ">
+                        @*     <li class="menu-item active ">
                                 <a href="javascript:void(0);" class="menu-link menu-toggle">
                                     <i class="menu-icon tf-icons mdi mdi-account"></i>
                                     <div data-i18n="Dashboards">Quản lý khác khàng </div>
@@ -437,7 +437,7 @@
                                         </a>
                                     </li>
                                 </ul>
-                            </li>
+                            </li> *@
                         }
                      
                     </ul>

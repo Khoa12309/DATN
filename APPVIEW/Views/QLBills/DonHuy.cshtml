@@ -7,7 +7,7 @@
     ViewData["Title"] = "ShowBill";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
     @using APPDATA.Models;
-@using System.Globalization
+    @using System.Globalization
     var bill = ViewBag.viewbill;
     List<BillDetail> billct = ViewBag.viewbillct;
     List<ProductDetail> prdct = ViewBag.viewprdct;
@@ -138,10 +138,28 @@
                                 </td>
 
                                 <td>
-                                    <a class="btn btn-danger cancel-button" data-itemid="@itembill.id" href="@Url.Action("HuyDon2", new { id = itembill.id })" data-bs-placement="top" aria-label="Xóa hóa đơn" data-bs-original-title="Delete Invoice" _mstaria-label="224575" _msthash="305"><i class="mdi mdi-delete-outline mdi-20px mx-1"></i></a>
-                                   @*  <button data-itemid="@itembill.id" style="width:140px" class="btn btn-danger cancel-button">
-                                        <a href="@Url.Action("HuyDon2", new { id = itembill.id })" style="color:white;">Hủy Đơn</a>
-                                    </button> *@
+                                    <div class="d-inline-block text-nowrap">
+                                        <button class="btn btn-sm btn-icon btn-text-secondary rounded-pill btn-icon dropdown-toggle hide-arrow" data-bs-toggle="dropdown">
+                                            <i class="mdi mdi-dots-vertical mdi-20px"></i>
+                                        </button>
+                                        <div class="dropdown-menu dropdown-menu-end m-0">
+                                            <a href=" @Url.Action("Chitiet","QLBills", new { id = itembill.id })" class="dropdown-item ">
+                                                <i class="mdi mdi-eye-outline me-2"></i>
+                                                <span>Xem đơn hàng</span>
+                                            </a>
+                                            <a class="dropdown-item delete-record" data-itemid="@itembill.id" href="@Url.Action("HuyDon2", new { id = itembill.id })" data-bs-placement="top" aria-label="Xóa hóa đơn" data-bs-original-title="Delete Invoice" _mstaria-label="224575" _msthash="305">
+                                                <i class="mdi mdi-receipt-text-remove"></i>
+                                                <span>Hủy đơn</span>
+                                                </a>
+                                           
+                                           @*  <a data-itemid="@itembill.id" href="@Url.Action("HuyDon2", new { id = itembill.id })" class="dropdown-item delete-record">
+                                                <i class="mdi mdi-receipt-text-remove"></i>
+                                                <span>Hủy đơn</span>
+
+
+                                            </a>  *@
+                                        </div>
+                                    </div>
 
                                 </td>
 
@@ -161,7 +179,7 @@
 </div>
 <script>
     document.addEventListener("DOMContentLoaded", function () {
-        var cancelButtons = document.querySelectorAll('.cancel-button');
+        var cancelButtons = document.querySelectorAll('.dropdown-item.delete-record');
 
         cancelButtons.forEach(function (cancelButton) {
             cancelButton.addEventListener("click", function (event) {

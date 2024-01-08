@@ -187,20 +187,23 @@
                             </div>
                         </div>
                     </div>
+                    <button class="btn btn-primary btn-lg waves-effect waves-light" onclick="quayLai()" data-bs-target="#sendInvoiceOffcanvas">
+                        <span class="d-flex align-items-center justify-content-center text-nowrap"><i class="mdi mdi-arrow-left-circle scaleX-n1-rtl me-2"></i><font _mstmutation="1" _msttexthash="1048996" _msthash="329">Quay lại </font></span>
+                        <script>
+                            function quayLai() {
+                                window.history.back();
+                            }
+                        </script>
+                    </button>
                 </div>
             </div>
         </div>
         <!-- /Invoice -->
         <!-- Invoice Actions -->
-@*         <div class="col-xl-3 col-md-4 col-12 invoice-actions">
+       @*  <div class="col-xl-3 col-md-4 col-12 invoice-actions">
             <div class="card">
                 <div class="card-body">
-                    <button class="btn btn-primary d-grid w-100 mb-3 waves-effect waves-light" data-bs-toggle="offcanvas" data-bs-target="#sendInvoiceOffcanvas">
-                        <span class="d-flex align-items-center justify-content-center text-nowrap"><i class="mdi mdi-send-outline scaleX-n1-rtl me-2"></i><font _mstmutation="1" _msttexthash="1048996" _msthash="329">Quay lại </font></span>
-                    </button>
-                    @* <a href="@Url.Action("XacNhan", new { id = Model. })" class="btn btn-success d-grid w-100 waves-effect waves-light" data-bs-toggle="offcanvas" data-bs-target="#addPaymentOffcanvas">
-                    <span class="d-flex align-items-center justify-content-center text-nowrap"><i class="mdi mdi-currency-usd me-1"></i><font _mstmutation="1" _msttexthash="277992" _msthash="333">Xác nhận đơn hàng</font></span>
-                    </a> 
+                                    
                 </div>
             </div>
         </div> *@

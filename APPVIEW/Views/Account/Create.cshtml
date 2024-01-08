@@ -21,7 +21,7 @@
 
             </div>
             <div class="card-body">
-                <form asp-action="Create" method="post">
+                <form asp-action="Create" method="post" onsubmit="return validateForm()">
                     <div class="row mb-3">
                         <label asp-for="Name" class="col-sm-2 col-form-label">Tên đây đủ</label>
                         <div class="col-sm-10">
@@ -32,15 +32,16 @@
                     <div class="row mb-3">
                         <label asp-for="Email" class="col-sm-2 col-form-label">Email</label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" asp-for="Email" placeholder="Enter Email" />
+                            <input type="email" class="form-control" asp-for="Email" placeholder="Enter Email" />
                             <span asp-validation-for="Email" class="text-danger"></span>
                         </div>
                     </div>
                     <div class="row mb-3">
                         <label asp-for="PhoneNumber" class="col-sm-2 col-form-label">Số điện thoại</label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" asp-for="PhoneNumber" placeholder="Nhập số điện thoại" />
+                            <input type="text" class="form-control" id="phone" asp-for="PhoneNumber" placeholder="Nhập số điện thoại" />
                             <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+                            <span class="text-danger" id="phonError"></span>
                         </div>
                     </div>
                     <div class="row mb-3">
@@ -91,3 +92,43 @@
     </div>
 </div>
 
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        var phoneNumberInput = document.getElementById('phone');
+        var phoneErrorSpan = document.getElementById('phonError');
+
+        phoneNumberInput.addEventListener('input', function () {
+            var inputValue = phoneNumberInput.value;
+            var cleanedValue = inputValue.replace(/[^0-9+]/g, '');
+            cleanedValue = cleanedValue.slice(0, 10);
+            phoneNumberInput.value = cleanedValue;
+        });
+
+        phoneNumberInput.addEventListener('blur', function () {
+            validatePhoneNumber(phoneNumberInput.value);
+        });
+
+        function validatePhoneNumber(phoneNumber) {
+            var phoneRegex = /^\+?[0-9]{1,4}-?[0-9]{3,4}-?[0-9]{4,}$/;
+
+            if (phoneRegex.test(phoneNumber) && phoneNumber.startsWith('0')) {
+                // Nếu số điện thoại hợp lệ, ẩn thông báo và hiển thị nền trắng cho ô nhập
+                phoneErrorSpan.textContent = '';
+                phoneNumberInput.style.backgroundColor = 'white';
+            } else {
+                if (phoneNumber.length < 10) {
+                    // Hiển thị thông báo trong thẻ span khi số điện thoại có ít hơn 10 kí tự
+                    phoneErrorSpan.textContent = 'Số điện thoại phải có ít nhất 10 kí tự.';
+                } else if (!phoneNumber.startsWith('0')) {
+                    // Hiển thị thông báo trong thẻ span khi số điện thoại không bắt đầu bằng số 0
+                    phoneErrorSpan.textContent = 'Số điện thoại phải bắt đầu bằng số 0.';
+                } else {
+                    // Hiển thị thông báo trong thẻ span khi số điện thoại không hợp lệ
+                    phoneErrorSpan.textContent = 'Số điện thoại không hợp lệ.';
+                }
+
+
+            }
+        }
+    });
+</script>

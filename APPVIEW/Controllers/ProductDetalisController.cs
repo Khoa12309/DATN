@@ -53,7 +53,7 @@ namespace APPVIEW.Controllers
             var obj = await getapi.GetApia("ProductDetails");
             int pageSize = 8;
             int pageNumber = (page ?? 1);
-            return View(obj.OrderByDescending(x => x.Id).ToPagedList(pageNumber, pageSize));
+            return View(obj.OrderByDescending(x => x.Create_date).ToPagedList(pageNumber, pageSize));
         }
         [HttpPost]
         public async Task<IActionResult> GetList(string tk, int? page)
@@ -72,7 +72,7 @@ namespace APPVIEW.Controllers
             {
                 obj = await getapi.GetApia("ProductDetails");
             }
-            return View(obj.OrderByDescending(x => x.Id).ToPagedList(pageNumber, pageSize));
+            return View(obj.OrderByDescending(x => x.Create_date).ToPagedList(pageNumber, pageSize));
         }
         [HttpGet]
         public async Task<IActionResult> Create()

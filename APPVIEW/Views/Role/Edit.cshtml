@@ -16,9 +16,9 @@
             <div class="card-body">
                 <form asp-action="Edit" method="post">
                     <div class="row mb-3">
-                        <label asp-for="name" class="col-sm-2 col-form-label">Name Role</label>
+                        <label hidden asp-for="name" class="col-sm-2 col-form-label">Name Role</label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" asp-for="name" placeholder="Enter name of role" />
+                            <input hidden type="text" class="form-control" asp-for="name" placeholder="Enter name of role" />
                             <span asp-validation-for="name" class="text-danger"></span>
                         </div>
                     </div>

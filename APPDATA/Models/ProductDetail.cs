@@ -16,7 +16,7 @@ namespace APPDATA.Models
         public Guid? Id_Material { get; set; }
         public Guid? Id_Color { get; set; }
         public Guid? Id_supplier { get; set; }
-        [Range(1, 100000, ErrorMessage = "Lỗi")]
+        [Range(0, 100000, ErrorMessage = "Lỗi")]
         public int Quantity { get; set; }
         public string Desciption { get; set; }
         [Range(1, 1000000000, ErrorMessage = "Lỗi")]
