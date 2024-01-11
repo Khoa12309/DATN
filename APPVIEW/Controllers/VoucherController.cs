@@ -62,6 +62,11 @@ namespace APPVIEW.Controllers
         {
             try
             {
+                if (obj.Value == null || obj.Name == null || obj.Code == null || obj.DiscountAmount == null || obj.Quantity == null)
+                {
+                    _notyf.Warning("Không được để trống!");
+                    return View();
+                }
                 if (obj.StartDate.Date < DateTime.Now.Date)
                 {
                     _notyf.Warning("Ngày bắt đầu không được nhỏ hơn ngày hiện tại");
@@ -79,11 +84,7 @@ namespace APPVIEW.Controllers
                     _notyf.Success("Thêm thành công!");
                     return RedirectToAction("GetList");
                 }
-                else
-                {
-                    _notyf.Warning("Không được để trống!");
-                    return View();
-                }
+                return View();
             }
             catch
             {
@@ -106,17 +107,30 @@ namespace APPVIEW.Controllers
         {
             try
             {
+                if (obj.Value == null || obj.Name == null || obj.Code == null || obj.DiscountAmount == null || obj.Quantity == null)
+                {
+                    _notyf.Warning("Không được để trống!");
+                    return View();
+                }
+                if (obj.StartDate.Date < DateTime.Now.Date)
+                {
+                    _notyf.Warning("Ngày bắt đầu không được nhỏ hơn ngày hiện tại");
+                    return View();
+                }
+
+                if (obj.EndDate.Date < obj.StartDate.Date)
+                {
+                    _notyf.Warning("Ngày kết thúc không được nhỏ hơn ngày bắt đầu");
+                    return View();
+                }
                 var item = getapi.UpdateObj(obj, "Voucher").Result;
                 if (item != null)
                 {
                     _notyf.Success("Edit thành công!");
                     return RedirectToAction("GetList");
                 }
-                else
-                {
-                    _notyf.Warning("Không được để trống!");
                     return View();
-                }
+                
             }
             catch
             {

@@ -15,7 +15,6 @@ namespace APPDATA.Models
         public int Value { get; set; }
         [Required(ErrorMessage = "Tên là bắt buộc")]
         public string Name { get; set; }
-        [StringLength(6, MinimumLength = 2, ErrorMessage = "Mã phải có từ 2 đến 6 ký tự")]
         public string Code { get; set; }
         [Range(1, int.MaxValue, ErrorMessage = "Số lượng phải lớn hơn 0")]
         public int Quantity { get; set; }
