@@ -213,7 +213,7 @@ namespace APPVIEW.Controllers
 
         public async Task<IActionResult> Delete(Guid id)
         {
-            getapi.DeleteObj(id, "Bill");
+           await getapi.DeleteObj(id, "Bill");
             return RedirectToAction("GetList");
 
         }

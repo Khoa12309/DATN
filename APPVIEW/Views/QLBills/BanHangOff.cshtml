@@ -9,6 +9,13 @@
     List<ProductDetail> prddt = ViewBag.productdt as List<ProductDetail>;
     List<Size> size = ViewBag.size as List<Size>;
     List<Color> color = ViewBag.color as List<Color>;
+    List<Bill> bils = ViewBag.bil;
+    Bill bil = null;
+    @if (Model != null)
+    {
+         bil = bils.FirstOrDefault(c => c.id == Model.FirstOrDefault().BIllId);
+
+    }
 
 }
 <style>
@@ -139,10 +146,28 @@
                         </div>
                         <div class="card-footer">
                             <span>Số điện thoại :</span>
-                            <input type="text" id="sdt" name="sdt" onchange="layTenKhachHang()">
+                            @if(bil==null){
+                                <input type="text" id="sdt" name="sdt" onchange="layTenKhachHang()">
+
+                            }
+                            else
+                            {
+                                <input type="text" value="@bil.PhoneNumber " id="sdt" name="sdt" onchange="layTenKhachHang()">
+
+                            }
                             <span class="text-danger" id="phoneError"></span>
                             <span>Tên khách hàng :</span>
-                            <input type="text" id="tenkh" name="tenkh">
+                            @if (bil == null)
+                            {
+                                <input type="text" id="tenkh" name="tenkh">
+
+                            }
+                            else
+                            {
+                                <input type="text" value="@bil.Name" id="tenkh" name="tenkh">
+
+
+                            }
 
                             <span>Tiền khách đưa :</span>
                             <input type="number" min="1" id="khachdua" onchange="tinhTienThua()">

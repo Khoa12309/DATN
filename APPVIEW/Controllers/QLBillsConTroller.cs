@@ -382,6 +382,7 @@ namespace APPVIEW.Controllers
 
         public async Task<ActionResult> BanHangOff(string inputValue, Guid id)
         {
+            ViewBag.bil = bills.GetApi("Bill");
             if (id!=Guid.Empty)
             {
 
@@ -877,6 +878,21 @@ namespace APPVIEW.Controllers
 
             return Json(new { success = true, Name = "" });
 
+
+        }
+        public async Task<IActionResult> Delete(Guid id)
+        {
+            var bd = billDetails.GetApi("BillDetail").Where(c => c.BIllId == id);
+            var pd = getapi.GetApi("ProductDetails");
+            foreach (var item in bd)
+            {
+                var x = pd.FirstOrDefault(c => c.Id == item.ProductDetailID);
+                x.Quantity += item.Amount;
+                await getapi.UpdateObj(x, "ProductDetails");
+                await billDetails.DeleteObj(item.id,"BillDetail");
+            }
+           await bills.DeleteObj(id, "Bill");
+            return RedirectToAction("ShowDonCho");
 
         }
         // POST: QLBills/Delete/5
