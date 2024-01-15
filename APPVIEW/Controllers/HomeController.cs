@@ -32,6 +32,7 @@ namespace APPVIEW.Controllers
     {
 
         private readonly ILogger<HomeController> _logger;
+        private SendOTP sendOTP;
         private Getapi<ProductDetail> getapi;
         private Getapi<Category> getapiCategory;
         private Getapi<APPDATA.Models.Color> getapiColor;
@@ -79,6 +80,7 @@ namespace APPVIEW.Controllers
             getapiRole = new Getapi<Role>();
             getapiPMD = new Getapi<PaymentMethodDetail>();
             getapiVoucherAcc = new Getapi<VoucherForAcc>();
+            sendOTP = new SendOTP();
             _context = new ShoppingDB();
 
             _notyf = notyf;
@@ -1004,10 +1006,16 @@ namespace APPVIEW.Controllers
 
         }
         public async Task<IActionResult> ThongTinNotLogin(string sdt)
+        
+        
+        
         {
             if (sdt != null )
             {
+                //int sdt2 = int.Parse(sdt);
+                //string fullsdt = "84" + sdt2;
 
+                //sendOTP.Send(sdt);
 
                 var userBills = bills.GetApi("Bill").Where(c => c.PhoneNumber == sdt && c.Status != 4).OrderByDescending(d => d.CreateDate).ToList();
                 ViewBag.viewbill = userBills;

@@ -1,4 +1,4 @@
-﻿@model IEnumerable<APPDATA.Models.ProductDetail>
+﻿@model IEnumerable<APPDATA.Models.BillDetail>
 
 @{
 
@@ -6,6 +6,9 @@
     @using System.Globalization
     ViewData["Title"] = "BanHangOff";
     Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+    List<ProductDetail> prddt = ViewBag.productdt as List<ProductDetail>;
+    List<Size> size = ViewBag.size as List<Size>;
+    List<Color> color = ViewBag.color as List<Color>;
 
 }
 <style>
@@ -70,15 +73,69 @@
             color: #999; /* Màu của placeholder */
         }
 </style>
+
+<style>
+    /* Thêm CSS để định dạng hóa đơn */
+    #productDetails {
+        display: flex;
+        flex-wrap: wrap;
+     
+        margin-top:5px;
+    }
+    .productDetail {
+        flex: 0 1 calc(33.33% - 10px); /* Cố định 33.33% rộng cho mỗi hóa đơn và tạo khoảng trắng 5px giữa chúng */
+        max-width: 700px;       
+        margin-bottom: 5px; /* Thêm khoảng cách dưới cùng của mỗi hóa đơn là 5px */
+   
+    }
+</style>
+
 <body>
     <div class="container-fluid">
         <div class="row">
             <!-- Phần bên trái để tạo hóa đơn -->
             <div class="col-md-5">
                 <div class="card">
+                    
                     <form action="~/qlbills/CreateBill" id="myForm" method="post">
 
                         <div class="card-body">
+                            @if (Model != null)
+                            {
+                                var billss = Model.FirstOrDefault();
+                                <div id="productDetails">
+                                    @foreach (var item in Model)
+                                    {
+                                        var prd = prddt.FirstOrDefault(c => c.Id == item.ProductDetailID);
+                                        var siz = size.FirstOrDefault(c => c.Id == prd.Id_Size);
+                                        var colo = color.FirstOrDefault(c => c.Id == prd.Id_Color);
+
+                                        <div class="productDetail" style="margin-left:10px;">
+                                            <p style="font-weight: bold; margin-bottom: 5px;" data-productid="@prd.Id">@prd.Name</p>
+                                            <p style="font-style: italic; margin-bottom: 5px;">Size: @siz.Name | Màu: @colo.Name</p>
+
+                                            <div style="display: flex; align-items: center; margin-top: 5px;">
+                                                <p>Số lượng: </p>
+                                                <input type="number" value="@item.Amount" min="1" max="@prd.Quantity" name="soluong" style="margin-left: 5px; margin-bottom: 12px; width: 50px; "onchange=" updateProduct(this)">
+                                                <input type="hidden" value="@item.ProductDetailID" class="prdid" name="productId">
+                                                <input type="hidden" value="@prd.Price" class="prdgia">
+                                            </div>
+                                            <span style=" margin-bottom: 5px;" class="productPrice">@item.Price </span>
+                                            <!-- Continue adding other elements and styling as needed -->
+
+                                            <button type="button" style="width: 170px;margin-top:12px; margin-bottom: 17px; background-color: #F08080; color: #fff; border: none; border-radius: 17px; padding: 5px 10px; text-align:center" onclick="cancelSelection(this)">
+                                                Hủy chọn
+                                            </button>
+                                        </div>
+                                    }
+                                </div>
+
+                                if (billss.BIllId!= Guid.Empty)
+                                
+                                {
+                                    <input type="hidden" value="@billss.BIllId" name="idbill">
+                                }
+                            }
                         </div>
                         <div class="card-footer">
                             <span>Số điện thoại :</span>
@@ -100,14 +157,28 @@
                             <span id="hoa-don-error" class="text-danger"></span>
                             <div class="row">
                                 <!-- Phần bên trái để tạo hóa đơn -->
-                                <div class="col-md-4">
+                                <div class="col-md-5">
                                     <button type="submit" class="btn btn-primary" style="margin-top:15px">Tạo Hóa Đơn</button>
 
                                 </div>
-                                <div class="col-md-4">
-                                    <button type="submit" onclick="submitForm('banhangoff')" class="btn btn-primary" style="margin-top:15px">Tạo hóa đơn mới</button>
+                                <div class="col-md-5">
+                                    <button type="submit" onclick="submitForm('banhangoff')" class="btn btn-primary" style="margin-top:15px">Làm mới trang</button>
 
                                 </div>
+                                @if (Model!=null)
+                                
+                                {
+
+
+                                }
+                                else
+                                {
+                                    <div class="col-md-5">
+                                        <button type="submit" onclick="submitForm('doncho')" class="btn btn-primary" style="margin-top:15px">Tạo đơn chờ</button>
+
+                                    </div>
+
+                                }
                             </div>
                         </div>
 
@@ -126,7 +197,7 @@
                     <div class="card-body">
                         <div class="row" id="divToUpdate">
 
-                            @foreach (var item in Model)
+                            @foreach (var item in ViewBag.productdt)
                             {
 
 
@@ -154,21 +225,21 @@
                                             <p style="text-align:left;display: inline-block;width: 700px;font-size:13px">
                                                 @item.Name
                                             </p>
-                                            @foreach (var size in ViewBag.size)
+                                            @foreach (var size1 in ViewBag.size)
                                             {
-                                                if (size.Id == item.Id_Size)
+                                                if (size1.Id == item.Id_Size)
                                                 {
-                                                    <p style="text-align:left">Sise : @size.Name</p>
+                                                    <p style="text-align:left">Sise : @size1.Name</p>
                                                     break;
                                                 }
 
                                             }
 
-                                            @foreach (var size in ViewBag.color)
+                                            @foreach (var size2 in ViewBag.color)
                                             {
-                                                if (size.Id == item.Id_Color)
+                                                if (size2.Id == item.Id_Color)
                                                 {
-                                                    <p style="text-align:left"> Màu: @size.Name</p>
+                                                    <p style="text-align:left"> Màu: @size2.Name</p>
                                                     break;
                                                 }
 
@@ -198,10 +269,125 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 
-<script>
 
+<script>
     const chosenProducts = {};
     let totalPrice = 0;
+    function calculateTotal() {
+        var tongtien = 0;
+
+        // Lặp qua tất cả các sản phẩm
+        var productDetails = document.getElementsByClassName('productDetail');
+        for (var i = 0; i < productDetails.length; i++) {
+            var priceElement = productDetails[i].querySelector('.productPrice');
+            var quantityElement = productDetails[i].querySelector('input[name="soluong"]');
+            var prdid = productDetails[i].querySelector('.prdid').value;
+     
+            // Lấy giá và số lượng từ mỗi sản phẩm
+            var price = parseFloat(priceElement.textContent.trim());
+            var quantity = parseInt(quantityElement.value);
+
+            // Tính tổng giá của sản phẩm hiện tại
+
+            chosenProducts[prdid] = true;
+            // Cộng tổng giá của sản phẩm vào tổng giá chung
+            totalPrice += price;
+            priceElement.textContent = formatPrice(price);
+        }
+        const tongtienvl = document.getElementById('tong');
+
+        tongtienvl.value = totalPrice; // Cập nhật tổng giá vào input có id là 'tong'
+        const tongtienct = document.getElementById('tong2');
+        // Hiển thị tổng giá
+        tongtienct.textContent = formatPrice(totalPrice);
+        console.log(chosenProducts);
+
+    }
+
+    function updateProduct(inputElement) {
+        var productDetail = inputElement.closest('.productDetail');
+        var priceElement = productDetail.querySelector('.productPrice');
+        var prdid = productDetail.querySelector('.prdid').value;
+        var prdgia = productDetail.querySelector('.prdgia').value;
+        console.log(prdid); console.log(prdgia);
+        // Lấy số lượng và giá hiện tại
+        var quantity = parseInt(inputElement.value);
+        var quydoi = priceElement.textContent.replace(/[^\d]/g, '');
+
+        // Chuyển đổi giá trị số thành số nguyên
+        var quydoi2 = parseInt(quydoi);
+        console.log(quydoi2);
+        var price = parseFloat(quydoi2);
+        console.log(price);
+        // Cập nhật tổng giá bằng cách trừ giá cũ của sản phẩm và cộng giá mới
+        totalPrice = totalPrice - price;
+        totalPrice = totalPrice + prdgia * quantity;
+
+
+
+        // Cập nhật giá sản phẩm trong giao diện người dùng
+        priceElement.textContent = formatPrice(prdgia * quantity);
+
+        // Cập nhật tổng giá trong giao diện người dùng
+        const tongtienvl = document.getElementById('tong');
+        tongtienvl.value = totalPrice;
+
+        const tongtienct = document.getElementById('tong2');
+        tongtienct.textContent = formatPrice(totalPrice);
+    }
+
+@*     function cancelSelection(button) {
+
+        var productDetailDiv = button.closest('.productDetail');
+        productDetailDiv.remove();
+
+        // Add logic here to update the total amount
+        // For example, you can call a function or update a variable that holds the total amount
+        updateTotalAmount();
+    } *@
+    function cancelSelection(button) {
+
+        var productDetailDiv = button.closest('.productDetail');
+            var trugia = productDetailDiv.querySelector('.productPrice');
+        var vlgia = trugia.textContent.replace(/[^\d]/g, '');
+            var idprds = productDetailDiv.querySelector('.prdid').value;
+
+      
+
+            chosenProducts[idprds] = false;
+
+        // Chuyển đổi giá trị số thành số nguyên
+        var priceValue = parseInt(vlgia);
+        totalPrice -= priceValue;
+        const tongtienupto = document.getElementById('tong');
+        tongtienupto.value = totalPrice;
+
+        const tongtienupto2 = document.getElementById('tong2');
+        tongtienupto2.textContent = formatPrice(totalPrice);
+
+        productDetailDiv.remove();
+
+
+    }
+@* 
+    function updateTotalAmount() {
+        var productDetailDiv = getElementsByClassName('.productDetail');
+            var trugia = productDetailDiv.querySelector('.productPrice');
+        var vlgia = trugia.textContent.replace(/[^\d]/g, '');
+
+        // Chuyển đổi giá trị số thành số nguyên
+        var priceValue = parseInt(numericValue);
+        totalPrice -= vlgia;
+        const tongtienupto = document.getElementById('tong');
+        tongtienupto.value = totalPrice;
+
+        const tongtienupto2 = document.getElementById('tong2');
+        tongtienupto2.textContent = formatPrice(totalPrice);
+    } *@
+    // Gọi hàm khi trang được tải
+    window.onload = calculateTotal;
+    
+
     $('#divToUpdate').on('click', 'button[data-id]', function(event) {
         event.preventDefault();
         const cardBody = document.querySelector('.card-body');
@@ -759,11 +945,14 @@
         });
     }
 </script>
-<script>
-    function submitForm(action) {
-        document.getElementById('myForm').setAttribute('action', action);
-        document.getElementById('myForm').submit();
-    }
+
+    <script>
+        function submitForm(action) {
+            document.getElementById('myForm').setAttribute('action', action);
+            document.getElementById('myForm').submit();
+        }
 </script>
+
+
 
 

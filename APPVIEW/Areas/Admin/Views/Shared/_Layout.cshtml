@@ -163,6 +163,12 @@
                                         <div data-i18n="Analytics">Bán Hàng</div>
                                     </a>
                                 </li>
+                                <li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "QLBills" && ViewContext.RouteData.Values["action"].ToString() == "ShowDonCho" ? "active" : "")">
+                                    <a href="~/QLBills/ShowDonCho" class="menu-link">
+                                        <span class=" mdi mdi-cart-outline"></span>
+                                        <div data-i18n="Analytics">Đơn Chờ</div>
+                                    </a>
+                                </li>
                             </ul>
                         </li>
               
@@ -345,6 +351,12 @@
                                     <a href="~/QLBills/BanHangOff" class="menu-link">
                                         <span class="mdi mdi-chart-line"></span>
                                         <div data-i18n="Analytics">Bán Hàng</div>
+                                    </a>
+                                </li>
+                                <li class="menu-item @(ViewContext.RouteData.Values["controller"].ToString() == "QLBills" && ViewContext.RouteData.Values["action"].ToString() == "ShowDonCho" ? "active" : "")">
+                                    <a href="~/QLBills/ShowDonCho" class="menu-link">
+                                        <span class=" mdi mdi-cart-outline"></span>
+                                        <div data-i18n="Analytics">Đơn Chờ</div>
                                     </a>
                                 </li>
                             </ul>

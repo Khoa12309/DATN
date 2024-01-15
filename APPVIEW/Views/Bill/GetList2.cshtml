@@ -162,23 +162,16 @@
 
                                         <span>Chờ xác nhận</span>
                                     }
-                                    else if (itembill.Status == 2)
-                                    {
-
-                                        <span>Đã xác nhận đơn hàng </span>
-                                    }
-                                    else if (itembill.Status == 3)
-                                    {
-                                        <span> Đang giao  </span>
-                                    }
+                               
                                     else if (itembill.Status == 4)
                                     {
                                         <span>Đã Thanh Toán </span>
                                     }
-                                    else if (itembill.Status == 0)
+                                    else if (itembill.Status == 9)
                                     {
-                                        <span>Chờ hủy </span>
+                                        <span>Chờ Thanh Toán </span>
                                     }
+                                
                                 </td>
                                 <td>
                                     <a href=" @Url.Action("Chitiet","QLBills", new { id = itembill.id })" class="dropdown-item ">
