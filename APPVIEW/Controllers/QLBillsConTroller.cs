@@ -146,18 +146,11 @@ namespace APPVIEW.Controllers
                     var pr = getapi.GetApi("ProductDetails").FirstOrDefault(c => c.Id == item.ProductDetailID);
                     pr.Quantity += item.Amount;
                     await getapi.UpdateObj(pr, "ProductDetails");
-                    await billDetails.DeleteObj(item.id, "BillDetail");
+                 
                 }
             }
-            else {
-
-                foreach (var item in y)
-                {                 
-                    await billDetails.DeleteObj(item.id, "BillDetail");
-                }
-
-            }
-            await bills.DeleteObj(id, "Bill");
+            x.Status = 10;
+            await bills.UpdateObj(x, "Bill");
             _notyf.Success("Đã xác nhận hủy đơn");
             return RedirectToAction(nameof(ShowBill));
         }
@@ -174,19 +167,11 @@ namespace APPVIEW.Controllers
                     var pr = getapi.GetApi("ProductDetails").FirstOrDefault(c => c.Id == item.ProductDetailID);
                     pr.Quantity += item.Amount;
                     await getapi.UpdateObj(pr, "ProductDetails");
-                    await billDetails.DeleteObj(item.id, "BillDetail");
+                 
                 }
             }
-            else
-            {
-
-                foreach (var item in y)
-                {
-                    await billDetails.DeleteObj(item.id, "BillDetail");
-                }
-
-            }
-            await bills.DeleteObj(id, "Bill");
+            x.Status = 10;
+            await bills.UpdateObj(x, "Bill");
             _notyf.Success("Đã xác nhận hủy đơn");
             return RedirectToAction("DonHuy");
         }
@@ -214,6 +199,7 @@ namespace APPVIEW.Controllers
             {
                 if (search != null||search!="")
                 {
+
                     var tk = userBills.Where(c => c.Status == 1 && c.Code.ToLower().Contains(search.ToLower()) || c.Name.ToLower().Contains(search.ToLower())).OrderByDescending(d => d.CreateDate).ToList();
                     var pagedList = tk.ToPagedList(pageNumber, pageSize);
                     ViewBag.viewbill = pagedList;
@@ -231,7 +217,47 @@ namespace APPVIEW.Controllers
             }
 
         }
+        public ActionResult ShowDonCho(string search, int? page)
+        {
+            int pageSize = 15;
+            int pageNumber = (page ?? 1);
+            var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
+            var userBills = bills.GetApi("Bill").Where(c => c.Status == 9).OrderByDescending(d => d.CreateDate).ToPagedList(pageNumber, pageSize);
+            ViewBag.viewbill = userBills;
 
+            var billDetailsApi = billDetails.GetApi("BillDetail");
+            var productDetailsApi = getapi.GetApi("ProductDetails");
+            var productsApi = getapiProduct.GetApi("Product");
+
+
+            ViewBag.viewbillct = billDetailsApi;
+            ViewBag.viewprdct = productDetailsApi;
+            ViewBag.viewprd = productsApi;
+            ViewBag.sizee = getapiSize.GetApi("Size");
+            ViewBag.acc = _account.GetApi("Account");
+            ViewBag.Collor = getapiColor.GetApi("Color");
+            try
+            {
+                if (search != null || search != "")
+                {
+
+                    var tk = userBills.Where(c => c.Status == 1 && c.Code.ToLower().Contains(search.ToLower()) || c.Name.ToLower().Contains(search.ToLower())).OrderByDescending(d => d.CreateDate).ToList();
+                    var pagedList = tk.ToPagedList(pageNumber, pageSize);
+                    ViewBag.viewbill = pagedList;
+                    return View(pagedList);
+                }
+                else
+                {
+                    return View(userBills);
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return View(userBills);
+            }
+
+        }
         public ActionResult DonHuy(string search,int?page)
         {
             int pageSize = 15;
@@ -318,7 +344,7 @@ namespace APPVIEW.Controllers
             }
         }
         [HttpPost]
-        public ActionResult ChosenProduct(Guid productId)
+        public async Task<ActionResult> ChosenProduct(Guid productId)
         {
             var product = getapi.GetApi("ProductDetails").FirstOrDefault(c => c.Id == productId);
             List<ProductDetail> products = new List<ProductDetail>();
@@ -354,29 +380,40 @@ namespace APPVIEW.Controllers
         }
 
 
-        public ActionResult BanHangOff(string inputValue)
+        public async Task<ActionResult> BanHangOff(string inputValue, Guid id)
         {
-            ViewBag.size = getapiSize.GetApi("Size");
-            ViewBag.color = getapiColor.GetApi("Color");
-            ViewBag.Img = getapiImg.GetApi("Image");
-            try
+            if (id!=Guid.Empty)
             {
-                if (inputValue != null)
+
+                var billdt = billDetails.GetApi("BillDetail").Where(c => c.BIllId == id);
+                if (billdt.Count() > 0)
                 {
-                    var proc = getapi.GetApi("ProductDetails").Where(c => c.Quantity > 0 && c.Status != 0 && c.Name.ToLower().Contains(inputValue.ToLower())).ToList();
-                    return View(proc);
+                    ViewBag.size = getapiSize.GetApi("Size");
+                    ViewBag.color = getapiColor.GetApi("Color");
+                    ViewBag.Img = getapiImg.GetApi("Image");
+
+
+                    ViewBag.productdt = getapi.GetApi("ProductDetails").Where(c => c.Quantity > 0 && c.Status != 0).ToList();
+                    return View(billdt);
                 }
-                
+
             }
-            catch (Exception ex)
-            {
+         else {
 
-                return View(getapi.GetApi("ProductDetails").Where(c => c.Quantity > 0 && c.Status != 0));
+
+                ViewBag.size = getapiSize.GetApi("Size");
+                ViewBag.color = getapiColor.GetApi("Color");
+                ViewBag.Img = getapiImg.GetApi("Image");
+
+
+                ViewBag.productdt = getapi.GetApi("ProductDetails").Where(c => c.Quantity > 0 && c.Status != 0).ToList();
+                return View();
             }
 
 
 
-            return View(getapi.GetApi("ProductDetails").Where(c => c.Quantity > 0 && c.Status != 0));
+
+            return View();
         }
 
 
@@ -386,8 +423,11 @@ namespace APPVIEW.Controllers
               .Select(s => s[random.Next(s.Length)]).ToArray());
         }
         [HttpPost]
-        public async Task<IActionResult> CreateBill(List<Guid> productId, List<int> soluong, float tongtien, string tenkh,string sdt)
+        public async Task<IActionResult> CreateBill(List<Guid> productId, List<int> soluong, float tongtien, string tenkh,string sdt, Guid idbill)
         {
+            var prdct = getapi.GetApi("ProductDetails").ToList();
+            var billct = billDetails.GetApi("BillDetail");
+            var bill = bills.GetApi("Bill");
             if (!User.Identity.IsAuthenticated)
             {
 
@@ -401,17 +441,82 @@ namespace APPVIEW.Controllers
             {
 
 
-                tenkh = "getname";
+                tenkh = "Không Lưu Tên";
             }
             if (productId.Count==0)
             {
                 _notyf.Warning("Không có sản phẩm");
                 return RedirectToAction("BanHangOff");
             }
+            if (idbill != null && idbill != Guid.Empty) {
 
-            var prdct = getapi.GetApi("ProductDetails").ToList();
-            var billct = billDetails.GetApi("BillDetail");
-            var bill = bills.GetApi("Bill");
+                var bctt = billct.Where(c => c.BIllId == idbill);
+               var  hoaDonList = bctt.Where(hd => !productId.Contains(hd.ProductDetailID)).ToList();
+                foreach (var item in hoaDonList)
+                {
+                  var sanpahm = prdct.FirstOrDefault(c=>c.Id == item.ProductDetailID);
+                  sanpahm.Quantity += item.Amount;
+                    await getapi.UpdateObj(sanpahm, "ProductDetails");
+                    await  billDetails.DeleteObj(item.id,"BillDetail");
+                }
+
+                if (productId.Count == soluong.Count)
+                {
+                    for (int i = 0; i < productId.Count; i++)
+                    {
+                        var id = productId[i];
+                        var quantity = soluong[i];
+                       var bct=  billct.FirstOrDefault(c=>c.ProductDetailID == id && c.BIllId == idbill);
+
+                        if (bct == null) {
+                            foreach (var item in prdct)
+                            {
+                                if (item.Id == id)
+                                {
+                                    var bil = new BillDetail();
+                                    bil.id = Guid.NewGuid();
+                                    bil.BIllId = idbill;
+                                    bil.Amount = quantity;
+                                    bil.Price = quantity * item.Price;
+                                    bil.Status = 1;
+                                    bil.ProductDetailID = item.Id;
+                                    await billDetails.CreateObj(bil, "BillDetail");
+
+                                    item.Quantity = item.Quantity - quantity;
+                                    if (item.Quantity == 0)
+                                    {
+                                        item.Status = 0;
+                                    }
+                                    await getapi.UpdateObj(item, "ProductDetails");
+
+
+                                }
+                            }
+
+                        }
+                        else {
+                         var prrd = prdct.FirstOrDefault(c => c.Id == id);
+                         var slcu = bct.Amount;
+                         bct.Amount = quantity;
+                         bct.Price = quantity*prrd.Price;
+                         await billDetails.UpdateObj(bct,"BillDetail");
+                         var slupdate = quantity - slcu;
+                         prrd.Quantity  = prrd.Quantity+slupdate;
+                         await getapi.UpdateObj(prrd, "ProductDetails");
+                        }
+                    }
+                    var billl = bill.FirstOrDefault(c=>c.id==idbill);
+                    billl.Status = 4;
+                    billl.TotalMoney = tongtien;
+                    billl.Name = tenkh;
+                    billl.PhoneNumber = sdt;
+                    billl.PayDate = DateTime.Now;
+                    await bills.UpdateObj(billl,"Bill");
+                    return RedirectToAction("GenerateInvoice", new { billId = idbill, tenkh = billl.Name });
+                }
+
+            }
+
             Bill newbil = new Bill();
             newbil.id = Guid.NewGuid();
             newbil.PhoneNumber = sdt;
@@ -450,6 +555,94 @@ namespace APPVIEW.Controllers
                                 item.Status = 0;
                             }
                             await getapi.UpdateObj(item, "ProductDetails");
+
+                            
+                        }
+                    }
+                }
+          
+                return RedirectToAction("GenerateInvoice", new { billId = newbil.id, tenkh = newbil.Name });
+            }
+            else
+            {
+                return RedirectToAction("BanHangOff");
+            }
+            
+        }
+
+        public async Task<IActionResult> ThanhToanTiep(Guid id)
+        {
+            var invoice = bills.GetApi("Bill").FirstOrDefault(c=>c.id == id); // Hàm lấy đối tượng Invoice từ database hoặc nơi lưu trữ khác
+            
+
+            return RedirectToAction("BanHangOff", new { billId = invoice.id });
+        }
+
+      
+        public async Task<IActionResult> DonCho(List<Guid> productId, List<int> soluong, float tongtien, string tenkh, string sdt)
+        {
+            if (!User.Identity.IsAuthenticated)
+            {
+
+                var Uid = User.Claims.FirstOrDefault(c => c.Type == "Id").Value;
+                var acc = _account.GetApi("Account").FirstOrDefault(c => c.Id.ToString() == Uid);
+                SessionService.SetObjToJson(HttpContext.Session, "Account", acc);
+                return Redirect("~/Account/Login");
+            }
+            var account = SessionService.GetUserFromSession(HttpContext.Session, "Account");
+            if (tenkh == "" || tenkh == null)
+            {
+
+
+                tenkh = "Không Lưu Tên";
+            }
+            if (productId.Count == 0)
+            {
+                _notyf.Warning("Không có sản phẩm");
+                return RedirectToAction("BanHangOff");
+            }
+
+            var prdct = getapi.GetApi("ProductDetails").ToList();
+            var billct = billDetails.GetApi("BillDetail");
+            var bill = bills.GetApi("Bill");
+            Bill newbil = new Bill();
+            newbil.id = Guid.NewGuid();
+            newbil.PhoneNumber = sdt;
+            newbil.AccountId = account.Id;
+            newbil.Code = GenerateRandomString(8);
+            newbil.CreateDate = DateTime.Now;
+            newbil.Type = "Tại Quầy";
+            newbil.TotalMoney = tongtien;
+            newbil.Status = 9;
+            newbil.Name = tenkh;
+
+            await bills.CreateObj(newbil, "Bill");
+            if (productId.Count == soluong.Count)
+            {
+                for (int i = 0; i < productId.Count; i++)
+                {
+                    var id = productId[i];
+                    var quantity = soluong[i];
+
+                    foreach (var item in prdct)
+                    {
+                        if (item.Id == id)
+                        {
+                            var bil = new BillDetail();
+                            bil.id = Guid.NewGuid();
+                            bil.BIllId = newbil.id;
+                            bil.Amount = quantity;
+                            bil.Price = quantity * item.Price;
+                            bil.Status = 1;
+                            bil.ProductDetailID = item.Id;
+                            await billDetails.CreateObj(bil, "BillDetail");
+
+                            item.Quantity = item.Quantity - quantity;
+                            if (item.Quantity == 0)
+                            {
+                                item.Status = 0;
+                            }
+                            await getapi.UpdateObj(item, "ProductDetails");
                         }
                     }
                 }
@@ -458,9 +651,9 @@ namespace APPVIEW.Controllers
             {
                 return RedirectToAction("BanHangOff");
             }
-            return RedirectToAction("GenerateInvoice", new { billId = newbil.id, tenkh = newbil.Name });
+            _notyf.Success("Tạo đơn chờ thành công");
+            return RedirectToAction("BanHangOff");
         }
-
         public string xulichuoi(string tenkh)
         {
 
@@ -501,7 +694,7 @@ namespace APPVIEW.Controllers
             return ten;
         }
 
-        public ActionResult GenerateInvoice(Guid billId, string tenkh)
+        public async  Task<ActionResult> GenerateInvoice(Guid billId, string tenkh)
         {
             // Lấy thông tin hóa đơn từ billId
 
@@ -594,8 +787,8 @@ namespace APPVIEW.Controllers
 
                 // Trả về file PDF
 
+                //_notyf.Success("Tạo hóa đơn thành công");
 
-                RedirectToAction("index");
                 return File(ms.ToArray(), "application/pdf", "HoaDon_" + bill.Code + ".pdf");
             }
 

@@ -190,6 +190,14 @@
                                 {
                                     <td>Chờ Hủy</td>
                                 }
+                                else if (itembill.Status == 9)
+                                {
+                                    <td>Chờ thanh toán</td>
+                                }
+                                else if (itembill.Status == 10)
+                                {
+                                    <td>Đã Hủy</td>
+                                }
 
                                 <td>
                                     <a aria-label="Delete Invoice" href=" @Url.Action("Chitiet","QLBills", new { id = itembill.id })" class="dropdown-item ">
