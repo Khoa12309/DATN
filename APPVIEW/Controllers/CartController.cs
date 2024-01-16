@@ -173,7 +173,7 @@ namespace APPVIEW.Controllers
             }
             else
             {
-                if (!SessionService.CheckProductInCart(id, products)) // SP chưa nằm trong cart
+                if (!SessionService.CheckProductInCart(product.Id, products)) // SP chưa nằm trong cart
                 {
                     products.Add(product);
 
