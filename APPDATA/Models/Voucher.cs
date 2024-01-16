@@ -11,7 +11,7 @@ namespace APPDATA.Models
     {
         public Guid Id { get; set; }
         public Guid? AccountId { get; set; }
-        [Range(1, 50, ErrorMessage = "Giá trị % phải lớn hơn 0 và nhỏ hơn 50")]
+        [Range(1,100, ErrorMessage = "Giá trị % phải lớn hơn 0 và nhỏ hơn 50")]
         public int Value { get; set; }
         [Required(ErrorMessage = "Tên là bắt buộc")]
         public string Name { get; set; }
