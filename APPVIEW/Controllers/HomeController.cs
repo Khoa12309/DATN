@@ -24,6 +24,8 @@ using DocumentFormat.OpenXml.Math;
 using DocumentFormat.OpenXml.Office2010.Excel;
 using APPDATA.DB;
 using DocumentFormat.OpenXml.InkML;
+using DocumentFormat.OpenXml.Wordprocessing;
+using Category = APPDATA.Models.Category;
 
 namespace APPVIEW.Controllers
 {
@@ -51,13 +53,14 @@ namespace APPVIEW.Controllers
         private Getapi<Role> getapiRole;
         private Getapi<VoucherForAcc> getapiVoucherAcc;
         private ShoppingDB _context;
-
+        private ISendEmail _sendemail;
         public INotyfService _notyf;
+        public SendEmailMessage mesage;
 
         private static readonly Random random = new Random();
         private string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
-        public HomeController(ILogger<HomeController> logger, INotyfService notyf)
+        public HomeController(ILogger<HomeController> logger, INotyfService notyf, ISendEmail sendEmail)
         {
             _logger = logger;
             getapi = new Getapi<ProductDetail>();
@@ -82,7 +85,8 @@ namespace APPVIEW.Controllers
             _context = new ShoppingDB();
 
             _notyf = notyf;
-
+            _sendemail = sendEmail;
+            mesage = new SendEmailMessage();
 
         }
         public IActionResult Gioithieu()
@@ -570,20 +574,20 @@ namespace APPVIEW.Controllers
             
 
             await bills.UpdateObj(x, "Bill");
-            return RedirectToAction("ThongTinNotLogin", new { sdt = x.PhoneNumber });
+            return RedirectToAction("ThongTinNotLogin", new { sdt = x.Code }) ;
         }
 
         // Sử dụng:
         // Tạo chuỗi có độ dài 8 ký tự
 
         [Authorize(Roles = "Customer")]
-        public async Task<IActionResult> DatHangN(Address obj, string pay, float phiship, float voucher, string vouchercode)
+        public async Task<IActionResult> DatHangN(Address obj, string pay, float phiship, float voucher, string vouchercode ,string email)
         {
 
             if (obj.Name == null)
             {
                 _notyf.Warning("Tên không được để trống");
-                return RedirectToAction("checkout", new { obj = obj });
+                return RedirectToAction("dathangn", new { obj = obj });
             }
             if (obj.PhoneNumber == null)
             {
@@ -612,7 +616,7 @@ namespace APPVIEW.Controllers
             if (account.Id == Guid.Empty)
             {
                 account = getapiAc.GetApi("Account").FirstOrDefault(c => c.Name == "khach k dang nhap");
-
+              
             }
 
             if (obj != null)
@@ -743,8 +747,8 @@ namespace APPVIEW.Controllers
 
 
             if (pay == "Online")
-            {
-
+            {                
+   
                 return await Payment(bill);
             }
             else
@@ -773,9 +777,211 @@ namespace APPVIEW.Controllers
                 SessionService.SetObjToJson(HttpContext.Session, "Cart", pp);
                 if (account.Name == "khach k dang nhap")
                 {
+                    string table = null;
+                    foreach (var item in procarrt)
+                    {
+                        var color = _context.Colors.FirstOrDefault(c => c.Id == item.Id_Color);
+                        var size = _context.Sizes.FirstOrDefault(c => c.Id == item.Id_Size);
+                       table += $"<tr><td>{item.Name}</td><td>{color.Name}</td><td>{size.Name}</td><td>{item.Quantity}</td><td>{item.Price}</td></tr>";
+                    }
                     _notyf.Success("Đặt hàng thành công");
+                    string body = $@"<!DOCTYPE html>
+<html lang=""en"">
+<head>
+    <meta charset=""UTF-8"">
+    <meta name=""viewport"" content=""width=device-width, initial-scale=1.0"">
+    <link href=""https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"" rel=""stylesheet"">
+    <link href=""https://getbootstrap.com/docs/5.3/assets/css/docs.css"" rel=""stylesheet"">
+    <title>Thông Tin Đơn Hàng</title>
+    <script src=""https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js""></script>
+    <style>
+        body {{
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            color: black;
+        }}
+        .container {{
+            width: 80%;
+            margin: auto;
+            overflow: hidden;
+        }}
+        header {{
+            background: #7047C8;
+            color: white;
+            padding-top: 30px;
+            min-height: 70px;
+            border-bottom: #f8c6f3 4px solid;
+        }}
+        header a {{
+            color: #ffffff;
+            text-decoration: none;
+            text-transform: uppercase;
+            font-size: 16px;
+        }}
+        header ul {{
+            padding: 0;
+            margin: 0;
+            list-style: none;
+            overflow: hidden;
+        }}
+        header #logo {{
+            text-align: center;
+            margin: 0;
+        }}
+        header #logo img {{
+            width: 70px;
+            height: 70px;
+        }}
+        header h1 {{
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }}
+        header #logo h1 {{
+            display: inline;
+            text-transform: uppercase;
+            font-size: 2em;
+            margin-top: 40px;
+            margin-bottom: 10px;
+        }}
+        header #logo span {{
+            color: #f8c6f3;
+        }}
+        header a:hover {{
+            color: #ffffff;
+            text-decoration: underline;
+        }}
+        header #menu-icon {{
+            display: none;
+        }}
+        section {{
+            float: left;
+            width: 60%;
+            margin: 20px 0 40px 0;
+            padding: 20px;
+            box-sizing: border-box;
+            background: #ffffff;
+            border-radius: 5px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+        }}
+        footer {{
+            float: left;
+            width: 100%;
+            background: #f8c6f3;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+            position: relative;
+            margin-top: 40px;
+            border-top: #7047C8 4px solid;
+        }}
+        table {{
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }}
+        th, td {{
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }}
+        th {{
+            background-color: #7047C8;
+            color: white;
+        }}
+        @media (max-width: 768px) {{
+            header #menu-icon {{
+                display: block;
+                color: white;
+                background: #7047C8;
+                text-align: center;
+                cursor: pointer;
+                font-size: 18px;
+            }}
+            header a {{
+                display: none;
+                color: #ffffff;
+                padding: 15px 0;
+                text-align: center;
+                border-bottom: 1px solid #ffffff;
+            }}
+            header #menu-icon:after {{
+                content: 'Menu';
+            }}
+            header #menu-icon.active:after {{
+                content: 'Close';
+            }}
+            header ul:active, header ul:focus {{
+                display: block;
+            }}
+            header ul {{
+                display: none;
+                padding: 0;
+                margin: 0;
+                list-style: none;
+            }}
+            header li {{
+                display: block;
+                text-align: center;
+                margin-bottom: 15px;
+            }}
+        }}
+    </style>
+</head>
+<body>
+    <header>
+        <div class=""container"">
+            <div id=""logo"">
+                <img src=""~/ContentWebb/img/logo.png"" alt=""Logo"">
+                <h1><span>Super</span> Fashion</h1>
+            </div>
+        </div>
+    </header>
+    <section>
+        <h2>Xin chào {obj.Name} cảm ơn bạn đã sử dụng dịch vụ của chúng tôi</h2>
+ Đây là mã hóa đơn của bạn:{bill.Code}
+        <h2>Thông Tin Đơn Hàng</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Sản Phẩm</
+</th>
+                    <th>Màu sắc</th>
+                    <th>Kích cỡ</th>
+                    <th>Số Lượng</th>
+                    <th>Giá</th>
+                </tr>
+            </thead>
+            <tbody>
+                {table}
+            </tbody>
+        </table>
+        <p>Xin cảm ơn bạn đã đặt hàng từ Super Fashion. Dưới đây là chi tiết đơn hàng của bạn:</p>
+        <p><strong>Tổng Tiền:</strong> {bill.TotalMoney}</p>
+        <p>Chúng tôi sẽ liên hệ với bạn để xác nhận đơn hàng và thông tin giao hàng trong thời gian sớm nhất.</p>
+        <p>Xin cảm ơn và chúc bạn có trải nghiệm tuyệt vời trên Super Fashion!</p>
+        <p>Trân trọng,<br>Super Fashion Team</p>
+    </section>
+    <footer>
+        <p>&copy; 2023 Super Fashion. All rights reserved.</p>
+    </footer>
+    <script>
+        document.getElementById('menu-icon').onclick = function () {{
+            var x = document.getElementsByTagName('ul')[0];
+            if (x.style.display === 'block') {{
+                x.style.display = 'none';
+            }} else {{
+                x.style.display = 'block';
+            }}
+        }};
+    </script>
+</body>
+</html>
+";
+                    _sendemail.SendEmailAsync(email,"Thông tin đơn hàng của bạn",body);
                     return RedirectToAction("Index");
-                }
+                }            
                 _notyf.Success("Đặt hàng thành công");
 
 
@@ -1009,7 +1215,7 @@ namespace APPVIEW.Controllers
             {
 
 
-                var userBills = bills.GetApi("Bill").Where(c => c.PhoneNumber == sdt && c.Status != 4).OrderByDescending(d => d.CreateDate).ToList();
+                var userBills = bills.GetApi("Bill").Where(c => c.Code == sdt && c.Status != 4).OrderByDescending(d => d.CreateDate).ToList();
                 ViewBag.viewbill = userBills;
 
 
@@ -1567,6 +1773,7 @@ namespace APPVIEW.Controllers
                     var Uid = User.Claims.FirstOrDefault(c => c.Type == "Id").Value;
                     account = getapiAc.GetApi("Account").FirstOrDefault(c => c.Id.ToString() == Uid);
                     SessionService.SetObjToJson(HttpContext.Session, "Account", account);
+            
                 }
 
 
@@ -1916,17 +2123,17 @@ namespace APPVIEW.Controllers
                 var mpd = SessionService.GetObjFromSession(HttpContext.Session, "mpd");
                 if (mpd.Count>0)
                 {
-                    return RedirectToAction("Checkout", new { id = mpd[0].Id });
+                    return RedirectToAction("dathangn", new { id = mpd[0].Id });
 
                 }
-                return RedirectToAction("Checkout");
+                return RedirectToAction("dathangn");
 
             }
             else
             {
                 // xử lý khi mã giảm giá không hợp lệ
                 ModelState.AddModelError("Error", "Mã giảm giá không hợp lệ");
-                return RedirectToAction("Checkout");
+                return RedirectToAction("dathangn");
             }
         }
 
@@ -1966,13 +2173,13 @@ namespace APPVIEW.Controllers
                 TempData["Value"] = voucher.Value.ToString();
                 TempData["VoucherCode"] = voucher.Code;
 
-                return RedirectToAction("CheckOutOnl");
+                return RedirectToAction("dathangnOnl");
             }
             else
             {
                 // Xử lý khi mã giảm giá không hợp lệ
                 _notyf.Error("Mã giảm giá không hợp lệ");
-                return RedirectToAction("CheckOutOnl");
+                return RedirectToAction("dathangnOnl");
             }
         }
 
@@ -2123,7 +2330,7 @@ namespace APPVIEW.Controllers
                             return RedirectToAction("Index");
                         }
                     }
-                    return RedirectToAction("checkout");
+                    return RedirectToAction("dathangn");
                 }
                 else
                 {
