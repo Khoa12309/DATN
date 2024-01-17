@@ -1,16 +1,28 @@
 ﻿using APPDATA.Models;
 using APPVIEW.Services;
 using AspNetCoreHero.ToastNotification.Abstractions;
+using iTextSharp.text.pdf.qrcode;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Newtonsoft.Json;
 using NuGet.Packaging.Signing;
 using System.Data;
+using System.Drawing;
+
+using System.Drawing.Imaging;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Xml.Linq;
 using X.PagedList;
+using ZXing;
+using ZXing.QrCode;
+using Color = APPDATA.Models.Color;
+using Image = APPDATA.Models.Image;
+using Size = APPDATA.Models.Size;
+using ZXing.Rendering;
+using QRCodeWriter = ZXing.QrCode.QRCodeWriter;
+using ZXing.Windows.Compatibility;
 
 namespace APPVIEW.Controllers
 {
@@ -25,10 +37,11 @@ namespace APPVIEW.Controllers
         private Getapi<Supplier> getapiSupplier;
         private Getapi<Product> getapiProduct;
         private Getapi<Material> getapiMaterial;
+        private readonly IWebHostEnvironment env;
         public INotyfService _notyf;
 
 
-        public ProductDetailController(INotyfService notyf)
+        public ProductDetailController(INotyfService notyf, IWebHostEnvironment env)
         {
             _notyf = notyf;
             getapi = new Getapi<ProductDetail>();
@@ -39,7 +52,7 @@ namespace APPVIEW.Controllers
             getapiSupplier = new Getapi<Supplier>();
             getapiProduct = new Getapi<Product>();
             getapiMaterial = new Getapi<Material>();
-
+            this.env = env; 
         }
         public int PageSize = 5;
         public async Task<IActionResult> GetList(int? page)
@@ -242,7 +255,49 @@ namespace APPVIEW.Controllers
 
             return RedirectToAction("getlist");
         }
+        public async Task<IActionResult> AddQr(Guid id)
+        {
+            var productDetail = getapi.GetApi("ProductDetails").FirstOrDefault(c => c.Id == id);
 
+            // Kiểm tra giá trị productDetail
+            if (productDetail == null)
+            {
+                // Xử lý trường hợp không tìm thấy sản phẩm với id tương ứng
+                _notyf.Warning("Chưa thể tạo qr lúc này");
+                return RedirectToAction("GetList");
+            }
+
+            var qrCodeWriter = new ZXing.QrCode.QRCodeWriter();
+            var bitMatrix = qrCodeWriter.encode(productDetail.Id.ToString(), BarcodeFormat.QR_CODE, 300, 300);
+            var size = getapiSize.GetApi("Size").FirstOrDefault(c=>c.Id == productDetail.Id_Size);
+            var color = getapiColor.GetApi("Color").FirstOrDefault(c => c.Id == productDetail.Id_Color);
+            // Chuyển đổi BitMatrix thành hình ảnh (Bitmap)
+            var barcodeWriter = new BarcodeWriter();
+            barcodeWriter.Format = BarcodeFormat.QR_CODE;
+            barcodeWriter.Options = new ZXing.Common.EncodingOptions
+            {
+                Width = 300,
+                Height = 300
+            };
+            
+            using (MemoryStream memoryStream = new MemoryStream())
+            {
+                var bitmap = barcodeWriter.Write(bitMatrix);
+                bitmap.Save(memoryStream, ImageFormat.Png);
+
+                // Chuyển mảng byte thành một mảng byte[] cho đối tượng FileContentResult
+                byte[] qrCodeBytes = memoryStream.ToArray();
+
+
+                // Hiển thị hình ảnh QR code trực tiếp trên trang web
+
+                return File(qrCodeBytes, "image/png",productDetail.Name+"_"+size.Name+"_"+color.Name+".png");
+
+            }
+        }
+
+
+    
 
 
     }

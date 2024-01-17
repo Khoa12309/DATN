@@ -13,6 +13,7 @@
 
 
 
+
 <div class="card">
     <div class="card-header">
         <h5 class="mb-0">Chi tiết Sản phẩm</h5>
@@ -288,6 +289,10 @@
                                             <a href="@Url.Action("Delete", new { id = item.Id })" class="dropdown-item delete-record">
                                                 <i class="mdi mdi-delete-outline me-2"></i>
                                                 <span>Xóa</span>
+                                            </a>
+                                            <a href="@Url.Action("AddQr", new { id = item.Id })" class="dropdown-item add-record">
+                                                <i class="mdi mdi-plus-thick "></i>
+                                                <span>Tạo Qr</span>
                                             </a>
                                         </div>
                                     </div>

@@ -1,0 +1,17 @@
+﻿@model byte[]
+
+@{
+    ViewData["Title"] = "AddQr";
+    Layout = "~/Areas/Admin/Views/Shared/_Layout.cshtml";
+}
+
+<h1 class="text-center">QR Code</h1>
+
+<div class="text-center">
+    <img src="data:image/png;base64,@Convert.ToBase64String(Model)" alt="QR Code" />
+</div>
+
+<div class="text-center mt-3">
+    <a class="btn btn-primary" id="downloadBtn" download="QRCode.png">Download QR Code</a>
+</div>
+
